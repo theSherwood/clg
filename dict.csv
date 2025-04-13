@@ -13,6 +13,7 @@ Preposition,from,
 Preposition,by,
 Preposition,for,"Is it worth splitting this into ""on behalf of"" and ""for the purpose of""?"
 Preposition,of / about / with regards to,
+Grammar Helper,prepositition ender,
 Pronoun,first-person pronoun,"""me"" through ""first_person-singular""
 ""we"" through ""first_person-plural""
 also ""first_person-plural-inclusive""
@@ -109,6 +110,7 @@ future - past"
 ,month,
 ,year,
 ,exchange,? maybe possible on a buy/sell spectrum
+,value,
 ,,
 ,,
 ,,
