@@ -12,7 +12,7 @@ Preposition,to,
 Preposition,from,
 Preposition,by,
 Preposition,for,"Is it worth splitting this into ""on behalf of"" and ""for the purpose of""?"
-Preposition,of / about / with regards to,
+Preposition,in / of / about / with regards to / in terms of,
 Grammar Helper,prepositition ender,
 Pronoun,first-person pronoun,"""me"" through ""first_person-singular""
 ""we"" through ""first_person-plural""
