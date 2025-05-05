@@ -22,6 +22,7 @@ type WordData = {
   noun?: string;
   adjective?: string;
   adverb?: string;
+  domain?: string;
 };
 
 function is_defined<T>(value: T | undefined): value is T {
@@ -47,11 +48,7 @@ function r(word: w | string, data: Partial<WordData> = {}): Word {
     t: [],
     ...data,
   };
-  if (!d.id) {
-    d.id = root_index++;
-  } else if (d.id < root_index) {
-    throw new Error(`Word ID ${d.id} is less than the current root index ${root_index}`);
-  } else if (d.id > 255) {
+  if (is_defined(data.id) && data.id > 255) {
     throw new Error(`Word ID ${d.id} is greater than 255`);
   }
   d.t.push(T.root);
@@ -69,6 +66,34 @@ function c(
   };
   d.t.push(T.compound);
   return new Word(word, d);
+}
+
+const roots: (Word[] | null)[] = Array.from({ length: 256 }, (_) => null);
+
+const dictionary = new Map<string, Word>();
+
+function cr(word: string, data: Partial<WordData> = {}): Word {
+  if (dictionary.has(word)) {
+    throw new Error(`Duplicate word: ${word}`);
+  }
+  const w = r(word, data);
+  let existing = roots[w.data.id];
+  if (existing) {
+    existing.push(w);
+  } else {
+    roots[w.data.id] = [w];
+  }
+  dictionary.set(word, w);
+  return w;
+}
+
+function cw(word: string, data: Partial<WordData> & { parts: Required<WordData["parts"]> }): Word {
+  if (dictionary.has(word)) {
+    throw new Error(`Duplicate word: ${word}`);
+  }
+  const w = c(word, data);
+  dictionary.set(word, w);
+  return w;
 }
 
 // prettier-ignore
@@ -94,24 +119,112 @@ enum w {
 
 }
 
+const axis_words_config = [
+  [
+    { noun: "size" },
+    { adj: "small", noun: "smallness", verb: "to shrink", adverb: "slightly" },
+    { adj: "big", noun: "bigness", verb: "to grow", adverb: "hugely" },
+  ],
+  [
+    { noun: "speed" },
+    { adj: "slow", noun: "slowness", verb: "to decelerate", adverb: "slowly" },
+    { adj: "fast", noun: "fastness", verb: "to accelerate", adverb: "quickly" },
+  ],
+  [
+    { noun: "adaptability" },
+    { adj: "static", noun: "stability", verb: "to stabilize", adverb: "statically" },
+    { adj: "dynamic", noun: "dynamism", verb: "to adapt", adverb: "dynamically" },
+  ],
+  [
+    { noun: "complexity(spectrum)" },
+    { adj: "complex", noun: "complexity(state)", verb: "to complicate", adverb: "complexly" },
+    { adj: "simple", noun: "simplicity", verb: "to simplify", adverb: "simply" },
+  ],
+  [
+    { noun: "strength(axis)" },
+    { adj: "weak", noun: "weakness", verb: "to weaken", adverb: "weakly" },
+    { adj: "strong", noun: "strength(state)", verb: "to strengthen", adverb: "strongly" },
+  ],
+  [
+    { noun: "quantity" },
+    { adj: "less", noun: "scarcity", verb: "to decrease", adverb: "barely" },
+    { adj: "more", noun: "abundance", verb: "to increase", adverb: "abundantly" },
+  ],
+  [
+    { noun: "orderliness" },
+    { adj: "chaotic", noun: "chaos", verb: "to disorganize", adverb: "chaotically" },
+    { adj: "organized", noun: "order", verb: "to organize", adverb: "orderly" },
+  ],
+  [
+    { noun: "initiative" },
+    { adj: "passive", noun: "passivity", verb: "to lull", adverb: "passively" },
+    { adj: "agentic", noun: "agency", verb: "to act", adverb: "agentically" },
+  ],
+  [
+    { noun: "continuity" },
+    { adj: "continuous", noun: "continuum", verb: "to smear", adverb: "continuously" },
+    { adj: "discrete", noun: "discreteness", verb: "to demarcate", adverb: "choppily" },
+  ],
+  [
+    { noun: "completeness" },
+    { adj: "none", noun: "nothingness", verb: "to erase", adverb: "none(adverb)" },
+    { adj: "all", noun: "everything", verb: "to fill", adverb: "completely" },
+  ],
+  [
+    { noun: "openness(spectrum)" },
+    { adj: "closed", noun: "closure", verb: "to close", adverb: "tightly" },
+    { adj: "open", noun: "openness(state)", verb: "to open", adverb: "loosely" },
+  ],
+  [
+    { noun: "granularity" },
+    { adj: "coarse", noun: "coarseness", verb: "to roughen", adverb: "roughly" },
+    { adj: "smooth", noun: "smoothness", verb: "to smooth", adverb: "smoothly" },
+  ],
+  [
+    { noun: "coercion(spectrum)" },
+    { adj: "forced", noun: "coercion(state)", verb: "to_force", adverb: "under_duress" },
+    { adj: "free", noun: "freedom", verb: "to_free", adverb: "freely" },
+  ],
+  [
+    { noun: "abstraction(spectrum)" },
+    { adj: "concrete", noun: "concreteness", verb: "to_reify", adverb: "concretely" },
+    { adj: "abstract", noun: "abstraction(state)", verb: "to_abstract", adverb: "in_general" },
+  ],
+  [
+    { noun: "relativity(spectrum)" },
+    { adj: "relative", noun: "relativity(state)", verb: "", adverb: "relatively" },
+    { adj: "absolute", noun: "absolute(state)", verb: "", adverb: "absolutely" },
+  ],
+  [
+    { noun: "rigidity(spectrum)" },
+    { adj: "rigid", noun: "rigidity(state)", verb: "to_stiffen", adverb: "stiffly" },
+    { adj: "fluid", noun: "fluidity", verb: "to_flow", adverb: "fluidly" },
+  ],
+  [
+    { noun: "explicitness(spectrum)" },
+    { adj: "implicit", noun: "implicitness", verb: "to_make_implicit", adverb: "implicitly" },
+    {
+      adj: "explicit",
+      noun: "explicitness(state)",
+      verb: "to_make_explicit",
+      adverb: "explicitly",
+    },
+  ],
+  [
+    { noun: "internality(spectrum)" },
+    { adj: "internal", noun: "internality(state)", verb: "to_internalize", adverb: "internally" },
+    { adj: "external", noun: "externality", verb: "to_externalize", adverb: "externally" },
+  ],
+  [
+    { noun: "finiteness(spectrum)" },
+    { adj: "finite", noun: "finiteness(state)", verb: "", adverb: "finitely" },
+    { adj: "infinite", noun: "infinity", verb: "", adverb: "infinitely" },
+  ],
+];
+
 // prettier-ignore
 const axis_words = [
   // axis_of           negative,        positive,        max_negative,   min_negative,       neutral,          min_positive,    max_positive,
-  [  "size",           "small",         "big",           "tiny",         "slightly_small",   "average_sized",  "slightly_big",  "huge",        ],
-  [  "speed",          "slow",          "fast",          ],
-  [  "dynamism",       "static",        "dynamic",       ],
-  [  "complexity",     "complex",       "simple",        ],
-  [  "strength",       "weak",          "strong",        ],
-  [  "quantity",       "less",          "more",          ],
-  [  "orderliness",    "chaos",         "order",         ],
-  [  "passivity",      "passive",       "agentic",       ],
-  [             ,      "continuous",    "discrete",      ],
-  [             ,      "none",          "all",           ],
-  [             ,      "closed",        "open",          ],
-  [             ,      "rough",         "smooth",        ],
-  [             ,      "force",         "choose",        ],
-  [             ,      "concrete",      "abstract",      ],
-  [             ,      "relative",      "absolute",      ],
   [             ,      "rigid",         "fluid",         ],
   [             ,      "implicit",      "explicit",      ],
   [             ,      "internal",      "external",      ],
@@ -234,72 +347,159 @@ type ExtractLeaf<T> =
 
 type AxisWordString = ExtractLeaf<typeof axis_words>;
 
-function create_axis_word_map() {
-  // prettier-ignore
-  const axis_word_map = axis_words.reduce((acc, word_set) => {
-    const [
-      axis,
-      negative,
-      positive,
-      max_negative,
-      min_negative,
-      neutral,
-      min_positive,
-      max_positive,
-    ] = word_set;
-    acc[positive] = r(positive, { t: [T.axis_word] });
-    if (is_defined(axis))         acc[axis]         = c(axis,         {parts: [w.axis_of,      positive], t: [T.axis_word] });
-    if (is_defined(negative))     acc[negative]     = c(negative,     {parts: [w.negative,     positive], t: [T.axis_word] });
-    if (is_defined(max_negative)) acc[max_negative] = c(max_negative, {parts: [w.max_negative, positive], t: [T.axis_word] });
-    if (is_defined(min_negative)) acc[min_negative] = c(min_negative, {parts: [w.min_negative, positive], t: [T.axis_word] });
-    if (is_defined(neutral))      acc[neutral]      = c(neutral,      {parts: [w.neutral,      positive], t: [T.axis_word] });
-    if (is_defined(min_positive)) acc[min_positive] = c(min_positive, {parts: [w.min_positive, positive], t: [T.axis_word] });
-    if (is_defined(max_positive)) acc[max_positive] = c(max_positive, {parts: [w.max_positive, positive], t: [T.axis_word] });
-    return acc;
-  }, {} as Record<AxisWordString, Word>);
-  return axis_word_map;
+function create_digit_map() {
+  root_index = 128;
+
+  const number_map = {};
+  for (let i = 0; i < 128; i++) {
+    const word = `digit_${i}`;
+    number_map[word] = r(word, { t: [T.axis_word] });
+  }
+
+  return number_map;
 }
 
-const words: Record<string, Word> = {
-  [w._subject]: r(w._subject, { t: [T.grammar_helper] }),
-  [w._object]: r(w._object, { t: [T.grammar_helper] }),
-  [w._verb]: r(w._verb, { t: [T.grammar_helper] }),
-  [w._verb_prescriptive]: r(w._verb_prescriptive, { t: [T.grammar_helper] }),
-  [w._verb_interrogative]: r(w._verb_interrogative, { t: [T.grammar_helper] }),
-  [w._gerund]: r(w._gerund, { t: [T.grammar_helper] }),
+{
+  cr("_subject", { t: [T.grammar_helper] });
+  cr("_object", { t: [T.grammar_helper] });
+  cr("_verb", { t: [T.grammar_helper] });
+  cr("_verb(prescriptive)", { t: [T.grammar_helper] });
+  cr("_verb(interrogative)", { t: [T.grammar_helper] });
+  cr("_gerund", { t: [T.grammar_helper] });
+}
 
-  // prepositions
-  [w.with]: r(w.with, { t: [T.preposition] }),
-  [w.to]: r(w.to, { t: [T.preposition] }),
-  [w.from]: r(w.from, { t: [T.preposition] }),
-  [w.by]: r(w.by, { t: [T.preposition] }),
-  [w.for]: r(w.for, { t: [T.preposition] }),
-  [w.in_of_about]: r(w.in_of_about, { t: [T.preposition] }),
+// prepositions
+{
+  cr("with", { t: [T.preposition] });
+  cr("to", { t: [T.preposition] });
+  cr("from", { t: [T.preposition] });
+  cr("by", { t: [T.preposition] });
+  cr("for", { t: [T.preposition] });
+  cr("in_of_about", { t: [T.preposition] });
+}
 
-  // pronouns
-  [w.pronoun_first_person]: r(w.pronoun_first_person, { t: [T.pronoun] }),
-  [w.pronoun_second_person]: r(w.pronoun_second_person, { t: [T.pronoun] }),
-  [w.pronoun_third_person]: r(w.pronoun_third_person, { t: [T.pronoun] }),
-  [w.this]: r(w.this, { t: [T.pronoun] }),
-  [w.that]: r(w.that, { t: [T.pronoun] }),
+// pronouns
+{
+  cr("pronoun(first_person)", { t: [T.pronoun] });
+  cr("pronoun(second_person)", { t: [T.pronoun] });
+  cr("pronoun(third_person)", { t: [T.pronoun] });
+  cr("this", { t: [T.pronoun] });
+  cr("that", { t: [T.pronoun] });
+}
 
-  [w.not]: r(w.not, { t: [T.grammar_helper] }),
-  [w.and]: r(w.and, { t: [T.grammar_helper] }),
-  [w.or]: r(w.or, { t: [T.grammar_helper] }),
-  [w.if]: r(w.if, { t: [T.grammar_helper] }),
+{
+  cr("not", { t: [T.grammar_helper] });
+  cr("and", { t: [T.grammar_helper] });
+  cr("or", { t: [T.grammar_helper] });
+  cr("if", { t: [T.grammar_helper] });
+}
 
-  // axis helpers
-  [w.axis_of]: r(w.axis_of, { t: [T.axis_helper] }),
-  [w.max_negative]: r(w.max_negative, { t: [T.axis_helper] }),
-  [w.negative]: r(w.negative, { t: [T.axis_helper] }),
-  [w.min_negative]: r(w.min_negative, { t: [T.axis_helper] }),
-  [w.neutral]: r(w.neutral, { t: [T.axis_helper] }),
-  [w.min_positive]: r(w.min_positive, { t: [T.axis_helper] }),
-  [w.positive]: r(w.positive, { t: [T.axis_helper] }),
-  [w.max_positive]: r(w.max_positive, { t: [T.axis_helper] }),
+// axis helpers
+{
+  cr("axis_of", { t: [T.axis_helper] });
+  cr("max_negative", { t: [T.axis_helper] });
+  cr("negative", { t: [T.axis_helper] });
+  cr("min_negative", { t: [T.axis_helper] });
+  cr("neutral", { t: [T.axis_helper] });
+  cr("min_positive", { t: [T.axis_helper] });
+  cr("positive", { t: [T.axis_helper] });
+  cr("max_positive", { t: [T.axis_helper] });
+}
 
-  // TODO: misc
+// misc
+{
+  cr("singular");
+  cr("plural");
+  cr("land");
+  cr("wall");
+  cr("rod");
+  cr("person");
+  cr("saying");
+  cr("feel");
+  cr("money");
+  cr("place");
+  cr("container");
+  cr("mouth");
+  cr("use");
+  cr("rock");
+  cr("attach");
+  cr("path");
+  cr("sound");
+  cr("touch");
+  cr("do");
+  cr("body");
+  cr("mark");
+  cr("symbol");
+  cr("hand");
+  cr("finger");
+  cr("feet");
+  cr("head");
+  cr("torso");
+  cr("arm");
+  cr("leg");
+}
 
-  // axis words
-  ...create_axis_word_map(),
-};
+// digit domain
+{
+  root_index = 128;
+  for (let i = 0; i < 128; i++) {
+    cr(`digit_${i}`, { domain: "number" });
+  }
+}
+
+// axis words
+{
+  root_index = 128;
+
+  const axis_of_id: number = dictionary.get("axis_of")?.data.id!;
+  const negative_id: number = dictionary.get("negative")?.data.id!;
+  const positive_id: number = dictionary.get("positive")?.data.id!;
+  const max_negative_id: number = dictionary.get("max_negative")?.data.id!;
+  const min_negative_id: number = dictionary.get("min_negative")?.data.id!;
+  const neutral_id: number = dictionary.get("neutral")?.data.id!;
+  const min_positive_id: number = dictionary.get("min_positive")?.data.id!;
+  const max_positive_id: number = dictionary.get("max_positive")?.data.id!;
+
+  if (!is_defined(axis_of_id)) throw new Error(`Missing axis_of word`);
+  if (!is_defined(negative_id)) throw new Error(`Missing negative word`);
+  if (!is_defined(positive_id)) throw new Error(`Missing positive word`);
+  if (!is_defined(max_negative_id)) throw new Error(`Missing max_negative word`);
+  if (!is_defined(min_negative_id)) throw new Error(`Missing min_negative word`);
+  if (!is_defined(neutral_id)) throw new Error(`Missing neutral word`);
+  if (!is_defined(min_positive_id)) throw new Error(`Missing min_positive word`);
+  if (!is_defined(max_positive_id)) throw new Error(`Missing max_positive word`);
+
+  // prettier-ignore
+  for (let word_set of axis_words_config) {
+    const [axis, negative, positive] = word_set;
+
+    const { noun: axis_noun } = axis;
+    const {
+      noun: negative_noun,
+      adj: negative_adj,
+      verb: negative_verb,
+      adverb: negative_adverb,
+    } = negative;
+    const {
+      noun: positive_noun,
+      adj: positive_adj,
+      verb: positive_verb,
+      adverb: positive_adverb,
+    } = positive;
+
+    let id = root_index++;
+    if (positive_noun)   cr(positive_noun, { t: [T.axis_word], domain: "noun", id });
+    if (positive_adj)    cr(positive_adj, { t: [T.axis_word], domain: "adjective", id });
+    if (positive_verb)   cr(positive_verb, { t: [T.axis_word], domain: "verb", id });
+    if (positive_adverb) cr(positive_adverb, { t: [T.axis_word], domain: "adverb", id });
+
+    if (negative_noun)   cw(negative_noun, { t: [T.axis_word], domain: "noun", parts: [negative_id, id] });
+    if (negative_adj)    cw(negative_adj, { t: [T.axis_word], domain: "adjective", parts: [negative_id, id] });
+    if (negative_verb)   cw(negative_verb, { t: [T.axis_word], domain: "verb", parts: [negative_id, id] });
+    if (negative_adverb) cw(negative_adverb, { t: [T.axis_word], domain: "adverb", parts: [negative_id, id] });
+
+    if (axis_noun)       cw(axis_noun, { t: [T.axis_word], domain: "noun", parts: [axis_of_id, id] });
+  }
+}
+
+console.log("Dictionary:", dictionary);
