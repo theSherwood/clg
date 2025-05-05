@@ -18,10 +18,7 @@ type WordData = {
   id: number;
   t: T[]; // tags
 
-  parts?: (w | string)[];
-  noun?: string;
-  adjective?: string;
-  adverb?: string;
+  parts?: number[];
   domain?: string;
 };
 
@@ -30,19 +27,19 @@ function is_defined<T>(value: T | undefined): value is T {
 }
 
 class Word {
-  value: w | string;
+  value: string;
   str: string;
   data: WordData;
-  constructor(word: w | string, data: WordData) {
+  constructor(word: string, data: WordData) {
     this.value = word;
-    this.str = typeof word === "string" ? word : w[word];
+    this.str = word;
     this.data = data;
   }
 }
 
 let root_index = 0;
 
-function r(word: w | string, data: Partial<WordData> = {}): Word {
+function r(word: string, data: Partial<WordData> = {}): Word {
   let d: WordData = {
     id: -1,
     t: [],
@@ -55,10 +52,7 @@ function r(word: w | string, data: Partial<WordData> = {}): Word {
   return new Word(word, d);
 }
 
-function c(
-  word: w | string,
-  data: Partial<WordData> & { parts: Required<WordData["parts"]> },
-): Word {
+function c(word: string, data: Partial<WordData> & { parts: Required<WordData["parts"]> }): Word {
   let d: WordData = {
     id: -1,
     t: [],
@@ -68,9 +62,9 @@ function c(
   return new Word(word, d);
 }
 
-const roots: (Word[] | null)[] = Array.from({ length: 256 }, (_) => null);
+export const roots: (Word[] | null)[] = Array.from({ length: 256 }, (_) => null);
 
-const dictionary = new Map<string, Word>();
+export const dictionary = new Map<string, Word>();
 
 function cr(word: string, data: Partial<WordData> = {}): Word {
   if (dictionary.has(word)) {
@@ -94,29 +88,6 @@ function cw(word: string, data: Partial<WordData> & { parts: Required<WordData["
   const w = c(word, data);
   dictionary.set(word, w);
   return w;
-}
-
-// prettier-ignore
-enum w {
-  _subject, _object, _verb, _verb_prescriptive, _verb_interrogative, _gerund,
-
-  // prepositions
-  with, to, from, by, for, in_of_about,
-
-  // pronouns
-  pronoun_first_person, pronoun_second_person, pronoun_third_person,
-  this, that,
-
-  not, and, or, if,
-
-  // axis helpers
-  axis_of, max_negative, negative, min_negative, neutral, min_positive, positive, max_positive,
-
-  // misc
-  singular, plural, land, wall, rod, person, saying, feel, money, place, container,
-  mouth, use, rock, attach, path, sound, touch, do, body, mark, symbol, hand,
-  finger, feet, head, torso, arm, leg,
-
 }
 
 const axis_words_config = [
@@ -488,6 +459,7 @@ function create_digit_map() {
     } = positive;
 
     let id = root_index++;
+
     if (positive_noun)   cr(positive_noun, { t: [T.axis_word], domain: "noun", id });
     if (positive_adj)    cr(positive_adj, { t: [T.axis_word], domain: "adjective", id });
     if (positive_verb)   cr(positive_verb, { t: [T.axis_word], domain: "verb", id });
@@ -503,3 +475,5 @@ function create_digit_map() {
 }
 
 console.log("Dictionary:", dictionary);
+
+console.log(dictionary.size);
