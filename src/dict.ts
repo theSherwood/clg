@@ -1,22 +1,18 @@
-enum T {
-  // Root tags
-  preposition,
-  pronoun,
-  grammar_helper,
-  part_of_speech_specifier,
-  domain_specifier,
-  verb_specifier,
-  axis_helper,
-  axis_word,
-
-  //
-  root,
-  compound,
-}
+export const T = {
+  // tags
+  preposition: "preposition",
+  pronoun: "pronoun",
+  grammar_helper: "grammar_helper",
+  part_of_speech_specifier: "part_of_speech_specifier",
+  domain_specifier: "domain_specifier",
+  verb_specifier: "verb_specifier",
+  axis_helper: "axis_helper",
+  axis_word: "axis_word",
+} as const;
 
 type WordData = {
   id: number;
-  t: T[]; // tags
+  t: (keyof typeof T)[]; // tags
 
   parts?: number[];
   domain?: string;
@@ -26,15 +22,25 @@ function is_defined<T>(value: T | undefined): value is T {
   return value !== undefined;
 }
 
-class Word {
-  value: string;
-  str: string;
+export class Word {
+  word: string;
   data: WordData;
   constructor(word: string, data: WordData) {
-    this.value = word;
-    this.str = word;
+    this.word = word;
     this.data = data;
   }
+}
+
+export function is_root(word: Word): boolean {
+  const parts_length = word.data.parts?.length ?? 0;
+  const id = word.data.id;
+  if (id >= 0 && parts_length > 0) {
+    throw new Error(`Word ${word.word} has root ID and parts`);
+  }
+  if (id < 0 && parts_length === 0) {
+    throw new Error(`Word ${word.word} has negative ID and no parts`);
+  }
+  return id >= 0;
 }
 
 let root_index = 0;
@@ -45,10 +51,12 @@ function r(word: string, data: Partial<WordData> = {}): Word {
     t: [],
     ...data,
   };
+  if (!is_defined(data.id)) {
+    d.id = root_index++;
+  }
   if (is_defined(data.id) && data.id > 255) {
     throw new Error(`Word ID ${d.id} is greater than 255`);
   }
-  d.t.push(T.root);
   return new Word(word, d);
 }
 
@@ -58,7 +66,6 @@ function c(word: string, data: Partial<WordData> & { parts: Required<WordData["p
     t: [],
     ...data,
   };
-  d.t.push(T.compound);
   return new Word(word, d);
 }
 
@@ -93,73 +100,73 @@ function cw(word: string, data: Partial<WordData> & { parts: Required<WordData["
 const axis_words_config = [
   [
     { noun: "size" },
-    { adj: "small", noun: "smallness", verb: "to shrink", adverb: "slightly" },
-    { adj: "big", noun: "bigness", verb: "to grow", adverb: "hugely" },
+    { adj: "small", noun: "smallness", verb: "shrink(v)", adverb: "slightly" },
+    { adj: "big", noun: "bigness", verb: "grow(v)", adverb: "hugely" },
   ],
   [
     { noun: "speed" },
-    { adj: "slow", noun: "slowness", verb: "to decelerate", adverb: "slowly" },
-    { adj: "fast", noun: "fastness", verb: "to accelerate", adverb: "quickly" },
+    { adj: "slow", noun: "slowness", verb: "decelerate(v)", adverb: "slowly" },
+    { adj: "fast", noun: "fastness", verb: "accelerate(v)", adverb: "quickly" },
   ],
   [
     { noun: "adaptability" },
-    { adj: "static", noun: "stability", verb: "to stabilize", adverb: "statically" },
-    { adj: "dynamic", noun: "dynamism", verb: "to adapt", adverb: "dynamically" },
+    { adj: "static", noun: "stability", verb: "stabilize(v)", adverb: "statically" },
+    { adj: "dynamic", noun: "dynamism", verb: "adapt(v)", adverb: "dynamically" },
   ],
   [
     { noun: "complexity(spectrum)" },
-    { adj: "complex", noun: "complexity(state)", verb: "to complicate", adverb: "complexly" },
-    { adj: "simple", noun: "simplicity", verb: "to simplify", adverb: "simply" },
+    { adj: "complex", noun: "complexity(state)", verb: "complicate(v)", adverb: "complexly" },
+    { adj: "simple", noun: "simplicity", verb: "simplify(v)", adverb: "simply" },
   ],
   [
     { noun: "strength(axis)" },
-    { adj: "weak", noun: "weakness", verb: "to weaken", adverb: "weakly" },
-    { adj: "strong", noun: "strength(state)", verb: "to strengthen", adverb: "strongly" },
+    { adj: "weak", noun: "weakness", verb: "weaken(v)", adverb: "weakly" },
+    { adj: "strong", noun: "strength(state)", verb: "strengthen(v)", adverb: "strongly" },
   ],
   [
     { noun: "quantity" },
-    { adj: "less", noun: "scarcity", verb: "to decrease", adverb: "barely" },
-    { adj: "more", noun: "abundance", verb: "to increase", adverb: "abundantly" },
+    { adj: "less", noun: "scarcity", verb: "decrease(v)", adverb: "barely" },
+    { adj: "more", noun: "abundance", verb: "increase(v)", adverb: "abundantly" },
   ],
   [
     { noun: "orderliness" },
-    { adj: "chaotic", noun: "chaos", verb: "to disorganize", adverb: "chaotically" },
-    { adj: "organized", noun: "order", verb: "to organize", adverb: "orderly" },
+    { adj: "chaotic", noun: "chaos", verb: "disorganize(v)", adverb: "chaotically" },
+    { adj: "organized", noun: "order", verb: "organize(v)", adverb: "orderly" },
   ],
   [
     { noun: "initiative" },
-    { adj: "passive", noun: "passivity", verb: "to lull", adverb: "passively" },
-    { adj: "agentic", noun: "agency", verb: "to act", adverb: "agentically" },
+    { adj: "passive", noun: "passivity", verb: "lull(v)", adverb: "passively" },
+    { adj: "agentic", noun: "agency", verb: "act(v)", adverb: "agentically" },
   ],
   [
     { noun: "continuity" },
-    { adj: "continuous", noun: "continuum", verb: "to smear", adverb: "continuously" },
-    { adj: "discrete", noun: "discreteness", verb: "to demarcate", adverb: "choppily" },
+    { adj: "continuous", noun: "continuum", verb: "smear(v)", adverb: "continuously" },
+    { adj: "discrete", noun: "discreteness", verb: "demarcate(v)", adverb: "choppily" },
   ],
   [
     { noun: "completeness" },
-    { adj: "none", noun: "nothingness", verb: "to erase", adverb: "none(adverb)" },
-    { adj: "all", noun: "everything", verb: "to fill", adverb: "completely" },
+    { adj: "none", noun: "nothingness", verb: "erase(v)", adverb: "none(adverb)" },
+    { adj: "all", noun: "everything", verb: "fill(v)", adverb: "completely" },
   ],
   [
     { noun: "openness(spectrum)" },
-    { adj: "closed", noun: "closure", verb: "to close", adverb: "tightly" },
-    { adj: "open", noun: "openness(state)", verb: "to open", adverb: "loosely" },
+    { adj: "closed", noun: "closure", verb: "close(v)", adverb: "tightly" },
+    { adj: "open", noun: "openness(state)", verb: "open(v)", adverb: "loosely" },
   ],
   [
     { noun: "granularity" },
-    { adj: "coarse", noun: "coarseness", verb: "to roughen", adverb: "roughly" },
-    { adj: "smooth", noun: "smoothness", verb: "to smooth", adverb: "smoothly" },
+    { adj: "coarse", noun: "coarseness", verb: "roughen(v)", adverb: "roughly" },
+    { adj: "smooth", noun: "smoothness", verb: "smooth(v)", adverb: "smoothly" },
   ],
   [
     { noun: "coercion(spectrum)" },
-    { adj: "forced", noun: "coercion(state)", verb: "to_force", adverb: "under_duress" },
-    { adj: "free", noun: "freedom", verb: "to_free", adverb: "freely" },
+    { adj: "forced", noun: "coercion(state)", verb: "force(v)", adverb: "under_duress" },
+    { adj: "free", noun: "freedom", verb: "free(v)", adverb: "freely" },
   ],
   [
     { noun: "abstraction(spectrum)" },
-    { adj: "concrete", noun: "concreteness", verb: "to_reify", adverb: "concretely" },
-    { adj: "abstract", noun: "abstraction(state)", verb: "to_abstract", adverb: "in_general" },
+    { adj: "concrete", noun: "concreteness", verb: "reify(v)", adverb: "concretely" },
+    { adj: "abstract", noun: "abstraction(state)", verb: "abstract(v)", adverb: "in_general" },
   ],
   [
     { noun: "relativity(spectrum)" },
@@ -168,23 +175,23 @@ const axis_words_config = [
   ],
   [
     { noun: "rigidity(spectrum)" },
-    { adj: "rigid", noun: "rigidity(state)", verb: "to_stiffen", adverb: "stiffly" },
-    { adj: "fluid", noun: "fluidity", verb: "to_flow", adverb: "fluidly" },
+    { adj: "rigid", noun: "rigidity(state)", verb: "stiffen(v)", adverb: "stiffly" },
+    { adj: "fluid", noun: "fluidity", verb: "flow(v)", adverb: "fluidly" },
   ],
   [
     { noun: "explicitness(spectrum)" },
-    { adj: "implicit", noun: "implicitness", verb: "to_make_implicit", adverb: "implicitly" },
+    { adj: "implicit", noun: "implicitness", verb: "make_implicit(v)", adverb: "implicitly" },
     {
       adj: "explicit",
       noun: "explicitness(state)",
-      verb: "to_make_explicit",
+      verb: "make_explicit(v)",
       adverb: "explicitly",
     },
   ],
   [
     { noun: "internality(spectrum)" },
-    { adj: "internal", noun: "internality(state)", verb: "to_internalize", adverb: "internally" },
-    { adj: "external", noun: "externality", verb: "to_externalize", adverb: "externally" },
+    { adj: "internal", noun: "internality(state)", verb: "internalize(v)", adverb: "internally" },
+    { adj: "external", noun: "externality", verb: "externalize(v)", adverb: "externally" },
   ],
   [
     { noun: "finiteness(spectrum)" },
@@ -318,18 +325,6 @@ type ExtractLeaf<T> =
 
 type AxisWordString = ExtractLeaf<typeof axis_words>;
 
-function create_digit_map() {
-  root_index = 128;
-
-  const number_map = {};
-  for (let i = 0; i < 128; i++) {
-    const word = `digit_${i}`;
-    number_map[word] = r(word, { t: [T.axis_word] });
-  }
-
-  return number_map;
-}
-
 {
   cr("_subject", { t: [T.grammar_helper] });
   cr("_object", { t: [T.grammar_helper] });
@@ -444,19 +439,19 @@ function create_digit_map() {
   for (let word_set of axis_words_config) {
     const [axis, negative, positive] = word_set;
 
-    const { noun: axis_noun } = axis;
+    const { noun: axis_noun } = axis ?? {}
     const {
       noun: negative_noun,
       adj: negative_adj,
       verb: negative_verb,
       adverb: negative_adverb,
-    } = negative;
+    } = negative ?? {};
     const {
       noun: positive_noun,
       adj: positive_adj,
       verb: positive_verb,
       adverb: positive_adverb,
-    } = positive;
+    } = positive ?? {};
 
     let id = root_index++;
 
