@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import { dictionary, is_root, roots, Word } from "./dict";
+import { dictionary, is_root, roots, words, domains, Word } from "./dict";
 
 console.log(dictionary, roots);
 
@@ -39,18 +39,6 @@ function WordList({ words }: { words: Word[] }) {
 }
 
 function App() {
-  const words = Array.from(dictionary.values());
-  const domains: Record<string, Map<string, Word>> = {};
-  words.forEach((word) => {
-    if (word.data.domain) {
-      let map = domains[word.data.domain];
-      if (!map) {
-        map = new Map();
-        domains[word.data.domain] = map;
-      }
-      map.set(word.word, word);
-    }
-  });
   console.log(words, dictionary, domains);
   return (
     <div>

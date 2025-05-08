@@ -472,3 +472,16 @@ type AxisWordString = ExtractLeaf<typeof axis_words>;
 console.log("Dictionary:", dictionary);
 
 console.log(dictionary.size);
+
+export const words = Array.from(dictionary.values());
+export const domains: Record<string, Map<string, Word>> = {};
+words.forEach((word) => {
+  if (word.data.domain) {
+    let map = domains[word.data.domain];
+    if (!map) {
+      map = new Map();
+      domains[word.data.domain] = map;
+    }
+    map.set(word.word, word);
+  }
+});
