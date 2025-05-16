@@ -114,7 +114,7 @@ const axis_words_config = [
     { adj: "dynamic", noun: "dynamism", verb: "adapt(v)", adverb: "dynamically" },
   ],
   [
-    { noun: "complexity(spectrum)" },
+    { noun: "complexity(axis)" },
     { adj: "complex", noun: "complexity(state)", verb: "complicate(v)", adverb: "complexly" },
     { adj: "simple", noun: "simplicity", verb: "simplify(v)", adverb: "simply" },
   ],
@@ -149,7 +149,7 @@ const axis_words_config = [
     { adj: "all", noun: "everything", verb: "fill(v)", adverb: "completely" },
   ],
   [
-    { noun: "openness(spectrum)" },
+    { noun: "openness(axis)" },
     { adj: "closed", noun: "closure", verb: "close(v)", adverb: "tightly" },
     { adj: "open", noun: "openness(state)", verb: "open(v)", adverb: "loosely" },
   ],
@@ -159,28 +159,28 @@ const axis_words_config = [
     { adj: "smooth", noun: "smoothness", verb: "smooth(v)", adverb: "smoothly" },
   ],
   [
-    { noun: "coercion(spectrum)" },
+    { noun: "coercion(axis)" },
     { adj: "forced", noun: "coercion(state)", verb: "force(v)", adverb: "under_duress" },
     { adj: "free", noun: "freedom", verb: "free(v)", adverb: "freely" },
   ],
   [
-    { noun: "abstraction(spectrum)" },
+    { noun: "abstraction(axis)" },
     { adj: "concrete", noun: "concreteness", verb: "reify(v)", adverb: "concretely" },
     { adj: "abstract", noun: "abstraction(state)", verb: "abstract(v)", adverb: "in_general" },
   ],
   [
-    { noun: "relativity(spectrum)" },
+    { noun: "relativity(axis)" },
     { adj: "relative", noun: "relativity(state)", verb: "", adverb: "relatively" },
     { adj: "absolute", noun: "absolute(state)", verb: "", adverb: "absolutely" },
   ],
   [
-    { noun: "rigidity(spectrum)" },
+    { noun: "rigidity(axis)" },
     { adj: "rigid", noun: "rigidity(state)", verb: "stiffen(v)", adverb: "stiffly" },
     { adj: "fluid", noun: "fluidity", verb: "flow(v)", adverb: "fluidly" },
   ],
   [
-    { noun: "explicitness(spectrum)" },
-    { adj: "implicit", noun: "implicitness", verb: "make_implicit(v)", adverb: "implicitly" },
+    { noun: "explicitness(axis)" },
+    { adj: "implicit", noun: "implicitness", verb: "imply(v)", adverb: "implicitly" },
     {
       adj: "explicit",
       noun: "explicitness(state)",
@@ -189,13 +189,13 @@ const axis_words_config = [
     },
   ],
   [
-    { noun: "internality(spectrum)" },
+    { noun: "internality(axis)" },
     { adj: "internal", noun: "internality(state)", verb: "internalize(v)", adverb: "internally" },
     { adj: "external", noun: "externality", verb: "externalize(v)", adverb: "externally" },
   ],
   [
-    { noun: "finiteness(spectrum)" },
-    { adj: "finite", noun: "finiteness(state)", verb: "", adverb: "finitely" },
+    { noun: "finiteness(axis)" },
+    { adj: "finite", noun: "finitude(state)", verb: "", adverb: "finitely" },
     { adj: "infinite", noun: "infinity", verb: "", adverb: "infinitely" },
   ],
 ];
