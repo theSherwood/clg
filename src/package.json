@@ -1,10 +1,9 @@
 {
-  "name": "src",
-  "module": "index.tsx",
-  "type": "module",
-  "private": true,
-  "scripts": {
-    "dev": "bun --watch index.html"
+  "dependencies": {
+    "bun-plugin-tailwind": "latest",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "@tippyjs/react": "^4.2.6"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -14,12 +13,14 @@
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.5"
   },
+  "module": "index.tsx",
+  "name": "src",
   "peerDependencies": {
     "typescript": "^5"
   },
-  "dependencies": {
-    "bun-plugin-tailwind": "latest",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
-  }
+  "private": true,
+  "scripts": {
+    "dev": "bun --watch index.html"
+  },
+  "type": "module"
 }
