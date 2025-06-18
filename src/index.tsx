@@ -6,6 +6,7 @@ import {
   Word,
   T, // Importing T for tag names
   is_root,
+  is_defined,
 } from "./dict";
 
 import Tippy from "@tippyjs/react";
@@ -13,7 +14,10 @@ import "tippy.js/dist/tippy.css"; // Default tippy styling
 import "tippy.js/themes/light.css"; // Optional: a light theme
 
 // Helper to get Word object from its ID (assuming IDs are unique in WordData)
-const getWordFromPartId = (partId: number): Word | undefined => {
+const getWordFromPartId = (partId: number, domain?: string): Word | undefined => {
+  if (is_defined(domain)) {
+    return allWords.find((w) => w.data.id === partId && w.data.domain === domain);
+  }
   return allWords.find((w) => w.data.id === partId);
 };
 
@@ -25,7 +29,7 @@ interface WordPopoverContentProps {
 const WordPopoverContent: React.FC<WordPopoverContentProps> = ({ word, depth }) => {
   const isRootWord = is_root(word);
   const parts = word.data.parts
-    ?.map((partId) => getWordFromPartId(partId))
+    ?.map((partId) => getWordFromPartId(partId, word.data.domain))
     .filter((w): w is Word => Boolean(w)); // Get Word objects for parts
 
   return (

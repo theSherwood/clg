@@ -18,7 +18,7 @@ type WordData = {
   domain?: string;
 };
 
-function is_defined<T>(value: T | undefined): value is T {
+export function is_defined<T>(value: T | undefined): value is T {
   return value !== undefined;
 }
 
