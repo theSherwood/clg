@@ -2,24 +2,16 @@ import React, { useState, useMemo, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import {
   dictionary,
-  words as allWords, // Renamed to avoid conflict
+  words as all_words, // Renamed to avoid conflict
   Word,
   T, // Importing T for tag names
   is_root,
-  is_defined,
+  get_word_from_part_id,
 } from "./dict";
 
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css"; // Default tippy styling
 import "tippy.js/themes/light.css"; // Optional: a light theme
-
-// Helper to get Word object from its ID (assuming IDs are unique in WordData)
-const getWordFromPartId = (partId: number, domain?: string): Word | undefined => {
-  if (is_defined(domain)) {
-    return allWords.find((w) => w.data.id === partId && w.data.domain === domain);
-  }
-  return allWords.find((w) => w.data.id === partId);
-};
 
 interface WordPopoverContentProps {
   word: Word;
@@ -27,19 +19,23 @@ interface WordPopoverContentProps {
 }
 
 const WordPopoverContent: React.FC<WordPopoverContentProps> = ({ word, depth }) => {
-  const isRootWord = is_root(word);
+  const is_root_word = is_root(word);
   const parts = word.data.parts
-    ?.map((partId) => getWordFromPartId(partId, word.data.domain))
+    ?.map((part_id) => get_word_from_part_id(part_id, word.data.domain))
     .filter((w): w is Word => Boolean(w)); // Get Word objects for parts
 
   return (
     <div className="p-3 bg-white shadow-lg rounded-md border border-gray-200 text-sm">
       <h3 className="font-bold text-lg mb-1">{word.word}</h3>
-      <p className="text-xs text-gray-500 mb-1">ID: {word.data.id}</p>
+      {parts && parts.length > 0 ? null : (
+        <p className="text-xs text-gray-500 mb-1">ID: {word.data.id}</p>
+      )}
       <p
-        className={`text-xs font-semibold mb-1 ${isRootWord ? "text-green-600" : "text-blue-600"}`}
+        className={`text-xs font-semibold mb-1 ${
+          is_root_word ? "text-green-600" : "text-blue-600"
+        }`}
       >
-        {isRootWord ? "ROOT" : "COMPOUND"}
+        {is_root_word ? "ROOT" : "COMPOUND"}
       </p>
       {word.data.domain && (
         <p className="text-xs mb-1">
@@ -59,14 +55,14 @@ const WordPopoverContent: React.FC<WordPopoverContentProps> = ({ word, depth }) 
           ))}
         </div>
       )}
-      {!isRootWord && parts && parts.length > 0 && (
+      {!is_root_word && parts && parts.length > 0 && (
         <div>
           <span className="font-semibold text-xs">Parts:</span>
           <ul className="list-disc list-inside ml-1">
-            {parts.map((partWord) => (
-              <li key={partWord.word} className="my-0.5">
+            {parts.map((part_word) => (
+              <li key={part_word.word} className="my-0.5">
                 <Tippy
-                  content={<WordPopoverContent word={partWord} depth={depth + 1} />}
+                  content={<WordPopoverContent word={part_word} depth={depth + 1} />}
                   placement="right-start"
                   interactive={true}
                   delay={[100, 0]}
@@ -86,7 +82,7 @@ const WordPopoverContent: React.FC<WordPopoverContentProps> = ({ word, depth }) 
                   }}
                 >
                   <span className="cursor-pointer hover:underline text-blue-700">
-                    {partWord.word}
+                    {part_word.word}
                   </span>
                 </Tippy>
               </li>
@@ -103,7 +99,7 @@ interface WordPreviewItemProps {
 }
 
 const WordPreviewItem: React.FC<WordPreviewItemProps> = ({ word }) => {
-  const isRootWord = is_root(word);
+  const is_root_word = is_root(word);
   return (
     <Tippy
       content={<WordPopoverContent word={word} depth={0} />}
@@ -126,10 +122,12 @@ const WordPreviewItem: React.FC<WordPreviewItemProps> = ({ word }) => {
     >
       <div
         className={`border-2 p-2 m-1 rounded cursor-default
-                    ${isRootWord ? "bg-green-50 border-green-200" : "bg-blue-50 border-blue-200"}`}
+                    ${
+                      is_root_word ? "bg-green-50 border-green-200" : "bg-blue-50 border-blue-200"
+                    }`}
       >
         <div className="font-semibold">{word.word}</div>
-        <div className="text-xs">{isRootWord ? "ROOT" : "COMPOUND"}</div>
+        <div className="text-xs">{is_root_word ? "ROOT" : "COMPOUND"}</div>
         {word.data.t.length > 0 && (
           <div className="text-xs mt-1">
             {word.data.t.slice(0, 2).map(
@@ -153,32 +151,32 @@ const WordPreviewItem: React.FC<WordPreviewItemProps> = ({ word }) => {
 };
 
 interface FilterControlsProps {
-  searchText: string;
-  onSearchTextChange: (text: string) => void;
-  availableTags: string[];
-  selectedTags: Set<string>;
-  onTagToggle: (tag: string) => void;
+  search_text: string;
+  on_search_text_change: (text: string) => void;
+  available_tags: string[];
+  selected_tags: Set<string>;
+  on_tag_toggle: (tag: string) => void;
 }
 
 const FilterControls: React.FC<FilterControlsProps> = React.memo(
-  ({ searchText, onSearchTextChange, availableTags, selectedTags, onTagToggle }) => {
+  ({ search_text, on_search_text_change, available_tags, selected_tags, on_tag_toggle }) => {
     return (
       <div className="p-4 bg-gray-50 border-b border-gray-200">
         <input
           type="text"
           placeholder="Search words..."
-          value={searchText}
-          onChange={(e) => onSearchTextChange(e.target.value)}
+          value={search_text}
+          onChange={(e) => on_search_text_change(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded-md mb-3"
         />
         <div className="flex flex-wrap gap-2">
-          {availableTags.map((tag) => (
+          {available_tags.map((tag) => (
             <button
               key={tag}
-              onClick={() => onTagToggle(tag)}
+              onClick={() => on_tag_toggle(tag)}
               className={`px-3 py-1 text-sm rounded-full border
                                 ${
-                                  selectedTags.has(tag)
+                                  selected_tags.has(tag)
                                     ? "bg-indigo-500 text-white border-indigo-500"
                                     : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
                                 }`}
@@ -193,13 +191,13 @@ const FilterControls: React.FC<FilterControlsProps> = React.memo(
 );
 
 interface WordListDisplayProps {
-  wordsToDisplay: Word[];
+  words_to_display: Word[];
 }
 
-const WordListDisplay: React.FC<WordListDisplayProps> = ({ wordsToDisplay }) => {
+const WordListDisplay: React.FC<WordListDisplayProps> = ({ words_to_display }) => {
   return (
     <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-      {wordsToDisplay.map((word) => (
+      {words_to_display.map((word) => (
         <WordPreviewItem key={word.word + word.data.id} word={word} />
       ))}
     </div>
@@ -207,34 +205,34 @@ const WordListDisplay: React.FC<WordListDisplayProps> = ({ wordsToDisplay }) => 
 };
 
 function DictionaryView() {
-  const [searchText, setSearchText] = useState("");
-  const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
+  const [search_text, set_search_text] = useState("");
+  const [selected_tags, set_selected_tags] = useState<Set<string>>(new Set());
 
-  const availableTags = useMemo(() => {
+  const available_tags = useMemo(() => {
     // Extracting keys from the T object, assuming T is like `export const T = { tagA: "tagA", ... }`
     return Object.keys(T);
   }, []);
 
-  const handleTagToggle = (tag: string) => {
-    setSelectedTags((prevTags) => {
-      const newTags = new Set(prevTags);
-      if (newTags.has(tag)) {
-        newTags.delete(tag);
+  const handle_tag_toggle = (tag: string) => {
+    set_selected_tags((prev_tags) => {
+      const new_tags = new Set(prev_tags);
+      if (new_tags.has(tag)) {
+        new_tags.delete(tag);
       } else {
-        newTags.add(tag);
+        new_tags.add(tag);
       }
-      return newTags;
+      return new_tags;
     });
   };
 
-  const filteredWords = useMemo(() => {
-    return allWords.filter((word) => {
-      const matchesSearchText = word.word.toLowerCase().includes(searchText.toLowerCase());
-      const matchesTags =
-        selectedTags.size === 0 || word.data.t.some((tag) => selectedTags.has(tag));
-      return matchesSearchText && matchesTags;
+  const filtered_words = useMemo(() => {
+    return all_words.filter((word) => {
+      const matches_search_text = word.word.toLowerCase().includes(search_text.toLowerCase());
+      const matches_tags =
+        selected_tags.size === 0 || word.data.t.some((tag) => selected_tags.has(tag));
+      return matches_search_text && matches_tags;
     });
-  }, [allWords, searchText, selectedTags]);
+  }, [all_words, search_text, selected_tags]);
 
   return (
     <React.StrictMode>
@@ -243,14 +241,14 @@ function DictionaryView() {
           <h1 className="text-2xl font-bold">Constructed Language Dictionary</h1>
         </header>
         <FilterControls
-          searchText={searchText}
-          onSearchTextChange={setSearchText}
-          availableTags={availableTags}
-          selectedTags={selectedTags}
-          onTagToggle={handleTagToggle}
+          search_text={search_text}
+          on_search_text_change={set_search_text}
+          available_tags={available_tags}
+          selected_tags={selected_tags}
+          on_tag_toggle={handle_tag_toggle}
         />
-        {filteredWords.length > 0 ? (
-          <WordListDisplay wordsToDisplay={filteredWords} />
+        {filtered_words.length > 0 ? (
+          <WordListDisplay words_to_display={filtered_words} />
         ) : (
           <p className="p-4 text-center text-gray-500">No words match your criteria.</p>
         )}

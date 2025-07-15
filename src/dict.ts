@@ -14,6 +14,7 @@ type WordData = {
   id: number;
   t: (keyof typeof T)[]; // tags
 
+  uses: Word[];
   parts?: number[];
   domain?: string;
 };
@@ -49,6 +50,7 @@ function r(word: string, data: Partial<WordData> = {}): Word {
   let d: WordData = {
     id: -1,
     t: [],
+    uses: [],
     ...data,
   };
   if (!is_defined(data.id)) {
@@ -64,6 +66,7 @@ function c(word: string, data: Partial<WordData> & { parts: Required<WordData["p
   let d: WordData = {
     id: -1,
     t: [],
+    uses: [],
     ...data,
   };
   return new Word(word, d);
@@ -474,6 +477,16 @@ console.log("Dictionary:", dictionary);
 console.log(dictionary.size);
 
 export const words = Array.from(dictionary.values());
+
+// Helper to get Word object from its ID (assuming IDs are unique in WordData)
+export const get_word_from_part_id = (part_id: number, domain?: string): Word | undefined => {
+  if (is_defined(domain)) {
+    const domain_word = words.find((w) => w.data.id === part_id && w.data.domain === domain);
+    if (is_defined(domain_word)) return domain_word;
+  }
+  return words.find((w) => w.data.id === part_id);
+};
+
 export const domains: Record<string, Map<string, Word>> = {};
 words.forEach((word) => {
   if (word.data.domain) {
