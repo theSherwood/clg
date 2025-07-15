@@ -14,8 +14,9 @@ type WordData = {
   id: number;
   t: (keyof typeof T)[]; // tags
 
+  homonyms: Word[];
   uses: Word[];
-  parts?: number[];
+  parts: Word[];
   domain?: string;
 };
 
@@ -50,7 +51,9 @@ function r(word: string, data: Partial<WordData> = {}): Word {
   let d: WordData = {
     id: -1,
     t: [],
+    homonyms: [],
     uses: [],
+    parts: [],
     ...data,
   };
   if (!is_defined(data.id)) {
@@ -66,6 +69,7 @@ function c(word: string, data: Partial<WordData> & { parts: Required<WordData["p
   let d: WordData = {
     id: -1,
     t: [],
+    homonyms: [],
     uses: [],
     ...data,
   };
@@ -420,23 +424,23 @@ type AxisWordString = ExtractLeaf<typeof axis_words>;
 {
   root_index = 128;
 
-  const axis_of_id: number = dictionary.get("axis_of")?.data.id!;
-  const negative_id: number = dictionary.get("negative")?.data.id!;
-  const positive_id: number = dictionary.get("positive")?.data.id!;
-  const max_negative_id: number = dictionary.get("max_negative")?.data.id!;
-  const min_negative_id: number = dictionary.get("min_negative")?.data.id!;
-  const neutral_id: number = dictionary.get("neutral")?.data.id!;
-  const min_positive_id: number = dictionary.get("min_positive")?.data.id!;
-  const max_positive_id: number = dictionary.get("max_positive")?.data.id!;
+  const axis_of_word = dictionary.get("axis_of");
+  const negative_word = dictionary.get("negative");
+  const positive_word = dictionary.get("positive");
+  const max_negative_word = dictionary.get("max_negative");
+  const min_negative_word = dictionary.get("min_negative");
+  const neutral_word = dictionary.get("neutral");
+  const min_positive_word = dictionary.get("min_positive");
+  const max_positive_word = dictionary.get("max_positive");
 
-  if (!is_defined(axis_of_id)) throw new Error(`Missing axis_of word`);
-  if (!is_defined(negative_id)) throw new Error(`Missing negative word`);
-  if (!is_defined(positive_id)) throw new Error(`Missing positive word`);
-  if (!is_defined(max_negative_id)) throw new Error(`Missing max_negative word`);
-  if (!is_defined(min_negative_id)) throw new Error(`Missing min_negative word`);
-  if (!is_defined(neutral_id)) throw new Error(`Missing neutral word`);
-  if (!is_defined(min_positive_id)) throw new Error(`Missing min_positive word`);
-  if (!is_defined(max_positive_id)) throw new Error(`Missing max_positive word`);
+  if (!is_defined(axis_of_word)) throw new Error(`Missing axis_of word`);
+  if (!is_defined(negative_word)) throw new Error(`Missing negative word`);
+  if (!is_defined(positive_word)) throw new Error(`Missing positive word`);
+  if (!is_defined(max_negative_word)) throw new Error(`Missing max_negative word`);
+  if (!is_defined(min_negative_word)) throw new Error(`Missing min_negative word`);
+  if (!is_defined(neutral_word)) throw new Error(`Missing neutral word`);
+  if (!is_defined(min_positive_word)) throw new Error(`Missing min_positive word`);
+  if (!is_defined(max_positive_word)) throw new Error(`Missing max_positive word`);
 
   // prettier-ignore
   for (let word_set of axis_words_config) {
@@ -458,17 +462,23 @@ type AxisWordString = ExtractLeaf<typeof axis_words>;
 
     let id = root_index++;
 
-    if (positive_noun)   cr(positive_noun, { t: [T.axis_word], domain: "noun", id });
-    if (positive_adj)    cr(positive_adj, { t: [T.axis_word], domain: "adjective", id });
-    if (positive_verb)   cr(positive_verb, { t: [T.axis_word], domain: "verb", id });
-    if (positive_adverb) cr(positive_adverb, { t: [T.axis_word], domain: "adverb", id });
+    let positive_noun_word: Word | undefined;
+    let positive_adj_word: Word | undefined;
+    let positive_verb_word: Word | undefined;
+    let positive_adverb_word: Word | undefined;
 
-    if (negative_noun)   cw(negative_noun, { t: [T.axis_word], domain: "noun", parts: [negative_id, id] });
-    if (negative_adj)    cw(negative_adj, { t: [T.axis_word], domain: "adjective", parts: [negative_id, id] });
-    if (negative_verb)   cw(negative_verb, { t: [T.axis_word], domain: "verb", parts: [negative_id, id] });
-    if (negative_adverb) cw(negative_adverb, { t: [T.axis_word], domain: "adverb", parts: [negative_id, id] });
 
-    if (axis_noun)       cw(axis_noun, { t: [T.axis_word], domain: "noun", parts: [axis_of_id, id] });
+    if (positive_noun)   positive_noun_word = cr(positive_noun, { t: [T.axis_word], domain: "noun", id });
+    if (positive_adj)    positive_adj_word = cr(positive_adj, { t: [T.axis_word], domain: "adjective", id });
+    if (positive_verb)   positive_verb_word = cr(positive_verb, { t: [T.axis_word], domain: "verb", id });
+    if (positive_adverb) positive_adverb_word = cr(positive_adverb, { t: [T.axis_word], domain: "adverb", id });
+
+    if (negative_noun)   cw(negative_noun, { t: [T.axis_word], domain: "noun", parts: [negative_word, positive_noun_word!] });
+    if (negative_adj)    cw(negative_adj, { t: [T.axis_word], domain: "adjective", parts: [negative_word, positive_adj_word!] });
+    if (negative_verb)   cw(negative_verb, { t: [T.axis_word], domain: "verb", parts: [negative_word, positive_verb_word!] });
+    if (negative_adverb) cw(negative_adverb, { t: [T.axis_word], domain: "adverb", parts: [negative_word, positive_adverb_word!] });
+
+    if (axis_noun)       cw(axis_noun, { t: [T.axis_word], domain: "noun", parts: [axis_of_word, positive_noun_word!] });
   }
 }
 
@@ -477,15 +487,6 @@ console.log("Dictionary:", dictionary);
 console.log(dictionary.size);
 
 export const words = Array.from(dictionary.values());
-
-// Helper to get Word object from its ID (assuming IDs are unique in WordData)
-export const get_word_from_part_id = (part_id: number, domain?: string): Word | undefined => {
-  if (is_defined(domain)) {
-    const domain_word = words.find((w) => w.data.id === part_id && w.data.domain === domain);
-    if (is_defined(domain_word)) return domain_word;
-  }
-  return words.find((w) => w.data.id === part_id);
-};
 
 export const domains: Record<string, Map<string, Word>> = {};
 words.forEach((word) => {
@@ -496,5 +497,18 @@ words.forEach((word) => {
       domains[word.data.domain] = map;
     }
     map.set(word.word, word);
+  }
+  // Populate uses
+  (word.data.parts ?? []).forEach((part) => {
+    part.data.uses.push(word);
+  });
+  // Populate homonyms
+  const id = word.data.id;
+  if (id > -1) {
+    words.forEach((w) => {
+      if (id === w.data.id && w !== word) {
+        word.data.homonyms.push(w);
+      }
+    });
   }
 });
