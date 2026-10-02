@@ -233,7 +233,7 @@ const WordListDisplay: React.FC<WordListDisplayProps> = ({ words_to_display }) =
   );
 };
 
-// Root ID slots: 256 = 4^4 glyphs, shown as a 16x16 grid (row = high nibble, column = low nibble)
+// Roots view: 256 root IDs = 4^4 glyphs, shown as a 16x16 grid (row = high nibble, column = low nibble)
 
 const SLOT_GROUPS = [
   { key: "grammar_helper", label: "Grammar helpers", swatch: "bg-amber-400" },
@@ -323,7 +323,7 @@ const SlotCell: React.FC<{ slot: Slot; dimmed: boolean }> = ({ slot, dimmed }) =
   );
 };
 
-function SlotsView() {
+function RootsView() {
   const [highlighted, set_highlighted] = useState<SlotGroupKey | null>(null);
   const filled = slots.filter((s) => s.roots.length > 0).length;
   const counts = useMemo(() => {
@@ -335,7 +335,7 @@ function SlotsView() {
   return (
     <div className="p-4">
       <div className="mb-3 text-sm text-gray-700">
-        <span className="font-semibold">{filled}</span> of 256 slots filled,{" "}
+        <span className="font-semibold">{filled}</span> of 256 root IDs filled,{" "}
         <span className="font-semibold">{256 - filled}</span> empty (
         {empty_ranges()
           .map(([a, b]) => (a === b ? `${a}` : `${a}–${b}`))
@@ -381,10 +381,10 @@ function SlotsView() {
   );
 }
 
-type View = "words" | "slots";
+type View = "words" | "roots";
 
 function view_from_hash(): View {
-  return window.location.hash === "#slots" ? "slots" : "words";
+  return window.location.hash === "#roots" ? "roots" : "words";
 }
 
 function DictionaryView() {
@@ -429,7 +429,7 @@ function DictionaryView() {
       <header className="p-4 bg-indigo-600 text-white text-center">
         <h1 className="text-2xl font-bold">Constructed Language Dictionary</h1>
         <nav className="mt-2 flex justify-center gap-2 text-sm">
-          {(["words", "slots"] as const).map((v) => (
+          {(["words", "roots"] as const).map((v) => (
             <a
               key={v}
               href={`#${v}`}
@@ -437,7 +437,7 @@ function DictionaryView() {
                 view === v ? "bg-white text-indigo-700" : "text-indigo-100 hover:bg-indigo-500"
               }`}
             >
-              {v === "words" ? "Words" : "Slots"}
+              {v === "words" ? "Words" : "Roots"}
             </a>
           ))}
         </nav>
@@ -449,8 +449,8 @@ function DictionaryView() {
           ))}
         </ul>
       )}
-      {view === "slots" ? (
-        <SlotsView />
+      {view === "roots" ? (
+        <RootsView />
       ) : (
         <>
           <FilterControls
