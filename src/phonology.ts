@@ -22,17 +22,17 @@ export type Phonology = {
 };
 
 export const default_phonology: Phonology = {
-  places: ["labial", "velar", "coronal", "sibilant"],
+  places: ["velar", "coronal", "labial", "sibilant"],
   manners: ["unvoiced", "voiced", "fricative", "voiced fricative"],
   onsets: [
-    ["p", "k", "t", "s"],
-    ["b", "g", "d", "z"],
-    ["f", "kh", "th", "sh"],
-    ["v", "gh", "dh", "zh"],
+    ["k", "t", "p", "s"],
+    ["g", "d", "b", "z"],
+    ["kh", "th", "ph", "sh"],
+    ["gh", "dh", "bh", "zh"],
   ],
   vowels: ["a", "e", "o", "u"],
-  finals: ["", "n/m", "r/l", "i"],
-  order: ["C", "M", "V", "N"],
+  finals: ["", "n/m", "r/l", "y"],
+  order: ["C", "V", "N", "M"],
 };
 
 export type MarkValues = Record<Mark, number>;
@@ -67,7 +67,7 @@ export function pronounce(word: Word, phonology: Phonology): string {
 }
 
 // Describes what a subset of marks has in common, e.g. the column or row of the Roots grid.
-export function describe_marks(values: Partial<MarkValues>, phonology: Phonology): string {
+export function describe_marks(values: Partial<MarkValues>, phonology: Phonology): string[] {
   const parts: string[] = [];
   const { C, M, V, N } = values;
   if (C !== undefined && M !== undefined) parts.push(spelling_of(phonology.onsets[M]![C]!));
@@ -78,7 +78,7 @@ export function describe_marks(values: Partial<MarkValues>, phonology: Phonology
   else if (V !== undefined) parts.push(`-${spelling_of(phonology.vowels[V]!)}-`);
   else if (N !== undefined)
     parts.push(phonology.finals[N] ? `-${phonology.finals[N]}` : "no final");
-  return parts.join(" ");
+  return parts;
 }
 
 export type PhonologyReport = {

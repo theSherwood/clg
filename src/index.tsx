@@ -596,14 +596,22 @@ function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) 
         {Array.from({ length: 16 }, (_, col) => (
           <div key={col} className="text-center text-xs text-gray-400 leading-tight">
             <div>+{col}</div>
-            <div className="font-mono text-indigo-700 truncate">{describe_column(col)}</div>
+            {describe_column(col).map((part) => (
+              <div key={part} className="font-mono text-indigo-700 truncate">
+                {part}
+              </div>
+            ))}
           </div>
         ))}
         {Array.from({ length: 16 }, (_, row) => (
           <React.Fragment key={row}>
             <div className="text-right pr-1 text-xs text-gray-400 self-center leading-tight">
               <div>{row * 16}</div>
-              <div className="font-mono text-indigo-700">{describe_row(row)}</div>
+              {describe_row(row).map((part) => (
+                <div key={part} className="font-mono text-indigo-700">
+                  {part}
+                </div>
+              ))}
             </div>
             {slots.slice(row * 16, row * 16 + 16).map((slot) => (
               <SlotCell
