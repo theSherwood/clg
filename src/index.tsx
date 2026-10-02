@@ -4,6 +4,7 @@ import {
   dictionary,
   words as all_words, // Renamed to avoid conflict
   data_errors,
+  roots,
   Word,
   T, // Importing T for tag names
   is_root,
@@ -232,7 +233,168 @@ const WordListDisplay: React.FC<WordListDisplayProps> = ({ words_to_display }) =
   );
 };
 
+// Root ID slots: 256 = 4^4 glyphs, shown as a 16x16 grid (row = high nibble, column = low nibble)
+
+const SLOT_GROUPS = [
+  { key: "grammar_helper", label: "Grammar helpers", swatch: "bg-amber-400" },
+  { key: "preposition", label: "Prepositions", swatch: "bg-rose-400" },
+  { key: "pronoun", label: "Pronouns", swatch: "bg-fuchsia-400" },
+  { key: "axis_helper", label: "Axis helpers", swatch: "bg-violet-400" },
+  { key: "misc", label: "Misc roots", swatch: "bg-emerald-400" },
+  { key: "axis_word", label: "Axis words", swatch: "bg-sky-400" },
+  { key: "digit", label: "Digits", swatch: "bg-slate-400" },
+] as const;
+
+type SlotGroupKey = (typeof SLOT_GROUPS)[number]["key"];
+
+function slot_group_of(word: Word): SlotGroupKey {
+  if (word.data.domain === "number") return "digit";
+  for (const group of SLOT_GROUPS) {
+    if (word.data.t.includes(group.key as keyof typeof T)) return group.key;
+  }
+  return "misc";
+}
+
+type Slot = { id: number; roots: Word[]; groups: SlotGroupKey[] };
+
+const slots: Slot[] = roots.map((slot_roots, id) => {
+  const words = slot_roots ?? [];
+  const present = new Set(words.map(slot_group_of));
+  return { id, roots: words, groups: SLOT_GROUPS.map((g) => g.key).filter((k) => present.has(k)) };
+});
+
+function empty_ranges(): [number, number][] {
+  const ranges: [number, number][] = [];
+  for (const slot of slots) {
+    if (slot.roots.length > 0) continue;
+    const last = ranges.at(-1);
+    if (last && last[1] === slot.id - 1) last[1] = slot.id;
+    else ranges.push([slot.id, slot.id]);
+  }
+  return ranges;
+}
+
+const swatch_of = Object.fromEntries(SLOT_GROUPS.map((g) => [g.key, g.swatch])) as Record<
+  SlotGroupKey,
+  string
+>;
+
+const SlotCell: React.FC<{ slot: Slot; dimmed: boolean }> = ({ slot, dimmed }) => {
+  const { id, roots: slot_roots, groups } = slot;
+  // Prefer a non-digit word as the cell's label, since digits share IDs with axis words
+  const label = (slot_roots.find((w) => slot_group_of(w) !== "digit") ?? slot_roots[0])?.word;
+
+  const cell = (
+    <div
+      className={`relative h-14 rounded border text-[10px] leading-tight overflow-hidden transition-opacity
+        ${slot_roots.length > 0 ? "bg-white border-gray-300" : "bg-gray-50 border-dashed border-gray-300"}
+        ${dimmed ? "opacity-20" : ""}`}
+    >
+      <div className="flex h-1.5">
+        {groups.map((g) => (
+          <div key={g} className={`flex-1 ${swatch_of[g]}`} />
+        ))}
+      </div>
+      <div className="px-1 pt-0.5 text-gray-400">{id}</div>
+      {label && <div className="px-1 truncate font-medium text-gray-800">{label}</div>}
+      {slot_roots.length > 1 && (
+        <div className="absolute bottom-0.5 right-1 text-gray-400">×{slot_roots.length}</div>
+      )}
+    </div>
+  );
+
+  if (slot_roots.length === 0) return cell;
+
+  return (
+    <LazyTippy
+      content={
+        <div className="p-3 bg-white shadow-lg rounded-md border border-gray-200 text-sm">
+          <h3 className="font-bold mb-1">ID {id}</h3>
+          <WordPopoverList label="Roots:" list={slot_roots} depth={0} />
+        </div>
+      }
+      placement="right-start"
+      interactive={true}
+      delay={[150, 0]}
+      theme="light"
+    >
+      {cell}
+    </LazyTippy>
+  );
+};
+
+function SlotsView() {
+  const [highlighted, set_highlighted] = useState<SlotGroupKey | null>(null);
+  const filled = slots.filter((s) => s.roots.length > 0).length;
+  const counts = useMemo(() => {
+    const result = {} as Record<SlotGroupKey, number>;
+    for (const g of SLOT_GROUPS) result[g.key] = slots.filter((s) => s.groups.includes(g.key)).length;
+    return result;
+  }, []);
+
+  return (
+    <div className="p-4">
+      <div className="mb-3 text-sm text-gray-700">
+        <span className="font-semibold">{filled}</span> of 256 slots filled,{" "}
+        <span className="font-semibold">{256 - filled}</span> empty (
+        {empty_ranges()
+          .map(([a, b]) => (a === b ? `${a}` : `${a}–${b}`))
+          .join(", ")}
+        )
+      </div>
+      <div className="mb-4 flex flex-wrap gap-2">
+        {SLOT_GROUPS.map((g) => (
+          <button
+            key={g.key}
+            onMouseEnter={() => set_highlighted(g.key)}
+            onMouseLeave={() => set_highlighted(null)}
+            onClick={() => set_highlighted((h) => (h === g.key ? null : g.key))}
+            className="flex items-center gap-1.5 px-2 py-1 text-sm rounded border border-gray-300 bg-white hover:bg-gray-100"
+          >
+            <span className={`inline-block w-3 h-3 rounded-sm ${g.swatch}`} />
+            {g.label}
+            <span className="text-gray-400">{counts[g.key]}</span>
+          </button>
+        ))}
+      </div>
+      <div className="grid gap-1" style={{ gridTemplateColumns: "2.5rem repeat(16, minmax(0, 1fr))" }}>
+        <div />
+        {Array.from({ length: 16 }, (_, col) => (
+          <div key={col} className="text-center text-xs text-gray-400">
+            +{col}
+          </div>
+        ))}
+        {Array.from({ length: 16 }, (_, row) => (
+          <React.Fragment key={row}>
+            <div className="text-right pr-1 text-xs text-gray-400 self-center">{row * 16}</div>
+            {slots.slice(row * 16, row * 16 + 16).map((slot) => (
+              <SlotCell
+                key={slot.id}
+                slot={slot}
+                dimmed={highlighted !== null && !slot.groups.includes(highlighted)}
+              />
+            ))}
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+type View = "words" | "slots";
+
+function view_from_hash(): View {
+  return window.location.hash === "#slots" ? "slots" : "words";
+}
+
 function DictionaryView() {
+  const [view, set_view] = useState<View>(view_from_hash);
+  useEffect(() => {
+    const on_hash_change = () => set_view(view_from_hash());
+    window.addEventListener("hashchange", on_hash_change);
+    return () => window.removeEventListener("hashchange", on_hash_change);
+  }, []);
+
   const [search_text, set_search_text] = useState("");
   const [selected_tags, set_selected_tags] = useState<Set<string>>(new Set());
 
@@ -266,6 +428,19 @@ function DictionaryView() {
     <div className="font-sans">
       <header className="p-4 bg-indigo-600 text-white text-center">
         <h1 className="text-2xl font-bold">Constructed Language Dictionary</h1>
+        <nav className="mt-2 flex justify-center gap-2 text-sm">
+          {(["words", "slots"] as const).map((v) => (
+            <a
+              key={v}
+              href={`#${v}`}
+              className={`px-3 py-1 rounded-full ${
+                view === v ? "bg-white text-indigo-700" : "text-indigo-100 hover:bg-indigo-500"
+              }`}
+            >
+              {v === "words" ? "Words" : "Slots"}
+            </a>
+          ))}
+        </nav>
       </header>
       {data_errors.length > 0 && (
         <ul className="p-4 bg-red-50 border-b border-red-200 text-sm text-red-700 list-disc list-inside">
@@ -274,17 +449,23 @@ function DictionaryView() {
           ))}
         </ul>
       )}
-      <FilterControls
-        search_text={search_text}
-        on_search_text_change={set_search_text}
-        available_tags={available_tags}
-        selected_tags={selected_tags}
-        on_tag_toggle={handle_tag_toggle}
-      />
-      {filtered_words.length > 0 ? (
-        <WordListDisplay words_to_display={filtered_words} />
+      {view === "slots" ? (
+        <SlotsView />
       ) : (
-        <p className="p-4 text-center text-gray-500">No words match your criteria.</p>
+        <>
+          <FilterControls
+            search_text={search_text}
+            on_search_text_change={set_search_text}
+            available_tags={available_tags}
+            selected_tags={selected_tags}
+            on_tag_toggle={handle_tag_toggle}
+          />
+          {filtered_words.length > 0 ? (
+            <WordListDisplay words_to_display={filtered_words} />
+          ) : (
+            <p className="p-4 text-center text-gray-500">No words match your criteria.</p>
+          )}
+        </>
       )}
     </div>
   );
