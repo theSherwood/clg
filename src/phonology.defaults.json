@@ -1,0 +1,13 @@
+{
+  "places": ["velar", "coronal", "labial", "sibilant"],
+  "manners": ["unvoiced", "voiced", "fricative", "voiced fricative"],
+  "onsets": [
+    ["k", "t", "p", "s"],
+    ["g", "d", "b", "z"],
+    ["kh", "th", "ph", "sh"],
+    ["gh", "dh", "bh", "zh"]
+  ],
+  "vowels": ["a", "e", "o", "u"],
+  "finals": ["", "n/m", "r/l", "y"],
+  "order": ["C", "V", "N", "M"]
+}

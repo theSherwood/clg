@@ -26,6 +26,7 @@ import {
   pronounce,
   save_phonology,
   syllable_of,
+  phonology_to_json,
 } from "./phonology";
 
 interface WordPreviewItemProps {
@@ -274,6 +275,9 @@ const MoveButtons: React.FC<{
   </span>
 );
 
+const panel_button_class =
+  "px-2 py-0.5 text-xs rounded border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-40 disabled:hover:bg-white";
+
 const sound_input_class =
   "w-10 px-1 py-0.5 border border-gray-300 rounded font-mono text-sm text-center";
 
@@ -282,6 +286,39 @@ const MARK_NAMES: Record<Mark, string> = { C: "consonant", M: "manner", V: "vowe
 function PhonologyPanel(props: { phonology: Phonology; set_phonology: (p: Phonology) => void }) {
   const { phonology, set_phonology } = props;
   const update = (changes: Partial<Phonology>) => set_phonology({ ...phonology, ...changes });
+  const is_default = phonology_to_json(phonology) === phonology_to_json(default_phonology);
+  const [save_status, set_save_status] = useState("");
+
+  const export_json = () => {
+    const url = URL.createObjectURL(
+      new Blob([phonology_to_json(phonology)], { type: "application/json" }),
+    );
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "phonology.json";
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Writes phonology.defaults.json through the dev server, then reloads to pick it up
+  const save_as_defaults = async () => {
+    set_save_status("Saving…");
+    try {
+      const response = await fetch("/api/phonology-defaults", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(phonology),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error ?? response.statusText);
+      set_save_status(`Saved to ${result.saved}`);
+      setTimeout(() => window.location.reload(), 500);
+    } catch (error) {
+      set_save_status(
+        `Couldn't save (${error instanceof Error ? error.message : error}). Is the dev server running?`,
+      );
+    }
+  };
   const report = useMemo(() => check_phonology(phonology), [phonology]);
   const problems = [
     ...report.duplicates.map((d) => `Same syllable for several IDs — ${d}`),
@@ -297,12 +334,27 @@ function PhonologyPanel(props: { phonology: Phonology; set_phonology: (p: Phonol
     <div className="mb-4 p-3 rounded border border-gray-200 bg-gray-50 text-sm">
       <div className="flex justify-between items-center mb-2">
         <h2 className="font-semibold">Phonology playground</h2>
-        <button
-          onClick={() => set_phonology(default_phonology)}
-          className="px-2 py-0.5 text-xs rounded border border-gray-300 bg-white hover:bg-gray-100"
-        >
-          Reset
-        </button>
+        <div className="flex items-center gap-2">
+          {save_status && <span className="text-xs text-gray-600">{save_status}</span>}
+          <button onClick={export_json} className={panel_button_class}>
+            Export
+          </button>
+          <button
+            onClick={save_as_defaults}
+            disabled={is_default}
+            title="Write these settings to phonology.defaults.json"
+            className={panel_button_class}
+          >
+            Save as defaults
+          </button>
+          <button
+            onClick={() => set_phonology(default_phonology)}
+            disabled={is_default}
+            className={panel_button_class}
+          >
+            Reset
+          </button>
+        </div>
       </div>
       <div className="flex flex-wrap gap-x-8 gap-y-3">
         <div>

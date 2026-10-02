@@ -20,7 +20,8 @@
   },
   "private": true,
   "scripts": {
-    "dev": "bun --watch index.html"
+    "dev": "bun dev.ts",
+    "test": "bun test"
   },
   "type": "module"
 }

@@ -1,4 +1,5 @@
 import { Word, is_root } from "./dict";
+import saved_defaults from "./phonology.defaults.json";
 
 // Every root is one CMVN syllable, and its root ID (0-255) is four base-4 digits, one per mark:
 //   C = base consonant (place), M = manner (modifies C), V = vowel, N = final (or nothing)
@@ -21,19 +22,38 @@ export type Phonology = {
   order: Mark[]; // which mark each base-4 digit of the ID selects, fastest-varying first
 };
 
-export const default_phonology: Phonology = {
-  places: ["velar", "coronal", "labial", "sibilant"],
-  manners: ["unvoiced", "voiced", "fricative", "voiced fricative"],
-  onsets: [
-    ["k", "t", "p", "s"],
-    ["g", "d", "b", "z"],
-    ["kh", "th", "ph", "sh"],
-    ["gh", "dh", "bh", "zh"],
-  ],
-  vowels: ["a", "e", "o", "u"],
-  finals: ["", "n/m", "r/l", "y"],
-  order: ["C", "V", "N", "M"],
-};
+// The defaults live in phonology.defaults.json so the playground's "Save as defaults" can write them
+if (!is_phonology(saved_defaults))
+  throw new Error("phonology.defaults.json is not a valid phonology");
+export const default_phonology: Phonology = saved_defaults;
+
+export function is_phonology(value: unknown): value is Phonology {
+  const strings = (list: unknown, length: number): list is string[] =>
+    Array.isArray(list) && list.length === length && list.every((x) => typeof x === "string");
+  if (typeof value !== "object" || value === null) return false;
+  const p = value as Record<keyof Phonology, unknown>;
+  return (
+    strings(p.places, 4) &&
+    strings(p.manners, 4) &&
+    Array.isArray(p.onsets) &&
+    p.onsets.length === 4 &&
+    p.onsets.every((row) => strings(row, 4)) &&
+    strings(p.vowels, 4) &&
+    strings(p.finals, 4) &&
+    strings(p.order, 4) &&
+    MARKS.every((mark) => (p.order as string[]).includes(mark))
+  );
+}
+
+// JSON with each list of sounds on one line
+export function phonology_to_json(phonology: Phonology): string {
+  return (
+    JSON.stringify(phonology, null, 2).replace(
+      /\[\s+([^[\]{}]*?)\s+\]/g,
+      (_, items: string) => `[${items.split(/,\s+/).join(", ")}]`,
+    ) + "\n"
+  );
+}
 
 export type MarkValues = Record<Mark, number>;
 
