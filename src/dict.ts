@@ -34,15 +34,14 @@ export class Word {
 }
 
 export function is_root(word: Word): boolean {
+  return word.data.id >= 0;
+}
+
+function validate_word(word: Word): string | undefined {
   const parts_length = word.data.parts?.length ?? 0;
   const id = word.data.id;
-  if (id >= 0 && parts_length > 0) {
-    throw new Error(`Word ${word.word} has root ID and parts`);
-  }
-  if (id < 0 && parts_length === 0) {
-    throw new Error(`Word ${word.word} has negative ID and no parts`);
-  }
-  return id >= 0;
+  if (id >= 0 && parts_length > 0) return `Word ${word.word} has root ID and parts`;
+  if (id < 0 && parts_length === 0) return `Word ${word.word} has negative ID and no parts`;
 }
 
 let root_index = 0;
@@ -59,7 +58,7 @@ function r(word: string, data: Partial<WordData> = {}): Word {
   if (!is_defined(data.id)) {
     d.id = root_index++;
   }
-  if (is_defined(data.id) && data.id > 255) {
+  if (d.id > 255) {
     throw new Error(`Word ID ${d.id} is greater than 255`);
   }
   return new Word(word, d);
@@ -291,7 +290,7 @@ const axis_words = [
   [             ,      "deflate",       "inflate",       ],
   [             ,      "exclusive",     "inclusive",     ],
   [             ,      "stupid",        "smart",         ],
-  [             ,      "obique",        "direct",        ],
+  [             ,      "oblique",       "direct",        ],
   [             ,      "repel",         "attract",       ],
   [             ,      "divide",        "group",         ],
   [             ,      "cheap",         "expensive",     ],
@@ -300,7 +299,7 @@ const axis_words = [
   [             ,      "unimportant",   "important",     ],
   [             ,      "break",         "mend",          ],
   [             ,      "part",          "whole",         ],
-  [             ,      "ancestor",      "descendent",    ],
+  [             ,      "ancestor",      "descendant",    ],
   [             ,      "free",          "bound",         ],
   [             ,      "profane",       "sacred",        ],
   [             ,      "south",         "north",         ],
@@ -317,20 +316,6 @@ const axis_words = [
   [             ,      "privilege",     "duty",          ],
   [             ,      "forbid",        "recommend",     ],
 ] as const;
-
-// prettier-ignore
-type ExtractLeaf<T> =
-  // Case: Array (recursively flatten)
-    T extends readonly (infer U)[]    ? ExtractLeaf<U>
-  // Case: Object with "word" key
-  : T extends { word: infer W }       ? ExtractLeaf<W>
-  // Case: String
-  : T extends string                  ? T
-  // Exclude undefined
-  : T extends undefined               ? never
-  :                                     Exclude<T, undefined>;
-
-type AxisWordString = ExtractLeaf<typeof axis_words>;
 
 {
   cr("_subject", { t: [T.grammar_helper] });
@@ -414,6 +399,9 @@ type AxisWordString = ExtractLeaf<typeof axis_words>;
 
 // digit domain
 {
+  if (root_index > 128) {
+    throw new Error(`General roots overflow into reserved IDs 128-255 (next ID ${root_index})`);
+  }
   root_index = 128;
   for (let i = 0; i < 128; i++) {
     cr(`digit_${i}`, { domain: "number" });
@@ -441,6 +429,11 @@ type AxisWordString = ExtractLeaf<typeof axis_words>;
   if (!is_defined(neutral_word)) throw new Error(`Missing neutral word`);
   if (!is_defined(min_positive_word)) throw new Error(`Missing min_positive word`);
   if (!is_defined(max_positive_word)) throw new Error(`Missing max_positive word`);
+
+  function positive_of(positive: Word | undefined, word: string): Word {
+    if (!is_defined(positive)) throw new Error(`Axis word ${word} has no positive counterpart`);
+    return positive;
+  }
 
   // prettier-ignore
   for (let word_set of axis_words_config) {
@@ -473,20 +466,19 @@ type AxisWordString = ExtractLeaf<typeof axis_words>;
     if (positive_verb)   positive_verb_word = cr(positive_verb, { t: [T.axis_word], domain: "verb", id });
     if (positive_adverb) positive_adverb_word = cr(positive_adverb, { t: [T.axis_word], domain: "adverb", id });
 
-    if (negative_noun)   cw(negative_noun, { t: [T.axis_word], domain: "noun", parts: [negative_word, positive_noun_word!] });
-    if (negative_adj)    cw(negative_adj, { t: [T.axis_word], domain: "adjective", parts: [negative_word, positive_adj_word!] });
-    if (negative_verb)   cw(negative_verb, { t: [T.axis_word], domain: "verb", parts: [negative_word, positive_verb_word!] });
-    if (negative_adverb) cw(negative_adverb, { t: [T.axis_word], domain: "adverb", parts: [negative_word, positive_adverb_word!] });
+    if (negative_noun)   cw(negative_noun, { t: [T.axis_word], domain: "noun", parts: [negative_word, positive_of(positive_noun_word, negative_noun)] });
+    if (negative_adj)    cw(negative_adj, { t: [T.axis_word], domain: "adjective", parts: [negative_word, positive_of(positive_adj_word, negative_adj)] });
+    if (negative_verb)   cw(negative_verb, { t: [T.axis_word], domain: "verb", parts: [negative_word, positive_of(positive_verb_word, negative_verb)] });
+    if (negative_adverb) cw(negative_adverb, { t: [T.axis_word], domain: "adverb", parts: [negative_word, positive_of(positive_adverb_word, negative_adverb)] });
 
-    if (axis_noun)       cw(axis_noun, { t: [T.axis_word], domain: "noun", parts: [axis_of_word, positive_noun_word!] });
+    if (axis_noun)       cw(axis_noun, { t: [T.axis_word], domain: "noun", parts: [axis_of_word, positive_of(positive_noun_word, axis_noun)] });
   }
 }
 
-console.log("Dictionary:", dictionary);
-
-console.log(dictionary.size);
-
 export const words = Array.from(dictionary.values());
+
+export const data_errors = words.map(validate_word).filter(is_defined);
+data_errors.forEach((error) => console.error(error));
 
 export const domains: Record<string, Map<string, Word>> = {};
 words.forEach((word) => {
@@ -500,7 +492,7 @@ words.forEach((word) => {
   }
   // Populate uses
   (word.data.parts ?? []).forEach((part) => {
-    part.data.uses.push(word);
+    if (!part.data.uses.includes(word)) part.data.uses.push(word);
   });
   // Populate homonyms
   const id = word.data.id;

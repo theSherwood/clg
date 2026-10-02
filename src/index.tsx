@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import {
   dictionary,
   words as all_words, // Renamed to avoid conflict
+  data_errors,
   Word,
   T, // Importing T for tag names
   is_root,
@@ -50,8 +51,8 @@ function WordPopoverList(props: { label: string; list: Word[]; depth: number }) 
     <div>
       <span className="font-semibold text-xs">{label}</span>
       <ul className="list-disc list-inside ml-1">
-        {list.map((list_word) => (
-          <li key={list_word.word} className="my-0.5">
+        {list.map((list_word, i) => (
+          <li key={`${i}:${list_word.word}`} className="my-0.5">
             <LazyTippy
               content={<WordPopoverContent word={list_word} depth={depth + 1} />}
               placement="right-start"
@@ -259,31 +260,40 @@ function DictionaryView() {
         selected_tags.size === 0 || word.data.t.some((tag) => selected_tags.has(tag));
       return matches_search_text && matches_tags;
     });
-  }, [all_words, search_text, selected_tags]);
+  }, [search_text, selected_tags]);
 
   return (
-    <React.StrictMode>
-      <div className="font-sans">
-        <header className="p-4 bg-indigo-600 text-white text-center">
-          <h1 className="text-2xl font-bold">Constructed Language Dictionary</h1>
-        </header>
-        <FilterControls
-          search_text={search_text}
-          on_search_text_change={set_search_text}
-          available_tags={available_tags}
-          selected_tags={selected_tags}
-          on_tag_toggle={handle_tag_toggle}
-        />
-        {filtered_words.length > 0 ? (
-          <WordListDisplay words_to_display={filtered_words} />
-        ) : (
-          <p className="p-4 text-center text-gray-500">No words match your criteria.</p>
-        )}
-      </div>
-    </React.StrictMode>
+    <div className="font-sans">
+      <header className="p-4 bg-indigo-600 text-white text-center">
+        <h1 className="text-2xl font-bold">Constructed Language Dictionary</h1>
+      </header>
+      {data_errors.length > 0 && (
+        <ul className="p-4 bg-red-50 border-b border-red-200 text-sm text-red-700 list-disc list-inside">
+          {data_errors.map((error) => (
+            <li key={error}>{error}</li>
+          ))}
+        </ul>
+      )}
+      <FilterControls
+        search_text={search_text}
+        on_search_text_change={set_search_text}
+        available_tags={available_tags}
+        selected_tags={selected_tags}
+        on_tag_toggle={handle_tag_toggle}
+      />
+      {filtered_words.length > 0 ? (
+        <WordListDisplay words_to_display={filtered_words} />
+      ) : (
+        <p className="p-4 text-center text-gray-500">No words match your criteria.</p>
+      )}
+    </div>
   );
 }
 
 const container = document.getElementById("app")!;
 const root = createRoot(container);
-root.render(<DictionaryView />);
+root.render(
+  <React.StrictMode>
+    <DictionaryView />
+  </React.StrictMode>,
+);
