@@ -287,128 +287,287 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { adj: "infinite", noun: "infinity", verb: "", adverb: "infinitely" },
   ],
   [{}, {}, { noun: "possession", verb: "possess(v)", adverb: "possessively" }],
-];
-
-// Axis pairs not yet in axis_words_config, with any word forms and notes collected for them
-type AxisForms = {
-  noun?: string;
-  verb_transitive?: string;
-  verb_intransitive?: string;
-  adj?: string;
-};
-
-export type AxisCandidate = {
-  negative: string;
-  positive: string;
-  negative_forms?: AxisForms;
-  positive_forms?: AxisForms;
-  notes?: string;
-};
-
-// prettier-ignore
-export const axis_backlog: AxisCandidate[] = [
-  { negative: "accidental", positive: "essential" },
-  { negative: "pragmatic", positive: "ideal" },
-  { negative: "flat", positive: "nested", negative_forms: { verb_transitive: "flatten" } },
-  { negative: "intuitive", positive: "analytical", negative_forms: { noun: "instinct", verb_transitive: "intuit" }, positive_forms: { noun: "analysis", verb_transitive: "analyze" } },
-  { negative: "random", positive: "determined", negative_forms: { verb_transitive: "to randomize" } },
-  { negative: "qualitative", positive: "quantitative", positive_forms: { verb_transitive: "to enumerate" } },
-  { negative: "linear", positive: "cyclical", negative_forms: { noun: "line / sequence", verb_transitive: "to linearize" }, positive_forms: { noun: "cycle", verb_transitive: "to curl" } },
-  { negative: "reductionist", positive: "holistic", negative_forms: { noun: "reduction", adj: "reduced" }, positive_forms: { noun: "emergence", adj: "emergent" } },
-  { negative: "near", positive: "far" },
-  { negative: "loud", positive: "quiet" },
-  { negative: "dull", positive: "sharp", negative_forms: { verb_transitive: "to dull something", verb_intransitive: "to become dull", adj: "dull" }, positive_forms: { verb_transitive: "to sharpen something", verb_intransitive: "to become sharp", adj: "sharp" } },
-  { negative: "dry", positive: "wet" },
-  { negative: "thin", positive: "thick" },
-  { negative: "low", positive: "high", negative_forms: { noun: "deep", verb_transitive: "to lower / to drop", verb_intransitive: "to lower oneself / to bow / to crouch / to postrate oneself / to descend", adj: "low" }, positive_forms: { noun: "height", verb_transitive: "to lift", verb_intransitive: "to rise", adj: "high" } },
-  { negative: "cold", positive: "hot", negative_forms: { verb_transitive: "to chill", verb_intransitive: "to get colder" }, positive_forms: { verb_transitive: "to heat", verb_intransitive: "to get warmer" } },
-  { negative: "dark", positive: "bright", negative_forms: { noun: "darkness", verb_transitive: "to darken", adj: "dark" }, positive_forms: { noun: "light", verb_transitive: "to brighten", adj: "bright" } },
-  { negative: "soft", positive: "hard" },
-  { negative: "light", positive: "heavy" },
-  { negative: "hate", positive: "love" },
-  { negative: "false", positive: "true" },
-  { negative: "past", positive: "future" },
-  { negative: "lose", positive: "win" },
-  { negative: "fail", positive: "succeed" },
-  { negative: "consume", positive: "produce" },
-  { negative: "sell", positive: "buy" },
-  { negative: "receive", positive: "send", notes: "duplicate of come/go" },
-  { negative: "fear", positive: "hope" },
-  { negative: "doubt", positive: "believe" },
-  { negative: "dead", positive: "alive", negative_forms: { verb_transitive: "to kill", verb_intransitive: "to die", adj: "dead" }, positive_forms: { verb_transitive: "to make alive / to resurrect", verb_intransitive: "to live", adj: "alive" } },
-  { negative: "here", positive: "there", notes: "duplicate of come/go in the verb forms?" },
-  { negative: "in", positive: "out", negative_forms: { verb_transitive: "to ingest / to bring in", verb_intransitive: "to go inside" }, positive_forms: { verb_transitive: "to eject / to cast out", verb_intransitive: "to emerge" } },
-  { negative: "above", positive: "below" },
-  { negative: "left", positive: "right" },
-  { negative: "down", positive: "up" },
-  { negative: "behind", positive: "ahead", notes: "duplicate of back/front?" },
-  { negative: "aft", positive: "fore", notes: "duplicate of behind/ahead?" },
-  { negative: "insert", positive: "withdraw" },
-  { negative: "serve", positive: "be_in_command" },
-  { negative: "uncommon", positive: "common" },
-  { negative: "inanimate", positive: "animate" },
-  { negative: "idleness", positive: "work" },
-  { negative: "fleeting", positive: "persistent" },
-  { negative: "top", positive: "bottom", notes: "duplicate of low/high? Expressible as max-low and max-high?" },
-  { negative: "natural", positive: "artificial" },
-  { negative: "hide", positive: "search", notes: "Maybe the opposite of \"search\" should be \"lose\"?" },
-  { negative: "same", positive: "different" },
-  { negative: "center", positive: "frontier" },
-  { negative: "ignorance", positive: "knowledge", negative_forms: { noun: "ignorance", verb_transitive: "to ignore", adj: "ignorant" }, positive_forms: { noun: "knowledge", verb_transitive: "to know", adj: "knowledgeable" } },
-  { negative: "forget", positive: "learn" },
-  { negative: "few", positive: "many", notes: "none - very few - few - some - many - most - all" },
-  { negative: "female", positive: "male" },
-  { negative: "wonky", positive: "plumb" },
-  { negative: "bad", positive: "good" },
-  { negative: "pain", positive: "pleasure", negative_forms: { verb_transitive: "torment" }, positive_forms: { verb_transitive: "entertain", adj: "fun/pleasurable" } },
-  { negative: "abhor", positive: "desire", positive_forms: { verb_transitive: "to desire", adj: "desirable" }, notes: "axis.csv also had revulsion / desire" },
-  { negative: "immaterial", positive: "material", negative_forms: { verb_transitive: "dissolve / evaporate / dematerialize" }, positive_forms: { noun: "physical stuff", verb_transitive: "materialize", adj: "material" } },
-  { negative: "difficult", positive: "easy", positive_forms: { verb_transitive: "to enable? / to facilitate?" } },
-  { negative: "back", positive: "front" },
-  { negative: "reap", positive: "sow" },
-  { negative: "normal", positive: "rare" },
-  { negative: "round", positive: "angle", negative_forms: { verb_transitive: "to round" } },
-  { negative: "old", positive: "new", negative_forms: { verb_transitive: "age" }, positive_forms: { verb_transitive: "rejuvenate" } },
-  { negative: "take", positive: "give", negative_forms: { verb_transitive: "take" }, positive_forms: { noun: "gift", verb_transitive: "give" } },
-  { negative: "sleep", positive: "wake", negative_forms: { verb_transitive: "sleep" } },
-  { negative: "short", positive: "long", negative_forms: { verb_transitive: "shorten" }, positive_forms: { verb_transitive: "lengthen" } },
-  { negative: "narrow", positive: "wide" },
-  { negative: "interior", positive: "surface", negative_forms: { verb_transitive: "to internalize" } },
-  { negative: "destroy", positive: "create", positive_forms: { verb_transitive: "to create", verb_intransitive: "to self-actualize? / to become" } },
-  { negative: "ugly", positive: "beautiful", negative_forms: { verb_transitive: "uglify / mar / disfigure" }, positive_forms: { verb_transitive: "beautify" } },
-  { negative: "come", positive: "go", negative_forms: { noun: "departure", verb_transitive: "to bring", verb_intransitive: "to come" }, positive_forms: { noun: "arrival", verb_transitive: "to send", verb_intransitive: "to go" }, notes: "come - stay - go" },
-  { negative: "hole", positive: "mound", negative_forms: { verb_transitive: "dig" }, positive_forms: { verb_transitive: "heap up" }, notes: "hole - flat - mound / to dig - to flatten - to heap" },
-  { negative: "empty", positive: "full", negative_forms: { verb_transitive: "to empty" }, positive_forms: { verb_transitive: "to fill", adj: "full" } },
-  { negative: "disguise", positive: "show", negative_forms: { verb_transitive: "to disguise / to encrypt" }, positive_forms: { noun: "demonstration", verb_transitive: "to show / to demonstrate", verb_intransitive: "to appear" } },
-  { negative: "war", positive: "peace", negative_forms: { verb_transitive: "to fight", adj: "warlike" }, positive_forms: { verb_transitive: "to make peace", adj: "peaceful / pacifist" } },
-  { negative: "deflate", positive: "inflate" },
-  { negative: "exclusive", positive: "inclusive" },
-  { negative: "stupid", positive: "smart" },
-  { negative: "oblique", positive: "direct" },
-  { negative: "repel", positive: "attract" },
-  { negative: "divide", positive: "group", negative_forms: { verb_transitive: "to divide / to partition", adj: "atomized / divided" }, positive_forms: { noun: "group / community", verb_transitive: "to gather / to group / to collect", adj: "united" }, notes: "There's some relationship between break - mend, part - whole, and divide - group. I'm not yet sure what it is." },
-  { negative: "cheap", positive: "expensive" },
-  { negative: "attack", positive: "defend" },
-  { negative: "neglect", positive: "steward" },
-  { negative: "unimportant", positive: "important" },
-  { negative: "break", positive: "mend", notes: "There's some relationship between break - mend, part - whole, and divide - group. I'm not yet sure what it is." },
-  { negative: "part", positive: "whole", notes: "There's some relationship between break - mend, part - whole, and divide - group. I'm not yet sure what it is." },
-  { negative: "ancestor", positive: "descendant", notes: "ancestor - parent - ? - child - descendent" },
-  { negative: "free", positive: "bound", negative_forms: { verb_transitive: "to liberate" }, positive_forms: { verb_transitive: "to constrain / to bind / to enslave" }, notes: "\"free\" is already the positive adjective of the coercion axis" },
-  { negative: "profane", positive: "sacred" },
-  { negative: "south", positive: "north" },
-  { negative: "west", positive: "east" },
-  { negative: "obey", positive: "command", negative_forms: { verb_transitive: "to obey" }, positive_forms: { verb_transitive: "to command / to rule / to govern" } },
-  { negative: "submit", positive: "resist", negative_forms: { verb_transitive: "to conduct / to submit" }, positive_forms: { verb_transitive: "to resist / to thwart" } },
-  { negative: "release", positive: "contain", negative_forms: { noun: "liberator", verb_transitive: "to release" }, positive_forms: { noun: "container", verb_transitive: "to contain" } },
-  { negative: "irregular", positive: "regular", negative_forms: { verb_transitive: "to irregulate" }, positive_forms: { verb_transitive: "to regulate / to standardize" }, notes: "exception - irregular - ? - regular - exemplar" },
-  { negative: "succumb", positive: "withstand", notes: "Are these fundamental enough?" },
-  { negative: "connect", positive: "disconnect", negative_forms: { verb_transitive: "to connect" }, positive_forms: { verb_transitive: "to disconnect" }, notes: "nouns: cyclic graph - dag - tree - list - node / alternatively, maybe it is better to have a \"node\" and use magnitude to raise it to list, tree, dag, cyclic graph" },
-  { negative: "allow", positive: "compel", notes: "axis.csv had allow / force" },
-  { negative: "abstain", positive: "participate" },
-  { negative: "start", positive: "stop" },
-  { negative: "privilege", positive: "duty", notes: "axis.csv had privilege, right / obligation, duty" },
-  { negative: "forbid", positive: "recommend" },
+  [
+    {},
+    {},
+    { adj: "intrinsic", noun: "characteristic", verb: "is(v)", adverb: "characteristically" },
+  ],
+  [
+    {},
+    { adj: "different", noun: "difference", verb: "differ(v)", adverb: "differently" },
+    { adj: "same", noun: "equality", verb: "equal(v)", adverb: "identically" },
+  ],
+  [{}, { adj: "accidental" }, { adj: "essential" }],
+  [{}, { adj: "pragmatic" }, { adj: "ideal" }],
+  [{ notes: "negative verb flatten(v) (no positive verb)" }, { adj: "flat" }, { adj: "nested" }],
+  [
+    {},
+    { adj: "intuitive", noun: "instinct", verb: "intuit(v)" },
+    { adj: "analytical", noun: "analysis", verb: "analyze(v)" },
+  ],
+  [
+    { notes: "negative verb randomize(v) (no positive verb)" },
+    { adj: "random" },
+    { adj: "determined" },
+  ],
+  [{}, { adj: "qualitative" }, { adj: "quantitative", verb: "enumerate(v)" }],
+  [
+    {},
+    { adj: "linear", noun: "line", verb: "linearize(v)" },
+    { adj: "cyclical", noun: "cycle", verb: "curl(v)" },
+  ],
+  [{}, { adj: "reductionist", noun: "reduction" }, { adj: "holistic", noun: "emergence" }],
+  [{}, { adj: "near" }, { adj: "far" }],
+  [{}, { adj: "loud" }, { adj: "quiet" }],
+  [
+    {
+      notes:
+        "negative intransitive verb: to become dull; positive intransitive verb: to become sharp",
+    },
+    { adj: "dull", verb: "dull(v)" },
+    { adj: "sharp", verb: "sharpen(v)" },
+  ],
+  [{}, { adj: "dry" }, { adj: "wet" }],
+  [{}, { adj: "thin" }, { adj: "thick" }],
+  [
+    {
+      notes:
+        "negative intransitive verb: to lower oneself / to bow / to crouch / to postrate oneself / to descend; positive intransitive verb: to rise",
+    },
+    { adj: "low", noun: "deep", verb: "lower(v)" },
+    { adj: "high", noun: "height", verb: "lift(v)" },
+  ],
+  [
+    {
+      notes: "negative intransitive verb: to get colder; positive intransitive verb: to get warmer",
+    },
+    { adj: "cold", verb: "chill(v)" },
+    { adj: "hot", verb: "heat(v)" },
+  ],
+  [
+    {},
+    { adj: "dark", noun: "darkness", verb: "darken(v)" },
+    { adj: "bright", noun: "light", verb: "brighten(v)" },
+  ],
+  [{}, { adj: "soft" }, { adj: "hard" }],
+  [{}, { adj: "light(weight)" }, { adj: "heavy" }],
+  [{}, { verb: "hate(v)" }, { verb: "love(v)" }],
+  [{}, { adj: "false" }, { adj: "true" }],
+  [{}, { adj: "past" }, { adj: "future" }],
+  [{}, { verb: "lose(v)" }, { verb: "win(v)" }],
+  [{}, { verb: "fail(v)" }, { verb: "succeed(v)" }],
+  [{}, { verb: "consume(v)" }, { verb: "produce(v)" }],
+  [{}, { verb: "sell(v)" }, { verb: "buy(v)" }],
+  [{ notes: "duplicate of come/go" }, { verb: "receive(v)" }, { verb: "send(v)" }],
+  [{}, { verb: "fear(v)" }, { verb: "hope(v)" }],
+  [{}, { verb: "doubt(v)" }, { verb: "believe(v)" }],
+  [
+    { notes: "negative intransitive verb: to die; positive intransitive verb: to live" },
+    { adj: "dead", verb: "kill(v)" },
+    { adj: "alive", verb: "make_alive(v)" },
+  ],
+  [{ notes: "duplicate of come/go in the verb forms?" }, { adverb: "here" }, { adverb: "there" }],
+  [
+    { notes: "negative intransitive verb: to go inside; positive intransitive verb: to emerge" },
+    { verb: "ingest(v)", adverb: "in" },
+    { verb: "eject(v)", adverb: "out" },
+  ],
+  [{}, { adverb: "above" }, { adverb: "below" }],
+  [{}, { adj: "left(side)" }, { adj: "right(side)" }],
+  [{}, { adverb: "down" }, { adverb: "up" }],
+  [{ notes: "duplicate of back/front?" }, { adverb: "behind" }, { adverb: "ahead" }],
+  [{ notes: "duplicate of behind/ahead?" }, { adverb: "aft" }, { adverb: "fore" }],
+  [{}, { verb: "insert(v)" }, { verb: "withdraw(v)" }],
+  [{}, { verb: "serve(v)" }, { verb: "be_in_command(v)" }],
+  [{}, { adj: "uncommon" }, { adj: "common" }],
+  [{}, { adj: "inanimate" }, { adj: "animate" }],
+  [{}, { noun: "idleness" }, { noun: "work" }],
+  [{}, { adj: "fleeting" }, { adj: "persistent" }],
+  [
+    { notes: "duplicate of low/high? Expressible as max-low and max-high?" },
+    { adj: "top" },
+    { adj: "bottom" },
+  ],
+  [{}, { adj: "natural" }, { adj: "artificial" }],
+  [
+    { notes: 'Maybe the opposite of "search" should be "lose"?' },
+    { verb: "hide(v)" },
+    { verb: "search(v)" },
+  ],
+  [{}, { noun: "center" }, { noun: "frontier" }],
+  [
+    {},
+    { adj: "ignorant", noun: "ignorance", verb: "ignore(v)" },
+    { adj: "knowledgeable", noun: "knowledge", verb: "know(v)" },
+  ],
+  [{}, { verb: "forget(v)" }, { verb: "learn(v)" }],
+  [{ notes: "none - very few - few - some - many - most - all" }, { adj: "few" }, { adj: "many" }],
+  [{}, { adj: "female" }, { adj: "male" }],
+  [{}, { adj: "wonky" }, { adj: "plumb" }],
+  [{}, { adj: "bad" }, { adj: "good" }],
+  [
+    {},
+    { noun: "pain", verb: "torment(v)" },
+    { adj: "fun", noun: "pleasure", verb: "entertain(v)" },
+  ],
+  [
+    { notes: "axis.csv also had revulsion / desire; positive verb forms: to desire" },
+    { verb: "abhor(v)" },
+    { adj: "desirable", verb: "desire(v)" },
+  ],
+  [
+    {},
+    { adj: "immaterial", verb: "dissolve(v)" },
+    { adj: "material", noun: "physical_stuff", verb: "materialize(v)" },
+  ],
+  [{}, { adj: "difficult" }, { adj: "easy", verb: "enable(v)" }],
+  [{}, { adj: "back" }, { adj: "front" }],
+  [{}, { verb: "reap(v)" }, { verb: "sow(v)" }],
+  [{}, { adj: "normal" }, { adj: "rare" }],
+  [{ notes: "negative verb round(v) (no positive verb)" }, { adj: "round" }, { adj: "angle" }],
+  [{}, { adj: "old", verb: "age(v)" }, { adj: "new", verb: "rejuvenate(v)" }],
+  [
+    { notes: "negative verb forms: take; positive verb forms: give" },
+    { verb: "take(v)" },
+    { noun: "gift", verb: "give(v)" },
+  ],
+  [{ notes: "negative verb forms: sleep" }, { verb: "sleep(v)" }, { verb: "wake(v)" }],
+  [{}, { adj: "short", verb: "shorten(v)" }, { adj: "long", verb: "lengthen(v)" }],
+  [{}, { adj: "narrow" }, { adj: "wide" }],
+  [
+    { notes: "negative verb internalize(v) (no positive verb)" },
+    { noun: "interior" },
+    { noun: "surface" },
+  ],
+  [
+    { notes: "positive verb forms: to create; to self-actualize? / to become" },
+    { verb: "destroy(v)" },
+    { verb: "create(v)" },
+  ],
+  [{}, { adj: "ugly", verb: "uglify(v)" }, { adj: "beautiful", verb: "beautify(v)" }],
+  [
+    {
+      notes:
+        "come - stay - go; negative verb forms: to bring; to come; positive verb forms: to send; to go",
+    },
+    { noun: "departure", verb: "come(v)" },
+    { noun: "arrival", verb: "go(v)" },
+  ],
+  [
+    { notes: "hole - flat - mound / to dig - to flatten - to heap" },
+    { noun: "hole", verb: "dig(v)" },
+    { noun: "mound", verb: "heap_up(v)" },
+  ],
+  [
+    { notes: "also fill(v); negative verb empty(v) (no positive verb)" },
+    { adj: "empty" },
+    { adj: "full" },
+  ],
+  [
+    {
+      notes:
+        "negative verb forms: to disguise / to encrypt; positive verb forms: to show / to demonstrate; to appear",
+    },
+    { verb: "disguise(v)" },
+    { noun: "demonstration", verb: "show(v)" },
+  ],
+  [
+    {},
+    { adj: "warlike", noun: "war", verb: "fight(v)" },
+    { adj: "peaceful", noun: "peace", verb: "make_peace(v)" },
+  ],
+  [{}, { verb: "deflate(v)" }, { verb: "inflate(v)" }],
+  [{}, { adj: "exclusive" }, { adj: "inclusive" }],
+  [{}, { adj: "stupid" }, { adj: "smart" }],
+  [{}, { adj: "oblique" }, { adj: "direct" }],
+  [{}, { verb: "repel(v)" }, { verb: "attract(v)" }],
+  [
+    {
+      notes:
+        "There's some relationship between break - mend, part - whole, and divide - group. I'm not yet sure what it is.; negative verb forms: to divide / to partition; positive verb forms: to gather / to group / to collect",
+    },
+    { adj: "atomized", verb: "divide(v)" },
+    { adj: "united", noun: "group", verb: "group(v)" },
+  ],
+  [{}, { adj: "cheap" }, { adj: "expensive" }],
+  [{}, { verb: "attack(v)" }, { verb: "defend(v)" }],
+  [{}, { verb: "neglect(v)" }, { verb: "steward(v)" }],
+  [{}, { adj: "unimportant" }, { adj: "important" }],
+  [
+    {
+      notes:
+        "There's some relationship between break - mend, part - whole, and divide - group. I'm not yet sure what it is.",
+    },
+    { verb: "break(v)" },
+    { verb: "mend(v)" },
+  ],
+  [
+    {
+      notes:
+        "There's some relationship between break - mend, part - whole, and divide - group. I'm not yet sure what it is.",
+    },
+    { noun: "part" },
+    { noun: "whole" },
+  ],
+  [
+    { notes: "ancestor - parent - ? - child - descendent" },
+    { noun: "ancestor" },
+    { noun: "descendant" },
+  ],
+  [
+    { notes: '"free" is already the positive adjective of the coercion axis' },
+    { adj: "free(unbound)", verb: "liberate(v)" },
+    { adj: "bound", verb: "constrain(v)" },
+  ],
+  [{}, { adj: "profane" }, { adj: "sacred" }],
+  [{}, { adj: "south" }, { adj: "north" }],
+  [{}, { adj: "west" }, { adj: "east" }],
+  [
+    {
+      notes: "negative verb forms: to obey; positive verb forms: to command / to rule / to govern",
+    },
+    { verb: "obey(v)" },
+    { verb: "command(v)" },
+  ],
+  [
+    {
+      notes:
+        "negative verb forms: to conduct / to submit; positive verb forms: to resist / to thwart",
+    },
+    { verb: "submit(v)" },
+    { verb: "resist(v)" },
+  ],
+  [
+    {
+      notes:
+        "negative verb forms: to release; positive verb forms: to contain; also container; negative noun liberator (no positive noun)",
+    },
+    { verb: "release(v)" },
+    { verb: "contain(v)" },
+  ],
+  [
+    { notes: "exception - irregular - ? - regular - exemplar" },
+    { adj: "irregular", verb: "irregulate(v)" },
+    { adj: "regular", verb: "regulate(v)" },
+  ],
+  [{ notes: "Are these fundamental enough?" }, { verb: "succumb(v)" }, { verb: "withstand(v)" }],
+  [
+    {
+      notes:
+        'nouns: cyclic graph - dag - tree - list - node / alternatively, maybe it is better to have a "node" and use magnitude to raise it to list, tree, dag, cyclic graph; negative verb forms: to connect; positive verb forms: to disconnect',
+    },
+    { verb: "connect(v)" },
+    { verb: "disconnect(v)" },
+  ],
+  [{ notes: "axis.csv had allow / force" }, { verb: "allow(v)" }, { verb: "compel(v)" }],
+  [{}, { verb: "abstain(v)" }, { verb: "participate(v)" }],
+  [{}, { verb: "start(v)" }, { verb: "stop(v)" }],
+  [
+    { notes: "axis.csv had privilege, right / obligation, duty" },
+    { noun: "privilege" },
+    { noun: "duty" },
+  ],
+  [{}, { verb: "forbid(v)" }, { verb: "recommend(v)" }],
 ];
 
 // Grammar markers, which are also domain words: they mark the role of what follows and its noun
@@ -457,6 +616,11 @@ export const axis_backlog: AxisCandidate[] = [
   candidate("foreign_word", { gloss: "foreign word or name" });
   candidate("possession_indicator");
   candidate("interrogative_blank");
+  candidate("_become", {
+    gloss: "come to, begin to: _become possess(v) = gain",
+    notes:
+      'Like Toki Pona\'s "kama jo" (come to have = get). Not sure yet whether this should be a helper',
+  });
 }
 
 {
@@ -545,7 +709,6 @@ export const axis_backlog: AxisCandidate[] = [
     t: [T.domain_specifier],
     notes: "For now, also marks the number domain: what follows reads roots 128-255 as digits",
   });
-  cr("is");
 
   candidate("magnitude", {
     notes:
@@ -598,13 +761,13 @@ export const axis_backlog: AxisCandidate[] = [
     ["plasma", "gas", "liquid", "solid"],
     ["number", "symbol"],
     ["thing"],
-    ["width", "height", "depth"],
+    ["width", "height", "depth"], // height is the noun of the low/high axis
     ["yellow", "red", "blue"],
     ["sound", "taste", "touch"],
     ["animal", "plant", "fungus"],
   ]) {
     for (const word of group) {
-      if (dictionary.has(word)) continue; // already a root
+      if (dictionary.has(word) || word === "height") continue; // already a word
       candidate(word, group.length > 1 ? { notes: `Group: ${group.join(", ")}` } : {});
     }
   }
@@ -682,6 +845,10 @@ export const axis_backlog: AxisCandidate[] = [
     if (negative_adverb) cw(negative_adverb, { t: [T.axis_word], domain: "adverb", parts: [negative_word, positive_of(positive_adverb_word, negative_adverb)] });
 
     if (axis_noun)       cw(axis_noun, { t: [T.axis_word], domain: "noun", notes: axis_notes, parts: [axis_of_word, positive_of(positive_noun_word, axis_noun)] });
+
+    // Without an axis noun, the notes go on the axis's first positive word
+    const first_positive = positive_adj_word ?? positive_noun_word ?? positive_verb_word ?? positive_adverb_word;
+    if (!axis_noun && axis_notes && first_positive) first_positive.data.notes = axis_notes;
   }
 }
 

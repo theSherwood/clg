@@ -1,13 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import {
-  axis_backlog,
-  candidates,
-  data_errors,
-  dictionary,
-  is_root,
-  sections,
-  words,
-} from "./dict";
+import { candidates, data_errors, dictionary, is_root, sections, words } from "./dict";
 
 const core = sections.filter((s) => s.start < 128);
 const roots = words.filter(is_root);
@@ -55,12 +47,6 @@ describe("words", () => {
     const names = candidates.map((c) => c.word);
     expect(new Set(names).size).toBe(names.length);
     for (const name of names) expect(dictionary.has(name), name).toBe(false);
-  });
-
-  test("the axis backlog fits in the axis section", () => {
-    const axis = sections.find((s) => s.key === "axis")!;
-    const used = new Set(roots.filter((w) => w.data.section === "axis").map((w) => w.data.id));
-    expect(used.size + axis_backlog.length).toBeLessThanOrEqual(axis.end - axis.start);
   });
 });
 

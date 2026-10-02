@@ -105,10 +105,13 @@ export function GrammarView() {
         object. Every draft so far is in subject–verb–object order.
       </p>
       <Open>
-        Saying that something is in a state: “everyone possesses rights”, “all people are free”.
-        Relation verbs like <W w="possess(v)" /> don't fit the axis pattern, where the verb form
-        means becoming the state (<W w="grow(v)" /> is “become big”). And <W w="is" /> covers both
-        equivalence and having a characteristic.
+        Relation verbs. Most axes describe a property, and their verb form means becoming it (
+        <W w="grow(v)" /> is “become big”). Relation axes are different: their verb is the relation
+        itself. <W w="is(v)" /> relates a thing to a characteristic, <W w="equal(v)" /> relates two
+        things, and <W w="possess(v)" /> relates an owner to what they own. One proposal is that
+        relation verbs always take an object, so the complement is read as a noun:{" "}
+        <i>&lt;subject&gt; sky &lt;verb&gt; is &lt;object&gt; blueness</i>. Becoming could then come
+        from a helper, <W w="_become" /> (<i>_become possess</i>, “gain”).
       </Open>
       <Example meaning="Everyone has the right to life, liberty and security of person.">
         &lt;subject&gt; person all &lt;verb&gt; possess &lt;object&gt; right of life and freedom and
