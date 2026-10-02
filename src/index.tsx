@@ -156,7 +156,7 @@ const WordListDisplay: React.FC<WordListDisplayProps> = ({ words_to_display }) =
 // Roots view: 256 root IDs = 4^4 glyphs, shown as a 16x16 grid (row = high nibble, column = low nibble)
 
 const SECTION_SWATCHES: Record<SectionKey, string> = {
-  domain: "bg-orange-500",
+  marker: "bg-orange-500",
   grammar: "bg-amber-400",
   preposition: "bg-rose-400",
   pronoun: "bg-fuchsia-400",

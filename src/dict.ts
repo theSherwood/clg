@@ -18,8 +18,8 @@ export type Tag = keyof typeof T;
 // ambiguous. The last 128 are shared by partial domains (the digits, in the number domain) and
 // the axis words, which are told apart by domain.
 export const sections = [
-  { key: "domain", label: "Domain words", start: 0, end: 16 },
-  { key: "grammar", label: "Grammar helpers", start: 16, end: 32 },
+  { key: "marker", label: "Grammar markers", start: 0, end: 6 },
+  { key: "grammar", label: "Grammar helpers", start: 6, end: 32 },
   { key: "preposition", label: "Prepositions", start: 32, end: 40 },
   { key: "pronoun", label: "Pronouns", start: 40, end: 48 },
   { key: "axis_helper", label: "Axis helpers", start: 48, end: 56 },
@@ -410,43 +410,19 @@ export const axis_backlog: AxisCandidate[] = [
   { negative: "forbid", positive: "recommend" },
 ];
 
-// Domain words. The first six mark the noun or verb form of what follows; the adjective and
-// adverb forms come from position instead (a modifier trailing a noun or verb).
+// Grammar markers, which are also domain words: they mark the role of what follows and its noun
+// or verb form. The adjective and adverb forms come from position instead (a modifier trailing a
+// noun or verb).
 {
-  section("domain");
-  const domain_word: Tag[] = [T.grammar_helper, T.part_of_speech_specifier, T.domain_specifier];
-  const verb_word: Tag[] = [...domain_word, T.verb_specifier];
-  cr("_subject", { t: domain_word });
-  cr("_object", { t: domain_word });
-  cr("_verb", { t: verb_word });
-  cr("_verb(prescriptive)", { t: verb_word, gloss: "verb (prescriptive / imperative)" });
-  cr("_verb(interrogative)", { t: verb_word });
-  cr("_gerund", { t: verb_word });
-  cr("_number", {
-    t: [T.domain_specifier],
-    gloss: "number domain",
-    notes: "What follows is read in the number domain, so roots 128-255 are digits",
-  });
-
-  candidate("magnitude", {
-    notes:
-      "Scales a number like scientific notation: finger number 2 magnitude 3 is 2000. Takes one argument. Base-agnostic",
-  });
-  candidate("color");
-  candidate("finger_number", { gloss: "number (base 10)", notes: "Partial domain" });
-  candidate("simple_number", { gloss: "number (base 2)", notes: "Partial domain" });
-  candidate("_subject_of", {
-    gloss: "subject of (verb)",
-    notes: 'Is this necessary? Can\'t we just use "subject"?',
-  });
-  candidate("_object_of", {
-    gloss: "object of (verb)",
-    notes: 'Is this necessary? Can\'t we just use "object"?',
-  });
-  candidate("_verb(relation)", {
-    gloss: "verb (relation)?",
-    notes: "One of the verb specifiers listed as: relation?, action, subjunctive, question",
-  });
+  section("marker");
+  const marker: Tag[] = [T.grammar_helper, T.part_of_speech_specifier, T.domain_specifier];
+  const verb_marker: Tag[] = [...marker, T.verb_specifier];
+  cr("_subject", { t: marker });
+  cr("_object", { t: marker });
+  cr("_verb", { t: verb_marker });
+  cr("_verb(prescriptive)", { t: verb_marker, gloss: "verb (prescriptive / imperative)" });
+  cr("_verb(interrogative)", { t: verb_marker });
+  cr("_gerund", { t: verb_marker });
 }
 
 {
@@ -554,6 +530,30 @@ export const axis_backlog: AxisCandidate[] = [
   cr("torso");
   cr("arm");
   cr("leg");
+  cr("number", {
+    t: [T.domain_specifier],
+    notes: "For now, also marks the number domain: what follows reads roots 128-255 as digits",
+  });
+
+  candidate("magnitude", {
+    notes:
+      "Scales a number like scientific notation: finger number 2 magnitude 3 is 2000. Takes one argument. Base-agnostic",
+  });
+  candidate("color");
+  candidate("finger_number", { gloss: "number (base 10)", notes: "Partial domain" });
+  candidate("simple_number", { gloss: "number (base 2)", notes: "Partial domain" });
+  candidate("_subject_of", {
+    gloss: "subject of (verb)",
+    notes: 'Is this necessary? Can\'t we just use "subject"?',
+  });
+  candidate("_object_of", {
+    gloss: "object of (verb)",
+    notes: 'Is this necessary? Can\'t we just use "object"?',
+  });
+  candidate("_verb(relation)", {
+    gloss: "verb (relation)?",
+    notes: "One of the verb specifiers listed as: relation?, action, subjunctive, question",
+  });
 
   candidate("prehensile?");
   candidate("information", { gloss: "information / data" });
@@ -596,7 +596,7 @@ export const axis_backlog: AxisCandidate[] = [
   // Groups of related concepts
   for (const group of [
     ["plasma", "gas", "liquid", "solid"],
-    ["number(noun)", "symbol"],
+    ["number", "symbol"],
     ["thing"],
     ["width", "height", "depth"],
     ["yellow", "red", "blue"],

@@ -79,15 +79,16 @@ export function GrammarView() {
         word in modifier position, trailing a noun or verb, is read as an adjective or adverb.
       </p>
       <p className="mt-2">
-        The domain words are <W w="_subject" />, <W w="_object" />, <W w="_verb" />,{" "}
-        <W w="_verb(prescriptive)" />, <W w="_verb(interrogative)" />, <W w="_gerund" /> and{" "}
-        <W w="_number" />.
+        The first six roots are special grammar markers, and they're also domain words:{" "}
+        <W w="_subject" />, <W w="_object" />, <W w="_verb" />, <W w="_verb(prescriptive)" />,{" "}
+        <W w="_verb(interrogative)" /> and <W w="_gerund" />.
       </p>
       <p className="mt-2">
-        Partial domains reuse a restricted part of the root space. <W w="_number" /> reads the roots
-        128–255 as the digits 0–127. Since most people don't count in base 128,{" "}
-        <W w="finger_number" /> (base 10) and <W w="simple_number" /> (base 2) are planned, along
-        with <W w="magnitude" /> and <W w="color" />.
+        Partial domains reuse a restricted part of the root space. For now the content root{" "}
+        <W w="number" /> marks the number domain, reading the roots 128–255 as the digits 0–127.
+        Since most people don't count in base 128, <W w="finger_number" /> (base 10) and{" "}
+        <W w="simple_number" /> (base 2) are planned, along with <W w="magnitude" /> and{" "}
+        <W w="color" />.
       </p>
       <Open>
         Are <W w="_subject_of" /> and <W w="_object_of" /> needed, or are <W w="_subject" /> and{" "}
