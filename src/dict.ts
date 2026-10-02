@@ -544,6 +544,8 @@ export const axis_backlog: AxisCandidate[] = [
     t: [T.domain_specifier],
     notes: "For now, also marks the number domain: what follows reads roots 128-255 as digits",
   });
+  cr("is");
+  cr("has");
 
   candidate("magnitude", {
     notes:
@@ -552,10 +554,6 @@ export const axis_backlog: AxisCandidate[] = [
   candidate("color");
   candidate("finger_number", { gloss: "number (base 10)", notes: "Partial domain" });
   candidate("simple_number", { gloss: "number (base 2)", notes: "Partial domain" });
-  candidate("_verb(relation)", {
-    gloss: "verb (relation)?",
-    notes: "One of the verb specifiers listed as: relation?, action, subjunctive, question",
-  });
 
   candidate("prehensile?");
   candidate("information", { gloss: "information / data" });

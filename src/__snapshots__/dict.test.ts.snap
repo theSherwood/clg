@@ -81,6 +81,8 @@ exports[`root IDs 1`] = `
   "83": "arm",
   "84": "leg",
   "85": "number",
+  "86": "is",
+  "87": "has",
   "9": "if",
 }
 `;

@@ -95,16 +95,15 @@ export function GrammarView() {
         English employer and employee: <i>_er eat</i> is “eater”, <i>_ee eat</i> is “what is eaten”.
       </p>
       <Open>
-        The verb specifiers have also been listed as relation?, action, subjunctive and question (
-        <W w="_verb(relation)" />
-        ). Should <W w="direction" /> be a domain specifier?
+        Should <W w="direction" /> be a domain specifier?
       </Open>
 
       <H2>Sentences</H2>
       <p>
         Role markers come before their phrases: <W w="_subject" /> before the subject,{" "}
         <W w="_verb" /> (or another verb specifier) before the verb, <W w="_object" /> before the
-        object. Every draft so far is in subject–verb–object order.
+        object. Every draft so far is in subject–verb–object order. State verbs like <W w="is" />{" "}
+        and <W w="has" /> are ordinary verbs, marked with <W w="_verb" /> like any other.
       </p>
       <Example meaning="Everyone has the right to life, liberty and security of person.">
         &lt;subject&gt; person all &lt;verb&gt; possess &lt;object&gt; right of life and freedom and
