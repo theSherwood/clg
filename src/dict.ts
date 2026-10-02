@@ -545,7 +545,7 @@ export const axis_backlog: AxisCandidate[] = [
     notes: "For now, also marks the number domain: what follows reads roots 128-255 as digits",
   });
   cr("is");
-  cr("has");
+  cr("possess");
 
   candidate("magnitude", {
     notes:

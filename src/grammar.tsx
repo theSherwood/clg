@@ -103,7 +103,7 @@ export function GrammarView() {
         Role markers come before their phrases: <W w="_subject" /> before the subject,{" "}
         <W w="_verb" /> (or another verb specifier) before the verb, <W w="_object" /> before the
         object. Every draft so far is in subject–verb–object order. State verbs like <W w="is" />{" "}
-        and <W w="has" /> are ordinary verbs, marked with <W w="_verb" /> like any other.
+        and <W w="possess" /> are ordinary verbs, marked with <W w="_verb" /> like any other.
       </p>
       <Example meaning="Everyone has the right to life, liberty and security of person.">
         &lt;subject&gt; person all &lt;verb&gt; possess &lt;object&gt; right of life and freedom and
