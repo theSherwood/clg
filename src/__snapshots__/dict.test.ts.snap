@@ -4,6 +4,8 @@ exports[`root IDs 1`] = `
 {
   "0": "_subject",
   "1": "_object",
+  "10": "_er",
+  "11": "_ee",
   "128": "bigness, big, grow(v), hugely",
   "129": "fastness, fast, accelerate(v), quickly",
   "130": "dynamism, dynamic, adapt(v), dynamically",

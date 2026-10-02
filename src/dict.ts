@@ -435,6 +435,16 @@ export const axis_backlog: AxisCandidate[] = [
   cr("and", { t: [T.grammar_helper] });
   cr("or", { t: [T.grammar_helper], notes: '"xor" through "or-exclusive"' });
   cr("if", { t: [T.grammar_helper], notes: '"iff" through "if-exclusive"' });
+  cr("_er", {
+    t: [T.grammar_helper, T.part_of_speech_specifier],
+    gloss: "the subject of a verb, as a noun: _er eat = eater",
+    notes: 'Was "subject of (verb)"',
+  });
+  cr("_ee", {
+    t: [T.grammar_helper, T.part_of_speech_specifier],
+    gloss: "the object of a verb, as a noun: _ee eat = what is eaten",
+    notes: 'Was "object of (verb)"',
+  });
 
   candidate("open_paren", { gloss: "clause start" });
   candidate("close_paren", { gloss: "clause end" });
@@ -446,14 +456,6 @@ export const axis_backlog: AxisCandidate[] = [
   candidate("foreign_word", { gloss: "foreign word or name" });
   candidate("possession_indicator");
   candidate("interrogative_blank");
-  candidate("_er", {
-    gloss: "the subject of a verb, as a noun: _er eat = eater",
-    notes: 'Was "subject of (verb)". Is this necessary? Can\'t we just use "subject"?',
-  });
-  candidate("_ee", {
-    gloss: "the object of a verb, as a noun: _ee eat = what is eaten",
-    notes: 'Was "object of (verb)". Is this necessary? Can\'t we just use "object"?',
-  });
 }
 
 {

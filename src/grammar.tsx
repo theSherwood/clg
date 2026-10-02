@@ -90,10 +90,12 @@ export function GrammarView() {
         <W w="simple_number" /> (base 2) are planned, along with <W w="magnitude" /> and{" "}
         <W w="color" />.
       </p>
+      <p className="mt-2">
+        <W w="_er" /> and <W w="_ee" /> turn a verb into a noun for its subject or object, after
+        English employer and employee: <i>_er eat</i> is “eater”, <i>_ee eat</i> is “what is eaten”.
+      </p>
       <Open>
-        Are <W w="_er" /> (<i>_er eat</i>, “eater”) and <W w="_ee" /> (<i>_ee eat</i>, “what is
-        eaten”) needed, or can <W w="_subject" /> and <W w="_object" /> do the job? The verb
-        specifiers have also been listed as relation?, action, subjunctive and question (
+        The verb specifiers have also been listed as relation?, action, subjunctive and question (
         <W w="_verb(relation)" />
         ). Should <W w="direction" /> be a domain specifier?
       </Open>
