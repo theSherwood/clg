@@ -286,6 +286,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { adj: "finite", noun: "finitude(state)", verb: "", adverb: "finitely" },
     { adj: "infinite", noun: "infinity", verb: "", adverb: "infinitely" },
   ],
+  [{}, {}, { adj: "possess", noun: "possession", verb: "gain(v)", adverb: "possessively" }],
 ];
 
 // Axis pairs not yet in axis_words_config, with any word forms and notes collected for them
@@ -545,7 +546,6 @@ export const axis_backlog: AxisCandidate[] = [
     notes: "For now, also marks the number domain: what follows reads roots 128-255 as digits",
   });
   cr("is");
-  cr("possess");
 
   candidate("magnitude", {
     notes:

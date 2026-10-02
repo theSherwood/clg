@@ -25,6 +25,7 @@ exports[`root IDs 1`] = `
   "144": "explicitness(state), explicit, make_explicit(v), explicitly",
   "145": "externality, external, externalize(v), externally",
   "146": "infinity, infinite, infinitely",
+  "147": "possession, possess, gain(v), possessively",
   "2": "_verb",
   "3": "_verb(prescriptive)",
   "32": "with",
@@ -82,7 +83,6 @@ exports[`root IDs 1`] = `
   "84": "leg",
   "85": "number",
   "86": "is",
-  "87": "possess",
   "9": "if",
 }
 `;
