@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useContext } from "react";
 import { createRoot } from "react-dom/client";
 import {
   dictionary,
@@ -13,6 +13,20 @@ import {
 import Tippy, { type TippyProps } from "@tippyjs/react";
 import "tippy.js/dist/tippy.css"; // Default tippy styling
 import "tippy.js/themes/light.css"; // Optional: a light theme
+import {
+  type Mark,
+  type Phonology,
+  check_phonology,
+  default_phonology,
+  describe_marks,
+  load_phonology,
+  marks_of,
+  pronounce,
+  save_phonology,
+  syllable_of,
+} from "./phonology";
+
+const PhonologyContext = React.createContext<Phonology>(default_phonology);
 
 // Export own set of props (even if they are the same for now) to enable clients to be more future-proof
 export type LazyTippyProps = TippyProps;
@@ -83,12 +97,14 @@ function WordPopoverList(props: { label: string; list: Word[]; depth: number }) 
 }
 
 const WordPopoverContent: React.FC<WordPopoverContentProps> = ({ word, depth }) => {
+  const phonology = useContext(PhonologyContext);
   const is_root_word = is_root(word);
   const { parts, uses, homonyms } = word.data;
 
   return (
     <div className="p-3 bg-white shadow-lg rounded-md border border-gray-200 text-sm">
-      <h3 className="font-bold text-lg mb-1">{word.word}</h3>
+      <h3 className="font-bold text-lg">{word.word}</h3>
+      <p className="font-mono text-indigo-700 mb-1">{pronounce(word, phonology)}</p>
       {parts.length > 0 ? null : <p className="text-xs text-gray-500 mb-1">ID: {word.data.id}</p>}
       <p
         className={`text-xs font-semibold mb-1 ${
@@ -129,6 +145,7 @@ interface WordPreviewItemProps {
 }
 
 const WordPreviewItem: React.FC<WordPreviewItemProps> = ({ word }) => {
+  const phonology = useContext(PhonologyContext);
   const is_root_word = is_root(word);
   return (
     <LazyTippy
@@ -156,6 +173,7 @@ const WordPreviewItem: React.FC<WordPreviewItemProps> = ({ word }) => {
                     }`}
       >
         <div className="font-semibold">{word.word}</div>
+        <div className="font-mono text-xs text-indigo-700">{pronounce(word, phonology)}</div>
         <div className="text-xs">{is_root_word ? "ROOT" : "COMPOUND"}</div>
         {word.data.t.length > 0 && (
           <div className="text-xs mt-1">
@@ -280,7 +298,9 @@ const swatch_of = Object.fromEntries(SLOT_GROUPS.map((g) => [g.key, g.swatch])) 
 >;
 
 const SlotCell: React.FC<{ slot: Slot; dimmed: boolean }> = ({ slot, dimmed }) => {
+  const phonology = useContext(PhonologyContext);
   const { id, roots: slot_roots, groups } = slot;
+  const syllable = syllable_of(id, phonology);
   // Prefer a non-digit word as the cell's label, since digits share IDs with axis words
   const label = (slot_roots.find((w) => slot_group_of(w) !== "digit") ?? slot_roots[0])?.word;
 
@@ -295,7 +315,14 @@ const SlotCell: React.FC<{ slot: Slot; dimmed: boolean }> = ({ slot, dimmed }) =
           <div key={g} className={`flex-1 ${swatch_of[g]}`} />
         ))}
       </div>
-      <div className="px-1 pt-0.5 text-gray-400">{id}</div>
+      <div className="px-1 pt-0.5 flex justify-between gap-1">
+        <span className="text-gray-400">{id}</span>
+        <span
+          className={`font-mono text-xs ${slot_roots.length > 0 ? "text-indigo-700 font-semibold" : "text-gray-400"}`}
+        >
+          {syllable}
+        </span>
+      </div>
       {label && <div className="px-1 truncate font-medium text-gray-800">{label}</div>}
       {slot_roots.length > 1 && (
         <div className="absolute bottom-0.5 right-1 text-gray-400">×{slot_roots.length}</div>
@@ -309,7 +336,9 @@ const SlotCell: React.FC<{ slot: Slot; dimmed: boolean }> = ({ slot, dimmed }) =
     <LazyTippy
       content={
         <div className="p-3 bg-white shadow-lg rounded-md border border-gray-200 text-sm">
-          <h3 className="font-bold mb-1">ID {id}</h3>
+          <h3 className="font-bold mb-1">
+            ID {id} · <span className="font-mono text-indigo-700">{syllable}</span>
+          </h3>
           <WordPopoverList label="Roots:" list={slot_roots} depth={0} />
         </div>
       }
@@ -323,17 +352,219 @@ const SlotCell: React.FC<{ slot: Slot; dimmed: boolean }> = ({ slot, dimmed }) =
   );
 };
 
-function RootsView() {
+function swap<T>(list: T[], i: number, j: number): T[] {
+  const result = [...list];
+  [result[i], result[j]] = [result[j]!, result[i]!];
+  return result;
+}
+
+const MoveButtons: React.FC<{
+  index: number;
+  on_move: (from: number, to: number) => void;
+  vertical?: boolean;
+}> = ({ index, on_move, vertical }) => (
+  <span className="inline-flex text-gray-400">
+    <button
+      disabled={index === 0}
+      onClick={() => on_move(index, index - 1)}
+      className="px-0.5 hover:text-gray-800 disabled:opacity-30"
+    >
+      {vertical ? "▴" : "‹"}
+    </button>
+    <button
+      disabled={index === 3}
+      onClick={() => on_move(index, index + 1)}
+      className="px-0.5 hover:text-gray-800 disabled:opacity-30"
+    >
+      {vertical ? "▾" : "›"}
+    </button>
+  </span>
+);
+
+const sound_input_class =
+  "w-10 px-1 py-0.5 border border-gray-300 rounded font-mono text-sm text-center";
+
+const MARK_NAMES: Record<Mark, string> = { C: "consonant", M: "manner", V: "vowel", N: "final" };
+
+function PhonologyPanel(props: { phonology: Phonology; set_phonology: (p: Phonology) => void }) {
+  const { phonology, set_phonology } = props;
+  const update = (changes: Partial<Phonology>) => set_phonology({ ...phonology, ...changes });
+  const report = useMemo(() => check_phonology(phonology), [phonology]);
+  const problems = [
+    ...report.duplicates.map((d) => `Same syllable for several IDs — ${d}`),
+    ...report.onset_final_overlap.map((f) => `"${f}" is both an onset and a final`),
+    ...(report.ambiguous_pair_count > 0
+      ? [
+          `${report.ambiguous_pair_count} two-syllable sequences can be heard two ways, e.g. ${report.ambiguous_pairs.join(", ")}`,
+        ]
+      : []),
+  ];
+
+  return (
+    <div className="mb-4 p-3 rounded border border-gray-200 bg-gray-50 text-sm">
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="font-semibold">Phonology playground</h2>
+        <button
+          onClick={() => set_phonology(default_phonology)}
+          className="px-2 py-0.5 text-xs rounded border border-gray-300 bg-white hover:bg-gray-100"
+        >
+          Reset
+        </button>
+      </div>
+      <div className="flex flex-wrap gap-x-8 gap-y-3">
+        <div>
+          <div className="text-xs font-semibold text-gray-600 mb-1">
+            ID digits, fastest → slowest
+          </div>
+          <div className="flex gap-1">
+            {phonology.order.map((mark, i) => (
+              <span
+                key={mark}
+                className="inline-flex items-center px-1.5 py-0.5 rounded border border-gray-300 bg-white"
+              >
+                <span title={`×${4 ** i}`}>
+                  <span className="font-semibold">{mark}</span>{" "}
+                  <span className="text-xs text-gray-500">{MARK_NAMES[mark]}</span>
+                </span>
+                <MoveButtons
+                  index={i}
+                  on_move={(a, b) => update({ order: swap(phonology.order, a, b) })}
+                />
+              </span>
+            ))}
+          </div>
+          <div className="text-xs text-gray-500 mt-1">Grid columns: first two · rows: last two</div>
+        </div>
+        <div>
+          <div className="text-xs font-semibold text-gray-600 mb-1">Onsets (C × M)</div>
+          <table>
+            <thead>
+              <tr>
+                <th />
+                {phonology.places.map((place, c) => (
+                  <th key={place} className="px-0.5 text-xs font-normal text-gray-500">
+                    <div>{place}</div>
+                    <MoveButtons
+                      index={c}
+                      on_move={(a, b) =>
+                        update({
+                          places: swap(phonology.places, a, b),
+                          onsets: phonology.onsets.map((row) => swap(row, a, b)),
+                        })
+                      }
+                    />
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {phonology.onsets.map((row, m) => (
+                <tr key={phonology.manners[m]}>
+                  <td className="pr-1 text-xs text-gray-500 text-right whitespace-nowrap">
+                    {phonology.manners[m]}
+                    <MoveButtons
+                      vertical
+                      index={m}
+                      on_move={(a, b) =>
+                        update({
+                          manners: swap(phonology.manners, a, b),
+                          onsets: swap(phonology.onsets, a, b),
+                        })
+                      }
+                    />
+                  </td>
+                  {row.map((onset, c) => (
+                    <td key={c} className="px-0.5 py-0.5 text-center">
+                      <input
+                        value={onset}
+                        onChange={(e) =>
+                          update({
+                            onsets: phonology.onsets.map((r, mi) =>
+                              mi === m ? r.map((o, ci) => (ci === c ? e.target.value : o)) : r,
+                            ),
+                          })
+                        }
+                        className={sound_input_class}
+                      />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {(["vowels", "finals"] as const).map((key) => (
+          <div key={key}>
+            <div className="text-xs font-semibold text-gray-600 mb-1">
+              {key === "vowels" ? "Vowels (V)" : "Finals (N), blank = none"}
+            </div>
+            <div className="flex gap-1">
+              {phonology[key].map((sound, i) => (
+                <div key={i} className="flex flex-col items-center">
+                  <input
+                    value={sound}
+                    placeholder="∅"
+                    onChange={(e) =>
+                      update({
+                        [key]: phonology[key].map((s, j) => (j === i ? e.target.value : s)),
+                      })
+                    }
+                    className={sound_input_class}
+                  />
+                  <MoveButtons
+                    index={i}
+                    on_move={(a, b) => update({ [key]: swap(phonology[key], a, b) })}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3 text-xs">
+        {problems.length === 0 ? (
+          <span className="text-green-700">
+            ✓ 256 distinct syllables, onsets and finals don't overlap, and every two-syllable
+            sequence splits only one way
+          </span>
+        ) : (
+          <ul className="text-red-700 list-disc list-inside">
+            {problems.map((p) => (
+              <li key={p}>{p}</li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) => void }) {
+  const { phonology } = props;
   const [highlighted, set_highlighted] = useState<SlotGroupKey | null>(null);
+
+  // A column fixes the two fastest digits of the ID and a row the two slowest,
+  // so describe each by the marks those digits select
+  const describe_digits = (id: number, digits: number[]) => {
+    const values = marks_of(id, phonology);
+    const fixed = Object.fromEntries(
+      digits.map((d) => [phonology.order[d]!, values[phonology.order[d]!]]),
+    );
+    return describe_marks(fixed, phonology);
+  };
+  const describe_column = (col: number) => describe_digits(col, [0, 1]);
+  const describe_row = (row: number) => describe_digits(row * 16, [2, 3]);
   const filled = slots.filter((s) => s.roots.length > 0).length;
   const counts = useMemo(() => {
     const result = {} as Record<SlotGroupKey, number>;
-    for (const g of SLOT_GROUPS) result[g.key] = slots.filter((s) => s.groups.includes(g.key)).length;
+    for (const g of SLOT_GROUPS)
+      result[g.key] = slots.filter((s) => s.groups.includes(g.key)).length;
     return result;
   }, []);
 
   return (
     <div className="p-4">
+      <PhonologyPanel {...props} />
       <div className="mb-3 text-sm text-gray-700">
         <span className="font-semibold">{filled}</span> of 256 root IDs filled,{" "}
         <span className="font-semibold">{256 - filled}</span> empty (
@@ -357,16 +588,23 @@ function RootsView() {
           </button>
         ))}
       </div>
-      <div className="grid gap-1" style={{ gridTemplateColumns: "2.5rem repeat(16, minmax(0, 1fr))" }}>
+      <div
+        className="grid gap-1"
+        style={{ gridTemplateColumns: "5rem repeat(16, minmax(0, 1fr))" }}
+      >
         <div />
         {Array.from({ length: 16 }, (_, col) => (
-          <div key={col} className="text-center text-xs text-gray-400">
-            +{col}
+          <div key={col} className="text-center text-xs text-gray-400 leading-tight">
+            <div>+{col}</div>
+            <div className="font-mono text-indigo-700 truncate">{describe_column(col)}</div>
           </div>
         ))}
         {Array.from({ length: 16 }, (_, row) => (
           <React.Fragment key={row}>
-            <div className="text-right pr-1 text-xs text-gray-400 self-center">{row * 16}</div>
+            <div className="text-right pr-1 text-xs text-gray-400 self-center leading-tight">
+              <div>{row * 16}</div>
+              <div className="font-mono text-indigo-700">{describe_row(row)}</div>
+            </div>
             {slots.slice(row * 16, row * 16 + 16).map((slot) => (
               <SlotCell
                 key={slot.id}
@@ -394,6 +632,9 @@ function DictionaryView() {
     window.addEventListener("hashchange", on_hash_change);
     return () => window.removeEventListener("hashchange", on_hash_change);
   }, []);
+
+  const [phonology, set_phonology] = useState<Phonology>(load_phonology);
+  useEffect(() => save_phonology(phonology), [phonology]);
 
   const [search_text, set_search_text] = useState("");
   const [selected_tags, set_selected_tags] = useState<Set<string>>(new Set());
@@ -425,49 +666,51 @@ function DictionaryView() {
   }, [search_text, selected_tags]);
 
   return (
-    <div className="font-sans">
-      <header className="p-4 bg-indigo-600 text-white text-center">
-        <h1 className="text-2xl font-bold">Constructed Language Dictionary</h1>
-        <nav className="mt-2 flex justify-center gap-2 text-sm">
-          {(["words", "roots"] as const).map((v) => (
-            <a
-              key={v}
-              href={`#${v}`}
-              className={`px-3 py-1 rounded-full ${
-                view === v ? "bg-white text-indigo-700" : "text-indigo-100 hover:bg-indigo-500"
-              }`}
-            >
-              {v === "words" ? "Words" : "Roots"}
-            </a>
-          ))}
-        </nav>
-      </header>
-      {data_errors.length > 0 && (
-        <ul className="p-4 bg-red-50 border-b border-red-200 text-sm text-red-700 list-disc list-inside">
-          {data_errors.map((error) => (
-            <li key={error}>{error}</li>
-          ))}
-        </ul>
-      )}
-      {view === "roots" ? (
-        <RootsView />
-      ) : (
-        <>
-          <FilterControls
-            search_text={search_text}
-            on_search_text_change={set_search_text}
-            available_tags={available_tags}
-            selected_tags={selected_tags}
-            on_tag_toggle={handle_tag_toggle}
-          />
-          {filtered_words.length > 0 ? (
-            <WordListDisplay words_to_display={filtered_words} />
-          ) : (
-            <p className="p-4 text-center text-gray-500">No words match your criteria.</p>
-          )}
-        </>
-      )}
-    </div>
+    <PhonologyContext.Provider value={phonology}>
+      <div className="font-sans">
+        <header className="p-4 bg-indigo-600 text-white text-center">
+          <h1 className="text-2xl font-bold">Constructed Language Dictionary</h1>
+          <nav className="mt-2 flex justify-center gap-2 text-sm">
+            {(["words", "roots"] as const).map((v) => (
+              <a
+                key={v}
+                href={`#${v}`}
+                className={`px-3 py-1 rounded-full ${
+                  view === v ? "bg-white text-indigo-700" : "text-indigo-100 hover:bg-indigo-500"
+                }`}
+              >
+                {v === "words" ? "Words" : "Roots"}
+              </a>
+            ))}
+          </nav>
+        </header>
+        {data_errors.length > 0 && (
+          <ul className="p-4 bg-red-50 border-b border-red-200 text-sm text-red-700 list-disc list-inside">
+            {data_errors.map((error) => (
+              <li key={error}>{error}</li>
+            ))}
+          </ul>
+        )}
+        {view === "roots" ? (
+          <RootsView phonology={phonology} set_phonology={set_phonology} />
+        ) : (
+          <>
+            <FilterControls
+              search_text={search_text}
+              on_search_text_change={set_search_text}
+              available_tags={available_tags}
+              selected_tags={selected_tags}
+              on_tag_toggle={handle_tag_toggle}
+            />
+            {filtered_words.length > 0 ? (
+              <WordListDisplay words_to_display={filtered_words} />
+            ) : (
+              <p className="p-4 text-center text-gray-500">No words match your criteria.</p>
+            )}
+          </>
+        )}
+      </div>
+    </PhonologyContext.Provider>
   );
 }
 
