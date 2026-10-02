@@ -496,7 +496,7 @@ function PhonologyPanel(props: { phonology: Phonology; set_phonology: (p: Phonol
         {(["vowels", "finals"] as const).map((key) => (
           <div key={key}>
             <div className="text-xs font-semibold text-gray-600 mb-1">
-              {key === "vowels" ? "Vowels (V)" : "Finals (N), blank = none"}
+              {key === "vowels" ? "Vowels (V)" : "Finals (N): blank = none, a/b = free variants"}
             </div>
             <div className="flex gap-1">
               {phonology[key].map((sound, i) => (

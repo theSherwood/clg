@@ -4,6 +4,8 @@ import { Word, is_root } from "./dict";
 //   C = base consonant (place), M = manner (modifies C), V = vowel, N = final (or nothing)
 // C and M together pick the onset. Onsets and finals share no sounds, so syllable
 // boundaries are always audible, even when N is nothing.
+// A sound written "a/b" (e.g. "r/l") is one phoneme whose realization varies freely by
+// speaker; the first variant is the spelling.
 // Syllables in a compound never change each other's sounds: a compound is pronounced as
 // its roots' syllables, one after another. Stress: a simple rule, TBD.
 
@@ -29,7 +31,7 @@ export const default_phonology: Phonology = {
     ["v", "gh", "dh", "zh"],
   ],
   vowels: ["a", "e", "o", "u"],
-  finals: ["", "m", "n", "r"],
+  finals: ["", "n/m", "r/l", "i"],
   order: ["C", "M", "V", "N"],
 };
 
@@ -43,9 +45,19 @@ export function marks_of(id: number, phonology: Phonology): MarkValues {
   return values;
 }
 
+export function variants_of(sound: string): string[] {
+  return sound.split("/");
+}
+
+export function spelling_of(sound: string): string {
+  return variants_of(sound)[0]!;
+}
+
 export function syllable_of(id: number, phonology: Phonology): string {
   const { C, M, V, N } = marks_of(id, phonology);
-  return phonology.onsets[M]![C]! + phonology.vowels[V]! + phonology.finals[N]!;
+  return [phonology.onsets[M]![C]!, phonology.vowels[V]!, phonology.finals[N]!]
+    .map(spelling_of)
+    .join("");
 }
 
 // A compound is its roots' syllables in sequence, unchanged.
@@ -58,12 +70,12 @@ export function pronounce(word: Word, phonology: Phonology): string {
 export function describe_marks(values: Partial<MarkValues>, phonology: Phonology): string {
   const parts: string[] = [];
   const { C, M, V, N } = values;
-  if (C !== undefined && M !== undefined) parts.push(phonology.onsets[M]![C]!);
+  if (C !== undefined && M !== undefined) parts.push(spelling_of(phonology.onsets[M]![C]!));
   else if (C !== undefined) parts.push(phonology.places[C]!);
   else if (M !== undefined) parts.push(phonology.manners[M]!);
   if (V !== undefined && N !== undefined)
-    parts.push(`-${phonology.vowels[V]}${phonology.finals[N]}`);
-  else if (V !== undefined) parts.push(`-${phonology.vowels[V]}-`);
+    parts.push(`-${spelling_of(phonology.vowels[V]!)}${spelling_of(phonology.finals[N]!)}`);
+  else if (V !== undefined) parts.push(`-${spelling_of(phonology.vowels[V]!)}-`);
   else if (N !== undefined)
     parts.push(phonology.finals[N] ? `-${phonology.finals[N]}` : "no final");
   return parts.join(" ");
@@ -85,8 +97,10 @@ export function check_phonology(phonology: Phonology): PhonologyReport {
     .filter(([, ids]) => ids.length > 1)
     .map(([s, ids]) => `${s}: ${ids.join(", ")}`);
 
-  const onsets = new Set(phonology.onsets.flat());
-  const onset_final_overlap = phonology.finals.filter((f) => f !== "" && onsets.has(f));
+  const onsets = new Set(phonology.onsets.flat().flatMap(variants_of));
+  const onset_final_overlap = phonology.finals
+    .flatMap(variants_of)
+    .filter((f) => f !== "" && onsets.has(f));
 
   // Every way of hearing two syllables back to back should split them the same way
   const syllable_set = new Set(syllables);
@@ -111,7 +125,8 @@ export function check_phonology(phonology: Phonology): PhonologyReport {
   return { duplicates, onset_final_overlap, ambiguous_pairs, ambiguous_pair_count };
 }
 
-const STORAGE_KEY = "clg.phonology";
+// Only edits are stored, so changes to the defaults show up for unedited settings
+const STORAGE_KEY = "clg.phonology.v2";
 
 export function load_phonology(): Phonology {
   try {
@@ -123,6 +138,8 @@ export function load_phonology(): Phonology {
 
 export function save_phonology(phonology: Phonology) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(phonology));
+    const json = JSON.stringify(phonology);
+    if (json === JSON.stringify(default_phonology)) localStorage.removeItem(STORAGE_KEY);
+    else localStorage.setItem(STORAGE_KEY, json);
   } catch {}
 }
