@@ -14,6 +14,8 @@ import {
   is_root,
 } from "./dict";
 
+import { ExamplesView } from "./examples_view";
+import { GrammarView } from "./grammar";
 import { LazyTippy, PhonologyContext, WordPopoverContent, WordPopoverList } from "./word_ui";
 import {
   type Mark,
@@ -591,10 +593,17 @@ function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) 
   );
 }
 
-type View = "words" | "roots";
+const VIEWS = [
+  { key: "words", label: "Words" },
+  { key: "roots", label: "Roots" },
+  { key: "grammar", label: "Grammar" },
+  { key: "examples", label: "Examples" },
+] as const;
+
+type View = (typeof VIEWS)[number]["key"];
 
 function view_from_hash(): View {
-  return window.location.hash === "#roots" ? "roots" : "words";
+  return VIEWS.find((v) => `#${v.key}` === window.location.hash)?.key ?? "words";
 }
 
 function DictionaryView() {
@@ -652,7 +661,7 @@ function DictionaryView() {
         <header className="p-4 bg-indigo-600 text-white text-center">
           <h1 className="text-2xl font-bold">Constructed Language Dictionary</h1>
           <nav className="mt-2 flex justify-center gap-2 text-sm">
-            {(["words", "roots"] as const).map((v) => (
+            {VIEWS.map(({ key: v, label }) => (
               <a
                 key={v}
                 href={`#${v}`}
@@ -660,7 +669,7 @@ function DictionaryView() {
                   view === v ? "bg-white text-indigo-700" : "text-indigo-100 hover:bg-indigo-500"
                 }`}
               >
-                {v === "words" ? "Words" : "Roots"}
+                {label}
               </a>
             ))}
           </nav>
@@ -674,6 +683,10 @@ function DictionaryView() {
         )}
         {view === "roots" ? (
           <RootsView phonology={phonology} set_phonology={set_phonology} />
+        ) : view === "grammar" ? (
+          <GrammarView />
+        ) : view === "examples" ? (
+          <ExamplesView />
         ) : (
           <>
             <FilterControls

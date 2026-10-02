@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Word, is_root, sections } from "./dict";
+import { Word, candidates, dictionary, is_root, sections } from "./dict";
 import { type Phonology, default_phonology, pronounce } from "./phonology";
 import Tippy, { type TippyProps } from "@tippyjs/react";
 import "tippy.js/dist/tippy.css"; // Default tippy styling
@@ -123,3 +123,33 @@ export const WordPopoverContent: React.FC<WordPopoverContentProps> = ({ word, de
     </div>
   );
 };
+
+// An inline reference to a word, showing its current pronunciation. Candidates (no root yet)
+// are marked in amber.
+export function W(props: { w: string }) {
+  const phonology = useContext(PhonologyContext);
+  const word = dictionary.get(props.w);
+  if (!word) {
+    const is_candidate = candidates.some((c) => c.word === props.w);
+    return (
+      <span
+        className={`font-mono text-sm ${is_candidate ? "text-amber-700" : "text-red-600"}`}
+        title={is_candidate ? "Candidate: no root yet" : "Not in the dictionary"}
+      >
+        {props.w}
+      </span>
+    );
+  }
+  return (
+    <LazyTippy
+      content={<WordPopoverContent word={word} depth={0} />}
+      interactive={true}
+      delay={[200, 0]}
+      theme="light"
+    >
+      <span className="font-mono text-sm whitespace-nowrap cursor-default">
+        {word.word} <span className="text-indigo-700">{pronounce(word, phonology)}</span>
+      </span>
+    </LazyTippy>
+  );
+}
