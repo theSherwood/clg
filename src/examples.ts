@@ -284,7 +284,8 @@ const ALIASES: Record<string, string> = {
 
 function lookup(name: string): Pick<Extract<Token, { kind: "word" }>, "word" | "candidate"> {
   const key = ALIASES[name] ?? name;
-  const word = dictionary.get(key) ?? dictionary.get(`_${key}`);
+  // Verbs are named with a (v) suffix, e.g. possess(v)
+  const word = dictionary.get(key) ?? dictionary.get(`_${key}`) ?? dictionary.get(`${key}(v)`);
   if (word) return { word };
   if (/^\d+$/.test(key)) return { word: dictionary.get(`digit_${key}`) };
   const candidate = candidates.find((c) => c.word === key || c.word === `_${key}`);

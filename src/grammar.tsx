@@ -106,9 +106,9 @@ export function GrammarView() {
       </p>
       <Open>
         Saying that something is in a state: “everyone possesses rights”, “all people are free”.
-        After <W w="_verb" />, an axis word is read as its verb form, so <i>&lt;verb&gt; possess</i>{" "}
-        would mean <W w="gain(v)" />. And <W w="is" /> covers both equivalence and having a
-        characteristic.
+        Relation verbs like <W w="possess(v)" /> don't fit the axis pattern, where the verb form
+        means becoming the state (<W w="grow(v)" /> is “become big”). And <W w="is" /> covers both
+        equivalence and having a characteristic.
       </Open>
       <Example meaning="Everyone has the right to life, liberty and security of person.">
         &lt;subject&gt; person all &lt;verb&gt; possess &lt;object&gt; right of life and freedom and

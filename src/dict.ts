@@ -286,7 +286,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { adj: "finite", noun: "finitude(state)", verb: "", adverb: "finitely" },
     { adj: "infinite", noun: "infinity", verb: "", adverb: "infinitely" },
   ],
-  [{}, {}, { adj: "possess", noun: "possession", verb: "gain(v)", adverb: "possessively" }],
+  [{}, {}, { noun: "possession", verb: "possess(v)", adverb: "possessively" }],
 ];
 
 // Axis pairs not yet in axis_words_config, with any word forms and notes collected for them
