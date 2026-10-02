@@ -91,9 +91,10 @@ export function GrammarView() {
         <W w="color" />.
       </p>
       <Open>
-        Are <W w="_subject_of" /> and <W w="_object_of" /> needed, or are <W w="_subject" /> and{" "}
-        <W w="_object" /> enough? The verb specifiers have also been listed as relation?, action,
-        subjunctive and question (<W w="_verb(relation)" />
+        Are <W w="_er" /> (<i>_er eat</i>, “eater”) and <W w="_ee" /> (<i>_ee eat</i>, “what is
+        eaten”) needed, or can <W w="_subject" /> and <W w="_object" /> do the job? The verb
+        specifiers have also been listed as relation?, action, subjunctive and question (
+        <W w="_verb(relation)" />
         ). Should <W w="direction" /> be a domain specifier?
       </Open>
 

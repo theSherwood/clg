@@ -446,6 +446,14 @@ export const axis_backlog: AxisCandidate[] = [
   candidate("foreign_word", { gloss: "foreign word or name" });
   candidate("possession_indicator");
   candidate("interrogative_blank");
+  candidate("_er", {
+    gloss: "the subject of a verb, as a noun: _er eat = eater",
+    notes: 'Was "subject of (verb)". Is this necessary? Can\'t we just use "subject"?',
+  });
+  candidate("_ee", {
+    gloss: "the object of a verb, as a noun: _ee eat = what is eaten",
+    notes: 'Was "object of (verb)". Is this necessary? Can\'t we just use "object"?',
+  });
 }
 
 {
@@ -542,14 +550,6 @@ export const axis_backlog: AxisCandidate[] = [
   candidate("color");
   candidate("finger_number", { gloss: "number (base 10)", notes: "Partial domain" });
   candidate("simple_number", { gloss: "number (base 2)", notes: "Partial domain" });
-  candidate("_subject_of", {
-    gloss: "subject of (verb)",
-    notes: 'Is this necessary? Can\'t we just use "subject"?',
-  });
-  candidate("_object_of", {
-    gloss: "object of (verb)",
-    notes: 'Is this necessary? Can\'t we just use "object"?',
-  });
   candidate("_verb(relation)", {
     gloss: "verb (relation)?",
     notes: "One of the verb specifiers listed as: relation?, action, subjunctive, question",
