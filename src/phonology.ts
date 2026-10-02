@@ -125,11 +125,25 @@ export function check_phonology(phonology: Phonology): PhonologyReport {
   return { duplicates, onset_final_overlap, ambiguous_pairs, ambiguous_pair_count };
 }
 
-// Only edits are stored, so changes to the defaults show up for unedited settings
-const STORAGE_KEY = "clg.phonology.v2";
+// Only the groups of settings that differ from the defaults are stored, so a change to the
+// defaults still shows up in every group you haven't edited. The onset table's labels move
+// with its sounds when you reorder it, so they're stored together.
+const SETTING_GROUPS: (keyof Phonology)[][] = [
+  ["places", "manners", "onsets"],
+  ["vowels"],
+  ["finals"],
+  ["order"],
+];
+const STORAGE_KEY = "clg.phonology.v3";
+const OLD_STORAGE_KEYS = ["clg.phonology", "clg.phonology.v2"];
+
+function pick(phonology: Phonology, keys: (keyof Phonology)[]): Partial<Phonology> {
+  return Object.fromEntries(keys.map((key) => [key, phonology[key]]));
+}
 
 export function load_phonology(): Phonology {
   try {
+    OLD_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) return { ...default_phonology, ...JSON.parse(stored) };
   } catch {}
@@ -138,8 +152,14 @@ export function load_phonology(): Phonology {
 
 export function save_phonology(phonology: Phonology) {
   try {
-    const json = JSON.stringify(phonology);
-    if (json === JSON.stringify(default_phonology)) localStorage.removeItem(STORAGE_KEY);
-    else localStorage.setItem(STORAGE_KEY, json);
+    const edited: Partial<Phonology> = {};
+    for (const group of SETTING_GROUPS) {
+      const values = pick(phonology, group);
+      if (JSON.stringify(values) !== JSON.stringify(pick(default_phonology, group))) {
+        Object.assign(edited, values);
+      }
+    }
+    if (Object.keys(edited).length === 0) localStorage.removeItem(STORAGE_KEY);
+    else localStorage.setItem(STORAGE_KEY, JSON.stringify(edited));
   } catch {}
 }
