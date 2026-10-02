@@ -10,9 +10,33 @@ export const T = {
   axis_word: "axis_word",
 } as const;
 
+export type Tag = keyof typeof T;
+
+// Sections reserve fixed ranges of root IDs for kinds of words, with room to grow, so adding a
+// word to one section never shifts the IDs (and so the sounds) of words in another.
+// The first 128 IDs are core words, and domain words must be among them so they're never
+// ambiguous. The last 128 are shared by partial domains (the digits, in the number domain) and
+// the axis words, which are told apart by domain.
+export const sections = [
+  { key: "domain", label: "Domain words", start: 0, end: 16 },
+  { key: "grammar", label: "Grammar helpers", start: 16, end: 32 },
+  { key: "preposition", label: "Prepositions", start: 32, end: 40 },
+  { key: "pronoun", label: "Pronouns", start: 40, end: 48 },
+  { key: "axis_helper", label: "Axis helpers", start: 48, end: 56 },
+  { key: "content", label: "Content roots", start: 56, end: 128 },
+  { key: "axis", label: "Axis words", start: 128, end: 256 },
+  { key: "digit", label: "Digits", start: 128, end: 256 },
+] as const; // end is exclusive
+
+export type Section = (typeof sections)[number];
+export type SectionKey = Section["key"];
+
 type WordData = {
   id: number;
-  t: (keyof typeof T)[]; // tags
+  t: Tag[]; // tags
+  section: SectionKey;
+  gloss?: string; // fuller English meaning, when the word name is a shorthand
+  notes?: string;
 
   homonyms: Word[];
   uses: Word[];
@@ -44,12 +68,19 @@ function validate_word(word: Word): string | undefined {
   if (id < 0 && parts_length === 0) return `Word ${word.word} has negative ID and no parts`;
 }
 
-let root_index = 0;
+let current_section: Section = sections[0];
+let root_index: number = current_section.start;
+
+function section(key: SectionKey) {
+  current_section = sections.find((s) => s.key === key)!;
+  root_index = current_section.start;
+}
 
 function r(word: string, data: Partial<WordData> = {}): Word {
   let d: WordData = {
     id: -1,
     t: [],
+    section: current_section.key,
     homonyms: [],
     uses: [],
     parts: [],
@@ -58,8 +89,11 @@ function r(word: string, data: Partial<WordData> = {}): Word {
   if (!is_defined(data.id)) {
     d.id = root_index++;
   }
-  if (d.id > 255) {
-    throw new Error(`Word ID ${d.id} is greater than 255`);
+  const { label, start, end } = current_section;
+  if (d.id < start || d.id >= end) {
+    throw new Error(
+      `No room for ${word} (ID ${d.id}) in ${label}, which holds IDs ${start}-${end - 1}`,
+    );
   }
   return new Word(word, d);
 }
@@ -68,6 +102,7 @@ function c(word: string, data: Partial<WordData> & { parts: Required<WordData["p
   let d: WordData = {
     id: -1,
     t: [],
+    section: current_section.key,
     homonyms: [],
     uses: [],
     ...data,
@@ -103,49 +138,85 @@ function cw(word: string, data: Partial<WordData> & { parts: Required<WordData["
   return w;
 }
 
-const axis_words_config = [
+// Words planned for a section that don't have a root yet, so they have no ID or sound
+export type Candidate = { word: string; section: SectionKey; gloss?: string; notes?: string };
+
+export const candidates: Candidate[] = [];
+
+function candidate(word: string, data: Omit<Candidate, "word" | "section"> = {}) {
+  candidates.push({ word, section: current_section.key, ...data });
+}
+
+type AxisWordForms = {
+  noun?: string;
+  adj?: string;
+  verb?: string;
+  adverb?: string;
+  notes?: string;
+};
+
+// [axis, negative, positive]
+const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   [
-    { noun: "size" },
+    {
+      noun: "size",
+      notes:
+        "From axis.csv: positive noun giant; positive verb to grow something (transitive), to grow (intransitive)",
+    },
     { adj: "small", noun: "smallness", verb: "shrink(v)", adverb: "slightly" },
     { adj: "big", noun: "bigness", verb: "grow(v)", adverb: "hugely" },
   ],
   [
-    { noun: "speed" },
+    { noun: "speed", notes: "From axis.csv: positive verb to accelerate (transitive)" },
     { adj: "slow", noun: "slowness", verb: "decelerate(v)", adverb: "slowly" },
     { adj: "fast", noun: "fastness", verb: "accelerate(v)", adverb: "quickly" },
   ],
   [
-    { noun: "adaptability" },
+    {
+      noun: "adaptability",
+      notes: "From axis.csv (as dynamism: static / dynamic): positive verb change? (transitive)",
+    },
     { adj: "static", noun: "stability", verb: "stabilize(v)", adverb: "statically" },
     { adj: "dynamic", noun: "dynamism", verb: "adapt(v)", adverb: "dynamically" },
   ],
   [
-    { noun: "complexity(axis)" },
+    { noun: "complexity(axis)", notes: "From axis.csv: positive verb simplify (transitive)" },
     { adj: "complex", noun: "complexity(state)", verb: "complicate(v)", adverb: "complexly" },
     { adj: "simple", noun: "simplicity", verb: "simplify(v)", adverb: "simply" },
   ],
   [
-    { noun: "strength(axis)" },
+    { noun: "strength(axis)", notes: "From axis.csv: positive verb strengthen (transitive)" },
     { adj: "weak", noun: "weakness", verb: "weaken(v)", adverb: "weakly" },
     { adj: "strong", noun: "strength(state)", verb: "strengthen(v)", adverb: "strongly" },
   ],
   [
-    { noun: "quantity" },
+    {
+      noun: "quantity",
+      notes:
+        "From axis.csv (as quantity?): negative noun poverty, negative verb to decrease (transitive); positive noun abundance, positive verb to increase (transitive)",
+    },
     { adj: "less", noun: "scarcity", verb: "decrease(v)", adverb: "barely" },
     { adj: "more", noun: "abundance", verb: "increase(v)", adverb: "abundantly" },
   ],
   [
-    { noun: "orderliness" },
+    {
+      noun: "orderliness",
+      notes:
+        "From axis.csv (as orderliness?: chaos / order): positive noun order, positive verb organize (transitive), positive adjective organized",
+    },
     { adj: "chaotic", noun: "chaos", verb: "disorganize(v)", adverb: "chaotically" },
     { adj: "organized", noun: "order", verb: "organize(v)", adverb: "orderly" },
   ],
   [
-    { noun: "initiative" },
+    { noun: "initiative", notes: "From axis.csv (as passivity?: passive / agentic)" },
     { adj: "passive", noun: "passivity", verb: "lull(v)", adverb: "passively" },
     { adj: "agentic", noun: "agency", verb: "act(v)", adverb: "agentically" },
   ],
   [
-    { noun: "continuity" },
+    {
+      noun: "continuity",
+      notes: "From axis.csv: positive verb discretize (transitive); positive adjective discrete?",
+    },
     { adj: "continuous", noun: "continuum", verb: "smear(v)", adverb: "continuously" },
     { adj: "discrete", noun: "discreteness", verb: "demarcate(v)", adverb: "choppily" },
   ],
@@ -155,27 +226,38 @@ const axis_words_config = [
     { adj: "all", noun: "everything", verb: "fill(v)", adverb: "completely" },
   ],
   [
-    { noun: "openness(axis)" },
+    { noun: "openness(axis)", notes: "From axis.csv: positive verb to open (transitive)" },
     { adj: "closed", noun: "closure", verb: "close(v)", adverb: "tightly" },
     { adj: "open", noun: "openness(state)", verb: "open(v)", adverb: "loosely" },
   ],
   [
-    { noun: "granularity" },
+    {
+      noun: "granularity",
+      notes: "From axis.csv (as rough / smooth): positive verb to smooth (transitive)",
+    },
     { adj: "coarse", noun: "coarseness", verb: "roughen(v)", adverb: "roughly" },
     { adj: "smooth", noun: "smoothness", verb: "smooth(v)", adverb: "smoothly" },
   ],
   [
-    { noun: "coercion(axis)" },
+    {
+      noun: "coercion(axis)",
+      notes:
+        "From axis.csv (as force / choose): positive verb choose? (transitive); positive adjective selected",
+    },
     { adj: "forced", noun: "coercion(state)", verb: "force(v)", adverb: "under_duress" },
     { adj: "free", noun: "freedom", verb: "free(v)", adverb: "freely" },
   ],
   [
-    { noun: "abstraction(axis)" },
+    {
+      noun: "abstraction(axis)",
+      notes:
+        "From axis.csv: positive noun abstraction, positive verb generalize (transitive), positive adjective general",
+    },
     { adj: "concrete", noun: "concreteness", verb: "reify(v)", adverb: "concretely" },
     { adj: "abstract", noun: "abstraction(state)", verb: "abstract(v)", adverb: "in_general" },
   ],
   [
-    { noun: "relativity(axis)" },
+    { noun: "relativity(axis)", notes: "Overlap with concrete/abstract" },
     { adj: "relative", noun: "relativity(state)", verb: "", adverb: "relatively" },
     { adj: "absolute", noun: "absolute(state)", verb: "", adverb: "absolutely" },
   ],
@@ -195,7 +277,7 @@ const axis_words_config = [
     },
   ],
   [
-    { noun: "internality(axis)" },
+    { noun: "internality(axis)", notes: "Duplicate of in/out" },
     { adj: "internal", noun: "internality(state)", verb: "internalize(v)", adverb: "internally" },
     { adj: "external", noun: "externality", verb: "externalize(v)", adverb: "externally" },
   ],
@@ -206,166 +288,243 @@ const axis_words_config = [
   ],
 ];
 
-// prettier-ignore
-const axis_words = [
-  // axis_of           negative,        positive,        max_negative,   min_negative,       neutral,          min_positive,    max_positive,
-  [             ,      "rigid",         "fluid",         ],
-  [             ,      "implicit",      "explicit",      ],
-  [             ,      "internal",      "external",      ],
-  [             ,      "finite",        "infinite",      ],
-  [             ,      "accidental",    "essential",     ],
-  [             ,      "pragmatic",     "ideal",         ],
-  [             ,      "flat",          "nested",        ],
-  [             ,      "intuitive",     "analytical",    ],
-  [             ,      "random",        "determined",    ],
-  [             ,      "qualitative",   "quantitative",  ],
-  [             ,      "linear",        "cyclical",      ],
-  [             ,      "reductionist",  "holistic",      ],
-  [             ,      "near",          "far",           ],
-  [             ,      "loud",          "quiet",         ],
-  [             ,      "dull",          "sharp",         ],
-  [             ,      "dry",           "wet",           ],
-  [             ,      "thin",          "thick",         ],
-  [             ,      "low",           "high",          ],
-  [             ,      "cold",          "hot",           ],
-  [             ,      "dark",          "bright",        ],
-  [             ,      "soft",          "hard",          ],
-  [             ,      "light",         "heavy",         ],
-  [             ,      "hate",          "love",          ],
-  [             ,      "false",         "true",          ],
-  [             ,      "past",          "future",        ],
-  [             ,      "lose",          "win",           ],
-  [             ,      "fail",          "succeed",       ],
-  [             ,      "consume",       "produce",       ],
-  [             ,      "sell",          "buy",           ],
-  [             ,      "receive",       "send",          ],
-  [             ,      "fear",          "hope",          ],
-  [             ,      "doubt",         "believe",       ],
-  [             ,      "dead",          "alive",         ],
-  [             ,      "here",          "there",         ],
-  [             ,      "in",            "out",           ],
-  [             ,      "above",         "below",         ],
-  [             ,      "left",          "right",         ],
-  [             ,      "down",          "up",            ],
-  [             ,      "behind",        "ahead",         ],
-  [             ,      "aft",           "fore",          ],
-  [             ,      "insert",        "withdraw",      ],
-  [             ,      "serve",         "be_in_command", ],
-  [             ,      "uncommon",      "common",        ],
-  [             ,      "inanimate",     "animate",       ],
-  [             ,      "idleness",      "work",          ],
-  [             ,      "fleeting",      "persistent",    ],
-  [             ,      "top",           "bottom",        ],
-  [             ,      "natural",       "artificial",    ],
-  [             ,      "hide",          "search",        ],
-  [             ,      "same",          "different",     ],
-  [             ,      "center",        "frontier",      ],
-  [             ,      "ignorance",     "knowledge",     ],
-  [             ,      "forget",        "learn",         ],
-  [             ,      "few",           "many",          ],
-  [             ,      "female",        "male",          ],
-  [             ,      "wonky",         "plumb",         ],
-  [             ,      "bad",           "good",          ],
-  [             ,      "pain",          "pleasure",      ],
-  [             ,      "abhor",         "desire",        ],
-  [             ,      "immaterial",    "material",      ],
-  [             ,      "difficult",     "easy",          ],
-  [             ,      "back",          "front",         ],
-  [             ,      "reap",          "sow",           ],
-  [             ,      "normal",        "rare",          ],
-  [             ,      "round",         "angle",         ],
-  [             ,      "old",           "new",           ],
-  [             ,      "take",          "give",          ],
-  [             ,      "sleep",         "wake",          ],
-  [             ,      "short",         "long",          ],
-  [             ,      "narrow",        "wide",          ],
-  [             ,      "interior",      "surface",       ],
-  [             ,      "destroy",       "create",        ],
-  [             ,      "ugly",          "beautiful",     ],
-  [             ,      "come",          "go",            ],
-  [             ,      "hole",          "mound",         ],
-  [             ,      "empty",         "full",          ],
-  [             ,      "disguise",      "show",          ],
-  [             ,      "war",           "peace",         ],
-  [             ,      "deflate",       "inflate",       ],
-  [             ,      "exclusive",     "inclusive",     ],
-  [             ,      "stupid",        "smart",         ],
-  [             ,      "oblique",       "direct",        ],
-  [             ,      "repel",         "attract",       ],
-  [             ,      "divide",        "group",         ],
-  [             ,      "cheap",         "expensive",     ],
-  [             ,      "attack",        "defend",        ],
-  [             ,      "neglect",       "steward",       ],
-  [             ,      "unimportant",   "important",     ],
-  [             ,      "break",         "mend",          ],
-  [             ,      "part",          "whole",         ],
-  [             ,      "ancestor",      "descendant",    ],
-  [             ,      "free",          "bound",         ],
-  [             ,      "profane",       "sacred",        ],
-  [             ,      "south",         "north",         ],
-  [             ,      "west",          "east",          ],
-  [             ,      "obey",          "command",       ],
-  [             ,      "submit",        "resist",        ],
-  [             ,      "release",       "contain",       ],
-  [             ,      "irregular",     "regular",       ],
-  [             ,      "succumb",       "withstand",     ],
-  [             ,      "connect",       "disconnect",    ],
-  [             ,      "allow",         "compel",        ],
-  [             ,      "abstain",       "participate",   ],
-  [             ,      "start",         "stop",          ],
-  [             ,      "privilege",     "duty",          ],
-  [             ,      "forbid",        "recommend",     ],
-] as const;
+// Axis pairs not yet in axis_words_config, with any word forms and notes collected for them
+type AxisForms = {
+  noun?: string;
+  verb_transitive?: string;
+  verb_intransitive?: string;
+  adj?: string;
+};
 
+export type AxisCandidate = {
+  negative: string;
+  positive: string;
+  negative_forms?: AxisForms;
+  positive_forms?: AxisForms;
+  notes?: string;
+};
+
+// prettier-ignore
+export const axis_backlog: AxisCandidate[] = [
+  { negative: "accidental", positive: "essential" },
+  { negative: "pragmatic", positive: "ideal" },
+  { negative: "flat", positive: "nested", negative_forms: { verb_transitive: "flatten" } },
+  { negative: "intuitive", positive: "analytical", negative_forms: { noun: "instinct", verb_transitive: "intuit" }, positive_forms: { noun: "analysis", verb_transitive: "analyze" } },
+  { negative: "random", positive: "determined", negative_forms: { verb_transitive: "to randomize" } },
+  { negative: "qualitative", positive: "quantitative", positive_forms: { verb_transitive: "to enumerate" } },
+  { negative: "linear", positive: "cyclical", negative_forms: { noun: "line / sequence", verb_transitive: "to linearize" }, positive_forms: { noun: "cycle", verb_transitive: "to curl" } },
+  { negative: "reductionist", positive: "holistic", negative_forms: { noun: "reduction", adj: "reduced" }, positive_forms: { noun: "emergence", adj: "emergent" } },
+  { negative: "near", positive: "far" },
+  { negative: "loud", positive: "quiet" },
+  { negative: "dull", positive: "sharp", negative_forms: { verb_transitive: "to dull something", verb_intransitive: "to become dull", adj: "dull" }, positive_forms: { verb_transitive: "to sharpen something", verb_intransitive: "to become sharp", adj: "sharp" } },
+  { negative: "dry", positive: "wet" },
+  { negative: "thin", positive: "thick" },
+  { negative: "low", positive: "high", negative_forms: { noun: "deep", verb_transitive: "to lower / to drop", verb_intransitive: "to lower oneself / to bow / to crouch / to postrate oneself / to descend", adj: "low" }, positive_forms: { noun: "height", verb_transitive: "to lift", verb_intransitive: "to rise", adj: "high" } },
+  { negative: "cold", positive: "hot", negative_forms: { verb_transitive: "to chill", verb_intransitive: "to get colder" }, positive_forms: { verb_transitive: "to heat", verb_intransitive: "to get warmer" } },
+  { negative: "dark", positive: "bright", negative_forms: { noun: "darkness", verb_transitive: "to darken", adj: "dark" }, positive_forms: { noun: "light", verb_transitive: "to brighten", adj: "bright" } },
+  { negative: "soft", positive: "hard" },
+  { negative: "light", positive: "heavy" },
+  { negative: "hate", positive: "love" },
+  { negative: "false", positive: "true" },
+  { negative: "past", positive: "future" },
+  { negative: "lose", positive: "win" },
+  { negative: "fail", positive: "succeed" },
+  { negative: "consume", positive: "produce" },
+  { negative: "sell", positive: "buy" },
+  { negative: "receive", positive: "send", notes: "duplicate of come/go" },
+  { negative: "fear", positive: "hope" },
+  { negative: "doubt", positive: "believe" },
+  { negative: "dead", positive: "alive", negative_forms: { verb_transitive: "to kill", verb_intransitive: "to die", adj: "dead" }, positive_forms: { verb_transitive: "to make alive / to resurrect", verb_intransitive: "to live", adj: "alive" } },
+  { negative: "here", positive: "there", notes: "duplicate of come/go in the verb forms?" },
+  { negative: "in", positive: "out", negative_forms: { verb_transitive: "to ingest / to bring in", verb_intransitive: "to go inside" }, positive_forms: { verb_transitive: "to eject / to cast out", verb_intransitive: "to emerge" } },
+  { negative: "above", positive: "below" },
+  { negative: "left", positive: "right" },
+  { negative: "down", positive: "up" },
+  { negative: "behind", positive: "ahead", notes: "duplicate of back/front?" },
+  { negative: "aft", positive: "fore", notes: "duplicate of behind/ahead?" },
+  { negative: "insert", positive: "withdraw" },
+  { negative: "serve", positive: "be_in_command" },
+  { negative: "uncommon", positive: "common" },
+  { negative: "inanimate", positive: "animate" },
+  { negative: "idleness", positive: "work" },
+  { negative: "fleeting", positive: "persistent" },
+  { negative: "top", positive: "bottom", notes: "duplicate of low/high? Expressible as max-low and max-high?" },
+  { negative: "natural", positive: "artificial" },
+  { negative: "hide", positive: "search", notes: "Maybe the opposite of \"search\" should be \"lose\"?" },
+  { negative: "same", positive: "different" },
+  { negative: "center", positive: "frontier" },
+  { negative: "ignorance", positive: "knowledge", negative_forms: { noun: "ignorance", verb_transitive: "to ignore", adj: "ignorant" }, positive_forms: { noun: "knowledge", verb_transitive: "to know", adj: "knowledgeable" } },
+  { negative: "forget", positive: "learn" },
+  { negative: "few", positive: "many", notes: "none - very few - few - some - many - most - all" },
+  { negative: "female", positive: "male" },
+  { negative: "wonky", positive: "plumb" },
+  { negative: "bad", positive: "good" },
+  { negative: "pain", positive: "pleasure", negative_forms: { verb_transitive: "torment" }, positive_forms: { verb_transitive: "entertain", adj: "fun/pleasurable" } },
+  { negative: "abhor", positive: "desire", positive_forms: { verb_transitive: "to desire", adj: "desirable" }, notes: "axis.csv also had revulsion / desire" },
+  { negative: "immaterial", positive: "material", negative_forms: { verb_transitive: "dissolve / evaporate / dematerialize" }, positive_forms: { noun: "physical stuff", verb_transitive: "materialize", adj: "material" } },
+  { negative: "difficult", positive: "easy", positive_forms: { verb_transitive: "to enable? / to facilitate?" } },
+  { negative: "back", positive: "front" },
+  { negative: "reap", positive: "sow" },
+  { negative: "normal", positive: "rare" },
+  { negative: "round", positive: "angle", negative_forms: { verb_transitive: "to round" } },
+  { negative: "old", positive: "new", negative_forms: { verb_transitive: "age" }, positive_forms: { verb_transitive: "rejuvenate" } },
+  { negative: "take", positive: "give", negative_forms: { verb_transitive: "take" }, positive_forms: { noun: "gift", verb_transitive: "give" } },
+  { negative: "sleep", positive: "wake", negative_forms: { verb_transitive: "sleep" } },
+  { negative: "short", positive: "long", negative_forms: { verb_transitive: "shorten" }, positive_forms: { verb_transitive: "lengthen" } },
+  { negative: "narrow", positive: "wide" },
+  { negative: "interior", positive: "surface", negative_forms: { verb_transitive: "to internalize" } },
+  { negative: "destroy", positive: "create", positive_forms: { verb_transitive: "to create", verb_intransitive: "to self-actualize? / to become" } },
+  { negative: "ugly", positive: "beautiful", negative_forms: { verb_transitive: "uglify / mar / disfigure" }, positive_forms: { verb_transitive: "beautify" } },
+  { negative: "come", positive: "go", negative_forms: { noun: "departure", verb_transitive: "to bring", verb_intransitive: "to come" }, positive_forms: { noun: "arrival", verb_transitive: "to send", verb_intransitive: "to go" }, notes: "come - stay - go" },
+  { negative: "hole", positive: "mound", negative_forms: { verb_transitive: "dig" }, positive_forms: { verb_transitive: "heap up" }, notes: "hole - flat - mound / to dig - to flatten - to heap" },
+  { negative: "empty", positive: "full", negative_forms: { verb_transitive: "to empty" }, positive_forms: { verb_transitive: "to fill", adj: "full" } },
+  { negative: "disguise", positive: "show", negative_forms: { verb_transitive: "to disguise / to encrypt" }, positive_forms: { noun: "demonstration", verb_transitive: "to show / to demonstrate", verb_intransitive: "to appear" } },
+  { negative: "war", positive: "peace", negative_forms: { verb_transitive: "to fight", adj: "warlike" }, positive_forms: { verb_transitive: "to make peace", adj: "peaceful / pacifist" } },
+  { negative: "deflate", positive: "inflate" },
+  { negative: "exclusive", positive: "inclusive" },
+  { negative: "stupid", positive: "smart" },
+  { negative: "oblique", positive: "direct" },
+  { negative: "repel", positive: "attract" },
+  { negative: "divide", positive: "group", negative_forms: { verb_transitive: "to divide / to partition", adj: "atomized / divided" }, positive_forms: { noun: "group / community", verb_transitive: "to gather / to group / to collect", adj: "united" }, notes: "There's some relationship between break - mend, part - whole, and divide - group. I'm not yet sure what it is." },
+  { negative: "cheap", positive: "expensive" },
+  { negative: "attack", positive: "defend" },
+  { negative: "neglect", positive: "steward" },
+  { negative: "unimportant", positive: "important" },
+  { negative: "break", positive: "mend", notes: "There's some relationship between break - mend, part - whole, and divide - group. I'm not yet sure what it is." },
+  { negative: "part", positive: "whole", notes: "There's some relationship between break - mend, part - whole, and divide - group. I'm not yet sure what it is." },
+  { negative: "ancestor", positive: "descendant", notes: "ancestor - parent - ? - child - descendent" },
+  { negative: "free", positive: "bound", negative_forms: { verb_transitive: "to liberate" }, positive_forms: { verb_transitive: "to constrain / to bind / to enslave" }, notes: "\"free\" is already the positive adjective of the coercion axis" },
+  { negative: "profane", positive: "sacred" },
+  { negative: "south", positive: "north" },
+  { negative: "west", positive: "east" },
+  { negative: "obey", positive: "command", negative_forms: { verb_transitive: "to obey" }, positive_forms: { verb_transitive: "to command / to rule / to govern" } },
+  { negative: "submit", positive: "resist", negative_forms: { verb_transitive: "to conduct / to submit" }, positive_forms: { verb_transitive: "to resist / to thwart" } },
+  { negative: "release", positive: "contain", negative_forms: { noun: "liberator", verb_transitive: "to release" }, positive_forms: { noun: "container", verb_transitive: "to contain" } },
+  { negative: "irregular", positive: "regular", negative_forms: { verb_transitive: "to irregulate" }, positive_forms: { verb_transitive: "to regulate / to standardize" }, notes: "exception - irregular - ? - regular - exemplar" },
+  { negative: "succumb", positive: "withstand", notes: "Are these fundamental enough?" },
+  { negative: "connect", positive: "disconnect", negative_forms: { verb_transitive: "to connect" }, positive_forms: { verb_transitive: "to disconnect" }, notes: "nouns: cyclic graph - dag - tree - list - node / alternatively, maybe it is better to have a \"node\" and use magnitude to raise it to list, tree, dag, cyclic graph" },
+  { negative: "allow", positive: "compel", notes: "axis.csv had allow / force" },
+  { negative: "abstain", positive: "participate" },
+  { negative: "start", positive: "stop" },
+  { negative: "privilege", positive: "duty", notes: "axis.csv had privilege, right / obligation, duty" },
+  { negative: "forbid", positive: "recommend" },
+];
+
+// Domain words. The first six mark the noun or verb form of what follows; the adjective and
+// adverb forms come from position instead (a modifier trailing a noun or verb).
 {
-  cr("_subject", { t: [T.grammar_helper] });
-  cr("_object", { t: [T.grammar_helper] });
-  cr("_verb", { t: [T.grammar_helper] });
-  cr("_verb(prescriptive)", { t: [T.grammar_helper] });
-  cr("_verb(interrogative)", { t: [T.grammar_helper] });
-  cr("_gerund", { t: [T.grammar_helper] });
+  section("domain");
+  const domain_word: Tag[] = [T.grammar_helper, T.part_of_speech_specifier, T.domain_specifier];
+  const verb_word: Tag[] = [...domain_word, T.verb_specifier];
+  cr("_subject", { t: domain_word });
+  cr("_object", { t: domain_word });
+  cr("_verb", { t: verb_word });
+  cr("_verb(prescriptive)", { t: verb_word, gloss: "verb (prescriptive / imperative)" });
+  cr("_verb(interrogative)", { t: verb_word });
+  cr("_gerund", { t: verb_word });
+  cr("_number", {
+    t: [T.domain_specifier],
+    gloss: "number domain",
+    notes: "What follows is read in the number domain, so roots 128-255 are digits",
+  });
+
+  candidate("magnitude", {
+    notes:
+      "Scales a number like scientific notation: finger number 2 magnitude 3 is 2000. Takes one argument. Base-agnostic",
+  });
+  candidate("color");
+  candidate("finger_number", { gloss: "number (base 10)", notes: "Partial domain" });
+  candidate("simple_number", { gloss: "number (base 2)", notes: "Partial domain" });
+  candidate("_subject_of", {
+    gloss: "subject of (verb)",
+    notes: 'Is this necessary? Can\'t we just use "subject"?',
+  });
+  candidate("_object_of", {
+    gloss: "object of (verb)",
+    notes: 'Is this necessary? Can\'t we just use "object"?',
+  });
+  candidate("_verb(relation)", {
+    gloss: "verb (relation)?",
+    notes: "One of the verb specifiers listed as: relation?, action, subjunctive, question",
+  });
 }
 
-// prepositions
 {
-  cr("with", { t: [T.preposition] });
+  section("grammar");
+  cr("not", {
+    t: [T.grammar_helper],
+    gloss: "complement / negative / not",
+    notes: "Complement: use for axis words",
+  });
+  cr("and", { t: [T.grammar_helper] });
+  cr("or", { t: [T.grammar_helper], notes: '"xor" through "or-exclusive"' });
+  cr("if", { t: [T.grammar_helper], notes: '"iff" through "if-exclusive"' });
+
+  candidate("open_paren", { gloss: "clause start" });
+  candidate("close_paren", { gloss: "clause end" });
+  candidate("preposition_ender", {
+    notes: "Closes a prepositional phrase: <in> value and privilege </in>",
+  });
+  candidate("clause_and", { notes: "And between clauses, as opposed to list_and" });
+  candidate("list_and", { notes: "And between list items, as opposed to clause_and" });
+  candidate("foreign_word", { gloss: "foreign word or name" });
+  candidate("possession_indicator");
+  candidate("interrogative_blank");
+}
+
+{
+  section("preposition");
+  cr("with", {
+    t: [T.preposition],
+    notes: 'Is it worth splitting this into "instrumentality" and "comingling"?',
+  });
   cr("to", { t: [T.preposition] });
   cr("from", { t: [T.preposition] });
   cr("by", { t: [T.preposition] });
-  cr("for", { t: [T.preposition] });
-  cr("in_of_about", { t: [T.preposition] });
-}
-
-// pronouns
-{
-  cr("pronoun(first_person)", { t: [T.pronoun] });
-  cr("pronoun(second_person)", { t: [T.pronoun] });
-  cr("pronoun(third_person)", { t: [T.pronoun] });
-  cr("this", { t: [T.pronoun] });
-  cr("that", { t: [T.pronoun] });
+  cr("for", {
+    t: [T.preposition],
+    notes: 'Is it worth splitting this into "on behalf of" and "for the purpose of"?',
+  });
+  cr("in_of_about", {
+    t: [T.preposition],
+    gloss: "in / of / about / with regards to / in terms of",
+  });
 }
 
 {
-  cr("not", { t: [T.grammar_helper] });
-  cr("and", { t: [T.grammar_helper] });
-  cr("or", { t: [T.grammar_helper] });
-  cr("if", { t: [T.grammar_helper] });
+  section("pronoun");
+  cr("pronoun(first_person)", {
+    t: [T.pronoun],
+    notes:
+      '"me" through "first_person-singular", "we" through "first_person-plural"; also "first_person-plural-inclusive" and "first_person-plural-exclusive"',
+  });
+  cr("pronoun(second_person)", {
+    t: [T.pronoun],
+    notes: '"you" through "second_person-singular", "y\'all" through "second_person-plural"',
+  });
+  cr("pronoun(third_person)", {
+    t: [T.pronoun],
+    notes: "Plural and gender/sex can be specified optionally",
+  });
+  cr("this", { t: [T.pronoun], notes: 'Could this be "it-near"?' });
+  cr("that", { t: [T.pronoun], notes: 'Could this be "it-far"?' });
 }
 
-// axis helpers
+// axis helpers: axis_of plus a seven-step scale
 {
+  section("axis_helper");
   cr("axis_of", { t: [T.axis_helper] });
   cr("max_negative", { t: [T.axis_helper] });
-  cr("negative", { t: [T.axis_helper] });
-  cr("min_negative", { t: [T.axis_helper] });
+  cr("negative", { t: [T.axis_helper], notes: 'Also called "very-neg"' });
+  cr("min_negative", { t: [T.axis_helper], gloss: "minor negative" });
   cr("neutral", { t: [T.axis_helper] });
-  cr("min_positive", { t: [T.axis_helper] });
-  cr("positive", { t: [T.axis_helper] });
+  cr("min_positive", { t: [T.axis_helper], gloss: "minor positive" });
+  cr("positive", { t: [T.axis_helper], notes: 'Also called "very-pos"' });
   cr("max_positive", { t: [T.axis_helper] });
 }
 
-// misc
 {
+  section("content");
   cr("singular");
   cr("plural");
   cr("land");
@@ -373,7 +532,7 @@ const axis_words = [
   cr("rod");
   cr("person");
   cr("saying");
-  cr("feel");
+  cr("feel", { gloss: "feel / sense" });
   cr("money");
   cr("place");
   cr("container");
@@ -385,7 +544,7 @@ const axis_words = [
   cr("sound");
   cr("touch");
   cr("do");
-  cr("body");
+  cr("body", { gloss: "body / organ" });
   cr("mark");
   cr("symbol");
   cr("hand");
@@ -395,14 +554,65 @@ const axis_words = [
   cr("torso");
   cr("arm");
   cr("leg");
+
+  candidate("prehensile?");
+  candidate("information", { gloss: "information / data" });
+  candidate("net", { gloss: "net / graph" });
+  candidate("image", { gloss: "image / projection" });
+  candidate("simulation", { gloss: "simulation / model" });
+  candidate("original");
+  candidate("un-", { notes: "?" });
+  candidate("re-", { notes: "?" });
+  candidate("meta-", { notes: 'Can this be achieved with "magnitude"?' });
+  candidate("mind");
+  candidate("machine");
+  candidate("node", {
+    notes:
+      'Use "magnitude" to lift "node" to list, tree, dag, cyclic graph. The downside is that it takes 3 syllables to say each of those',
+  });
+  candidate("sex");
+  candidate("choose");
+  candidate("turn");
+  candidate("direction", {
+    notes:
+      "Should this be a domain specifier? up - down, forward - back, left - right, north - south, east - west, in - out, future - past",
+  });
+  candidate("shape");
+  candidate("count");
+  candidate("earth");
+  candidate("sun");
+  candidate("moon");
+  candidate("star");
+  candidate("planet");
+  candidate("hour");
+  candidate("minute");
+  candidate("second");
+  candidate("week");
+  candidate("month");
+  candidate("year");
+  candidate("exchange", { notes: "Maybe possible on a buy/sell spectrum" });
+  candidate("value");
+
+  // Groups of related concepts
+  for (const group of [
+    ["plasma", "gas", "liquid", "solid"],
+    ["number(noun)", "symbol"],
+    ["thing"],
+    ["width", "height", "depth"],
+    ["yellow", "red", "blue"],
+    ["sound", "taste", "touch"],
+    ["animal", "plant", "fungus"],
+  ]) {
+    for (const word of group) {
+      if (dictionary.has(word)) continue; // already a root
+      candidate(word, group.length > 1 ? { notes: `Group: ${group.join(", ")}` } : {});
+    }
+  }
 }
 
-// digit domain
+// digits: the number domain reuses the last 128 IDs
 {
-  if (root_index > 128) {
-    throw new Error(`General roots overflow into reserved IDs 128-255 (next ID ${root_index})`);
-  }
-  root_index = 128;
+  section("digit");
   for (let i = 0; i < 128; i++) {
     cr(`digit_${i}`, { domain: "number" });
   }
@@ -410,7 +620,7 @@ const axis_words = [
 
 // axis words
 {
-  root_index = 128;
+  section("axis");
 
   const axis_of_word = dictionary.get("axis_of");
   const negative_word = dictionary.get("negative");
@@ -439,7 +649,7 @@ const axis_words = [
   for (let word_set of axis_words_config) {
     const [axis, negative, positive] = word_set;
 
-    const { noun: axis_noun } = axis ?? {}
+    const { noun: axis_noun, notes: axis_notes } = axis ?? {}
     const {
       noun: negative_noun,
       adj: negative_adj,
@@ -471,9 +681,133 @@ const axis_words = [
     if (negative_verb)   cw(negative_verb, { t: [T.axis_word], domain: "verb", parts: [negative_word, positive_of(positive_verb_word, negative_verb)] });
     if (negative_adverb) cw(negative_adverb, { t: [T.axis_word], domain: "adverb", parts: [negative_word, positive_of(positive_adverb_word, negative_adverb)] });
 
-    if (axis_noun)       cw(axis_noun, { t: [T.axis_word], domain: "noun", parts: [axis_of_word, positive_of(positive_noun_word, axis_noun)] });
+    if (axis_noun)       cw(axis_noun, { t: [T.axis_word], domain: "noun", notes: axis_notes, parts: [axis_of_word, positive_of(positive_noun_word, axis_noun)] });
   }
 }
+
+// Toki Pona words and their meanings, for comparison
+export const toki_pona_reference: [toki_pona: string, english: string][] = [
+  ["a/kin", "[emphasis]"],
+  ["kule", "color"],
+  ["mute", "many, very"],
+  ["sewi", "top, high, holy"],
+  ["akesi", "reptile, amphibian"],
+  ["kulupu", "group"],
+  ["nanpa", "number"],
+  ["sijelo", "body"],
+  ["ala", "no, nothing"],
+  ["kute", "listen, ear"],
+  ["nasa", "strange, weird"],
+  ["sike", "circle"],
+  ["alasa", "hunt, search"],
+  ["la", "[context]"],
+  ["nasin", "way, path"],
+  ["sin", "new, again"],
+  ["ale", "all, everything"],
+  ["lape", "sleep"],
+  ["nena", "bump, nose"],
+  ["sina", "you"],
+  ["anpa", "low"],
+  ["laso", "blue, green"],
+  ["ni", "this, that"],
+  ["sinpin", "face, wall"],
+  ["ante", "different"],
+  ["lawa", "head, rule"],
+  ["nimi", "name, word"],
+  ["sitelen", "picture, write"],
+  ["anu", "or"],
+  ["len", "clothing, cover"],
+  ["noka", "leg, foot"],
+  ["sona", "know"],
+  ["awen", "keep, stay"],
+  ["lete", "cold"],
+  ["o", "[wish/command]"],
+  ["soweli", "animal"],
+  ["e", "[direct object]"],
+  ["li", "[predicate]"],
+  ["olin", "love"],
+  ["suli", "big, important"],
+  ["en", "[and]"],
+  ["lili", "small"],
+  ["ona", "he/she/it/they"],
+  ["suno", "sun, light"],
+  ["esun", "shop, trade"],
+  ["linja", "line"],
+  ["open", "start, open"],
+  ["supa", "surface, table"],
+  ["ijo", "thing"],
+  ["lipu", "flat, page, book"],
+  ["pakala", "broken"],
+  ["suwi", "sweet, cute"],
+  ["ike", "bad"],
+  ["loje", "red"],
+  ["pali", "do, make, work"],
+  ["tan", "from, because"],
+  ["ilo", "tool"],
+  ["lon", "in/at; true"],
+  ["palisa", "stick, rod"],
+  ["taso", "but; only"],
+  ["insa", "inside"],
+  ["luka", "hand, arm"],
+  ["pan", "bread, grain"],
+  ["tawa", "go, move; to"],
+  ["jaki", "gross, trash"],
+  ["lukin", "see, eye; try to"],
+  ["pana", "give"],
+  ["telo", "water, liquid"],
+  ["jan", "person"],
+  ["lupa", "hole"],
+  ["pi", "[regrouper]"],
+  ["tenpo", "time"],
+  ["jelo", "yellow"],
+  ["ma", "land"],
+  ["pilin", "heart, feel"],
+  ["toki", "talk, language"],
+  ["jo", "have"],
+  ["mama", "parent"],
+  ["pimeja", "dark, black"],
+  ["tomo", "house, room"],
+  ["kala", "fish"],
+  ["mani", "money"],
+  ["pini", "end, finish"],
+  ["tu", "two"],
+  ["kalama", "sound"],
+  ["meli", "female"],
+  ["pipi", "bug, insect"],
+  ["unpa", "sex"],
+  ["kama", "come"],
+  ["mi", "I, me, we, us"],
+  ["poka", "side, vicinity"],
+  ["uta", "mouth"],
+  ["kasi", "plant"],
+  ["mije", "male"],
+  ["poki", "box, container"],
+  ["utala", "fight, battle"],
+  ["ken", "can; possible"],
+  ["moku", "eat, food"],
+  ["pona", "good, simple"],
+  ["walo", "white"],
+  ["kepeken", "using, with (tool)"],
+  ["moli", "dead, kill"],
+  ["pu", "(toki pona book)"],
+  ["wan", "one"],
+  ["kili", "fruit"],
+  ["monsi", "back"],
+  ["sama", "same; like"],
+  ["waso", "bird"],
+  ["kiwen", "hard, rock"],
+  ["mu", "[animal noise]"],
+  ["seli", "hot, fire"],
+  ["wawa", "strong, energy"],
+  ["ko", "paste, powder"],
+  ["mun", "moon, star"],
+  ["selo", "layer, skin"],
+  ["weka", "away"],
+  ["kon", "air, spirit, essence"],
+  ["musi", "entertaining"],
+  ["seme", "[what]"],
+  ["wile", "want, need"],
+];
 
 export const words = Array.from(dictionary.values());
 

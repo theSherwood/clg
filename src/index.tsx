@@ -5,14 +5,16 @@ import {
   words as all_words, // Renamed to avoid conflict
   data_errors,
   roots,
+  sections,
+  candidates,
+  type Candidate,
+  type SectionKey,
   Word,
   T, // Importing T for tag names
   is_root,
 } from "./dict";
 
-import Tippy, { type TippyProps } from "@tippyjs/react";
-import "tippy.js/dist/tippy.css"; // Default tippy styling
-import "tippy.js/themes/light.css"; // Optional: a light theme
+import { LazyTippy, PhonologyContext, WordPopoverContent, WordPopoverList } from "./word_ui";
 import {
   type Mark,
   type Phonology,
@@ -25,120 +27,6 @@ import {
   save_phonology,
   syllable_of,
 } from "./phonology";
-
-const PhonologyContext = React.createContext<Phonology>(default_phonology);
-
-// Export own set of props (even if they are the same for now) to enable clients to be more future-proof
-export type LazyTippyProps = TippyProps;
-
-export const LazyTippy = (props: LazyTippyProps) => {
-  const [mounted, setMounted] = React.useState(false);
-
-  const lazyPlugin = {
-    fn: () => ({
-      onMount: () => setMounted(true),
-      onHidden: () => setMounted(false),
-    }),
-  };
-
-  const computedProps = { ...props };
-
-  computedProps.plugins = [lazyPlugin, ...(props.plugins || [])];
-
-  if (props.render) {
-    const render = props.render; // let TypeScript safely derive that render is not undefined
-    computedProps.render = (...args) => (mounted ? render(...args) : "");
-  } else {
-    computedProps.content = mounted ? props.content : "";
-  }
-
-  return <Tippy {...computedProps} />;
-};
-
-interface WordPopoverContentProps {
-  word: Word;
-  depth: number; // To manage potential z-index or for debugging
-}
-
-function WordPopoverList(props: { label: string; list: Word[]; depth: number }) {
-  const { list, depth, label } = props;
-  return (
-    <div>
-      <span className="font-semibold text-xs">{label}</span>
-      <ul className="list-disc list-inside ml-1">
-        {list.map((list_word, i) => (
-          <li key={`${i}:${list_word.word}`} className="my-0.5">
-            <LazyTippy
-              content={<WordPopoverContent word={list_word} depth={depth + 1} />}
-              placement="right-start"
-              interactive={true}
-              delay={[100, 0]}
-              theme="light"
-              popperOptions={{
-                strategy: "fixed", // Better for complex layouts
-                modifiers: [
-                  { name: "preventOverflow", options: { boundary: "clippingParents" } },
-                  {
-                    name: "flip",
-                    options: {
-                      fallbackPlacements: ["left-start", "top-start", "bottom-start"],
-                    },
-                  },
-                ],
-              }}
-            >
-              <span className="cursor-pointer hover:underline text-blue-700">{list_word.word}</span>
-            </LazyTippy>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-const WordPopoverContent: React.FC<WordPopoverContentProps> = ({ word, depth }) => {
-  const phonology = useContext(PhonologyContext);
-  const is_root_word = is_root(word);
-  const { parts, uses, homonyms } = word.data;
-
-  return (
-    <div className="p-3 bg-white shadow-lg rounded-md border border-gray-200 text-sm">
-      <h3 className="font-bold text-lg">{word.word}</h3>
-      <p className="font-mono text-indigo-700 mb-1">{pronounce(word, phonology)}</p>
-      {parts.length > 0 ? null : <p className="text-xs text-gray-500 mb-1">ID: {word.data.id}</p>}
-      <p
-        className={`text-xs font-semibold mb-1 ${
-          is_root_word ? "text-green-600" : "text-blue-600"
-        }`}
-      >
-        {is_root_word ? "ROOT" : "COMPOUND"}
-      </p>
-      {word.data.domain && (
-        <p className="text-xs mb-1">
-          <span className="font-semibold">Domain:</span> {word.data.domain}
-        </p>
-      )}
-      {word.data.t.length > 0 && (
-        <div className="mb-2">
-          <span className="font-semibold text-xs">Tags: </span>
-          {word.data.t.map((tag) => (
-            <span
-              key={tag}
-              className="inline-block bg-gray-200 rounded-full px-2 py-0.5 text-xs font-semibold text-gray-700 mr-1 mb-1"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      )}
-      {!is_root_word && parts.length > 0 && (
-        <WordPopoverList label="Parts:" list={parts} depth={depth} />
-      )}
-      {uses.length > 0 && <WordPopoverList label="Uses:" list={uses} depth={depth} />}
-      {homonyms.length > 0 && <WordPopoverList label="Homonyms:" list={homonyms} depth={depth} />}
-    </div>
-  );
-};
 
 interface WordPreviewItemProps {
   word: Word;
@@ -241,6 +129,17 @@ interface WordListDisplayProps {
   words_to_display: Word[];
 }
 
+const CandidateCard: React.FC<{ candidate: Candidate }> = ({ candidate }) => (
+  <div className="border-2 border-dashed border-amber-300 bg-amber-50 p-2 m-1 rounded">
+    <div className="font-semibold">{candidate.word}</div>
+    <div className="text-xs text-amber-700">
+      CANDIDATE · {sections.find((s) => s.key === candidate.section)?.label}
+    </div>
+    {candidate.gloss && <div className="text-xs italic text-gray-600">{candidate.gloss}</div>}
+    {candidate.notes && <div className="text-xs text-gray-600 mt-1">{candidate.notes}</div>}
+  </div>
+);
+
 const WordListDisplay: React.FC<WordListDisplayProps> = ({ words_to_display }) => {
   return (
     <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
@@ -253,32 +152,29 @@ const WordListDisplay: React.FC<WordListDisplayProps> = ({ words_to_display }) =
 
 // Roots view: 256 root IDs = 4^4 glyphs, shown as a 16x16 grid (row = high nibble, column = low nibble)
 
-const SLOT_GROUPS = [
-  { key: "grammar_helper", label: "Grammar helpers", swatch: "bg-amber-400" },
-  { key: "preposition", label: "Prepositions", swatch: "bg-rose-400" },
-  { key: "pronoun", label: "Pronouns", swatch: "bg-fuchsia-400" },
-  { key: "axis_helper", label: "Axis helpers", swatch: "bg-violet-400" },
-  { key: "misc", label: "Misc roots", swatch: "bg-emerald-400" },
-  { key: "axis_word", label: "Axis words", swatch: "bg-sky-400" },
-  { key: "digit", label: "Digits", swatch: "bg-slate-400" },
-] as const;
+const SECTION_SWATCHES: Record<SectionKey, string> = {
+  domain: "bg-orange-500",
+  grammar: "bg-amber-400",
+  preposition: "bg-rose-400",
+  pronoun: "bg-fuchsia-400",
+  axis_helper: "bg-violet-400",
+  content: "bg-emerald-400",
+  axis: "bg-sky-400",
+  digit: "bg-slate-400",
+};
 
-type SlotGroupKey = (typeof SLOT_GROUPS)[number]["key"];
-
-function slot_group_of(word: Word): SlotGroupKey {
-  if (word.data.domain === "number") return "digit";
-  for (const group of SLOT_GROUPS) {
-    if (word.data.t.includes(group.key as keyof typeof T)) return group.key;
-  }
-  return "misc";
-}
-
-type Slot = { id: number; roots: Word[]; groups: SlotGroupKey[] };
+// groups: sections with a root at this ID; reserved: sections whose range includes it
+type Slot = { id: number; roots: Word[]; groups: SectionKey[]; reserved: SectionKey[] };
 
 const slots: Slot[] = roots.map((slot_roots, id) => {
   const words = slot_roots ?? [];
-  const present = new Set(words.map(slot_group_of));
-  return { id, roots: words, groups: SLOT_GROUPS.map((g) => g.key).filter((k) => present.has(k)) };
+  const present = new Set(words.map((w) => w.data.section));
+  return {
+    id,
+    roots: words,
+    groups: sections.map((s) => s.key).filter((k) => present.has(k)),
+    reserved: sections.filter((s) => s.start <= id && id < s.end).map((s) => s.key),
+  };
 });
 
 function empty_ranges(): [number, number][] {
@@ -292,17 +188,12 @@ function empty_ranges(): [number, number][] {
   return ranges;
 }
 
-const swatch_of = Object.fromEntries(SLOT_GROUPS.map((g) => [g.key, g.swatch])) as Record<
-  SlotGroupKey,
-  string
->;
-
 const SlotCell: React.FC<{ slot: Slot; dimmed: boolean }> = ({ slot, dimmed }) => {
   const phonology = useContext(PhonologyContext);
-  const { id, roots: slot_roots, groups } = slot;
+  const { id, roots: slot_roots, groups, reserved } = slot;
   const syllable = syllable_of(id, phonology);
   // Prefer a non-digit word as the cell's label, since digits share IDs with axis words
-  const label = (slot_roots.find((w) => slot_group_of(w) !== "digit") ?? slot_roots[0])?.word;
+  const label = (slot_roots.find((w) => w.data.section !== "digit") ?? slot_roots[0])?.word;
 
   const cell = (
     <div
@@ -311,9 +202,11 @@ const SlotCell: React.FC<{ slot: Slot; dimmed: boolean }> = ({ slot, dimmed }) =
         ${dimmed ? "opacity-20" : ""}`}
     >
       <div className="flex h-1.5">
-        {groups.map((g) => (
-          <div key={g} className={`flex-1 ${swatch_of[g]}`} />
-        ))}
+        {slot_roots.length > 0
+          ? groups.map((g) => <div key={g} className={`flex-1 ${SECTION_SWATCHES[g]}`} />)
+          : reserved.map((g) => (
+              <div key={g} className={`flex-1 opacity-30 ${SECTION_SWATCHES[g]}`} />
+            ))}
       </div>
       <div className="px-1 pt-0.5 flex justify-between gap-1">
         <span className="text-gray-400">{id}</span>
@@ -541,7 +434,7 @@ function PhonologyPanel(props: { phonology: Phonology; set_phonology: (p: Phonol
 
 function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) => void }) {
   const { phonology } = props;
-  const [highlighted, set_highlighted] = useState<SlotGroupKey | null>(null);
+  const [highlighted, set_highlighted] = useState<SectionKey | null>(null);
 
   // A column fixes the two fastest digits of the ID and a row the two slowest,
   // so describe each by the marks those digits select
@@ -555,12 +448,19 @@ function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) 
   const describe_column = (col: number) => describe_digits(col, [0, 1]);
   const describe_row = (row: number) => describe_digits(row * 16, [2, 3]);
   const filled = slots.filter((s) => s.roots.length > 0).length;
-  const counts = useMemo(() => {
-    const result = {} as Record<SlotGroupKey, number>;
-    for (const g of SLOT_GROUPS)
-      result[g.key] = slots.filter((s) => s.groups.includes(g.key)).length;
-    return result;
-  }, []);
+  const usage = useMemo(
+    () =>
+      Object.fromEntries(
+        sections.map((s) => [
+          s.key,
+          {
+            used: slots.filter((slot) => slot.groups.includes(s.key)).length,
+            planned: candidates.filter((c) => c.section === s.key).length,
+          },
+        ]),
+      ) as Record<SectionKey, { used: number; planned: number }>,
+    [],
+  );
 
   return (
     <div className="p-4">
@@ -574,19 +474,31 @@ function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) 
         )
       </div>
       <div className="mb-4 flex flex-wrap gap-2">
-        {SLOT_GROUPS.map((g) => (
-          <button
-            key={g.key}
-            onMouseEnter={() => set_highlighted(g.key)}
-            onMouseLeave={() => set_highlighted(null)}
-            onClick={() => set_highlighted((h) => (h === g.key ? null : g.key))}
-            className="flex items-center gap-1.5 px-2 py-1 text-sm rounded border border-gray-300 bg-white hover:bg-gray-100"
-          >
-            <span className={`inline-block w-3 h-3 rounded-sm ${g.swatch}`} />
-            {g.label}
-            <span className="text-gray-400">{counts[g.key]}</span>
-          </button>
-        ))}
+        {sections.map((s) => {
+          const { used, planned } = usage[s.key];
+          const capacity = s.end - s.start;
+          const over = used + planned > capacity;
+          return (
+            <button
+              key={s.key}
+              onMouseEnter={() => set_highlighted(s.key)}
+              onMouseLeave={() => set_highlighted(null)}
+              onClick={() => set_highlighted((h) => (h === s.key ? null : s.key))}
+              title={`IDs ${s.start}–${s.end - 1}: ${used} roots, ${planned} candidates, ${capacity} slots`}
+              className={`flex items-center gap-1.5 px-2 py-1 text-sm rounded border bg-white hover:bg-gray-100
+                ${over ? "border-red-400" : "border-gray-300"}`}
+            >
+              <span className={`inline-block w-3 h-3 rounded-sm ${SECTION_SWATCHES[s.key]}`} />
+              {s.label}
+              <span className="text-gray-400">
+                {used}/{capacity}
+              </span>
+              {planned > 0 && (
+                <span className={over ? "text-red-600" : "text-amber-600"}>+{planned}</span>
+              )}
+            </button>
+          );
+        })}
       </div>
       <div
         className="grid gap-1"
@@ -617,7 +529,7 @@ function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) 
               <SlotCell
                 key={slot.id}
                 slot={slot}
-                dimmed={highlighted !== null && !slot.groups.includes(highlighted)}
+                dimmed={highlighted !== null && !slot.reserved.includes(highlighted)}
               />
             ))}
           </React.Fragment>
@@ -664,9 +576,18 @@ function DictionaryView() {
     });
   };
 
+  const matches_search = (text: string, gloss?: string) =>
+    [text, gloss ?? ""].some((t) => t.toLowerCase().includes(search_text.toLowerCase()));
+
+  // Candidates have no tags, so a tag filter hides them
+  const filtered_candidates = useMemo(
+    () => (selected_tags.size > 0 ? [] : candidates.filter((c) => matches_search(c.word, c.gloss))),
+    [search_text, selected_tags],
+  );
+
   const filtered_words = useMemo(() => {
     return all_words.filter((word) => {
-      const matches_search_text = word.word.toLowerCase().includes(search_text.toLowerCase());
+      const matches_search_text = matches_search(word.word, word.data.gloss);
       const matches_tags =
         selected_tags.size === 0 || word.data.t.some((tag) => selected_tags.has(tag));
       return matches_search_text && matches_tags;
@@ -714,6 +635,18 @@ function DictionaryView() {
               <WordListDisplay words_to_display={filtered_words} />
             ) : (
               <p className="p-4 text-center text-gray-500">No words match your criteria.</p>
+            )}
+            {filtered_candidates.length > 0 && (
+              <div className="px-4 pb-4">
+                <h2 className="font-semibold text-gray-700 mb-1">
+                  Candidates, no root yet ({filtered_candidates.length})
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
+                  {filtered_candidates.map((c) => (
+                    <CandidateCard key={c.word} candidate={c} />
+                  ))}
+                </div>
+              </div>
             )}
           </>
         )}
