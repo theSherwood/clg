@@ -1,0 +1,46 @@
+import { expect, test } from "bun:test";
+import { candidates, dictionary } from "./dict";
+import { tokenize } from "./examples";
+
+const resolved = (transliteration: string) =>
+  tokenize(transliteration).map((t) =>
+    t.kind === "punctuation" ? t.text : (t.word?.word ?? t.candidate?.word ?? `?${t.text}`),
+  );
+
+test("grammar markers resolve to domain words and prepositions", () => {
+  expect(resolved("<subject> person <verb (prescriptive)> do <in> value </in>.")).toEqual([
+    "_subject",
+    "person",
+    "_verb(prescriptive)",
+    "do",
+    "in_of_about",
+    "value",
+    "preposition_ender",
+    ".",
+  ]);
+});
+
+test("digits, two-word names and unknown words", () => {
+  expect(resolved("finger number 2 magnitude 3 blorp")).toEqual([
+    "finger_number",
+    "digit_2",
+    "magnitude",
+    "digit_3",
+    "?blorp",
+  ]);
+});
+
+test("a trailing ? marks a word as uncertain", () => {
+  const [verb, family] = tokenize("<verb?> family?");
+  expect(verb).toMatchObject({ kind: "word", uncertain: true, word: dictionary.get("_verb") });
+  expect(family).toMatchObject({ kind: "word", uncertain: true });
+  expect(family?.kind === "word" && family.word).toBeFalsy();
+});
+
+test("every word the Grammar page refers to exists", async () => {
+  const source = await Bun.file(`${import.meta.dir}/grammar.tsx`).text();
+  const names = [...source.matchAll(/<W w="([^"]+)"/g)].map((m) => m[1]!);
+  expect(names.length).toBeGreaterThan(0);
+  const unknown = names.filter((n) => !dictionary.has(n) && !candidates.some((c) => c.word === n));
+  expect(unknown).toEqual([]);
+});
