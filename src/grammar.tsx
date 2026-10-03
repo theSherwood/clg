@@ -104,25 +104,47 @@ export function GrammarView() {
         <W w="_verb" /> (or another verb specifier) before the verb, <W w="_object" /> before the
         object. Every draft so far is in subject–verb–object order.
       </p>
-      <Open>
-        Relation verbs. Most axes describe a property, and their verb form means becoming it (
-        <W w="grow(v)" /> is “become big”). Relation axes are different: their verb is the relation
-        itself. <W w="is(v)" /> relates a thing to a characteristic, <W w="equal(v)" /> relates two
-        things, and <W w="possess(v)" /> relates an owner to what they own. One proposal is that
-        relation verbs always take an object, so the complement is read as a noun:{" "}
-        <i>&lt;subject&gt; sky &lt;verb&gt; is &lt;object&gt; blueness</i>. Becoming could then come
-        from a helper, <W w="_become" /> (<i>_become possess</i>, “gain”).
-      </Open>
       <Example meaning="Everyone has the right to life, liberty and security of person.">
         &lt;subject&gt; person all &lt;verb&gt; possess &lt;object&gt; right of life and freedom and
         safety.
       </Example>
       <p>
+        <b>Transitivity.</b> A transitive verb always takes <W w="_object" />, even when nothing
+        about the object is said. Without an object, the verb is intransitive. For an axis verb,
+        which means changing toward the axis's state, that's the difference between causing the
+        change and undergoing it, so <W w="kill(v)" /> is “kill” with an object and “die” without
+        one.
+      </p>
+      <Example meaning="A soldier kills.">
+        &lt;subject&gt; soldier &lt;verb&gt; kill &lt;object&gt;
+      </Example>
+      <Example meaning="A soldier dies.">&lt;subject&gt; soldier &lt;verb&gt; kill</Example>
+      <p>
+        Relation verbs are transitive too, so they always take an object, and the complement is read
+        as a noun. Their verb is the relation itself rather than a change: <W w="is(v)" /> relates a
+        thing to a characteristic, <W w="equal(v)" /> relates two things, and <W w="possess(v)" />{" "}
+        relates an owner to what they own.
+      </p>
+      <Example meaning="The sky is blue.">
+        &lt;subject&gt; sky &lt;verb&gt; is &lt;object&gt; blueness
+      </Example>
+      <Open>
+        Becoming, for relation verbs: maybe a helper, <W w="_become" /> (<i>_become possess</i>,
+        “gain”).
+      </Open>
+      <p>
         <W w="_verb(prescriptive)" /> makes a verb prescriptive or imperative (should, shall), and{" "}
-        <W w="_verb(interrogative)" /> makes it a question.
+        <W w="_verb(interrogative)" /> makes it a question. In a question, <W w="_blank" /> stands
+        for what's being asked about; without it, the question is yes or no.
       </p>
       <Example meaning="No one shall be held in slavery.">
         &lt;subject&gt; person none &lt;verb (prescriptive)&gt; is &lt;object&gt; slave.
+      </Example>
+      <Example meaning="Who does the soldier kill?">
+        &lt;subject&gt; soldier &lt;verb (interrogative)&gt; kill &lt;object&gt; _blank
+      </Example>
+      <Example meaning="Does the soldier kill the enemy?">
+        &lt;subject&gt; soldier &lt;verb (interrogative)&gt; kill &lt;object&gt; enemy
       </Example>
 
       <H2>Modifiers</H2>
@@ -169,7 +191,8 @@ export function GrammarView() {
         <W w="pronoun(third_person)" />, with number made by compounds: “me” is
         first_person-singular, “we” first_person-plural (also -inclusive and -exclusive), “y'all”
         second_person-plural. The third person can optionally specify plural and gender or sex.{" "}
-        <W w="this" /> and <W w="that" /> might become “it-near” and “it-far”.
+        <W w="this" /> and <W w="that" /> might become “it-near” and “it-far”. <W w="_blank" /> is
+        the question word: what a question asks about.
       </p>
 
       <H2>Numbers</H2>
@@ -189,8 +212,8 @@ export function GrammarView() {
 
       <H2>Other grammar words</H2>
       <p>
-        Planned: <W w="foreign_word" /> to mark a foreign word or name,{" "}
-        <W w="possession_indicator" />, and <W w="interrogative_blank" /> for questions.
+        Planned: <W w="foreign_word" /> to mark a foreign word or name, and{" "}
+        <W w="possession_indicator" />.
       </p>
     </div>
   );

@@ -615,7 +615,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   candidate("list_and", { notes: "And between list items, as opposed to clause_and" });
   candidate("foreign_word", { gloss: "foreign word or name" });
   candidate("possession_indicator");
-  candidate("interrogative_blank");
   candidate("_become", {
     gloss: "come to, begin to: _become possess(v) = gain",
     notes:
@@ -659,6 +658,12 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   });
   cr("this", { t: [T.pronoun], notes: 'Could this be "it-near"?' });
   cr("that", { t: [T.pronoun], notes: 'Could this be "it-far"?' });
+  cr("_blank", {
+    t: [T.pronoun],
+    gloss: "what a question asks about",
+    notes:
+      "Was interrogative_blank. With _verb(interrogative): <subject> soldier <verb (interrogative)> kill <object> _blank = who does the soldier kill?",
+  });
 }
 
 // axis helpers: axis_of plus a seven-step scale
