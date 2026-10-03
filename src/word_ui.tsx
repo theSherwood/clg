@@ -1,6 +1,15 @@
 import React, { useContext } from "react";
-import { Word, candidates, dictionary, is_root, sections } from "./dict";
-import { type Phonology, default_phonology, pronounce } from "./phonology";
+import {
+  type Axis,
+  type AxisCell,
+  Word,
+  axis_by_word,
+  candidates,
+  dictionary,
+  is_root,
+  sections,
+} from "./dict";
+import { type Phonology, default_phonology, pronounce, syllable_of } from "./phonology";
 import Tippy, { type TippyProps } from "@tippyjs/react";
 import "tippy.js/dist/tippy.css"; // Default tippy styling
 import "tippy.js/themes/light.css"; // Optional: a light theme
@@ -20,7 +29,8 @@ export const LazyTippy = (props: LazyTippyProps) => {
     }),
   };
 
-  const computedProps = { ...props };
+  // Wide enough for an axis's word matrix
+  const computedProps = { maxWidth: 640, ...props };
 
   computedProps.plugins = [lazyPlugin, ...(props.plugins || [])];
 
@@ -75,6 +85,81 @@ export function WordPopoverList(props: { label: string; list: Word[]; depth: num
   );
 }
 
+const AXIS_COLUMNS = [
+  ["adj", "adjective"],
+  ["noun", "noun"],
+  ["verb_i", "verb, no object"],
+  ["verb_t", "verb, with object"],
+  ["adverb", "adverb"],
+] as const;
+
+function MatrixCell({ cell, current }: { cell: AxisCell; current: Word }) {
+  if (!cell.word || (cell.word.data.domain === "verb" && !cell.gloss)) {
+    return <td className="px-1.5 py-0.5 border border-gray-200 text-gray-300 text-center">—</td>;
+  }
+  return (
+    <td
+      title={cell.draft ? "Draft, not reviewed yet" : undefined}
+      className={`px-1.5 py-0.5 border border-gray-200 whitespace-nowrap
+        ${cell.word === current ? "bg-indigo-50 font-semibold" : ""}
+        ${cell.draft ? "italic text-amber-700" : "text-gray-800"}`}
+    >
+      {cell.gloss ?? cell.word.word}
+    </td>
+  );
+}
+
+// The whole axis a word belongs to: every form at both ends, with drafts in amber
+function AxisMatrix({ axis, current }: { axis: Axis; current: Word }) {
+  const phonology = useContext(PhonologyContext);
+  const root_sound = syllable_of(axis.id, phonology);
+  const negative = dictionary.get("negative");
+  const negative_sound = negative ? `${pronounce(negative, phonology)}.${root_sound}` : "";
+  return (
+    <div className="mt-2 mb-2">
+      <div className="text-xs mb-1">
+        <span className="font-semibold">Axis</span>
+        {axis.name.word && (
+          <span className={axis.name.draft ? "italic text-amber-700" : ""}>
+            {" "}
+            {axis.name.word.word}
+          </span>
+        )}
+      </div>
+      <table className="text-xs border-collapse">
+        <thead>
+          <tr>
+            <th />
+            {AXIS_COLUMNS.map(([key, label]) => (
+              <th key={key} className="px-1.5 pb-0.5 font-normal text-gray-500 text-left">
+                {label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {(
+            [
+              ["root", root_sound, axis.positive],
+              ["negative", negative_sound, axis.negative],
+            ] as const
+          ).map(([label, sound, side]) => (
+            <tr key={label}>
+              <th className="pr-1.5 font-normal text-gray-500 text-left whitespace-nowrap">
+                {label} <span className="font-mono text-indigo-700">{sound}</span>
+              </th>
+              {AXIS_COLUMNS.map(([key]) => (
+                <MatrixCell key={key} cell={side[key]} current={current} />
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {axis.notes && <p className="text-xs text-gray-600 mt-1 max-w-md">{axis.notes}</p>}
+    </div>
+  );
+}
+
 export const WordPopoverContent: React.FC<WordPopoverContentProps> = ({ word, depth }) => {
   const phonology = useContext(PhonologyContext);
   const is_root_word = is_root(word);
@@ -82,7 +167,12 @@ export const WordPopoverContent: React.FC<WordPopoverContentProps> = ({ word, de
 
   return (
     <div className="p-3 bg-white shadow-lg rounded-md border border-gray-200 text-sm">
-      <h3 className="font-bold text-lg">{word.word}</h3>
+      <h3 className="font-bold text-lg">
+        {word.word}
+        {word.data.draft && (
+          <span className="ml-2 align-middle text-xs font-normal italic text-amber-700">draft</span>
+        )}
+      </h3>
       <p className="font-mono text-indigo-700 mb-1">{pronounce(word, phonology)}</p>
       {word.data.gloss && <p className="text-xs italic text-gray-600 mb-1">{word.data.gloss}</p>}
       {word.data.notes && <p className="text-xs text-gray-600 mb-1 max-w-xs">{word.data.notes}</p>}
@@ -115,6 +205,7 @@ export const WordPopoverContent: React.FC<WordPopoverContentProps> = ({ word, de
           ))}
         </div>
       )}
+      {axis_by_word.has(word) && <AxisMatrix axis={axis_by_word.get(word)!} current={word} />}
       {!is_root_word && parts.length > 0 && (
         <WordPopoverList label="Parts:" list={parts} depth={depth} />
       )}

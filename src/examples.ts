@@ -1,4 +1,4 @@
-import { type Candidate, type Word, candidates, dictionary } from "./dict";
+import { type Candidate, type Word, candidates, dictionary, verb_glosses } from "./dict";
 
 // Worked examples: English with a draft transliteration. Transliterations are written in English
 // glosses; <...> marks grammar words, e.g. <subject>, <verb (prescriptive)>, <in> ... </in>.
@@ -284,8 +284,12 @@ const ALIASES: Record<string, string> = {
 
 function lookup(name: string): Pick<Extract<Token, { kind: "word" }>, "word" | "candidate"> {
   const key = ALIASES[name] ?? name;
-  // Verbs are named with a (v) suffix, e.g. possess(v)
-  const word = dictionary.get(key) ?? dictionary.get(`_${key}`) ?? dictionary.get(`${key}(v)`);
+  // Verbs are named with a (v) suffix, e.g. possess(v), and can be found by either gloss (die, kill)
+  const word =
+    dictionary.get(key) ??
+    dictionary.get(`_${key}`) ??
+    dictionary.get(`${key}(v)`) ??
+    verb_glosses.get(key);
   if (word) return { word };
   if (/^\d+$/.test(key)) return { word: dictionary.get(`digit_${key}`) };
   const candidate = candidates.find((c) => c.word === key || c.word === `_${key}`);
