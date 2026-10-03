@@ -99,17 +99,16 @@ function MatrixCell({ cell, current }: { cell: AxisCell; current: Word }) {
   }
   return (
     <td
-      title={cell.draft ? "Draft, not reviewed yet" : undefined}
       className={`px-1.5 py-0.5 border border-gray-200 whitespace-nowrap
         ${cell.word === current ? "bg-indigo-50 font-semibold" : ""}
-        ${cell.draft ? "italic text-amber-700" : "text-gray-800"}`}
+        text-gray-800`}
     >
       {cell.gloss ?? cell.word.word}
     </td>
   );
 }
 
-// The whole axis a word belongs to: every form at both ends, with drafts in amber
+// The whole axis a word belongs to: every form at both ends
 function AxisMatrix({ axis, current }: { axis: Axis; current: Word }) {
   const phonology = useContext(PhonologyContext);
   const root_sound = syllable_of(axis.id, phonology);
@@ -119,12 +118,7 @@ function AxisMatrix({ axis, current }: { axis: Axis; current: Word }) {
     <div className="mt-2 mb-2">
       <div className="text-xs mb-1">
         <span className="font-semibold">Axis</span>
-        {axis.name.word && (
-          <span className={axis.name.draft ? "italic text-amber-700" : ""}>
-            {" "}
-            {axis.name.word.word}
-          </span>
-        )}
+        {axis.name.word && <span> {axis.name.word.word}</span>}
       </div>
       <table className="text-xs border-collapse">
         <thead>
@@ -167,12 +161,7 @@ export const WordPopoverContent: React.FC<WordPopoverContentProps> = ({ word, de
 
   return (
     <div className="p-3 bg-white shadow-lg rounded-md border border-gray-200 text-sm">
-      <h3 className="font-bold text-lg">
-        {word.word}
-        {word.data.draft && (
-          <span className="ml-2 align-middle text-xs font-normal italic text-amber-700">draft</span>
-        )}
-      </h3>
+      <h3 className="font-bold text-lg">{word.word}</h3>
       <p className="font-mono text-indigo-700 mb-1">{pronounce(word, phonology)}</p>
       {word.data.gloss && <p className="text-xs italic text-gray-600 mb-1">{word.data.gloss}</p>}
       {word.data.notes && <p className="text-xs text-gray-600 mb-1 max-w-xs">{word.data.notes}</p>}
