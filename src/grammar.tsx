@@ -159,7 +159,9 @@ export function GrammarView() {
       <p className="mt-2">
         <W w="continuous_tense_aspect" /> marks something as ongoing and{" "}
         <W w="perfect_tense_aspect" /> as done, with a result that still holds. They also follow the
-        verb, before any time adverb, so the two combine like English's tenses.
+        verb, before any time adverb, so the two combine like English's tenses. With both,
+        continuous comes first, and perfect applies to the ongoing action: <i>work
+        continuous_tense_aspect perfect_tense_aspect</i> is “have been working”.
       </p>
       <Example meaning="I was sleeping.">
         &lt;subject&gt; I &lt;verb&gt; sleep continuous_tense_aspect formerly

@@ -145,6 +145,11 @@ export const tense_examples: Example[] = [
     transliteration: "<subject> person <verb> learn(v) perfect_tense_aspect henceforth <object> path",
   },
   {
+    title: "Perfect continuous",
+    english: "I have been working",
+    transliteration: "<subject> I <verb> work(v) continuous_tense_aspect perfect_tense_aspect",
+  },
+  {
     title: "Remote past",
     english: "The person died long ago",
     transliteration: "<subject> person <verb> kill(v) max_negative henceforth",
