@@ -16,7 +16,15 @@ import {
 
 import { ExamplesView } from "./examples_view";
 import { GrammarView } from "./grammar";
-import { LazyTippy, PhonologyContext, WordPopoverContent, WordPopoverList } from "./word_ui";
+import {
+  LazyTippy,
+  PhonologyContext,
+  SideVerbs,
+  VerbGaps,
+  WordPopoverContent,
+  WordPopoverList,
+  side_of,
+} from "./word_ui";
 import {
   type Mark,
   type Phonology,
@@ -38,6 +46,7 @@ interface WordPreviewItemProps {
 const WordPreviewItem: React.FC<WordPreviewItemProps> = ({ word }) => {
   const phonology = useContext(PhonologyContext);
   const is_root_word = is_root(word);
+  const side = side_of(word);
   return (
     <LazyTippy
       content={<WordPopoverContent word={word} depth={0} />}
@@ -66,6 +75,7 @@ const WordPreviewItem: React.FC<WordPreviewItemProps> = ({ word }) => {
         <div className="font-semibold">{word.word}</div>
         <div className="font-mono text-xs text-indigo-700">{pronounce(word, phonology)}</div>
         <div className="text-xs">{is_root_word ? "ROOT" : "COMPOUND"}</div>
+        {side && <SideVerbs side={side} />}
         {word.data.t.length > 0 && (
           <div className="text-xs mt-1">
             {word.data.t.slice(0, 2).map(
@@ -698,6 +708,7 @@ function DictionaryView() {
               selected_tags={selected_tags}
               on_tag_toggle={handle_tag_toggle}
             />
+            <VerbGaps />
             {filtered_words.length > 0 ? (
               <WordListDisplay words_to_display={filtered_words} />
             ) : (

@@ -2,8 +2,10 @@ import React, { useContext } from "react";
 import {
   type Axis,
   type AxisCell,
+  type AxisSide,
   type Scale,
   Word,
+  axes,
   axis_by_word,
   candidates,
   dictionary,
@@ -86,17 +88,90 @@ export function WordPopoverList(props: { label: string; list: Word[]; depth: num
   );
 }
 
+// Verbs first: the language is verb-centric
 const AXIS_COLUMNS = [
-  ["adj", "adjective"],
-  ["noun", "noun"],
   ["verb_i", "verb, no object"],
   ["verb_t", "verb, with object"],
+  ["noun", "noun"],
+  ["adj", "adjective"],
   ["adverb", "adverb"],
 ] as const;
 
-function MatrixCell({ cell, current }: { cell: AxisCell; current: Word }) {
-  if (!cell.word || (cell.word.data.domain === "verb" && !cell.gloss)) {
-    return <td className="px-1.5 py-0.5 border border-gray-200 text-gray-300 text-center">—</td>;
+// The side of its axis a word is on
+export function side_of(word: Word): AxisSide | undefined {
+  const axis = axis_by_word.get(word);
+  if (!axis) return undefined;
+  return [axis.positive, axis.negative].find((side) =>
+    Object.values(side).some((cell) => cell.word === word),
+  );
+}
+
+function side_name(side: AxisSide): string | undefined {
+  return (side.adj.word ?? side.noun.word ?? side.adverb.word ?? side.verb_i.word)?.word;
+}
+
+// A side's verb, without and with an object; missing forms are what to fill in next
+export function SideVerbs({ side }: { side: AxisSide }) {
+  const form = (label: string, title: string, gloss?: string) => (
+    <div title={title}>
+      <span className="text-gray-500">{label} </span>
+      {gloss ? (
+        <span className="font-semibold text-gray-800">{gloss}</span>
+      ) : (
+        <span className="text-red-600">missing</span>
+      )}
+    </div>
+  );
+  return (
+    <div className="text-xs mt-1">
+      {form("intr.", "verb without an object", side.verb_i.gloss)}
+      {form("tr.", "verb with an object", side.verb_t.gloss)}
+    </div>
+  );
+}
+
+// Axis sides missing a verb, or one of its two forms
+export function VerbGaps() {
+  const sides = axes.flatMap((axis) =>
+    [axis.positive, axis.negative].filter((side) => Object.values(side).some((c) => c.word)),
+  );
+  const groups = [
+    ["No verb", sides.filter((s) => !s.verb_i.word)],
+    ["No intransitive (without an object)", sides.filter((s) => s.verb_i.word && !s.verb_i.gloss)],
+    ["No transitive (with an object)", sides.filter((s) => s.verb_t.word && !s.verb_t.gloss)],
+  ] as const;
+  const complete = sides.filter((s) => s.verb_i.gloss && s.verb_t.gloss).length;
+  return (
+    <details className="px-4 pt-3 text-sm">
+      <summary className="cursor-pointer font-semibold">
+        Axis verb gaps: {complete} of {sides.length} axis sides have both verb forms
+      </summary>
+      <div className="mt-2 space-y-2">
+        {groups.map(([label, list]) => (
+          <p key={label}>
+            <span className="font-semibold text-red-600">
+              {label} ({list.length}):
+            </span>{" "}
+            {list.map(side_name).join(", ")}
+          </p>
+        ))}
+      </div>
+    </details>
+  );
+}
+
+// Missing verbs are red, since they're the gaps that matter most
+function MatrixCell({ cell, current, verb }: { cell: AxisCell; current: Word; verb: boolean }) {
+  if (!cell.word || (verb && !cell.gloss)) {
+    return (
+      <td
+        className={`px-1.5 py-0.5 border border-gray-200 text-center ${
+          verb ? "bg-red-50 text-red-400" : "text-gray-300"
+        }`}
+      >
+        —
+      </td>
+    );
   }
   return (
     <td
@@ -172,7 +247,12 @@ function AxisMatrix({ axis, current }: { axis: Axis; current: Word }) {
                 {label} <span className="font-mono text-indigo-700">{sound}</span>
               </th>
               {AXIS_COLUMNS.map(([key]) => (
-                <MatrixCell key={key} cell={side[key]} current={current} />
+                <MatrixCell
+                  key={key}
+                  cell={side[key]}
+                  current={current}
+                  verb={key === "verb_i" || key === "verb_t"}
+                />
               ))}
             </tr>
           ))}
