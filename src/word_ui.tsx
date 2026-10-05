@@ -90,8 +90,8 @@ export function WordPopoverList(props: { label: string; list: Word[]; depth: num
 
 // Verbs first: the language is verb-centric
 const AXIS_COLUMNS = [
-  ["verb_i", "verb, no object"],
-  ["verb_t", "verb, with object"],
+  ["verb_i", "intr. verb (no object)"],
+  ["verb_t", "tr. verb (with object)"],
   ["noun", "noun"],
   ["adj", "adjective"],
   ["adverb", "adverb"],

@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useContext } from "react";
 import { createRoot } from "react-dom/client";
 import {
+  axis_by_word,
   dictionary,
   words as all_words, // Renamed to avoid conflict
   data_errors,
@@ -203,6 +204,36 @@ function empty_ranges(): [number, number][] {
   return ranges;
 }
 
+// An axis verb's two forms in a grid cell; one line when they're the same word
+const VerbForms: React.FC<{ intransitive?: string; transitive?: string }> = ({
+  intransitive,
+  transitive,
+}) => {
+  const line = (mark: string, gloss?: string) => (
+    <div className="px-1 truncate">
+      <span className="text-gray-400">{mark} </span>
+      {gloss ? (
+        <span className="font-medium text-gray-800">{gloss}</span>
+      ) : (
+        <span className="text-red-500">missing</span>
+      )}
+    </div>
+  );
+  const title = `without an object: ${intransitive ?? "missing"}\nwith an object: ${transitive ?? "missing"}`;
+  return (
+    <div title={title}>
+      {intransitive && intransitive === transitive ? (
+        line("intr./tr.", intransitive)
+      ) : (
+        <>
+          {line("intr.", intransitive)}
+          {line("tr.", transitive)}
+        </>
+      )}
+    </div>
+  );
+};
+
 const SlotCell: React.FC<{ slot: Slot; dimmed: boolean }> = ({ slot, dimmed }) => {
   const phonology = useContext(PhonologyContext);
   const { id, roots: slot_roots, groups, reserved } = slot;
@@ -212,6 +243,9 @@ const SlotCell: React.FC<{ slot: Slot; dimmed: boolean }> = ({ slot, dimmed }) =
   const label_word = slot_roots.find((w) => w.data.section !== "digit") ?? slot_roots[0];
   const label = label_word?.word.replace(/\(v\)$/, "");
   const verbless = label_word?.data.section === "axis" && label_word.data.domain !== "verb";
+  // An axis verb shows both forms, marked intransitive (no object) and transitive (with one)
+  const verb_side =
+    label_word?.data.domain === "verb" ? axis_by_word.get(label_word)?.positive : undefined;
 
   const cell = (
     <div
@@ -227,23 +261,27 @@ const SlotCell: React.FC<{ slot: Slot; dimmed: boolean }> = ({ slot, dimmed }) =
             ))}
       </div>
       <div className="px-1 pt-0.5 flex justify-between gap-1">
-        <span className="text-gray-400">{id}</span>
+        <span className="text-gray-400">
+          {id}
+          {slot_roots.length > 1 && <span className="ml-1">×{slot_roots.length}</span>}
+        </span>
         <span
           className={`font-mono text-xs ${slot_roots.length > 0 ? "text-indigo-700 font-semibold" : "text-gray-400"}`}
         >
           {syllable}
         </span>
       </div>
-      {label && (
-        <div
-          className={`px-1 truncate ${verbless ? "italic text-gray-400" : "font-medium text-gray-800"}`}
-          title={verbless ? "No verb on this axis yet" : undefined}
-        >
-          {label}
-        </div>
-      )}
-      {slot_roots.length > 1 && (
-        <div className="absolute bottom-0.5 right-1 text-gray-400">×{slot_roots.length}</div>
+      {verb_side ? (
+        <VerbForms intransitive={verb_side.verb_i.gloss} transitive={verb_side.verb_t.gloss} />
+      ) : (
+        label && (
+          <div
+            className={`px-1 truncate ${verbless ? "italic text-gray-400" : "font-medium text-gray-800"}`}
+            title={verbless ? "No verb on this axis yet" : undefined}
+          >
+            {label}
+          </div>
+        )
       )}
     </div>
   );
