@@ -119,14 +119,15 @@ export const VERB_TYPE_STYLES: Record<VerbType, string> = {
   relation: "bg-violet-100 text-violet-800",
 };
 
-export function VerbTypeBadge({ type }: { type: VerbType }) {
+// short: just the first letter, for tight spaces like the Roots grid
+export function VerbTypeBadge({ type, short = false }: { type: VerbType; short?: boolean }) {
   const rules = VERB_TYPE_RULES[type];
   return (
     <span
       className={`inline-block rounded px-1 text-[10px] font-semibold ${VERB_TYPE_STYLES[type]}`}
       title={`${type} verb · no object: ${rules.no_object} · with an object: ${rules.with_object}`}
     >
-      {type}
+      {short ? type[0]!.toUpperCase() : type}
     </span>
   );
 }

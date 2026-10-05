@@ -21,6 +21,7 @@ import {
   LazyTippy,
   PhonologyContext,
   SideVerbs,
+  VerbTypeBadge,
   VerbsByType,
   WordPopoverContent,
   WordPopoverList,
@@ -267,9 +268,16 @@ const SlotCell: React.FC<{ slot: Slot; dimmed: boolean }> = ({ slot, dimmed }) =
             ))}
       </div>
       <div className="px-1 pt-0.5 flex justify-between gap-1">
-        <span className="text-gray-400">
+        <span className="text-gray-400 whitespace-nowrap">
           {id}
-          {slot_roots.length > 1 && <span className="ml-1">×{slot_roots.length}</span>}
+          {verb_axis?.verb_type ? (
+            // An axis slot's word count is always a handful, so its verb type shows instead
+            <span className="ml-1">
+              <VerbTypeBadge type={verb_axis.verb_type} short />
+            </span>
+          ) : (
+            slot_roots.length > 1 && <span className="ml-1">×{slot_roots.length}</span>
+          )}
         </span>
         <span
           className={`font-mono text-xs ${slot_roots.length > 0 ? "text-indigo-700 font-semibold" : "text-gray-400"}`}
@@ -624,6 +632,14 @@ function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) 
           );
         })}
       </div>
+      <p className="mb-3 flex items-center gap-2 text-sm text-gray-600">
+        Axis verbs:
+        {(["change", "action", "relation"] as const).map((type) => (
+          <span key={type} className="flex items-center gap-1">
+            <VerbTypeBadge type={type} short /> {type}
+          </span>
+        ))}
+      </p>
       <div
         className="grid gap-1"
         style={{ gridTemplateColumns: "5rem repeat(16, minmax(0, 1fr))" }}
