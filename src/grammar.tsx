@@ -169,12 +169,16 @@ export function GrammarView() {
 
       <H2>Prepositions</H2>
       <p>
-        A preposition opens a phrase and <W w="clause_end" /> closes it. The prepositions are{" "}
-        <W w="with" />, <W w="to" />, <W w="from" />, <W w="by" />, <W w="for" />, <W w="in" />,{" "}
-        <W w="of" />, <W w="about" /> and <W w="at" />.
+        The prepositions are <W w="with" />, <W w="to" />, <W w="from" />, <W w="by" />,{" "}
+        <W w="for" />, <W w="in" />, <W w="of" />, <W w="about" /> and <W w="at" />. A preposition
+        opens a phrase, and there's no word to close it: the phrase ends at the next grammar
+        marker, preposition, clause-level conjunction or <W w="clause_end" />. Within a phrase,
+        modifiers come before prepositional phrases, so <i>person big &lt;with&gt; rod</i> is a big
+        person with a rod. Stacked prepositional phrases can be ambiguous, as in most languages;
+        bracket one with <W w="clause_start" /> and <W w="clause_end" /> when it matters.
       </p>
       <Example meaning="…equal in dignity and rights.">
-        free and equal &lt;in&gt; value and privilege &lt;/in&gt;
+        free and equal &lt;in&gt; value and privilege
       </Example>
 
       <H2>Conjunctions and clauses</H2>

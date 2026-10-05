@@ -8,14 +8,13 @@ const resolved = (transliteration: string) =>
   );
 
 test("grammar markers resolve to domain words and prepositions", () => {
-  expect(resolved("<subject> person <verb (prescriptive)> do <in> value </in>.")).toEqual([
+  expect(resolved("<subject> person <verb (prescriptive)> do <in> value.")).toEqual([
     "_subject",
     "person",
     "_verb(prescriptive)",
     "do",
     "in",
     "value",
-    "clause_end",
     ".",
   ]);
 });

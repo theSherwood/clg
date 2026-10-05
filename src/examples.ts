@@ -1,7 +1,7 @@
 import { type Candidate, type Word, candidates, dictionary, verb_glosses } from "./dict";
 
 // Worked examples: English with a draft transliteration. Transliterations are written in English
-// glosses; <...> marks grammar words, e.g. <subject>, <verb (prescriptive)>, <in> ... </in>.
+// glosses; <...> marks grammar words, e.g. <subject>, <verb (prescriptive)>, <in>.
 
 export type Example = { title: string; english: string; transliteration: string };
 
@@ -128,7 +128,7 @@ export const udhr_articles: Article[] = [
       "All human beings are born free and equal in dignity and rights. They are endowed with reason and conscience and should act towards one another in a spirit of brotherhood.",
     ],
     transliteration:
-      "<subject> person all <verb?> is <predicate adj> free and equal <in> value and privilege </in>. <subject> it all <verb> possess <object> reason and conscience? and <verb (prescriptive)> do <for> other </for> and <in> manner family? </in>. ??",
+      "<subject> person all <verb?> is <predicate adj> free and equal <in> value and privilege. <subject> it all <verb> possess <object> reason and conscience? and <verb (prescriptive)> do <for> other and <in> manner family?. ??",
   },
   {
     title: "Article 2",
@@ -359,8 +359,7 @@ function lookup(name: string): Pick<Extract<Token, { kind: "word" }>, "word" | "
 }
 
 // Splits a transliteration into words, grammar markers and punctuation, and looks each one up.
-// A closing marker like </in> is clause_end. Two-word names (finger number) are tried
-// before single words.
+// Two-word names (finger number) are tried before single words.
 export function tokenize(transliteration: string): Token[] {
   const raw = transliteration.match(/<[^>]+>|[\w'()-]+\??|\?\?|[.,;]/g) ?? [];
   const tokens: Token[] = [];
@@ -368,10 +367,6 @@ export function tokenize(transliteration: string): Token[] {
     const text = raw[i]!;
     if (/^[.,;]$/.test(text) || text === "??") {
       tokens.push({ kind: "punctuation", text });
-      continue;
-    }
-    if (text.startsWith("</")) {
-      tokens.push({ kind: "word", text, uncertain: false, ...lookup("clause_end") });
       continue;
     }
     const uncertain = /\?>?$/.test(text);
