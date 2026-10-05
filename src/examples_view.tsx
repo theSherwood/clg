@@ -1,5 +1,12 @@
 import React, { useContext, useMemo } from "react";
-import { type Token, number_examples, tokenize, udhr_articles, udhr_preamble } from "./examples";
+import {
+  type Token,
+  number_examples,
+  tense_examples,
+  tokenize,
+  udhr_articles,
+  udhr_preamble,
+} from "./examples";
 import { pronounce } from "./phonology";
 import { LazyTippy, PhonologyContext, WordPopoverContent } from "./word_ui";
 
@@ -63,6 +70,7 @@ function Interlinear({ transliteration }: { transliteration: string }) {
 
 const all_transliterations = [
   ...number_examples.flatMap((b) => b.examples.map((e) => e.transliteration)),
+  ...tense_examples.map((e) => e.transliteration),
   ...udhr_articles.flatMap((a) => (a.transliteration ? [a.transliteration] : [])),
 ];
 
@@ -128,6 +136,18 @@ export function ExamplesView() {
           </div>
         </div>
       ))}
+
+      <h2 className="text-lg font-semibold mb-2">Tense and aspect</h2>
+      <div className="space-y-4 mb-8">
+        {tense_examples.map((e) => (
+          <div key={e.title}>
+            <h4 className="font-semibold text-sm">
+              {e.title} <span className="font-normal text-gray-500">· {e.english}</span>
+            </h4>
+            <Interlinear transliteration={e.transliteration} />
+          </div>
+        ))}
+      </div>
 
       <h2 className="text-lg font-semibold mb-2">Universal Declaration of Human Rights</h2>
       <div className="space-y-5">

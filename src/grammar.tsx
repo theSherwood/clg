@@ -147,6 +147,32 @@ export function GrammarView() {
         &lt;subject&gt; soldier &lt;verb (interrogative)&gt; kill &lt;object&gt; enemy
       </Example>
 
+      <H2>Tense and aspect</H2>
+      <p>
+        Verbs aren't marked for tense. As in Mandarin, a sentence's time comes from context, and
+        once a time is set it carries over to the sentences after it. To be explicit, a time adverb
+        follows the verb: <W w="henceforth" /> for the future and <W w="formerly" /> for the past.
+        The axis scale grades them: <i>max_negative henceforth</i> is long ago,{" "}
+        <i>min_negative henceforth</i> recently, <i>neutral henceforth</i> now,{" "}
+        <i>min_positive henceforth</i> soon and <i>max_positive henceforth</i> the far future.
+      </p>
+      <p className="mt-2">
+        <W w="continuous_tense_aspect" /> marks something as ongoing and{" "}
+        <W w="perfect_tense_aspect" /> as done, with a result that still holds. They also follow the
+        verb, before any time adverb, so the two combine like English's tenses.
+      </p>
+      <Example meaning="I was sleeping.">
+        &lt;subject&gt; I &lt;verb&gt; sleep continuous_tense_aspect formerly
+      </Example>
+      <Example meaning="The person will have learned the way.">
+        &lt;subject&gt; person &lt;verb&gt; learn perfect_tense_aspect henceforth &lt;object&gt;
+        path
+      </Example>
+      <Open>
+        In a subclause, is time relative to now or to the main clause's time? Mandarin reads it
+        relative to the main clause.
+      </Open>
+
       <H2>Modifiers</H2>
       <p>
         Modifiers follow what they modify: <i>person all</i> is “everyone”, <i>person none</i> is

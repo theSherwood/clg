@@ -106,6 +106,72 @@ export const number_examples: NumberBase[] = [
   },
 ];
 
+// Tense is unmarked by default. A time adverb after the verb places it in time, graded by the
+// axis scale, and the aspect words say whether it's ongoing or done.
+export const tense_examples: Example[] = [
+  {
+    title: "No tense",
+    english: "I sleep / I slept / I will sleep, from context",
+    transliteration: "<subject> I <verb> sleep(v)",
+  },
+  {
+    title: "Past",
+    english: "I slept",
+    transliteration: "<subject> I <verb> sleep(v) formerly",
+  },
+  {
+    title: "Future",
+    english: "I will sleep",
+    transliteration: "<subject> I <verb> sleep(v) henceforth",
+  },
+  {
+    title: "Continuous",
+    english: "I'm sleeping (or was, or will be)",
+    transliteration: "<subject> I <verb> sleep(v) continuous_tense_aspect",
+  },
+  {
+    title: "Past continuous",
+    english: "I was sleeping",
+    transliteration: "<subject> I <verb> sleep(v) continuous_tense_aspect formerly",
+  },
+  {
+    title: "Perfect",
+    english: "The person has learned the way",
+    transliteration: "<subject> person <verb> learn(v) perfect_tense_aspect <object> path",
+  },
+  {
+    title: "Future perfect",
+    english: "The person will have learned the way",
+    transliteration: "<subject> person <verb> learn(v) perfect_tense_aspect henceforth <object> path",
+  },
+  {
+    title: "Remote past",
+    english: "The person died long ago",
+    transliteration: "<subject> person <verb> kill(v) max_negative henceforth",
+  },
+  {
+    title: "Recent past",
+    english: "The person just left",
+    transliteration: "<subject> person <verb> go(v) min_negative henceforth",
+  },
+  {
+    title: "Near future",
+    english: "I'll give you money soon",
+    transliteration: "<subject> I <verb> give(v) min_positive henceforth <object> money <to> you",
+  },
+  {
+    title: "Now",
+    english: "Right now, I'm sleeping",
+    transliteration: "<subject> I <verb> sleep(v) continuous_tense_aspect neutral henceforth",
+  },
+  {
+    title: "Time carries over",
+    english: "Long ago, a person gave money. They left. (both past)",
+    transliteration:
+      "<subject> person <verb> give(v) max_negative henceforth <object> money. <subject> it <verb> go(v).",
+  },
+];
+
 // Universal Declaration of Human Rights
 
 export const udhr_preamble: string[] = [
@@ -341,6 +407,9 @@ export type Token =
 
 // Transliteration spellings that don't match a dictionary name directly
 const ALIASES: Record<string, string> = {
+  i: "pronoun(first_person)",
+  me: "pronoun(first_person)",
+  you: "pronoun(second_person)",
   it: "pronoun(third_person)",
 };
 
