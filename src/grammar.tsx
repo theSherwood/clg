@@ -94,7 +94,10 @@ export function GrammarView() {
         so food. <W w="_er" /> is whoever or whatever does it, not only a person, like English
         printer or opener. Two more markers name other roles, like the prepositions{" "}
         <W w="with" /> and <W w="at" />: <W w="_tool" /> is what it's done with (<i>_tool open</i>,
-        a key) and <W w="_place" /> where it's done (<i>_place sleep</i>, a bed). Arabic builds
+        a key) and <W w="_place" /> where it's done (<i>_place sleep</i>, a bed).{" "}
+        <W w="_to" /> and <W w="_from" /> follow <W w="to" /> and <W w="from" />: who or where it
+        goes to (<i>_to send</i>, the addressee; <i>_to go</i>, the destination) and comes from (
+        <i>_from come</i>, someone's origin; <i>_from receive</i>, the sender). Arabic builds
         nouns from roots the same way (<i>kātib</i> writer, <i>maktab</i> office, from k-t-b
         “write”), and so does Esperanto (<i>tranĉilo</i> knife, <i>lernejo</i> school).
       </p>
@@ -123,6 +126,16 @@ export function GrammarView() {
         &lt;subject&gt; soldier &lt;verb&gt; kill &lt;object&gt;
       </Example>
       <Example meaning="A soldier dies.">&lt;subject&gt; soldier &lt;verb&gt; kill</Example>
+      <p>
+        <b>Objects.</b> The object is what the verb acts on: what moves, or what changes. Whoever
+        receives it is a <W w="to" /> phrase, and wherever it comes from a <W w="from" /> phrase,
+        for every verb, so there's no per-verb list of which slot is which. When nothing moves, the
+        one who changes is the object: <W w="educate(v)" />'s object is the student, who becomes
+        smart.
+      </p>
+      <Example meaning="I send you money.">
+        &lt;subject&gt; I &lt;verb&gt; send &lt;object&gt; money &lt;to&gt; you
+      </Example>
       <p>
         Relation verbs are transitive too, so they always take an object, and the complement is read
         as a noun. Their verb is the relation itself rather than a change: <W w="is(v)" /> relates a

@@ -2063,6 +2063,14 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     t: [T.grammar_helper, T.part_of_speech_specifier],
     gloss: "where a verb is done, as a noun: _place sleep = bed",
   });
+  cr("_to", {
+    t: [T.grammar_helper, T.part_of_speech_specifier],
+    gloss: "who or where a verb goes to, as a noun: _to send = addressee, _to go = destination",
+  });
+  cr("_from", {
+    t: [T.grammar_helper, T.part_of_speech_specifier],
+    gloss: "who or where a verb comes from, as a noun: _from come = origin, _from receive = sender",
+  });
 }
 
 {

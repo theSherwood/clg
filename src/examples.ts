@@ -308,6 +308,19 @@ export const role_examples: Example[] = [
   { title: "School", english: "where you learn", transliteration: "_place learn(v)" },
   { title: "Shop", english: "where you buy", transliteration: "_place buy(v)" },
   { title: "Workplace", english: "where you work", transliteration: "_place work(v)" },
+  { title: "Sender", english: "whoever sends", transliteration: "_er send(v)" },
+  { title: "Package", english: "what's sent", transliteration: "_ee send(v)" },
+  { title: "Addressee", english: "whom it's sent to", transliteration: "_to send(v)" },
+  { title: "Recipient", english: "whom it's given to", transliteration: "_to give(v)" },
+  { title: "Destination", english: "where you go", transliteration: "_to go(v)" },
+  { title: "Origin", english: "where you come from", transliteration: "_from come(v)" },
+  { title: "Source", english: "what you learn from", transliteration: "_from learn(v)" },
+  { title: "Material", english: "what something is created from", transliteration: "_from create(v)" },
+  {
+    title: "A sentence",
+    english: "I send you money",
+    transliteration: "<subject> I <verb> send(v) <object> money <to> you",
+  },
 ];
 
 // Universal Declaration of Human Rights
