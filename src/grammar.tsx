@@ -86,8 +86,8 @@ export function GrammarView() {
       <p className="mt-2">
         Partial domains reuse a restricted part of the root space. For now the content root{" "}
         <W w="number" /> marks the number domain, reading the roots 128–255 as the digits 0–127.
-        Since most people don't count in base 128, <W w="finger_number" /> (base 10) and{" "}
-        <W w="simple_number" /> (base 2) are planned, along with <W w="magnitude" /> and{" "}
+        Since most people don't count in base 128, <W w="finger_number" /> (base 10),{" "}
+        <W w="hex_number" /> (base 16) and <W w="simple_number" /> (base 2) are planned, along with{" "}
         <W w="color" />.
       </p>
       <p className="mt-2">
@@ -169,9 +169,9 @@ export function GrammarView() {
 
       <H2>Prepositions</H2>
       <p>
-        A preposition opens a phrase and <W w="preposition_ender" /> closes it. The prepositions are{" "}
-        <W w="with" />, <W w="to" />, <W w="from" />, <W w="by" />, <W w="for" /> and{" "}
-        <W w="in_of_about" />, which covers in, of, about, with regards to and in terms of.
+        A preposition opens a phrase and <W w="clause_end" /> closes it. The prepositions are{" "}
+        <W w="with" />, <W w="to" />, <W w="from" />, <W w="by" />, <W w="for" />, <W w="in" />,{" "}
+        <W w="of" />, <W w="about" /> and <W w="at" />.
       </p>
       <Example meaning="…equal in dignity and rights.">
         free and equal &lt;in&gt; value and privilege &lt;/in&gt;
@@ -181,8 +181,8 @@ export function GrammarView() {
       <p>
         <W w="and" />, <W w="or" /> and <W w="if" />. Exclusive forms are compounds: xor is
         “or-exclusive” and iff is “if-exclusive”. Planned: <W w="clause_and" /> and{" "}
-        <W w="list_and" /> to tell joining clauses from joining list items, and <W w="open_paren" />{" "}
-        / <W w="close_paren" /> to mark where a clause starts and ends.
+        <W w="list_and" /> to tell joining clauses from joining list items. <W w="clause_start" />{" "}
+        and <W w="clause_end" /> mark where a clause starts and ends.
       </p>
 
       <H2>Pronouns</H2>
@@ -197,23 +197,40 @@ export function GrammarView() {
 
       <H2>Numbers</H2>
       <p>
-        A number is a domain word followed by digits, most significant first. <W w="magnitude" />{" "}
-        works like scientific notation: <i>finger number 2 magnitude 3</i> is 2 × 10³ = 2000. It
-        takes exactly one argument, normally a single digit root; a larger magnitude needs a
-        subclause with its own number. Negative magnitudes give fractions and percents (
-        <i>finger number 2 3 magnitude negative 2</i> is 23%).
+        A number is a domain word followed by digits, most significant first. A rank after a digit
+        gives that digit's place: <W w="rank_3" /> puts it at base³, and the digits after it carry on
+        down from there. Places a rank jumps over are zeros, so <i>finger number 1 rank_3 3</i> is
+        1003 and <i>finger number 1 rank_6</i> is 1,000,000. Negative ranks give fractions and
+        percents: <i>finger number 2 3 negative rank_2</i> is 23%.
       </p>
       <p className="mt-2">
-        Magnitude doesn't depend on the base: <i>magnitude 3</i> is “thousands” in base 10 but
-        “eights” in base 2. It needn't follow every digit; base 10 might state it every three places
-        (thousands, millions), base 2 every four (sixteens). Without magnitudes, a number is just a
-        run of digits, hard to follow unless the scale is clear from context. See the Examples page.
+        Ranks don't depend on the base: <W w="rank_3" /> is “thousands” in base 10, but “eights” in
+        base 2. By convention ranks work like commas: a base 10 number past <W w="rank_3" /> says{" "}
+        <W w="rank_3" /> somewhere, one past <W w="rank_6" /> says <W w="rank_6" />, and so on up
+        to <W w="rank_15" />, skipping any group that's all zeros. 34,103,487 is{" "}
+        <i>finger number 3 4 rank_6 1 0 3 rank_3 4 8 7 rank_0</i>. Bases 2 and 16 group every four
+        places instead (<W w="rank_4" />, <W w="rank_8" />, <W w="rank_12" />), so the groups are
+        4 bits and 16 bits. Past{" "}
+        <W w="rank_15" />, <W w="rank" /> takes a subclause holding the place. See the Examples
+        page.
       </p>
+      <p className="mt-2">
+        A number ends at its first rank of zero or below, <W w="rank_0" /> or a negative rank. Digits
+        share their sounds with the axis words, so the ending tells a listener the next word isn't a
+        digit. The final <W w="rank_0" /> can be dropped unless an axis word comes next, since only
+        axis words can be mistaken for digits: <i>person finger number 3</i>, but{" "}
+        <i>person finger number 3 rank_0 big</i>. Long numbers usually keep it anyway, to make the
+        end easy to hear.
+      </p>
+      <Open>
+        Long fractions. Since the first rank of zero or below ends the number, every digit from the
+        ones place down falls in one group: 3.14159 has to be{" "}
+        <i>finger number 3 1 4 1 5 9 negative rank_5</i>, with no comma-like ranks inside.
+      </Open>
 
       <H2>Other grammar words</H2>
       <p>
-        Planned: <W w="foreign_word" /> to mark a foreign word or name, and{" "}
-        <W w="possession_indicator" />.
+        <W w="_foreign" /> marks a foreign word or name. Planned: <W w="possession_indicator" />.
       </p>
     </div>
   );

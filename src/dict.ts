@@ -18,14 +18,14 @@ export type Tag = keyof typeof T;
 // ambiguous. The last 128 are shared by partial domains (the digits, in the number domain) and
 // the axis words, which are told apart by domain.
 export const sections = [
-  { key: "marker", label: "Grammar markers", start: 0, end: 12 },
-  { key: "grammar", label: "Grammar helpers", start: 12, end: 32 },
+  { key: "marker", label: "Grammar markers", start: 0, end: 16 },
+  { key: "grammar", label: "Grammar helpers", start: 16, end: 32 },
   { key: "preposition", label: "Prepositions", start: 32, end: 48 },
   { key: "pronoun", label: "Pronouns", start: 48, end: 56 },
   { key: "axis_helper", label: "Axis helpers", start: 56, end: 64 },
   { key: "content", label: "Content roots", start: 64, end: 108 },
   { key: "dimension", label: "Dimension helpers", start: 108, end: 112 },
-  { key: "rank", label: "Magnitude helpers", start: 112, end: 128 },
+  { key: "rank", label: "Rank helpers", start: 112, end: 128 },
   { key: "axis", label: "Axis words", start: 128, end: 256 },
   { key: "digit", label: "Digits", start: 128, end: 256 },
 ] as const; // end is exclusive
@@ -1099,25 +1099,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    {},
-    {
-      noun: "descent",
-      adj: "downward",
-      verb: "go_down(v)",
-      verb_i: "go down",
-      verb_t: "let down",
-      adverb: "down",
-    },
-    {
-      noun: "ascent",
-      adj: "upward",
-      verb: "hoist(v)",
-      verb_i: "go up",
-      verb_t: "hoist",
-      adverb: "up",
-    },
-  ],
-  [
     { notes: "duplicate of back/front?" },
     {
       noun: "tail",
@@ -1515,44 +1496,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
     { noun: "sleep", adj: "asleep", verb: "sleep(v)", verb_i: "sleep", verb_t: "put to sleep" },
     { noun: "wakefulness", adj: "awake", verb: "wake(v)", verb_i: "wake", verb_t: "wake" },
-  ],
-  [
-    { noun: "extent" },
-    {
-      noun: "shortness",
-      adj: "short",
-      verb: "shorten(v)",
-      verb_i: "shorten",
-      verb_t: "shorten",
-      adverb: "briefly",
-    },
-    {
-      noun: "length",
-      adj: "long",
-      verb: "lengthen(v)",
-      verb_i: "lengthen",
-      verb_t: "lengthen",
-      adverb: "lengthily",
-    },
-  ],
-  [
-    { noun: "breadth" },
-    {
-      noun: "narrowness",
-      adj: "narrow",
-      verb: "narrow(v)",
-      verb_i: "narrow",
-      verb_t: "narrow",
-      adverb: "narrowly",
-    },
-    {
-      noun: "width",
-      adj: "wide",
-      verb: "widen(v)",
-      verb_i: "widen",
-      verb_t: "widen",
-      adverb: "widely",
-    },
   ],
   [
     { notes: "negative verb internalize(v) (no positive verb)" },
@@ -2062,11 +2005,11 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("_verb(interrogative)", { t: verb_marker });
   cr("_gerund", { t: verb_marker });
   cr("_er", {
-    t: [T.marker, T.part_of_speech_specifier],
+    t: [T.grammar_helper, T.part_of_speech_specifier],
     gloss: "the subject of a verb, as a noun: _er eat = eater",
   });
   cr("_ee", {
-    t: [T.marker, T.part_of_speech_specifier],
+    t: [T.grammar_helper, T.part_of_speech_specifier],
     gloss: "the object of a verb, as a noun: _ee eat = what is eaten",
   });
   cr("_foreign", { t: marker });
@@ -2082,15 +2025,13 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("and", { t: [T.grammar_helper] });
   cr("or", { t: [T.grammar_helper], notes: '"xor" through "or-exclusive"' });
   cr("if", { t: [T.grammar_helper], notes: '"iff" through "if-exclusive"' });
+  cr("clause_start", { gloss: "clause start" });
+  cr("clause_end", { gloss: "clause end" });
+  cr("continuous_tense_aspect");
+  cr("perfect_tense_aspect");
 
-  candidate("open_paren", { gloss: "clause start" });
-  candidate("close_paren", { gloss: "clause end" });
-  candidate("preposition_ender", {
-    notes: "Closes a prepositional phrase: <in> value and privilege </in>",
-  });
   candidate("clause_and", { notes: "And between clauses, as opposed to list_and" });
   candidate("list_and", { notes: "And between list items, as opposed to clause_and" });
-  candidate("foreign_word", { gloss: "foreign word or name" });
   candidate("possession_indicator");
   candidate("_become", {
     gloss: "come to, begin to: _become possess(v) = gain",
@@ -2157,13 +2098,16 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
 }
 
 {
+  // Higher dimensions go through the number domain: dimension number 4
   section("dimension");
-  for (let i = 0; i < 4; i++) {
-    cr(`dimension_${i}`);
-  }
+  cr("dimension_0", { gloss: "point / dimensionless" });
+  cr("dimension_x", { gloss: "the first dimension (x)" });
+  cr("dimension_y", { gloss: "the second dimension (y)" });
+  cr("dimension_z", { gloss: "the third dimension (z)" });
 }
 
 {
+  // After a digit, rank_N puts that digit at place N (worth base^N)
   section("rank");
   for (let i = 0; i < 16; i++) {
     cr(`rank_${i}`);
@@ -2205,6 +2149,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     notes:
       'Use "rank" to lift "node" to sequence, tree, dag, directed graph, hypergraph, higher-order network. The downside is that it takes 3 syllables to say each of those',
   });
+  cr("edge");
 
   cr("number", {
     t: [T.domain_specifier],
@@ -2213,7 +2158,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("rank", {
     t: [T.domain_specifier],
     notes:
-      "Scales a number like scientific notation: finger number 2 rank 3 is 2000. Takes one argument. Base-agnostic",
+      "For places past rank_15: takes a subclause holding the place, as in finger number 3 rank clause_start finger number 1 3 9 clause_end (3e139)",
   });
   cr("dimension", {
     t: [T.domain_specifier],
@@ -2222,6 +2167,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   candidate("color");
   candidate("finger_number", { gloss: "number (base 10)", notes: "Partial domain" });
   candidate("simple_number", { gloss: "number (base 2)", notes: "Partial domain" });
+  candidate("hex_number", { gloss: "number (base 16)", notes: "Partial domain" });
 
   candidate("prehensile?");
   candidate("information", { gloss: "information / data" });

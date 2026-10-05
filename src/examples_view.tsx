@@ -62,7 +62,7 @@ function Interlinear({ transliteration }: { transliteration: string }) {
 }
 
 const all_transliterations = [
-  ...number_examples.map((e) => e.transliteration),
+  ...number_examples.flatMap((b) => b.examples.map((e) => e.transliteration)),
   ...udhr_articles.flatMap((a) => (a.transliteration ? [a.transliteration] : [])),
 ];
 
@@ -112,17 +112,22 @@ export function ExamplesView() {
         </p>
       </div>
 
-      <h2 className="text-lg font-semibold mb-2">Numbers and magnitude</h2>
-      <div className="space-y-4 mb-8">
-        {number_examples.map((e) => (
-          <div key={e.title}>
-            <h3 className="font-semibold text-sm">
-              {e.title} <span className="font-normal text-gray-500">· {e.english}</span>
-            </h3>
-            <Interlinear transliteration={e.transliteration} />
+      <h2 className="text-lg font-semibold mb-2">Numbers</h2>
+      {number_examples.map((base) => (
+        <div key={base.title} className="mb-6">
+          <h3 className="font-semibold text-gray-700 mb-2">{base.title}</h3>
+          <div className="space-y-4">
+            {base.examples.map((e) => (
+              <div key={e.title}>
+                <h4 className="font-semibold text-sm">
+                  {e.title} <span className="font-normal text-gray-500">· {e.english}</span>
+                </h4>
+                <Interlinear transliteration={e.transliteration} />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
 
       <h2 className="text-lg font-semibold mb-2">Universal Declaration of Human Rights</h2>
       <div className="space-y-5">

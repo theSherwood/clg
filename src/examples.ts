@@ -7,37 +7,102 @@ export type Example = { title: string; english: string; transliteration: string 
 
 export type Article = { title: string; english: string[]; transliteration?: string };
 
-export const number_examples: Example[] = [
+// Numbers in each base. A rank after a digit gives that digit's place. By convention the ranks
+// work like commas, every three places in base 10 and every four in bases 2 and 16: a base 10
+// number past rank_3 says rank_3, one past rank_6 says rank_6, and so on, skipping groups that are
+// all zeros. Long numbers end with rank_0 even where it could be dropped.
+export type NumberBase = { title: string; examples: Example[] };
+
+export const number_examples: NumberBase[] = [
   {
-    title: "2000",
-    english: "2000 in base 10 (2e3)",
-    transliteration: "finger number 2 magnitude 3",
+    title: "Base 10",
+    examples: [
+      {
+        title: "7",
+        english: "A lone number drops its final rank_0",
+        transliteration: "finger number 7",
+      },
+      {
+        title: "1003",
+        english: "Places a rank jumps over are zeros",
+        transliteration: "finger number 1 rank_3 3",
+      },
+      { title: "10,000", english: "Like “ten thousand”", transliteration: "finger number 1 0 rank_3" },
+      {
+        title: "120,034",
+        english: "120 thousand 34",
+        transliteration: "finger number 1 2 0 rank_3 3 4",
+      },
+      {
+        title: "34,103,487",
+        english: "34 million 103 thousand 487",
+        transliteration: "finger number 3 4 rank_6 1 0 3 rank_3 4 8 7 rank_0",
+      },
+      {
+        title: "1,000,000",
+        english: "The empty thousands group is skipped",
+        transliteration: "finger number 1 rank_6",
+      },
+      {
+        title: "2,004,000",
+        english: "2 million 4 thousand",
+        transliteration: "finger number 2 rank_6 4 rank_3",
+      },
+      {
+        title: "three big people",
+        english: "rank_0 is needed here: big shares its sound with a digit",
+        transliteration: "person finger number 3 rank_0 big",
+      },
+      {
+        title: "0.3",
+        english: "A negative rank ends the number too",
+        transliteration: "finger number 3 negative rank_1",
+      },
+      { title: "23%", english: "0.23", transliteration: "finger number 2 3 negative rank_2" },
+      {
+        title: "3e139",
+        english: "Past rank_15, rank takes a subclause holding the place",
+        transliteration: "finger number 3 rank clause_start finger number 1 3 9 clause_end",
+      },
+    ],
   },
   {
-    title: "2004",
-    english: "2004 in base 10",
-    transliteration: "finger number 2 magnitude 3 4 magnitude 0",
+    title: "Base 16",
+    examples: [
+      { title: "1003", english: "3EB", transliteration: "hex number 3 14 11" },
+      {
+        title: "34,103,487",
+        english: "208,60BF",
+        transliteration: "hex number 2 0 8 rank_4 6 0 11 15 rank_0",
+      },
+      { title: "65,535", english: "FFFF", transliteration: "hex number 15 15 15 15" },
+      { title: "65,536", english: "1,0000", transliteration: "hex number 1 rank_4" },
+      {
+        title: "4,294,967,295",
+        english: "FFFF,FFFF: the largest 32-bit number",
+        transliteration: "hex number 15 15 15 15 rank_4 15 15 15 15 rank_0",
+      },
+      { title: "1/16", english: "0.1", transliteration: "hex number 1 negative rank_1" },
+    ],
   },
   {
-    title: "2004, without the last magnitude",
-    english: "2004 in base 10",
-    transliteration: "finger number 2 magnitude 3 0 0 4",
-  },
-  {
-    title: "34,103,487",
-    english: "34,103,487 in base 10",
-    transliteration: "finger number 3 4 magnitude 6 1 0 3 magnitude 3 4 8 7",
-  },
-  {
-    title: "23%",
-    english: "23 percent",
-    transliteration: "finger number 2 3 magnitude negative 2",
-  },
-  { title: "3 tenths", english: "0.3", transliteration: "finger number 3 magnitude negative 1" },
-  {
-    title: "3e139",
-    english: "3e139, with a subclause for a magnitude past the digit range",
-    transliteration: "finger number 3 magnitude which finger number 1 3 9 end-which",
+    title: "Base 2",
+    examples: [
+      { title: "5", english: "101", transliteration: "simple number 1 0 1" },
+      {
+        title: "1003",
+        english: "11,1110,1011",
+        transliteration: "simple number 1 1 rank_8 1 1 1 0 rank_4 1 0 1 1 rank_0",
+      },
+      { title: "1024", english: "100,0000,0000", transliteration: "simple number 1 0 0 rank_8" },
+      {
+        title: "65,535",
+        english: "1111,1111,1111,1111: the largest number the rank roots reach in base 2",
+        transliteration:
+          "simple number 1 1 1 1 rank_12 1 1 1 1 rank_8 1 1 1 1 rank_4 1 1 1 1 rank_0",
+      },
+      { title: "1/2", english: "0.1", transliteration: "simple number 1 negative rank_1" },
+    ],
   },
 ];
 
@@ -276,9 +341,6 @@ export type Token =
 
 // Transliteration spellings that don't match a dictionary name directly
 const ALIASES: Record<string, string> = {
-  in: "in_of_about",
-  of: "in_of_about",
-  about: "in_of_about",
   it: "pronoun(third_person)",
 };
 
@@ -297,7 +359,7 @@ function lookup(name: string): Pick<Extract<Token, { kind: "word" }>, "word" | "
 }
 
 // Splits a transliteration into words, grammar markers and punctuation, and looks each one up.
-// A closing marker like </in> is the preposition ender. Two-word names (finger number) are tried
+// A closing marker like </in> is clause_end. Two-word names (finger number) are tried
 // before single words.
 export function tokenize(transliteration: string): Token[] {
   const raw = transliteration.match(/<[^>]+>|[\w'()-]+\??|\?\?|[.,;]/g) ?? [];
@@ -309,7 +371,7 @@ export function tokenize(transliteration: string): Token[] {
       continue;
     }
     if (text.startsWith("</")) {
-      tokens.push({ kind: "word", text, uncertain: false, ...lookup("preposition_ender") });
+      tokens.push({ kind: "word", text, uncertain: false, ...lookup("clause_end") });
       continue;
     }
     const uncertain = /\?>?$/.test(text);

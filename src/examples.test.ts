@@ -13,19 +13,19 @@ test("grammar markers resolve to domain words and prepositions", () => {
     "person",
     "_verb(prescriptive)",
     "do",
-    "in_of_about",
+    "in",
     "value",
-    "preposition_ender",
+    "clause_end",
     ".",
   ]);
 });
 
 test("digits, two-word names and unknown words", () => {
-  expect(resolved("finger number 2 magnitude 3 blorp")).toEqual([
-    "finger_number",
+  expect(resolved("hex number 2 rank_4 15 blorp")).toEqual([
+    "hex_number",
     "digit_2",
-    "magnitude",
-    "digit_3",
+    "rank_4",
+    "digit_15",
     "?blorp",
   ]);
 });

@@ -162,6 +162,8 @@ const SECTION_SWATCHES: Record<SectionKey, string> = {
   pronoun: "bg-fuchsia-400",
   axis_helper: "bg-violet-400",
   content: "bg-emerald-400",
+  dimension: "bg-teal-400",
+  rank: "bg-cyan-400",
   axis: "bg-sky-400",
   digit: "bg-slate-400",
 };
