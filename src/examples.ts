@@ -7,7 +7,8 @@ export type Example = { title: string; english: string; transliteration: string 
 
 export type Article = { title: string; english: string[]; transliteration?: string };
 
-// Numbers in each base. A rank after a digit gives that digit's place. By convention the ranks
+// Numbers in each base. The base comes from context; here, the heading. A rank after a digit
+// gives that digit's place. By convention the ranks
 // work like commas, every three places in base 10 and every four in bases 2 and 16: a base 10
 // number past rank_3 says rank_3, one past rank_6 says rank_6, and so on, skipping groups that are
 // all zeros. Long numbers end with rank_0 even where it could be dropped.
@@ -20,93 +21,93 @@ export const number_examples: NumberBase[] = [
       {
         title: "7",
         english: "A lone number drops its final rank_0",
-        transliteration: "finger number 7",
+        transliteration: "number 7",
       },
       {
         title: "1003",
         english: "Places a rank jumps over are zeros",
-        transliteration: "finger number 1 rank_3 3",
+        transliteration: "number 1 rank_3 3",
       },
-      { title: "10,000", english: "Like “ten thousand”", transliteration: "finger number 1 0 rank_3" },
+      { title: "10,000", english: "Like “ten thousand”", transliteration: "number 1 0 rank_3" },
       {
         title: "120,034",
         english: "120 thousand 34",
-        transliteration: "finger number 1 2 0 rank_3 3 4",
+        transliteration: "number 1 2 0 rank_3 3 4",
       },
       {
         title: "34,103,487",
         english: "34 million 103 thousand 487",
-        transliteration: "finger number 3 4 rank_6 1 0 3 rank_3 4 8 7 rank_0",
+        transliteration: "number 3 4 rank_6 1 0 3 rank_3 4 8 7 rank_0",
       },
       {
         title: "1,000,000",
         english: "The empty thousands group is skipped",
-        transliteration: "finger number 1 rank_6",
+        transliteration: "number 1 rank_6",
       },
       {
         title: "2,004,000",
         english: "2 million 4 thousand",
-        transliteration: "finger number 2 rank_6 4 rank_3",
+        transliteration: "number 2 rank_6 4 rank_3",
       },
       {
         title: "three big people",
         english: "rank_0 is needed here: big shares its sound with a digit",
-        transliteration: "person finger number 3 rank_0 big",
+        transliteration: "person number 3 rank_0 big",
       },
       {
         title: "three small people",
         english: "rank_0 is needed here too: negative could start a negative rank",
-        transliteration: "person finger number 3 rank_0 small",
+        transliteration: "person number 3 rank_0 small",
       },
       {
         title: "0.3",
         english: "A negative rank ends the number too",
-        transliteration: "finger number 3 negative rank_1",
+        transliteration: "number 3 negative rank_1",
       },
-      { title: "23%", english: "0.23", transliteration: "finger number 2 3 negative rank_2" },
+      { title: "23%", english: "0.23", transliteration: "number 2 3 negative rank_2" },
       {
         title: "3e139",
         english: "Past rank_15, rank takes a subclause holding the place",
-        transliteration: "finger number 3 rank clause_start finger number 1 3 9 clause_end",
+        transliteration: "number 3 rank clause_start number 1 3 9 clause_end",
       },
     ],
   },
   {
     title: "Base 16",
     examples: [
-      { title: "1003", english: "3EB", transliteration: "hex number 3 14 11" },
+      { title: "1003", english: "3EB", transliteration: "number 3 14 11" },
       {
         title: "34,103,487",
         english: "208,60BF",
-        transliteration: "hex number 2 0 8 rank_4 6 0 11 15 rank_0",
+        transliteration: "number 2 0 8 rank_4 6 0 11 15 rank_0",
       },
-      { title: "65,535", english: "FFFF", transliteration: "hex number 15 15 15 15" },
-      { title: "65,536", english: "1,0000", transliteration: "hex number 1 rank_4" },
+      { title: "65,535", english: "FFFF", transliteration: "number 15 15 15 15" },
+      { title: "65,536", english: "1,0000", transliteration: "number 1 rank_4" },
       {
         title: "4,294,967,295",
         english: "FFFF,FFFF: the largest 32-bit number",
-        transliteration: "hex number 15 15 15 15 rank_4 15 15 15 15 rank_0",
+        transliteration: "number 15 15 15 15 rank_4 15 15 15 15 rank_0",
       },
-      { title: "1/16", english: "0.1", transliteration: "hex number 1 negative rank_1" },
+      { title: "1/16", english: "0.1", transliteration: "number 1 negative rank_1" },
     ],
   },
   {
     title: "Base 2",
     examples: [
-      { title: "5", english: "101", transliteration: "simple number 1 0 1" },
+      { title: "5", english: "101", transliteration: "number 1 0 1" },
       {
         title: "1003",
         english: "11,1110,1011",
-        transliteration: "simple number 1 1 rank_8 1 1 1 0 rank_4 1 0 1 1 rank_0",
+        transliteration: "number 1 1 rank_8 1 1 1 0 rank_4 1 0 1 1 rank_0",
       },
-      { title: "1024", english: "100,0000,0000", transliteration: "simple number 1 0 0 rank_8" },
+      { title: "1024", english: "100,0000,0000", transliteration: "number 1 0 0 rank_8" },
       {
         title: "65,535",
         english: "1111,1111,1111,1111: the largest number the rank roots reach in base 2",
         transliteration:
-          "simple number 1 1 1 1 rank_12 1 1 1 1 rank_8 1 1 1 1 rank_4 1 1 1 1 rank_0",
+          "number 1 1 1 1 rank_12 1 1 1 1 rank_8 1 1 1 1 rank_4 1 1 1 1 rank_0",
       },
-      { title: "1/2", english: "0.1", transliteration: "simple number 1 negative rank_1" },
+      { title: "1/2", english: "0.1", transliteration: "number 1 negative rank_1" },
     ],
   },
 ];
@@ -494,7 +495,7 @@ function lookup(name: string): Pick<Extract<Token, { kind: "word" }>, "word" | "
 }
 
 // Splits a transliteration into words, grammar markers and punctuation, and looks each one up.
-// Two-word names (finger number) are tried before single words.
+// Two-word names (number) are tried before single words.
 export function tokenize(transliteration: string): Token[] {
   const raw = transliteration.match(/<[^>]+>|[\w'()-]+\??|\?\?|[.,;]/g) ?? [];
   const tokens: Token[] = [];

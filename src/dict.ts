@@ -2176,21 +2176,19 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
 
   cr("number", {
     t: [T.domain_specifier],
-    notes: "For now, also marks the number domain: what follows reads roots 128-255 as digits",
+    notes:
+      "Marks the number domain: what follows reads roots 128-255 as digits. The base comes from context",
   });
   cr("rank", {
     t: [T.domain_specifier],
     notes:
-      "For places past rank_15: takes a subclause holding the place, as in finger number 3 rank clause_start finger number 1 3 9 clause_end (3e139)",
+      "For places past rank_15: takes a subclause holding the place, as in number 3 rank clause_start number 1 3 9 clause_end (3e139)",
   });
   cr("dimension", {
     t: [T.domain_specifier],
   });
 
   candidate("color");
-  candidate("finger_number", { gloss: "number (base 10)", notes: "Partial domain" });
-  candidate("simple_number", { gloss: "number (base 2)", notes: "Partial domain" });
-  candidate("hex_number", { gloss: "number (base 16)", notes: "Partial domain" });
 
   candidate("prehensile?");
   candidate("information", { gloss: "information / data" });

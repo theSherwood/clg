@@ -20,11 +20,12 @@ test("grammar markers resolve to domain words and prepositions", () => {
 });
 
 test("digits, two-word names and unknown words", () => {
-  expect(resolved("hex number 2 rank_4 15 blorp")).toEqual([
-    "hex_number",
+  expect(resolved("number 2 rank_4 15 clause start blorp")).toEqual([
+    "number",
     "digit_2",
     "rank_4",
     "digit_15",
+    "clause_start",
     "?blorp",
   ]);
 });

@@ -84,11 +84,9 @@ export function GrammarView() {
         <W w="_verb(interrogative)" /> and <W w="_gerund" />.
       </p>
       <p className="mt-2">
-        Partial domains reuse a restricted part of the root space. For now the content root{" "}
-        <W w="number" /> marks the number domain, reading the roots 128–255 as the digits 0–127.
-        Since most people don't count in base 128, <W w="finger_number" /> (base 10),{" "}
-        <W w="hex_number" /> (base 16) and <W w="simple_number" /> (base 2) are planned, along with{" "}
-        <W w="color" />.
+        Partial domains reuse a restricted part of the root space. The content root{" "}
+        <W w="number" /> marks the number domain, reading the roots 128–255 as digits. The base
+        comes from context. <W w="color" /> is planned as another partial domain.
       </p>
       <p className="mt-2">
         <W w="_er" /> and <W w="_ee" /> turn a verb into a noun for its subject or object, after
@@ -230,7 +228,7 @@ export function GrammarView() {
         <i>not max_positive true</i> is “not certain”. <W w="not" /> is always a prefix, on content
         words too, so <i>person not big</i> can only be a person who isn't big. And the sign comes
         first, so a listener never has to revise what they've heard: in{" "}
-        <i>finger number 2 3 negative rank_2</i>, the negative comes before the rank.
+        <i>number 2 3 negative rank_2</i>, the negative comes before the rank.
       </p>
 
       <H2>Prepositions</H2>
@@ -267,18 +265,19 @@ export function GrammarView() {
 
       <H2>Numbers</H2>
       <p>
-        A number is a domain word followed by digits, most significant first. A rank after a digit
+        A number is <W w="number" /> followed by digits, most significant first. There's one word
+        for every base: the base comes from context. A rank after a digit
         gives that digit's place: <W w="rank_3" /> puts it at base³, and the digits after it carry on
-        down from there. Places a rank jumps over are zeros, so <i>finger number 1 rank_3 3</i> is
-        1003 and <i>finger number 1 rank_6</i> is 1,000,000. Negative ranks give fractions and
-        percents: <i>finger number 2 3 negative rank_2</i> is 23%.
+        down from there. Places a rank jumps over are zeros, so <i>number 1 rank_3 3</i> is
+        1003 and <i>number 1 rank_6</i> is 1,000,000. Negative ranks give fractions and
+        percents: <i>number 2 3 negative rank_2</i> is 23%.
       </p>
       <p className="mt-2">
         Ranks don't depend on the base: <W w="rank_3" /> is “thousands” in base 10, but “eights” in
         base 2. By convention ranks work like commas: a base 10 number past <W w="rank_3" /> says{" "}
         <W w="rank_3" /> somewhere, one past <W w="rank_6" /> says <W w="rank_6" />, and so on up
         to <W w="rank_15" />, skipping any group that's all zeros. 34,103,487 is{" "}
-        <i>finger number 3 4 rank_6 1 0 3 rank_3 4 8 7 rank_0</i>. Bases 2 and 16 group every four
+        <i>number 3 4 rank_6 1 0 3 rank_3 4 8 7 rank_0</i>. Bases 2 and 16 group every four
         places instead (<W w="rank_4" />, <W w="rank_8" />, <W w="rank_12" />), so the groups are
         4 bits and 16 bits. Past{" "}
         <W w="rank_15" />, <W w="rank" /> takes a subclause holding the place. See the Examples
@@ -289,14 +288,14 @@ export function GrammarView() {
         share their sounds with the axis words, so the ending tells a listener the next word isn't a
         digit. The final <W w="rank_0" /> can be dropped unless an axis word or an axis helper comes
         next. Only axis words can be mistaken for digits, and a helper like <W w="negative" /> could
-        be starting a negative rank: <i>person finger number 3</i>, but{" "}
-        <i>person finger number 3 rank_0 big</i> and <i>person finger number 3 rank_0 small</i>.
+        be starting a negative rank: <i>person number 3</i>, but{" "}
+        <i>person number 3 rank_0 big</i> and <i>person number 3 rank_0 small</i>.
         Long numbers usually keep it anyway, to make the end easy to hear.
       </p>
       <Open>
         Long fractions. Since the first rank of zero or below ends the number, every digit from the
         ones place down falls in one group: 3.14159 has to be{" "}
-        <i>finger number 3 1 4 1 5 9 negative rank_5</i>, with no comma-like ranks inside.
+        <i>number 3 1 4 1 5 9 negative rank_5</i>, with no comma-like ranks inside.
       </Open>
 
       <H2>Other grammar words</H2>
