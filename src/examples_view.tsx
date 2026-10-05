@@ -1,5 +1,6 @@
 import React, { useContext, useMemo } from "react";
 import {
+  type Example,
   type Token,
   number_examples,
   family_examples,
@@ -70,6 +71,45 @@ function Interlinear({ transliteration }: { transliteration: string }) {
   );
 }
 
+// A section that collapses to its heading, open to start with
+function Section({
+  title,
+  level = 2,
+  children,
+}: {
+  title: string;
+  level?: 2 | 3;
+  children: React.ReactNode;
+}) {
+  return (
+    <details open className={level === 2 ? "mb-8" : "mb-6"}>
+      <summary
+        className={`cursor-pointer mb-2 ${
+          level === 2 ? "text-lg font-semibold" : "font-semibold text-gray-700"
+        }`}
+      >
+        {title}
+      </summary>
+      {children}
+    </details>
+  );
+}
+
+function ExampleList({ examples }: { examples: Example[] }) {
+  return (
+    <div className="space-y-4">
+      {examples.map((e) => (
+        <div key={e.title}>
+          <h4 className="font-semibold text-sm">
+            {e.title} <span className="font-normal text-gray-500">· {e.english}</span>
+          </h4>
+          <Interlinear transliteration={e.transliteration} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 const all_transliterations = [
   ...number_examples.flatMap((b) => b.examples.map((e) => e.transliteration)),
   ...tense_examples.map((e) => e.transliteration),
@@ -124,82 +164,64 @@ export function ExamplesView() {
         </p>
       </div>
 
-      <h2 className="text-lg font-semibold mb-2">Numbers</h2>
-      {number_examples.map((base) => (
-        <div key={base.title} className="mb-6">
-          <h3 className="font-semibold text-gray-700 mb-2">{base.title}</h3>
-          <div className="space-y-4">
-            {base.examples.map((e) => (
-              <div key={e.title}>
-                <h4 className="font-semibold text-sm">
-                  {e.title} <span className="font-normal text-gray-500">· {e.english}</span>
-                </h4>
-                <Interlinear transliteration={e.transliteration} />
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
+      <Section title="Numbers">
+        {number_examples.map((base) => (
+          <Section key={base.title} title={base.title} level={3}>
+            <ExampleList examples={base.examples} />
+          </Section>
+        ))}
+      </Section>
 
       {[
         { title: "Tense and aspect", examples: tense_examples },
         { title: "Truth and possibility", examples: truth_examples },
         { title: "Family", examples: family_examples },
       ].map((group) => (
-        <div key={group.title}>
-          <h2 className="text-lg font-semibold mb-2">{group.title}</h2>
-          <div className="space-y-4 mb-8">
-            {group.examples.map((e) => (
-              <div key={e.title}>
-                <h4 className="font-semibold text-sm">
-                  {e.title} <span className="font-normal text-gray-500">· {e.english}</span>
-                </h4>
-                <Interlinear transliteration={e.transliteration} />
-              </div>
-            ))}
-          </div>
-        </div>
+        <Section key={group.title} title={group.title}>
+          <ExampleList examples={group.examples} />
+        </Section>
       ))}
 
-      <h2 className="text-lg font-semibold mb-2">Universal Declaration of Human Rights</h2>
-      <div className="space-y-5">
-        {translated.map((a) => (
-          <div key={a.title}>
-            <h3 className="font-semibold text-sm">{a.title}</h3>
-            {a.english.map((p) => (
-              <p key={p} className="text-sm text-gray-600 mb-1">
-                {p}
-              </p>
-            ))}
-            <Interlinear transliteration={a.transliteration!} />
-          </div>
-        ))}
-      </div>
-      <details className="mt-6 text-sm">
-        <summary className="cursor-pointer font-semibold">
-          Not translated yet: preamble and {untranslated.length} articles
-        </summary>
-        <div className="mt-2 space-y-3 text-gray-600">
-          <div>
-            <h3 className="font-semibold text-gray-800">Preamble</h3>
-            {udhr_preamble.map((p) => (
-              <p key={p} className="mb-1">
-                {p}
-              </p>
-            ))}
-          </div>
-          {untranslated.map((a) => (
+      <Section title="Universal Declaration of Human Rights">
+        <div className="space-y-5">
+          {translated.map((a) => (
             <div key={a.title}>
-              <h3 className="font-semibold text-gray-800">{a.title}</h3>
+              <h3 className="font-semibold text-sm">{a.title}</h3>
               {a.english.map((p) => (
+                <p key={p} className="text-sm text-gray-600 mb-1">
+                  {p}
+                </p>
+              ))}
+              <Interlinear transliteration={a.transliteration!} />
+            </div>
+          ))}
+        </div>
+        <details className="mt-6 text-sm">
+          <summary className="cursor-pointer font-semibold">
+            Not translated yet: preamble and {untranslated.length} articles
+          </summary>
+          <div className="mt-2 space-y-3 text-gray-600">
+            <div>
+              <h3 className="font-semibold text-gray-800">Preamble</h3>
+              {udhr_preamble.map((p) => (
                 <p key={p} className="mb-1">
                   {p}
                 </p>
               ))}
             </div>
-          ))}
-        </div>
-      </details>
+            {untranslated.map((a) => (
+              <div key={a.title}>
+                <h3 className="font-semibold text-gray-800">{a.title}</h3>
+                {a.english.map((p) => (
+                  <p key={p} className="mb-1">
+                    {p}
+                  </p>
+                ))}
+              </div>
+            ))}
+          </div>
+        </details>
+      </Section>
     </div>
   );
 }
