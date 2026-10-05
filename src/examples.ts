@@ -323,6 +323,122 @@ export const role_examples: Example[] = [
   },
 ];
 
+// Questions: _blank stands for what's asked, in whatever role or phrase it's asked about
+export const question_examples: Example[] = [
+  { title: "Yes or no", english: "Do you sleep?", transliteration: "<subject> you <verb (interrogative)> sleep(v)" },
+  {
+    title: "Who",
+    english: "Who killed the person?",
+    transliteration: "<subject> person _blank <verb (interrogative)> kill(v) <object> person",
+  },
+  {
+    title: "What",
+    english: "What do you eat?",
+    transliteration: "<subject> you <verb (interrogative)> eat <object> _blank",
+  },
+  {
+    title: "Where",
+    english: "Where do you sleep?",
+    transliteration: "<subject> you <verb (interrogative)> sleep(v) <at> _blank",
+  },
+  {
+    title: "Where to",
+    english: "Where are you going?",
+    transliteration: "<subject> you <verb (interrogative)> go(v) <to> _blank",
+  },
+  {
+    title: "Where from",
+    english: "Where do you come from?",
+    transliteration: "<subject> you <verb (interrogative)> come(v) <from> _blank",
+  },
+  {
+    title: "When",
+    english: "When did the person die?",
+    transliteration: "<subject> person <verb (interrogative)> kill(v) <at> time _blank",
+  },
+  {
+    title: "Why",
+    english: "Why do you fight?",
+    transliteration: "<subject> you <verb (interrogative)> fight(v) <for> _blank",
+  },
+  {
+    title: "How",
+    english: "How do you open it?",
+    transliteration: "<subject> you <verb (interrogative)> open(v) <object> it <with> _blank",
+  },
+  {
+    title: "How many",
+    english: "How many children do you have?",
+    transliteration: "<subject> you <verb (interrogative)> possess <object> child number _blank",
+  },
+];
+
+// self and other, and joining clauses with but
+export const self_other_examples: Example[] = [
+  { title: "Myself", english: "I know myself", transliteration: "<subject> I <verb> know(v) <object> self" },
+  {
+    title: "Each other",
+    english: "They love each other",
+    transliteration: "<subject> it plural <verb> love(v) <object> other",
+  },
+  {
+    title: "One another",
+    english: "Everyone should act towards one another",
+    transliteration: "<subject> person all <verb (prescriptive)> do <to> other",
+  },
+  { title: "One's own", english: "one's own family", transliteration: "family <of> self" },
+  { title: "Another", english: "another person", transliteration: "person other" },
+  {
+    title: "But",
+    english: "I sleep, but you work",
+    transliteration: "<subject> I <verb> sleep(v) but <subject> you <verb> work(v)",
+  },
+];
+
+// Water, and fire from the combustion axis: burn is a change verb
+export const water_fire_examples: Example[] = [
+  { title: "Water", english: "water", transliteration: "water" },
+  { title: "Fire", english: "the burning end of the combustion axis", transliteration: "fire" },
+  { title: "Drink", english: "I drink water", transliteration: "<subject> I <verb> eat <object> water" },
+  { title: "Burn", english: "The land is burning", transliteration: "<subject> land <verb> burn(v) continuous_tense_aspect" },
+  {
+    title: "Set on fire",
+    english: "The person burns the rod",
+    transliteration: "<subject> person <verb> burn(v) <object> rod",
+  },
+  {
+    title: "Put out",
+    english: "Water puts out fire",
+    transliteration: "<subject> water <verb> extinguish(v) <object> fire",
+  },
+  {
+    title: "Go out, but",
+    english: "The fire went out, but the rock is hot",
+    transliteration:
+      "<subject> fire <verb> extinguish(v) formerly but <subject> rock <verb> is <object> hot",
+  },
+];
+
+// One celestial root; rank picks the level of the orbital hierarchy, and this makes it ours
+export const sky_examples: Example[] = [
+  { title: "Celestial body", english: "any body in the sky", transliteration: "celestial" },
+  { title: "Asteroid or comet", english: "rank 0: debris", transliteration: "celestial rank_0" },
+  { title: "Moon", english: "rank 1: orbits a planet", transliteration: "celestial rank_1" },
+  { title: "Planet", english: "rank 2: orbits a star", transliteration: "celestial rank_2" },
+  { title: "Star", english: "rank 3", transliteration: "celestial rank_3" },
+  { title: "Galaxy", english: "rank 4", transliteration: "celestial rank_4" },
+  { title: "The Moon", english: "our moon", transliteration: "celestial rank_1 this" },
+  { title: "Earth", english: "our planet", transliteration: "celestial rank_2 this" },
+  { title: "The Sun", english: "our star", transliteration: "celestial rank_3 this" },
+  { title: "The Milky Way", english: "our galaxy", transliteration: "celestial rank_4 this" },
+  { title: "Many stars", english: "many stars", transliteration: "celestial rank_3 many" },
+  {
+    title: "A sentence",
+    english: "The Sun is bright",
+    transliteration: "<subject> celestial rank_3 this <verb> is <object> bright",
+  },
+];
+
 // Universal Declaration of Human Rights
 
 export const udhr_preamble: string[] = [
@@ -365,7 +481,7 @@ export const udhr_articles: Article[] = [
       "No one shall be held in slavery or servitude; slavery and the slave trade shall be prohibited in all their forms.",
     ],
     transliteration:
-      "<subject> person none <verb (prescriptive)> is <object> slave. <subject> slavery and exchange slave in manner all <verb (prescriptive)> forbid.",
+      "<subject> person none <verb (prescriptive)> is <object> _ee force(v). <subject> _gerund force(v) and trade _ee force(v) in manner all <verb (prescriptive)> forbid.",
   },
   {
     title: "Article 5",

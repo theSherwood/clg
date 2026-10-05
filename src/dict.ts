@@ -1693,6 +1693,18 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
+    { noun: "combustion" },
+    { adj: "extinguished", verb: "extinguish(v)", verb_i: "go out", verb_t: "put out" },
+    {
+      noun: "fire",
+      adj: "burning",
+      verb: "burn(v)",
+      verb_i: "burn",
+      verb_t: "burn",
+      adverb: "ablaze",
+    },
+  ],
+  [
     { noun: "reasoning" },
     {
       noun: "instinct",
@@ -2243,6 +2255,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("clause_end", { gloss: "clause end" });
   cr("continuous_tense_aspect");
   cr("perfect_tense_aspect");
+  cr("but", { t: [T.grammar_helper], gloss: "but / however" });
 
   candidate("clause_and", { notes: "And between clauses, as opposed to list_and" });
   candidate("list_and", { notes: "And between list items, as opposed to clause_and" });
@@ -2386,6 +2399,20 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   });
   cr("yellow");
   cr("blue");
+  cr("water");
+  cr("self", {
+    gloss: "self / oneself / own",
+    notes: "As an object it's reflexive: I know self is I know myself. family <of> self is one's own family",
+  });
+  cr("other", {
+    gloss: "other / another",
+    notes: "person other is another person. With a plural subject, <object> other or <to> other is each other",
+  });
+  cr("celestial", {
+    gloss: "celestial body",
+    notes:
+      "Rank gives the level in the orbital hierarchy: rank_0 debris (asteroids, comets), rank_1 moon, rank_2 planet, rank_3 star, rank_4 galaxy, rank_5 galaxy cluster. Bare, it's any celestial body. With this, it's ours: celestial rank_3 this is the Sun, celestial rank_2 this Earth, celestial rank_1 this the Moon",
+  });
 
 
   candidate("prehensile?");
@@ -2408,11 +2435,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   });
   candidate("shape");
   candidate("count");
-  candidate("earth");
-  candidate("sun");
-  candidate("moon");
-  candidate("star");
-  candidate("planet");
   candidate("hour");
   candidate("minute");
   candidate("second");
@@ -2487,7 +2509,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "beautify(v)", "go(v)", "heap_up(v)", "fill_up(v)", "show(v)", "inflate(v)", "educate(v)",
     "aim(v)", "group(v)", "mark_up(v)", "emphasize(v)", "mend(v)", "unify(v)", "constrain(v)",
     "sanctify(v)", "contain(v)", "regulate(v)", "disconnect(v)", "stop(v)", "obligate(v)",
-    "necessitate(v)",
+    "necessitate(v)", "burn(v)",
   ],
   action: [
     "analyze(v)", "win(v)", "succeed(v)", "produce(v)", "buy(v)", "send(v)", "hope(v)",

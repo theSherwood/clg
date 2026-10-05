@@ -5,11 +5,15 @@ import {
   number_examples,
   color_examples,
   family_examples,
+  question_examples,
   role_examples,
+  self_other_examples,
+  sky_examples,
   tense_examples,
   tokenize,
   truth_examples,
   udhr_articles,
+  water_fire_examples,
   udhr_preamble,
 } from "./examples";
 import { swadesh, toki_pona_words } from "./comparison";
@@ -121,6 +125,10 @@ const all_transliterations = [
   ...family_examples.map((e) => e.transliteration),
   ...color_examples.map((e) => e.transliteration),
   ...role_examples.map((e) => e.transliteration),
+  ...question_examples.map((e) => e.transliteration),
+  ...self_other_examples.map((e) => e.transliteration),
+  ...water_fire_examples.map((e) => e.transliteration),
+  ...sky_examples.map((e) => e.transliteration),
   ...udhr_articles.flatMap((a) => (a.transliteration ? [a.transliteration] : [])),
 ];
 
@@ -202,6 +210,10 @@ export function ExamplesView() {
         { title: "Family", examples: family_examples },
         { title: "Colors", examples: color_examples },
         { title: "Nouns from verbs", examples: role_examples },
+        { title: "Questions", examples: question_examples },
+        { title: "Self and other", examples: self_other_examples },
+        { title: "Water and fire", examples: water_fire_examples },
+        { title: "Sky", examples: sky_examples },
       ].map((group) => (
         <Section key={group.title} title={group.title}>
           <ExampleList examples={group.examples} />

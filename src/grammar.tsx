@@ -181,13 +181,23 @@ export function GrammarView() {
         for what's being asked about; without it, the question is yes or no.
       </p>
       <Example meaning="No one shall be held in slavery.">
-        &lt;subject&gt; person none &lt;verb (prescriptive)&gt; is &lt;object&gt; slave.
+        &lt;subject&gt; person none &lt;verb (prescriptive)&gt; is &lt;object&gt; _ee force.
       </Example>
       <Example meaning="Who does the soldier kill?">
         &lt;subject&gt; soldier &lt;verb (interrogative)&gt; kill &lt;object&gt; _blank
       </Example>
       <Example meaning="Does the soldier kill the enemy?">
         &lt;subject&gt; soldier &lt;verb (interrogative)&gt; kill &lt;object&gt; enemy
+      </Example>
+      <p>
+        Other question words come from where <W w="_blank" /> sits: <i>person _blank</i> is who,{" "}
+        <i>&lt;at&gt; _blank</i> where, <i>&lt;to&gt; _blank</i> where to,{" "}
+        <i>&lt;from&gt; _blank</i> where from, <i>&lt;at&gt; time _blank</i> when,{" "}
+        <i>&lt;for&gt; _blank</i> why, <i>&lt;with&gt; _blank</i> how and <i>number _blank</i> how
+        many.
+      </p>
+      <Example meaning="Why do you fight?">
+        &lt;subject&gt; you &lt;verb (interrogative)&gt; fight &lt;for&gt; _blank
       </Example>
 
       <H2>Tense and aspect</H2>
@@ -275,6 +285,18 @@ export function GrammarView() {
         negative male</i>, four syllables for a very common word.
       </Open>
 
+      <H2>Sky</H2>
+      <p>
+        <W w="celestial" /> is one root for every body in the sky, and rank picks its level in the
+        orbital hierarchy, each level orbiting the next: <i>celestial rank_0</i> is debris
+        (asteroids, comets), <i>rank_1</i> a moon, <i>rank_2</i> a planet, <i>rank_3</i> a star,{" "}
+        <i>rank_4</i> a galaxy. <W w="this" /> makes it ours: <i>celestial rank_3 this</i> is the
+        Sun, <i>rank_2 this</i> Earth and <i>rank_1 this</i> the Moon.
+      </p>
+      <Example meaning="The Sun is bright.">
+        &lt;subject&gt; celestial rank_3 this &lt;verb&gt; is &lt;object&gt; bright
+      </Example>
+
       <H2>Colors</H2>
       <p>
         <W w="color" /> is a root, and so are three hues: <W w="red" />, <W w="yellow" /> and{" "}
@@ -331,7 +353,7 @@ export function GrammarView() {
 
       <H2>Conjunctions and clauses</H2>
       <p>
-        <W w="and" />, <W w="or" /> and <W w="if" />. Exclusive forms are compounds: xor is
+        <W w="and" />, <W w="or" />, <W w="if" /> and <W w="but" />. Exclusive forms are compounds: xor is
         “or-exclusive” and iff is “if-exclusive”. Planned: <W w="clause_and" /> and{" "}
         <W w="list_and" /> to tell joining clauses from joining list items. <W w="clause_start" />{" "}
         and <W w="clause_end" /> mark where a clause starts and ends.
@@ -346,6 +368,15 @@ export function GrammarView() {
         <W w="this" /> and <W w="that" /> might become “it-near” and “it-far”. <W w="_blank" /> is
         the question word: what a question asks about.
       </p>
+      <p className="mt-2">
+        <W w="self" /> and <W w="other" /> are content roots. As an object, <W w="self" /> is
+        reflexive (<i>I know self</i>, I know myself), and <i>family &lt;of&gt; self</i> is one's
+        own family. <i>person other</i> is another person, and with a plural subject,{" "}
+        <W w="other" /> is each other.
+      </p>
+      <Example meaning="They love each other.">
+        &lt;subject&gt; it plural &lt;verb&gt; love &lt;object&gt; other
+      </Example>
 
       <H2>Numbers</H2>
       <p>
