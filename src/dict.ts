@@ -18,12 +18,14 @@ export type Tag = keyof typeof T;
 // ambiguous. The last 128 are shared by partial domains (the digits, in the number domain) and
 // the axis words, which are told apart by domain.
 export const sections = [
-  { key: "marker", label: "Grammar markers", start: 0, end: 6 },
-  { key: "grammar", label: "Grammar helpers", start: 6, end: 32 },
-  { key: "preposition", label: "Prepositions", start: 32, end: 40 },
-  { key: "pronoun", label: "Pronouns", start: 40, end: 48 },
-  { key: "axis_helper", label: "Axis helpers", start: 48, end: 56 },
-  { key: "content", label: "Content roots", start: 56, end: 128 },
+  { key: "marker", label: "Grammar markers", start: 0, end: 12 },
+  { key: "grammar", label: "Grammar helpers", start: 12, end: 32 },
+  { key: "preposition", label: "Prepositions", start: 32, end: 48 },
+  { key: "pronoun", label: "Pronouns", start: 48, end: 56 },
+  { key: "axis_helper", label: "Axis helpers", start: 56, end: 64 },
+  { key: "content", label: "Content roots", start: 64, end: 108 },
+  { key: "dimension", label: "Dimension helpers", start: 108, end: 112 },
+  { key: "rank", label: "Magnitude helpers", start: 112, end: 128 },
   { key: "axis", label: "Axis words", start: 128, end: 256 },
   { key: "digit", label: "Digits", start: 128, end: 256 },
 ] as const; // end is exclusive
@@ -1049,7 +1051,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb: "ingest(v)",
       verb_i: "enter",
       verb_t: "ingest",
-      adverb: "in",
+      // adverb: "in",
     },
     {
       noun: "outside",
@@ -2059,6 +2061,15 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("_verb(prescriptive)", { t: verb_marker, gloss: "verb (prescriptive / imperative)" });
   cr("_verb(interrogative)", { t: verb_marker });
   cr("_gerund", { t: verb_marker });
+  cr("_er", {
+    t: [T.marker, T.part_of_speech_specifier],
+    gloss: "the subject of a verb, as a noun: _er eat = eater",
+  });
+  cr("_ee", {
+    t: [T.marker, T.part_of_speech_specifier],
+    gloss: "the object of a verb, as a noun: _ee eat = what is eaten",
+  });
+  cr("_foreign", { t: marker });
 }
 
 {
@@ -2071,16 +2082,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("and", { t: [T.grammar_helper] });
   cr("or", { t: [T.grammar_helper], notes: '"xor" through "or-exclusive"' });
   cr("if", { t: [T.grammar_helper], notes: '"iff" through "if-exclusive"' });
-  cr("_er", {
-    t: [T.grammar_helper, T.part_of_speech_specifier],
-    gloss: "the subject of a verb, as a noun: _er eat = eater",
-    notes: 'Was "subject of (verb)"',
-  });
-  cr("_ee", {
-    t: [T.grammar_helper, T.part_of_speech_specifier],
-    gloss: "the object of a verb, as a noun: _ee eat = what is eaten",
-    notes: 'Was "object of (verb)"',
-  });
 
   candidate("open_paren", { gloss: "clause start" });
   candidate("close_paren", { gloss: "clause end" });
@@ -2111,10 +2112,10 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     t: [T.preposition],
     notes: 'Is it worth splitting this into "on behalf of" and "for the purpose of"?',
   });
-  cr("in_of_about", {
-    t: [T.preposition],
-    gloss: "in / of / about / with regards to / in terms of",
-  });
+  cr("in", { t: [T.preposition] });
+  cr("of", { t: [T.preposition] });
+  cr("about", { t: [T.preposition] });
+  cr("at", { t: [T.preposition] });
 }
 
 {
@@ -2156,6 +2157,20 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
 }
 
 {
+  section("dimension");
+  for (let i = 0; i < 4; i++) {
+    cr(`dimension_${i}`);
+  }
+}
+
+{
+  section("rank");
+  for (let i = 0; i < 16; i++) {
+    cr(`rank_${i}`);
+  }
+}
+
+{
   section("content");
   cr("singular");
   cr("plural");
@@ -2186,15 +2201,24 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("torso");
   cr("arm");
   cr("leg");
+  cr("node", {
+    notes:
+      'Use "rank" to lift "node" to sequence, tree, dag, directed graph, hypergraph, higher-order network. The downside is that it takes 3 syllables to say each of those',
+  });
+
   cr("number", {
     t: [T.domain_specifier],
     notes: "For now, also marks the number domain: what follows reads roots 128-255 as digits",
   });
-
-  candidate("magnitude", {
+  cr("rank", {
+    t: [T.domain_specifier],
     notes:
-      "Scales a number like scientific notation: finger number 2 magnitude 3 is 2000. Takes one argument. Base-agnostic",
+      "Scales a number like scientific notation: finger number 2 rank 3 is 2000. Takes one argument. Base-agnostic",
   });
+  cr("dimension", {
+    t: [T.domain_specifier],
+  });
+
   candidate("color");
   candidate("finger_number", { gloss: "number (base 10)", notes: "Partial domain" });
   candidate("simple_number", { gloss: "number (base 2)", notes: "Partial domain" });
@@ -2207,13 +2231,9 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   candidate("original");
   candidate("un-", { notes: "?" });
   candidate("re-", { notes: "?" });
-  candidate("meta-", { notes: 'Can this be achieved with "magnitude"?' });
+  candidate("meta-", { notes: 'Can this be achieved with "rank"?' });
   candidate("mind");
   candidate("machine");
-  candidate("node", {
-    notes:
-      'Use "magnitude" to lift "node" to list, tree, dag, cyclic graph. The downside is that it takes 3 syllables to say each of those',
-  });
   candidate("sex");
   candidate("choose");
   candidate("turn");
