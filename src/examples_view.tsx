@@ -5,6 +5,7 @@ import {
   number_examples,
   color_examples,
   family_examples,
+  role_examples,
   tense_examples,
   tokenize,
   truth_examples,
@@ -119,6 +120,7 @@ const all_transliterations = [
   ...truth_examples.map((e) => e.transliteration),
   ...family_examples.map((e) => e.transliteration),
   ...color_examples.map((e) => e.transliteration),
+  ...role_examples.map((e) => e.transliteration),
   ...udhr_articles.flatMap((a) => (a.transliteration ? [a.transliteration] : [])),
 ];
 
@@ -199,6 +201,7 @@ export function ExamplesView() {
         { title: "Truth and possibility", examples: truth_examples },
         { title: "Family", examples: family_examples },
         { title: "Colors", examples: color_examples },
+        { title: "Nouns from verbs", examples: role_examples },
       ].map((group) => (
         <Section key={group.title} title={group.title}>
           <ExampleList examples={group.examples} />

@@ -1055,14 +1055,9 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [{ notes: "duplicate of come/go in the verb forms?" }, { adverb: "here" }, { adverb: "there" }],
   [
-    { notes: "negative intransitive verb: to go inside; positive intransitive verb: to emerge" },
     {
-      noun: "inside",
-      adj: "inner",
-      verb: "ingest(v)",
-      verb_i: "enter",
-      verb_t: "ingest",
-      // adverb: "in",
+      notes:
+        "Inside is the root so that eat is one syllable. Without an object, eat(v) is to go in; with one, to take it in: eat, or drink",
     },
     {
       noun: "outside",
@@ -1071,6 +1066,14 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "emerge",
       verb_t: "eject",
       adverb: "out",
+    },
+    {
+      noun: "inside",
+      adj: "inner",
+      verb: "eat(v)",
+      verb_i: "enter",
+      verb_t: "eat",
+      adverb: "within",
     },
   ],
   [
@@ -2052,6 +2055,14 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     gloss: "the object of a verb, as a noun: _ee eat = what is eaten",
   });
   cr("_foreign", { t: marker });
+  cr("_tool", {
+    t: [T.grammar_helper, T.part_of_speech_specifier],
+    gloss: "what a verb is done with, as a noun: _tool open = key",
+  });
+  cr("_place", {
+    t: [T.grammar_helper, T.part_of_speech_specifier],
+    gloss: "where a verb is done, as a noun: _place sleep = bed",
+  });
 }
 
 {

@@ -90,7 +90,13 @@ export function GrammarView() {
       </p>
       <p className="mt-2">
         <W w="_er" /> and <W w="_ee" /> turn a verb into a noun for its subject or object, after
-        English employer and employee: <i>_er eat</i> is “eater”, <i>_ee eat</i> is “what is eaten”.
+        English employer and employee: <i>_er eat</i> is “eater”, <i>_ee eat</i> is “what is eaten”,
+        so food. <W w="_er" /> is whoever or whatever does it, not only a person, like English
+        printer or opener. Two more markers name other roles, like the prepositions{" "}
+        <W w="with" /> and <W w="at" />: <W w="_tool" /> is what it's done with (<i>_tool open</i>,
+        a key) and <W w="_place" /> where it's done (<i>_place sleep</i>, a bed). Arabic builds
+        nouns from roots the same way (<i>kātib</i> writer, <i>maktab</i> office, from k-t-b
+        “write”), and so does Esperanto (<i>tranĉilo</i> knife, <i>lernejo</i> school).
       </p>
       <Open>
         Should <W w="direction" /> be a domain specifier?

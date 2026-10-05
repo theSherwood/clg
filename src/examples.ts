@@ -293,6 +293,23 @@ export const color_examples: Example[] = [
   },
 ];
 
+// Nouns from verbs: who does it, what it's done to, what it's done with, and where
+export const role_examples: Example[] = [
+  { title: "Teacher", english: "whoever teaches", transliteration: "_er educate(v)" },
+  { title: "Food", english: "what's eaten", transliteration: "_ee eat" },
+  { title: "Seed", english: "what's sown", transliteration: "_ee sow(v)" },
+  { title: "Key", english: "what you open with", transliteration: "_tool open(v)" },
+  { title: "Weapon", english: "what you fight with", transliteration: "_tool fight(v)" },
+  { title: "Shovel", english: "what you dig with", transliteration: "_tool dig(v)" },
+  { title: "Tool", english: "what you do things with", transliteration: "_tool do" },
+  { title: "Ear", english: "what you hear with", transliteration: "_tool feel sound" },
+  { title: "Bed", english: "where you sleep", transliteration: "_place sleep(v)" },
+  { title: "Home", english: "where you live", transliteration: "_place live(v)" },
+  { title: "School", english: "where you learn", transliteration: "_place learn(v)" },
+  { title: "Shop", english: "where you buy", transliteration: "_place buy(v)" },
+  { title: "Workplace", english: "where you work", transliteration: "_place work(v)" },
+];
+
 // Universal Declaration of Human Rights
 
 export const udhr_preamble: string[] = [
