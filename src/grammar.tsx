@@ -285,6 +285,22 @@ export function GrammarView() {
         negative male</i>, four syllables for a very common word.
       </Open>
 
+      <H2>Comparison</H2>
+      <p>
+        Comparison is a relation verb, <W w="exceed(v)" />, and an <W w="in" /> phrase names the
+        quality compared, optional when context makes it clear. Its negative is “fall short of”,
+        and the rest comes from words that already exist: <W w="equal(v)" /> is “as big as”,{" "}
+        <i>exceed &lt;object&gt; all</i> is “the biggest”, and the scale grades it, so{" "}
+        <i>max_positive exceed</i> is “much bigger” and <i>min_positive exceed</i> “slightly
+        bigger”. Many languages compare this way, like Nigerian Pidgin's “e big pass you”.
+      </p>
+      <Example meaning="The rock is bigger than the person.">
+        &lt;subject&gt; rock &lt;verb&gt; exceed &lt;object&gt; person &lt;in&gt; big
+      </Example>
+      <Example meaning="The Sun is the biggest.">
+        &lt;subject&gt; celestial rank_3 this &lt;verb&gt; exceed &lt;object&gt; all &lt;in&gt; big
+      </Example>
+
       <H2>Sky</H2>
       <p>
         <W w="celestial" /> is one root for every body in the sky, and rank picks its level in the

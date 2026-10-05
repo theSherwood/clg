@@ -2162,6 +2162,15 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       adverb: "attractively",
     },
   ],
+  [
+    {
+      noun: "comparison",
+      notes:
+        "Comparison is a verb: X exceed Y <in> big is X is bigger than Y. Negative is fall short of (smaller), equal(v) is as big as, exceed all is the biggest, and the scale grades it: max_positive exceed is much bigger",
+    },
+    { noun: "inferiority", adj: "lesser", verb: "fall_short(v)", verb_t: "fall short of" },
+    { noun: "superiority", adj: "greater", verb: "exceed(v)", verb_t: "exceed" },
+  ],
   [{ notes: "duplicate of come/go in the verb forms?" }, { adverb: "here" }, { adverb: "there" }],
   [
     { notes: "duplicate of behind/ahead?" },
@@ -2519,7 +2528,7 @@ export const verb_types: Record<VerbType, string[]> = {
   ],
   relation: [
     "possess(v)", "is(v)", "equal(v)", "love(v)", "know(v)", "desire(v)", "face(v)", "include(v)",
-    "attract(v)",
+    "attract(v)", "exceed(v)",
   ],
 };
 

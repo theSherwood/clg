@@ -439,6 +439,51 @@ export const sky_examples: Example[] = [
   },
 ];
 
+// Comparison is a relation verb, exceed; <in> names the quality compared
+export const comparison_examples: Example[] = [
+  {
+    title: "Bigger than",
+    english: "The rock is bigger than the person",
+    transliteration: "<subject> rock <verb> exceed <object> person <in> big",
+  },
+  {
+    title: "Smaller than",
+    english: "The person is smaller than the rock",
+    transliteration: "<subject> person <verb> fall_short(v) <object> rock <in> big",
+  },
+  {
+    title: "As big as",
+    english: "The rock is as big as the person",
+    transliteration: "<subject> rock <verb> equal <object> person <in> big",
+  },
+  {
+    title: "Biggest",
+    english: "The Sun is the biggest",
+    transliteration: "<subject> celestial rank_3 this <verb> exceed <object> all <in> big",
+  },
+  {
+    title: "Much bigger",
+    english: "The Sun is much bigger than Earth",
+    transliteration:
+      "<subject> celestial rank_3 this <verb> max_positive exceed <object> celestial rank_2 this <in> big",
+  },
+  {
+    title: "Slightly faster",
+    english: "You are slightly faster than me",
+    transliteration: "<subject> you <verb> min_positive exceed <object> me <in> fast",
+  },
+  {
+    title: "More than",
+    english: "I have more money than you",
+    transliteration: "<subject> money <of> me <verb> exceed <object> money <of> you",
+  },
+  {
+    title: "Question",
+    english: "Who is the strongest?",
+    transliteration: "<subject> person _blank <verb (interrogative)> exceed <object> all <in> strong",
+  },
+];
+
 // Universal Declaration of Human Rights
 
 export const udhr_preamble: string[] = [
