@@ -166,16 +166,18 @@ const WordListDisplay: React.FC<WordListDisplayProps> = ({ words_to_display }) =
 
 // Roots view: 256 root IDs = 4^4 glyphs, shown as a 16x16 grid (row = high nibble, column = low nibble)
 
+// Spread around the color wheel, with lightness varied between neighbors, so no two sections look
+// alike. Axis words and digits share the upper 128 IDs, so they get the most distinct, calmest pair.
 const SECTION_SWATCHES: Record<SectionKey, string> = {
-  marker: "bg-orange-500",
-  grammar: "bg-amber-400",
-  preposition: "bg-rose-400",
-  pronoun: "bg-fuchsia-400",
-  axis_helper: "bg-violet-400",
-  content: "bg-emerald-400",
-  dimension: "bg-teal-400",
-  rank: "bg-cyan-400",
-  axis: "bg-sky-400",
+  marker: "bg-red-500",
+  grammar: "bg-orange-400",
+  preposition: "bg-yellow-300",
+  pronoun: "bg-lime-500",
+  axis_helper: "bg-purple-500",
+  content: "bg-emerald-600",
+  dimension: "bg-pink-400",
+  rank: "bg-amber-800",
+  axis: "bg-blue-500",
   digit: "bg-slate-400",
 };
 
