@@ -10,6 +10,8 @@ import {
   udhr_articles,
   udhr_preamble,
 } from "./examples";
+import { swadesh, toki_pona_words } from "./comparison";
+import { ComparisonTable, TallyLine } from "./comparison_view";
 import { pronounce } from "./phonology";
 import { LazyTippy, PhonologyContext, WordPopoverContent } from "./word_ui";
 
@@ -163,6 +165,24 @@ export function ExamplesView() {
           {missing.map(([w, n]) => `${w}${n > 1 ? ` ×${n}` : ""}`).join(", ")}
         </p>
       </div>
+
+      <Section title="Compared with Toki Pona">
+        <p className="text-sm text-gray-600 mb-3">
+          The goal is to be at least as convenient as Toki Pona. Syllable counts are green where
+          ours is shorter and red where it's longer. Toki Pona often covers several of these
+          concepts with one broad word (noka for foot, leg and knee), so shorter here isn't always
+          like for like. <span className="text-amber-700">Loose</span> equivalents are near
+          misses.
+        </p>
+        <Section title="Swadesh 100" level={3}>
+          <TallyLine rows={swadesh} />
+          <ComparisonTable rows={swadesh} />
+        </Section>
+        <Section title="Toki Pona's words" level={3}>
+          <TallyLine rows={toki_pona_words} />
+          <ComparisonTable rows={toki_pona_words} />
+        </Section>
+      </Section>
 
       <Section title="Numbers">
         {number_examples.map((base) => (
