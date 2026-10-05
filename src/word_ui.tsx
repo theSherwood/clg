@@ -4,6 +4,8 @@ import {
   type AxisCell,
   type AxisSide,
   type Scale,
+  type VerbType,
+  VERB_TYPE_RULES,
   Word,
   axes,
   axis_by_word,
@@ -111,57 +113,104 @@ function side_name(side: AxisSide): string | undefined {
 }
 
 // A side's verb, without and with an object; missing forms are what to fill in next
-export function SideVerbs({ side }: { side: AxisSide }) {
-  const form = (label: string, title: string, gloss?: string) => (
+export const VERB_TYPE_STYLES: Record<VerbType, string> = {
+  change: "bg-sky-100 text-sky-800",
+  action: "bg-amber-100 text-amber-800",
+  relation: "bg-violet-100 text-violet-800",
+};
+
+export function VerbTypeBadge({ type }: { type: VerbType }) {
+  const rules = VERB_TYPE_RULES[type];
+  return (
+    <span
+      className={`inline-block rounded px-1 text-[10px] font-semibold ${VERB_TYPE_STYLES[type]}`}
+      title={`${type} verb · no object: ${rules.no_object} · with an object: ${rules.with_object}`}
+    >
+      {type}
+    </span>
+  );
+}
+
+// A side's verb without and with an object, as its axis's type defines them
+export function SideVerbs({ side, type }: { side: AxisSide; type?: VerbType }) {
+  const form = (label: string, title: string, gloss?: string, applies = true) => (
     <div title={title}>
       <span className="text-gray-500">{label} </span>
       {gloss ? (
         <span className="font-semibold text-gray-800">{gloss}</span>
-      ) : (
+      ) : applies ? (
         <span className="text-red-600">missing</span>
+      ) : (
+        <span className="text-gray-400">n/a</span>
       )}
     </div>
   );
+  if (!side.verb_i.word) {
+    return <div className="text-xs mt-1 text-red-600">no verb</div>;
+  }
   return (
     <div className="text-xs mt-1">
-      {form("intr.", "verb without an object", side.verb_i.gloss)}
+      {type && <VerbTypeBadge type={type} />}
+      {form("intr.", "verb without an object", side.verb_i.gloss, type !== "relation")}
       {form("tr.", "verb with an object", side.verb_t.gloss)}
     </div>
   );
 }
 
-// Axis sides missing a verb, or one of its two forms
-export function VerbGaps() {
-  const sides = axes.flatMap((axis) =>
-    [axis.positive, axis.negative].filter((side) => Object.values(side).some((c) => c.word)),
-  );
-  const groups = [
-    ["No verb", sides.filter((s) => !s.verb_i.word)],
-    ["No intransitive (without an object)", sides.filter((s) => s.verb_i.word && !s.verb_i.gloss)],
-    ["No transitive (with an object)", sides.filter((s) => s.verb_t.word && !s.verb_t.gloss)],
-  ] as const;
-  const complete = sides.filter((s) => s.verb_i.gloss && s.verb_t.gloss).length;
+// Every axis verb, grouped by type, plus the axes that have no verb yet
+export function VerbsByType() {
+  const by_type = (type: VerbType) => axes.filter((a) => a.verb_type === type);
+  const verbless = axes.filter((a) => !a.positive.verb_i.word);
+  const verbs = (axis: Axis) =>
+    [axis.positive, axis.negative]
+      .map((side) => side.verb_t.gloss ?? side.verb_i.gloss)
+      .filter(Boolean)
+      .join(" / ");
   return (
     <details className="px-4 pt-3 text-sm">
       <summary className="cursor-pointer font-semibold">
-        Axis verb gaps: {complete} of {sides.length} axis sides have both verb forms
+        Axis verbs by type: {axes.length - verbless.length} axes with verbs,{" "}
+        <span className="text-red-600">{verbless.length} without</span>
       </summary>
       <div className="mt-2 space-y-2">
-        {groups.map(([label, list]) => (
-          <p key={label}>
-            <span className="font-semibold text-red-600">
-              {label} ({list.length}):
+        {(Object.keys(VERB_TYPE_RULES) as VerbType[]).map((type) => (
+          <p key={type}>
+            <VerbTypeBadge type={type} />{" "}
+            <span className="text-gray-500">
+              no object: {VERB_TYPE_RULES[type].no_object}; with an object:{" "}
+              {VERB_TYPE_RULES[type].with_object} ({by_type(type).length}):
             </span>{" "}
-            {list.map(side_name).join(", ")}
+            {by_type(type).map(verbs).join(", ")}
           </p>
         ))}
+        <p>
+          <span className="font-semibold text-red-600">No verb ({verbless.length}):</span>{" "}
+          {verbless
+            .map((a) => [a.positive, a.negative].map(side_name).filter(Boolean).join(" / "))
+            .join(", ")}
+        </p>
       </div>
     </details>
   );
 }
 
 // Missing verbs are red, since they're the gaps that matter most
-function MatrixCell({ cell, current, verb }: { cell: AxisCell; current: Word; verb: boolean }) {
+function MatrixCell({
+  cell,
+  current,
+  verb,
+  applies = true,
+}: {
+  cell: AxisCell;
+  current: Word;
+  verb: boolean;
+  applies?: boolean;
+}) {
+  if (verb && cell.word && !cell.gloss && !applies) {
+    return (
+      <td className="px-1.5 py-0.5 border border-gray-200 text-center text-gray-400">n/a</td>
+    );
+  }
   if (!cell.word || (verb && !cell.gloss)) {
     return (
       <td
@@ -223,6 +272,11 @@ function AxisMatrix({ axis, current }: { axis: Axis; current: Word }) {
       <div className="text-xs mb-1">
         <span className="font-semibold">Axis</span>
         {axis.name.word && <span> {axis.name.word.word}</span>}
+        {axis.verb_type && (
+          <span className="ml-1.5">
+            <VerbTypeBadge type={axis.verb_type} />
+          </span>
+        )}
       </div>
       <table className="text-xs border-collapse">
         <thead>
@@ -252,6 +306,7 @@ function AxisMatrix({ axis, current }: { axis: Axis; current: Word }) {
                   cell={side[key]}
                   current={current}
                   verb={key === "verb_i" || key === "verb_t"}
+                  applies={!(key === "verb_i" && axis.verb_type === "relation")}
                 />
               ))}
             </tr>

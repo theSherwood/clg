@@ -304,7 +304,7 @@ export const role_examples: Example[] = [
   { title: "Tool", english: "what you do things with", transliteration: "_tool do" },
   { title: "Ear", english: "what you hear with", transliteration: "_tool feel sound" },
   { title: "Bed", english: "where you sleep", transliteration: "_place sleep(v)" },
-  { title: "Home", english: "where you live", transliteration: "_place live(v)" },
+  { title: "Birthplace", english: "where you came to life", transliteration: "_place come_alive(v)" },
   { title: "School", english: "where you learn", transliteration: "_place learn(v)" },
   { title: "Shop", english: "where you buy", transliteration: "_place buy(v)" },
   { title: "Workplace", english: "where you work", transliteration: "_place work(v)" },

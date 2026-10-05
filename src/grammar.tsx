@@ -1,6 +1,6 @@
 import React from "react";
-import { sections } from "./dict";
-import { W } from "./word_ui";
+import { type VerbType, VERB_TYPE_RULES, sections } from "./dict";
+import { VerbTypeBadge, W } from "./word_ui";
 
 // Grammar and syntax, as decided so far. Word references use <W>, so they show each word's
 // current sound and follow the phonology playground.
@@ -117,10 +117,36 @@ export function GrammarView() {
       </Example>
       <p>
         <b>Transitivity.</b> A transitive verb always takes <W w="_object" />, even when nothing
-        about the object is said. Without an object, the verb is intransitive. For an axis verb,
-        which means changing toward the axis's state, that's the difference between causing the
-        change and undergoing it, so <W w="kill(v)" /> is “kill” with an object and “die” without
-        one.
+        about the object is said. Without an object, the verb is intransitive. What each means
+        depends on the verb's type, and every axis has one type, shared by both its ends:
+      </p>
+      <table className="mt-2 text-sm border-collapse">
+        <thead>
+          <tr className="text-left text-gray-500">
+            <th className="pr-4 font-normal">Type</th>
+            <th className="pr-4 font-normal">No object</th>
+            <th className="font-normal">With an object</th>
+          </tr>
+        </thead>
+        <tbody>
+          {(Object.keys(VERB_TYPE_RULES) as VerbType[]).map((type) => (
+            <tr key={type} className="border-t border-gray-100">
+              <td className="pr-4 py-0.5">
+                <VerbTypeBadge type={type} />
+              </td>
+              <td className="pr-4 py-0.5">{VERB_TYPE_RULES[type].no_object}</td>
+              <td className="py-0.5">{VERB_TYPE_RULES[type].with_object}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="mt-2">
+        So <W w="kill(v)" />, a change verb, is “die” without an object and “kill” with one;{" "}
+        <W w="fight(v)" />, an action, is “fight” and “fight someone”; and <W w="possess(v)" />, a
+        relation, only takes an object. Being in a state isn't a verb: it's <W w="is(v)" /> with
+        an adjective. Staying in one is the absence of change, <i>not change</i>, and keeping
+        something going is <W w="persist(v)" /> with an object, “maintain”. The Words view lists
+        every axis verb by type.
       </p>
       <Example meaning="A soldier kills.">
         &lt;subject&gt; soldier &lt;verb&gt; kill &lt;object&gt;
@@ -137,8 +163,8 @@ export function GrammarView() {
         &lt;subject&gt; I &lt;verb&gt; send &lt;object&gt; money &lt;to&gt; you
       </Example>
       <p>
-        Relation verbs are transitive too, so they always take an object, and the complement is read
-        as a noun. Their verb is the relation itself rather than a change: <W w="is(v)" /> relates a
+        A relation's complement is read as a noun. Its verb is the relation itself rather than a
+        change: <W w="is(v)" /> relates a
         thing to a characteristic, <W w="equal(v)" /> relates two things, and <W w="possess(v)" />{" "}
         relates an owner to what they own.
       </p>

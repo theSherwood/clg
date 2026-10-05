@@ -224,9 +224,9 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "dynamism",
       adj: "dynamic",
-      verb: "adapt(v)",
-      verb_i: "adapt",
-      verb_t: "make adaptable",
+      verb: "change(v)",
+      verb_i: "change",
+      verb_t: "alter",
       adverb: "dynamically",
     },
   ],
@@ -327,8 +327,8 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "agency",
       adj: "agentic",
-      verb: "act(v)",
-      verb_i: "act",
+      verb: "activate(v)",
+      verb_i: "become active",
       verb_t: "activate",
       adverb: "agentically",
     },
@@ -493,8 +493,8 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "fluidity",
       adj: "fluid",
-      verb: "flow(v)",
-      verb_i: "flow",
+      verb: "liquefy(v)",
+      verb_i: "melt",
       verb_t: "liquefy",
       adverb: "fluidly",
     },
@@ -551,7 +551,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "infinity",
       adj: "infinite",
       verb: "perpetuate(v)",
-      verb_i: "go on forever",
+      verb_i: "become endless",
       verb_t: "perpetuate",
       adverb: "infinitely",
     },
@@ -954,11 +954,19 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "time",
       scale: ["long ago", "past", "recently", "now", "soon", "future", "far future"],
     },
-    { noun: "history", adj: "past", verb: "pass(v)", verb_i: "pass", adverb: "formerly" },
+    {
+      noun: "history",
+      adj: "past",
+      verb: "pass(v)",
+      verb_i: "pass",
+      verb_t: "bring forward",
+      adverb: "formerly",
+    },
     {
       noun: "futurity",
       adj: "future",
       verb: "postpone(v)",
+      verb_i: "get delayed",
       verb_t: "postpone",
       adverb: "henceforth",
     },
@@ -996,24 +1004,31 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     {},
-    { noun: "consumption", adj: "consuming", verb: "consume(v)", verb_t: "consume" },
+    {
+      noun: "consumption",
+      adj: "consuming",
+      verb: "consume(v)",
+      verb_i: "consume",
+      verb_t: "consume",
+    },
     {
       noun: "production",
       adj: "productive",
       verb: "produce(v)",
+      verb_i: "produce",
       verb_t: "produce",
       adverb: "productively",
     },
   ],
   [
     { noun: "trade" },
-    { noun: "sale", adj: "sold", verb: "sell(v)", verb_t: "sell" },
+    { noun: "sale", adj: "sold", verb: "sell(v)", verb_i: "sell", verb_t: "sell" },
     { noun: "purchase", adj: "bought", verb: "buy(v)", verb_i: "shop", verb_t: "buy" },
   ],
   [
     { noun: "transmission", notes: "duplicate of come/go" },
-    { noun: "receipt", adj: "received", verb: "receive(v)", verb_t: "receive" },
-    { noun: "dispatch", adj: "sent", verb: "send(v)", verb_t: "send" },
+    { noun: "receipt", adj: "received", verb: "receive(v)", verb_i: "receive", verb_t: "receive" },
+    { noun: "dispatch", adj: "sent", verb: "send(v)", verb_i: "send", verb_t: "send" },
   ],
   [
     { noun: "expectation" },
@@ -1036,7 +1051,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     { noun: "credence", notes: "negative adverb “doubtfully” needs a positive adverb" },
-    { noun: "doubt", adj: "doubtful", verb: "doubt(v)", verb_i: "waver", verb_t: "doubt" },
+    { noun: "doubt", adj: "doubtful", verb: "doubt(v)", verb_i: "doubt", verb_t: "doubt" },
     {
       noun: "belief",
       adj: "believing",
@@ -1051,7 +1066,13 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       notes: "negative intransitive verb: to die; positive intransitive verb: to live",
     },
     { noun: "death", adj: "dead", verb: "kill(v)", verb_i: "die", verb_t: "kill" },
-    { noun: "life", adj: "alive", verb: "live(v)", verb_i: "live", verb_t: "bring to life" },
+    {
+      noun: "life",
+      adj: "alive",
+      verb: "come_alive(v)",
+      verb_i: "come to life",
+      verb_t: "bring to life",
+    },
   ],
   [{ notes: "duplicate of come/go in the verb forms?" }, { adverb: "here" }, { adverb: "there" }],
   [
@@ -1179,6 +1200,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       adj: "uncommon",
       verb: "dwindle(v)",
       verb_i: "dwindle",
+      verb_t: "suppress",
       adverb: "uncommonly",
     },
     {
@@ -1210,13 +1232,20 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     { noun: "activity" },
-    { noun: "idleness", adj: "idle", verb: "rest(v)", verb_i: "rest", adverb: "idly" },
+    {
+      noun: "idleness",
+      adj: "idle",
+      verb: "rest(v)",
+      verb_i: "rest",
+      verb_t: "rest",
+      adverb: "idly",
+    },
     {
       noun: "work",
       adj: "busy",
       verb: "work(v)",
       verb_i: "work",
-      verb_t: "employ",
+      verb_t: "work on",
       adverb: "busily",
     },
   ],
@@ -1227,6 +1256,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       adj: "fleeting",
       verb: "fade(v)",
       verb_i: "fade",
+      verb_t: "wear away",
       adverb: "fleetingly",
     },
     {
@@ -1253,6 +1283,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       adj: "bottom",
       verb: "bottom_out(v)",
       verb_i: "bottom out",
+      verb_t: "bring down",
       adverb: "beneath",
     },
   ],
@@ -1262,14 +1293,16 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "nature",
       adj: "natural",
       verb: "naturalize(v)",
+      verb_i: "become natural",
       verb_t: "naturalize",
       adverb: "naturally",
     },
     {
       noun: "artifice",
       adj: "artificial",
-      verb: "manufacture(v)",
-      verb_t: "manufacture",
+      verb: "make_artificial(v)",
+      verb_i: "become artificial",
+      verb_t: "make artificial",
       adverb: "artificially",
     },
   ],
@@ -1307,6 +1340,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       adj: "peripheral",
       verb: "spread_out(v)",
       verb_i: "spread out",
+      verb_t: "disperse",
       adverb: "peripherally",
     },
   ],
@@ -1448,6 +1482,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "difficulty",
       adj: "difficult",
       verb: "hinder(v)",
+      verb_i: "bog down",
       verb_t: "hinder",
       adverb: "with_difficulty",
     },
@@ -1467,8 +1502,8 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     { noun: "cultivation" },
-    { noun: "harvest", adj: "reaped", verb: "reap(v)", verb_t: "reap" },
-    { noun: "sowing", adj: "sown", verb: "sow(v)", verb_t: "sow" },
+    { noun: "harvest", adj: "reaped", verb: "reap(v)", verb_i: "reap", verb_t: "reap" },
+    { noun: "sowing", adj: "sown", verb: "sow(v)", verb_i: "sow", verb_t: "sow" },
   ],
   [
     { noun: "frequency", notes: "negative verb “normalize / normalize” needs a positive verb" },
@@ -1477,11 +1512,19 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     { noun: "curvature", notes: "negative verb round(v) (no positive verb)" },
-    { noun: "roundness", adj: "round", verb: "round(v)", verb_t: "round", adverb: "roundly" },
+    {
+      noun: "roundness",
+      adj: "round",
+      verb: "round(v)",
+      verb_i: "round out",
+      verb_t: "round",
+      adverb: "roundly",
+    },
     {
       noun: "angularity",
       adj: "angle",
       verb: "angle(v)",
+      verb_i: "bend",
       verb_t: "angle",
       adverb: "angularly",
     },
@@ -1500,8 +1543,15 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     { notes: "negative verb forms: take; positive verb forms: give" },
-    { noun: "taking", adj: "taken", verb: "take(v)", verb_t: "take" },
-    { noun: "gift", adj: "given", verb: "give(v)", verb_t: "give", adverb: "generously" },
+    { noun: "taking", adj: "taken", verb: "take(v)", verb_i: "take", verb_t: "take" },
+    {
+      noun: "gift",
+      adj: "given",
+      verb: "give(v)",
+      verb_i: "give",
+      verb_t: "give",
+      adverb: "generously",
+    },
   ],
   [
     {
@@ -1579,7 +1629,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     { notes: "hole - flat - mound / to dig - to flatten - to heap" },
-    { noun: "hole", adj: "hollow", verb: "dig(v)", verb_t: "dig" },
+    { noun: "hole", adj: "hollow", verb: "dig(v)", verb_i: "cave in", verb_t: "dig" },
     { noun: "mound", adj: "heaped", verb: "heap_up(v)", verb_i: "pile up", verb_t: "heap up" },
   ],
   [
@@ -1611,6 +1661,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "disguise",
       adj: "disguised",
       verb: "disguise(v)",
+      verb_i: "disappear",
       verb_t: "disguise",
       adverb: "covertly",
     },
@@ -1638,7 +1689,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       adj: "peaceful",
       verb: "make_peace(v)",
       verb_i: "make peace",
-      verb_t: "pacify",
+      verb_t: "make peace with",
       adverb: "peacefully",
     },
   ],
@@ -1682,6 +1733,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "stupidity",
       adj: "stupid",
       verb: "stupefy(v)",
+      verb_i: "grow stupid",
       verb_t: "stupefy",
       adverb: "stupidly",
     },
@@ -1704,7 +1756,14 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_t: "slant",
       adverb: "obliquely",
     },
-    { noun: "directness", adj: "direct", verb: "aim(v)", verb_t: "aim", adverb: "directly" },
+    {
+      noun: "directness",
+      adj: "direct",
+      verb: "aim(v)",
+      verb_i: "go straight",
+      verb_t: "aim",
+      adverb: "directly",
+    },
   ],
   [
     { noun: "magnetism" },
@@ -1752,6 +1811,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "cheapness",
       adj: "cheap",
       verb: "cheapen(v)",
+      verb_i: "get cheaper",
       verb_t: "cheapen",
       adverb: "cheaply",
     },
@@ -1759,6 +1819,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "expense",
       adj: "expensive",
       verb: "mark_up(v)",
+      verb_i: "get pricier",
       verb_t: "mark up",
       adverb: "expensively",
     },
@@ -1769,6 +1830,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "attack",
       adj: "offensive",
       verb: "attack(v)",
+      verb_i: "attack",
       verb_t: "attack",
       adverb: "offensively",
     },
@@ -1776,6 +1838,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "defense",
       adj: "defensive",
       verb: "defend(v)",
+      verb_i: "defend",
       verb_t: "defend",
       adverb: "defensively",
     },
@@ -1786,6 +1849,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "neglect",
       adj: "neglected",
       verb: "neglect(v)",
+      verb_i: "neglect",
       verb_t: "neglect",
       adverb: "negligently",
     },
@@ -1793,6 +1857,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "stewardship",
       adj: "tended",
       verb: "steward(v)",
+      verb_i: "tend",
       verb_t: "tend",
       adverb: "carefully",
     },
@@ -1803,14 +1868,15 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "triviality",
       adj: "unimportant",
       verb: "trivialize(v)",
+      verb_i: "lose importance",
       verb_t: "trivialize",
       adverb: "trivially",
     },
     {
       noun: "importance",
       adj: "important",
-      verb: "matter(v)",
-      verb_i: "matter",
+      verb: "emphasize(v)",
+      verb_i: "gain importance",
       verb_t: "emphasize",
       adverb: "importantly",
     },
@@ -1834,10 +1900,18 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "part",
       adj: "partial",
       verb: "partition(v)",
+      verb_i: "split up",
       verb_t: "partition",
       adverb: "partly",
     },
-    { noun: "whole", adj: "entire", verb: "unify(v)", verb_t: "unify", adverb: "wholly" },
+    {
+      noun: "whole",
+      adj: "entire",
+      verb: "unify(v)",
+      verb_i: "unite",
+      verb_t: "unify",
+      adverb: "wholly",
+    },
   ],
   [
     {
@@ -1855,8 +1929,20 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       notes:
         '"free" is already the positive adjective of the coercion axis; negative adverb “unrestrainedly” needs a positive adverb',
     },
-    { noun: "liberty", adj: "free(unbound)", verb: "liberate(v)", verb_t: "liberate" },
-    { noun: "bondage", adj: "bound", verb: "constrain(v)", verb_t: "constrain" },
+    {
+      noun: "liberty",
+      adj: "free(unbound)",
+      verb: "liberate(v)",
+      verb_i: "get loose",
+      verb_t: "liberate",
+    },
+    {
+      noun: "bondage",
+      adj: "bound",
+      verb: "constrain(v)",
+      verb_i: "get stuck",
+      verb_t: "constrain",
+    },
   ],
   [
     { noun: "holiness" },
@@ -1864,6 +1950,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "profanity",
       adj: "profane",
       verb: "desecrate(v)",
+      verb_i: "become profane",
       verb_t: "desecrate",
       adverb: "profanely",
     },
@@ -1871,6 +1958,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "sanctity",
       adj: "sacred",
       verb: "sanctify(v)",
+      verb_i: "become sacred",
       verb_t: "sanctify",
       adverb: "sacredly",
     },
@@ -1891,7 +1979,13 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
         "negative verb forms: to obey; positive verb forms: to command / to rule / to govern; negative adverb “obediently” needs a positive adverb",
     },
     { noun: "obedience", adj: "obedient", verb: "obey(v)", verb_i: "obey", verb_t: "obey" },
-    { noun: "command", adj: "commanding", verb: "command(v)", verb_t: "command" },
+    {
+      noun: "command",
+      adj: "commanding",
+      verb: "command(v)",
+      verb_i: "give orders",
+      verb_t: "command",
+    },
   ],
   [
     {
@@ -1904,7 +1998,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       adj: "submissive",
       verb: "submit(v)",
       verb_i: "submit",
-      verb_t: "subdue",
+      verb_t: "submit to",
     },
     {
       noun: "resistance",
@@ -1919,8 +2013,20 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       notes:
         "negative verb forms: to release; positive verb forms: to contain; also container; negative noun liberator (no positive noun)",
     },
-    { noun: "release", adj: "released", verb: "release(v)", verb_t: "release" },
-    { noun: "containment", adj: "contained", verb: "contain(v)", verb_t: "contain" },
+    {
+      noun: "release",
+      adj: "released",
+      verb: "release(v)",
+      verb_i: "break loose",
+      verb_t: "release",
+    },
+    {
+      noun: "containment",
+      adj: "contained",
+      verb: "contain(v)",
+      verb_i: "close in",
+      verb_t: "enclose",
+    },
   ],
   [
     { noun: "consistency", notes: "exception - irregular - ? - regular - exemplar" },
@@ -1928,6 +2034,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "irregularity",
       adj: "irregular",
       verb: "irregulate(v)",
+      verb_i: "become irregular",
       verb_t: "disrupt",
       adverb: "irregularly",
     },
@@ -1935,13 +2042,20 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "regularity",
       adj: "regular",
       verb: "regulate(v)",
+      verb_i: "become regular",
       verb_t: "regulate",
       adverb: "regularly",
     },
   ],
   [
     { noun: "fortitude", notes: "Are these fundamental enough?" },
-    { noun: "vulnerability", adj: "vulnerable", verb: "succumb(v)", verb_i: "succumb" },
+    {
+      noun: "vulnerability",
+      adj: "vulnerable",
+      verb: "succumb(v)",
+      verb_i: "succumb",
+      verb_t: "succumb to",
+    },
     {
       noun: "resilience",
       adj: "resilient",
@@ -1957,8 +2071,20 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       notes:
         'nouns: cyclic graph - dag - tree - list - node / alternatively, maybe it is better to have a "node" and use magnitude to raise it to list, tree, dag, cyclic graph; negative verb forms: to connect; positive verb forms: to disconnect',
     },
-    { noun: "connection", adj: "connected", verb: "connect(v)", verb_t: "connect" },
-    { noun: "disconnection", adj: "disconnected", verb: "disconnect(v)", verb_t: "disconnect" },
+    {
+      noun: "connection",
+      adj: "connected",
+      verb: "connect(v)",
+      verb_i: "connect",
+      verb_t: "connect",
+    },
+    {
+      noun: "disconnection",
+      adj: "disconnected",
+      verb: "disconnect(v)",
+      verb_i: "come apart",
+      verb_t: "disconnect",
+    },
   ],
   [
     { notes: "axis.csv had allow / force" },
@@ -1966,6 +2092,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "permission",
       adj: "permitted",
       verb: "allow(v)",
+      verb_i: "allow",
       verb_t: "allow",
       adverb: "permissively",
     },
@@ -1973,18 +2100,26 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "compulsion",
       adj: "compulsory",
       verb: "compel(v)",
+      verb_i: "compel",
       verb_t: "compel",
       adverb: "compulsorily",
     },
   ],
   [
     { noun: "involvement" },
-    { noun: "abstention", adj: "abstinent", verb: "abstain(v)", verb_i: "abstain" },
+    {
+      noun: "abstention",
+      adj: "abstinent",
+      verb: "abstain(v)",
+      verb_i: "abstain",
+      verb_t: "abstain from",
+    },
     {
       noun: "participation",
       adj: "participating",
       verb: "participate(v)",
       verb_i: "participate",
+      verb_t: "participate in",
     },
   ],
   [
@@ -1994,19 +2129,38 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     { noun: "obligation", notes: "axis.csv had privilege, right / obligation, duty" },
-    { noun: "privilege", adj: "privileged", verb: "entitle(v)", verb_t: "entitle" },
+    {
+      noun: "privilege",
+      adj: "privileged",
+      verb: "entitle(v)",
+      verb_i: "become entitled",
+      verb_t: "entitle",
+    },
     {
       noun: "duty",
       adj: "dutiful",
       verb: "obligate(v)",
+      verb_i: "become obliged",
       verb_t: "obligate",
       adverb: "dutifully",
     },
   ],
   [
     { noun: "permissibility" },
-    { noun: "prohibition", adj: "forbidden", verb: "forbid(v)", verb_t: "forbid" },
-    { noun: "recommendation", adj: "recommended", verb: "recommend(v)", verb_t: "recommend" },
+    {
+      noun: "prohibition",
+      adj: "forbidden",
+      verb: "forbid(v)",
+      verb_i: "forbid",
+      verb_t: "forbid",
+    },
+    {
+      noun: "recommendation",
+      adj: "recommended",
+      verb: "recommend(v)",
+      verb_i: "recommend",
+      verb_t: "recommend",
+    },
   ],
   [
     {
@@ -2303,7 +2457,53 @@ export type Axis = {
   negative: AxisSide; // negative + the positive form
   notes?: string;
   scale?: Scale;
+  verb_type?: VerbType; // from verb_types, for axes with a verb
 };
+
+// What an axis's verb means without and with an object depends on its type, and both sides of an
+// axis share one. Listed by positive verb.
+export type VerbType = "change" | "action" | "relation";
+
+export const VERB_TYPE_RULES: Record<VerbType, { no_object: string; with_object: string }> = {
+  change: { no_object: "undergo it: become, or move", with_object: "cause it: make, or move something" },
+  action: { no_object: "do it", with_object: "do it to something" },
+  relation: { no_object: "doesn't apply", with_object: "relate the subject to the object" },
+};
+
+export const verb_types: Record<VerbType, string[]> = {
+  change: [
+    "grow(v)", "accelerate(v)", "change(v)", "simplify(v)", "strengthen(v)", "increase(v)",
+    "organize(v)", "activate(v)", "demarcate(v)", "fill(v)", "open(v)", "smooth(v)", "free(v)",
+    "abstract(v)", "absolutize(v)", "liquefy(v)", "make_explicit(v)", "externalize(v)",
+    "perpetuate(v)", "become_essential(v)", "idealize(v)", "nest(v)", "determine(v)",
+    "enumerate(v)", "curl(v)", "emerge(v)", "distance(v)", "quiet(v)", "sharpen(v)", "wet(v)",
+    "thicken(v)", "lift(v)", "heat(v)", "brighten(v)", "harden(v)", "get_heavier(v)", "prove(v)",
+    "postpone(v)", "come_alive(v)", "eat(v)", "sink(v)", "veer_right(v)", "advance(v)",
+    "withdraw(v)", "spread(v)", "stir(v)", "persist(v)", "bottom_out(v)", "make_artificial(v)",
+    "spread_out(v)", "multiply(v)", "straighten(v)", "improve(v)", "entertain(v)",
+    "materialize(v)", "enable(v)", "angle(v)", "rejuvenate(v)", "wake(v)", "create(v)",
+    "beautify(v)", "go(v)", "heap_up(v)", "fill_up(v)", "show(v)", "inflate(v)", "educate(v)",
+    "aim(v)", "group(v)", "mark_up(v)", "emphasize(v)", "mend(v)", "unify(v)", "constrain(v)",
+    "sanctify(v)", "contain(v)", "regulate(v)", "disconnect(v)", "stop(v)", "obligate(v)",
+    "necessitate(v)",
+  ],
+  action: [
+    "analyze(v)", "win(v)", "succeed(v)", "produce(v)", "buy(v)", "send(v)", "hope(v)",
+    "believe(v)", "be_in_command(v)", "work(v)", "search(v)", "learn(v)", "sow(v)", "give(v)",
+    "make_peace(v)", "defend(v)", "steward(v)", "command(v)", "resist(v)", "withstand(v)",
+    "compel(v)", "participate(v)", "recommend(v)",
+  ],
+  relation: [
+    "possess(v)", "is(v)", "equal(v)", "love(v)", "know(v)", "desire(v)", "face(v)", "include(v)",
+    "attract(v)",
+  ],
+};
+
+const verb_type_of = new Map(
+  (Object.entries(verb_types) as [VerbType, string[]][]).flatMap(([type, verbs]) =>
+    verbs.map((verb) => [verb, type] as const),
+  ),
+);
 
 export const axes: Axis[] = [];
 export const axis_by_word = new Map<Word, Axis>();
@@ -2386,6 +2586,7 @@ function fill_cells(side: AxisSide, key: FormKey, word: Word, forms: AxisWordFor
       negative: empty_side(),
       notes: axis.notes,
       scale: axis.scale,
+      verb_type: positive.verb ? verb_type_of.get(positive.verb) : undefined,
     };
     const positive_words: Partial<Record<FormKey, Word>> = {};
 

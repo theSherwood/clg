@@ -199,7 +199,7 @@ export const toki_pona_equivalents: Record<string, [ours: string, loose?: "loose
   jo: ["possess(v)"],
   mama: ["parent"],
   pimeja: ["dark"],
-  tomo: ["_place live(v)"],
+  tomo: [""],
   kala: [""],
   mani: ["money"],
   pini: ["stop(v)"],

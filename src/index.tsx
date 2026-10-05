@@ -21,7 +21,7 @@ import {
   LazyTippy,
   PhonologyContext,
   SideVerbs,
-  VerbGaps,
+  VerbsByType,
   WordPopoverContent,
   WordPopoverList,
   side_of,
@@ -76,7 +76,7 @@ const WordPreviewItem: React.FC<WordPreviewItemProps> = ({ word }) => {
         <div className="font-semibold">{word.word}</div>
         <div className="font-mono text-xs text-indigo-700">{pronounce(word, phonology)}</div>
         <div className="text-xs">{is_root_word ? "ROOT" : "COMPOUND"}</div>
-        {side && <SideVerbs side={side} />}
+        {side && <SideVerbs side={side} type={axis_by_word.get(word)?.verb_type} />}
         {word.data.t.length > 0 && (
           <div className="text-xs mt-1">
             {word.data.t.slice(0, 2).map(
@@ -206,18 +206,22 @@ function empty_ranges(): [number, number][] {
   return ranges;
 }
 
-// An axis verb's two forms in a grid cell; one line when they're the same word
-const VerbForms: React.FC<{ intransitive?: string; transitive?: string }> = ({
+// An axis verb's two forms in a grid cell; one line when they're the same word. A relation has
+// no form without an object.
+const VerbForms: React.FC<{ intransitive?: string; transitive?: string; relation: boolean }> = ({
   intransitive,
   transitive,
+  relation,
 }) => {
-  const line = (mark: string, gloss?: string) => (
+  const line = (mark: string, gloss?: string, applies = true) => (
     <div className="px-1 truncate">
       <span className="text-gray-400">{mark} </span>
       {gloss ? (
         <span className="font-medium text-gray-800">{gloss}</span>
-      ) : (
+      ) : applies ? (
         <span className="text-red-500">missing</span>
+      ) : (
+        <span className="text-gray-400">n/a</span>
       )}
     </div>
   );
@@ -228,7 +232,7 @@ const VerbForms: React.FC<{ intransitive?: string; transitive?: string }> = ({
         line("intr./tr.", intransitive)
       ) : (
         <>
-          {line("intr.", intransitive)}
+          {line("intr.", intransitive, !relation)}
           {line("tr.", transitive)}
         </>
       )}
@@ -246,8 +250,8 @@ const SlotCell: React.FC<{ slot: Slot; dimmed: boolean }> = ({ slot, dimmed }) =
   const label = label_word?.word.replace(/\(v\)$/, "");
   const verbless = label_word?.data.section === "axis" && label_word.data.domain !== "verb";
   // An axis verb shows both forms, marked intransitive (no object) and transitive (with one)
-  const verb_side =
-    label_word?.data.domain === "verb" ? axis_by_word.get(label_word)?.positive : undefined;
+  const verb_axis = label_word?.data.domain === "verb" ? axis_by_word.get(label_word) : undefined;
+  const verb_side = verb_axis?.positive;
 
   const cell = (
     <div
@@ -274,7 +278,11 @@ const SlotCell: React.FC<{ slot: Slot; dimmed: boolean }> = ({ slot, dimmed }) =
         </span>
       </div>
       {verb_side ? (
-        <VerbForms intransitive={verb_side.verb_i.gloss} transitive={verb_side.verb_t.gloss} />
+        <VerbForms
+          intransitive={verb_side.verb_i.gloss}
+          transitive={verb_side.verb_t.gloss}
+          relation={verb_axis?.verb_type === "relation"}
+        />
       ) : (
         label && (
           <div
@@ -758,7 +766,7 @@ function DictionaryView() {
               selected_tags={selected_tags}
               on_tag_toggle={handle_tag_toggle}
             />
-            <VerbGaps />
+            <VerbsByType />
             {filtered_words.length > 0 ? (
               <WordListDisplay words_to_display={filtered_words} />
             ) : (
