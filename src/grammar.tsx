@@ -86,7 +86,7 @@ export function GrammarView() {
       <p className="mt-2">
         Partial domains reuse a restricted part of the root space. The content root{" "}
         <W w="number" /> marks the number domain, reading the roots 128–255 as digits. The base
-        comes from context. <W w="color" /> is planned as another partial domain.
+        comes from context.
       </p>
       <p className="mt-2">
         <W w="_er" /> and <W w="_ee" /> turn a verb into a noun for its subject or object, after
@@ -229,6 +229,18 @@ export function GrammarView() {
         Gendered words are long: “mother” is <i>parent female</i>, which is <i>negative child
         negative male</i>, four syllables for a very common word.
       </Open>
+
+      <H2>Colors</H2>
+      <p>
+        <W w="color" /> is a root, and so are three hues: <W w="red" />, <W w="yellow" /> and{" "}
+        <W w="blue" />. Other hues mix by modifying, like any other noun and modifier: <i>red
+        yellow</i> is orange (a yellowish red), <i>yellow blue</i> green and <i>red blue</i>{" "}
+        purple. Lightness comes from the brightness axis: <i>red bright</i> is pink,{" "}
+        <i>red dark</i> maroon, and white and black are just <W w="bright" /> and <W w="dark" />.
+      </p>
+      <Example meaning="The rock is orange.">
+        &lt;subject&gt; rock &lt;verb&gt; is &lt;object&gt; red yellow
+      </Example>
 
       <H2>Modifiers</H2>
       <p>

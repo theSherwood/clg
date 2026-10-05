@@ -3,6 +3,7 @@ import {
   type Example,
   type Token,
   number_examples,
+  color_examples,
   family_examples,
   tense_examples,
   tokenize,
@@ -117,6 +118,7 @@ const all_transliterations = [
   ...tense_examples.map((e) => e.transliteration),
   ...truth_examples.map((e) => e.transliteration),
   ...family_examples.map((e) => e.transliteration),
+  ...color_examples.map((e) => e.transliteration),
   ...udhr_articles.flatMap((a) => (a.transliteration ? [a.transliteration] : [])),
 ];
 
@@ -196,6 +198,7 @@ export function ExamplesView() {
         { title: "Tense and aspect", examples: tense_examples },
         { title: "Truth and possibility", examples: truth_examples },
         { title: "Family", examples: family_examples },
+        { title: "Colors", examples: color_examples },
       ].map((group) => (
         <Section key={group.title} title={group.title}>
           <ExampleList examples={group.examples} />

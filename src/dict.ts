@@ -2204,8 +2204,14 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     t: [T.domain_specifier],
   });
   cr("family", { gloss: "family / kin / relative" });
+  cr("color");
+  cr("red", {
+    notes:
+      "Hues mix by modifying: red yellow is orange (a yellowish red), yellow blue green, red blue purple. Lightness comes from the brightness axis: red bright is pink, and white and black are bright and dark",
+  });
+  cr("yellow");
+  cr("blue");
 
-  candidate("color");
 
   candidate("prehensile?");
   candidate("information", { gloss: "information / data" });
@@ -2247,7 +2253,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     ["number", "symbol"],
     ["thing"],
     ["width", "height", "depth"], // height and width are nouns of the low/high and narrow/wide axes
-    ["yellow", "red", "blue"],
     ["sound", "taste", "touch"],
     ["animal", "plant", "fungus"],
   ]) {

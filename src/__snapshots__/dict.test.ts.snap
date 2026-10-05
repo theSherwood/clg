@@ -4,6 +4,9 @@ exports[`root IDs 1`] = `
 {
   "0": "_subject",
   "1": "_object",
+  "100": "red",
+  "101": "yellow",
+  "102": "blue",
   "108": "dimension_0",
   "109": "dimension_x",
   "110": "dimension_y",
@@ -218,5 +221,6 @@ exports[`root IDs 1`] = `
   "96": "rank",
   "97": "dimension",
   "98": "family",
+  "99": "color",
 }
 `;

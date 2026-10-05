@@ -277,6 +277,22 @@ export const family_examples: Example[] = [
   },
 ];
 
+// Three hue roots; other hues mix by modifying, and lightness comes from the brightness axis
+export const color_examples: Example[] = [
+  { title: "Orange", english: "a yellowish red", transliteration: "red yellow" },
+  { title: "Green", english: "a bluish yellow", transliteration: "yellow blue" },
+  { title: "Purple", english: "a bluish red", transliteration: "red blue" },
+  { title: "Pink", english: "a light red", transliteration: "red bright" },
+  { title: "Maroon", english: "a dark red", transliteration: "red dark" },
+  { title: "White", english: "the bright end of the brightness axis", transliteration: "bright" },
+  { title: "Black", english: "the dark end", transliteration: "dark" },
+  {
+    title: "A sentence",
+    english: "The rock is orange",
+    transliteration: "<subject> rock <verb> is <object> red yellow",
+  },
+];
+
 // Universal Declaration of Human Rights
 
 export const udhr_preamble: string[] = [
