@@ -153,6 +153,7 @@ exports[`root IDs 1`] = `
   "245": "stopped, stop, stop(v)",
   "246": "dutiful, duty, obligate(v), dutifully",
   "247": "recommended, recommendation, recommend(v)",
+  "248": "necessary, necessity, necessitate(v), necessarily",
   "3": "_verb(prescriptive)",
   "32": "with",
   "33": "to",

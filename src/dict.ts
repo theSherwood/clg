@@ -1989,6 +1989,29 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { noun: "prohibition", adj: "forbidden", verb: "forbid(v)", verb_t: "forbid" },
     { noun: "recommendation", adj: "recommended", verb: "recommend(v)", verb_t: "recommend" },
   ],
+  [
+    {
+      noun: "modality",
+      notes:
+        "How many cases something holds in, as in modal logic. Possible is not impossible, possibly not is not necessary, and contingent is neutral. Separate from the truth axis, which is likelihood: a conjecture is necessary or impossible while its truth is still neutral",
+    },
+    {
+      noun: "impossibility",
+      adj: "impossible",
+      verb: "rule_out(v)",
+      verb_i: "become impossible",
+      verb_t: "rule out",
+      adverb: "impossibly",
+    },
+    {
+      noun: "necessity",
+      adj: "necessary",
+      verb: "necessitate(v)",
+      verb_i: "become necessary",
+      verb_t: "necessitate",
+      adverb: "necessarily",
+    },
+  ],
 ];
 
 // Grammar markers, which are also domain words: they mark the role of what follows and its noun

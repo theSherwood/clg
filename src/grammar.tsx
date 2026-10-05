@@ -175,6 +175,36 @@ export function GrammarView() {
         relative to the main clause.
       </Open>
 
+      <H2>Truth and possibility</H2>
+      <p>
+        The truth axis grades likelihood. Its adverb follows the verb, after any aspect or time
+        words: <i>max_negative truly</i> is “certainly not”, <W w="falsely" /> “not so”,{" "}
+        <i>min_negative truly</i> “probably not”, <i>neutral truly</i> “maybe”,{" "}
+        <i>min_positive truly</i> “probably”, <W w="truly" /> “so” and <i>max_positive truly</i>{" "}
+        “certainly”. A plain statement claims something is true, not that it's certain, so it sits
+        one step below the top. Proof is how something is known, not how likely it is:{" "}
+        <W w="prove(v)" /> with <W w="perfect_tense_aspect" /> is “has proved”.
+      </p>
+      <Example meaning="The person probably died.">
+        &lt;subject&gt; person &lt;verb&gt; kill min_positive truly
+      </Example>
+      <p className="mt-2">
+        Necessity is a separate axis, <W w="modality" />: how many cases something holds in, from{" "}
+        <W w="impossible" /> to <W w="necessary" />. Its middle, <i>neutral necessary</i>, is
+        contingent. Possible is <i>not impossible</i> and “possibly not” is <i>not necessary</i>,
+        using <W w="not" />. The two axes stay apart because they can disagree: an unproved
+        conjecture is necessary or impossible, while its likelihood is still neutral. A third axis,
+        belief (<W w="doubt(v)" /> to <W w="believe(v)" />), is how strongly someone believes
+        something.
+      </p>
+      <Example meaning="Everyone necessarily dies.">
+        &lt;subject&gt; person all &lt;verb&gt; kill necessarily
+      </Example>
+      <Example meaning="I believe the person probably left.">
+        &lt;subject&gt; I &lt;verb&gt; believe &lt;object&gt; clause_start &lt;subject&gt; person
+        &lt;verb&gt; go min_positive truly clause_end
+      </Example>
+
       <H2>Modifiers</H2>
       <p>
         Modifiers follow what they modify: <i>person all</i> is “everyone”, <i>person none</i> is

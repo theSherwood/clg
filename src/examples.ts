@@ -177,6 +177,62 @@ export const tense_examples: Example[] = [
   },
 ];
 
+// The truth axis grades likelihood, as an adverb after the verb. The modality axis is separate:
+// how many cases something holds in.
+export const truth_examples: Example[] = [
+  {
+    title: "Certainly",
+    english: "The person certainly died",
+    transliteration: "<subject> person <verb> kill(v) max_positive truly",
+  },
+  {
+    title: "Plain",
+    english: "The person died",
+    transliteration: "<subject> person <verb> kill(v)",
+  },
+  {
+    title: "Probably",
+    english: "The person probably died",
+    transliteration: "<subject> person <verb> kill(v) min_positive truly",
+  },
+  {
+    title: "Maybe",
+    english: "Maybe the person left",
+    transliteration: "<subject> person <verb> go(v) neutral truly",
+  },
+  {
+    title: "Probably not",
+    english: "The person probably didn't leave",
+    transliteration: "<subject> person <verb> go(v) min_negative truly",
+  },
+  {
+    title: "Proved",
+    english: "The person has proved it",
+    transliteration: "<subject> person <verb> prove(v) perfect_tense_aspect <object> it",
+  },
+  {
+    title: "Belief and likelihood",
+    english: "I believe the person probably left",
+    transliteration:
+      "<subject> I <verb> believe(v) <object> clause_start <subject> person <verb> go(v) min_positive truly clause_end",
+  },
+  {
+    title: "Necessary",
+    english: "Everyone necessarily dies",
+    transliteration: "<subject> person all <verb> kill(v) necessarily",
+  },
+  {
+    title: "Possible",
+    english: "A person can learn: it's not impossible",
+    transliteration: "<subject> person <verb> learn(v) not impossibly",
+  },
+  {
+    title: "Contingent",
+    english: "The person dies, but not necessarily",
+    transliteration: "<subject> person <verb> kill(v) neutral necessarily",
+  },
+];
+
 // Universal Declaration of Human Rights
 
 export const udhr_preamble: string[] = [
