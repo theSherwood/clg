@@ -164,7 +164,9 @@ type AxisWordForms = {
 export type Scale = [string, string, string, string, string, string, string];
 
 // [axis, negative, positive]. The axis noun is axis_of + the positive noun; each negative form is
-// negative + the positive form.
+// negative + the positive form. Axes are grouped by verb type (see verb_types), so their IDs run
+// change, action, relation, then axes with no verb yet. Adding an axis inside a group shifts the
+// IDs, and so the sounds, of every axis after it; adding one at the very end shifts none.
 const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   [
     {
@@ -557,39 +559,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "ownership" },
-    { noun: "lack", adj: "lacking", verb: "lack(v)", verb_t: "lack" },
-    {
-      noun: "possession",
-      adj: "owned",
-      verb: "possess(v)",
-      verb_t: "possess",
-      adverb: "possessively",
-    },
-  ],
-  [
-    {},
-    {},
-    {
-      noun: "characteristic",
-      adj: "intrinsic",
-      verb: "is(v)",
-      verb_t: "be",
-      adverb: "characteristically",
-    },
-  ],
-  [
-    { noun: "similarity" },
-    {
-      noun: "difference",
-      adj: "different",
-      verb: "differ(v)",
-      verb_t: "differ from",
-      adverb: "differently",
-    },
-    { noun: "equality", adj: "same", verb: "equal(v)", verb_t: "equal", adverb: "identically" },
-  ],
-  [
     { noun: "essentiality" },
     {
       noun: "accident",
@@ -644,25 +613,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "nest",
       verb_t: "embed",
       adverb: "recursively",
-    },
-  ],
-  [
-    { noun: "reasoning" },
-    {
-      noun: "instinct",
-      adj: "intuitive",
-      verb: "intuit(v)",
-      verb_i: "intuit",
-      verb_t: "intuit",
-      adverb: "intuitively",
-    },
-    {
-      noun: "analysis",
-      adj: "analytical",
-      verb: "analyze(v)",
-      verb_i: "analyze",
-      verb_t: "analyze",
-      adverb: "analytically",
     },
   ],
   [
@@ -922,11 +872,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "affection" },
-    { noun: "hatred", adj: "hateful", verb: "hate(v)", verb_t: "hate", adverb: "hatefully" },
-    { noun: "love", adj: "loving", verb: "love(v)", verb_t: "love", adverb: "lovingly" },
-  ],
-  [
     {
       noun: "truth",
       notes: "Likelihood, not proof (prove(v)) or necessity (the modality axis)",
@@ -972,95 +917,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "contest" },
-    { noun: "defeat", adj: "defeated", verb: "lose(v)", verb_i: "lose", verb_t: "lose" },
-    {
-      noun: "victory",
-      adj: "victorious",
-      verb: "win(v)",
-      verb_i: "win",
-      verb_t: "win",
-      adverb: "victoriously",
-    },
-  ],
-  [
-    { noun: "achievement" },
-    {
-      noun: "failure",
-      adj: "unsuccessful",
-      verb: "fail(v)",
-      verb_i: "fail",
-      verb_t: "botch",
-      adverb: "unsuccessfully",
-    },
-    {
-      noun: "success",
-      adj: "successful",
-      verb: "succeed(v)",
-      verb_i: "succeed",
-      verb_t: "accomplish",
-      adverb: "successfully",
-    },
-  ],
-  [
-    {},
-    {
-      noun: "consumption",
-      adj: "consuming",
-      verb: "consume(v)",
-      verb_i: "consume",
-      verb_t: "consume",
-    },
-    {
-      noun: "production",
-      adj: "productive",
-      verb: "produce(v)",
-      verb_i: "produce",
-      verb_t: "produce",
-      adverb: "productively",
-    },
-  ],
-  [
-    { noun: "trade" },
-    { noun: "sale", adj: "sold", verb: "sell(v)", verb_i: "sell", verb_t: "sell" },
-    { noun: "purchase", adj: "bought", verb: "buy(v)", verb_i: "shop", verb_t: "buy" },
-  ],
-  [
-    { noun: "transmission", notes: "duplicate of come/go" },
-    { noun: "receipt", adj: "received", verb: "receive(v)", verb_i: "receive", verb_t: "receive" },
-    { noun: "dispatch", adj: "sent", verb: "send(v)", verb_i: "send", verb_t: "send" },
-  ],
-  [
-    { noun: "expectation" },
-    {
-      noun: "fear",
-      adj: "fearful",
-      verb: "fear(v)",
-      verb_i: "be afraid",
-      verb_t: "fear",
-      adverb: "fearfully",
-    },
-    {
-      noun: "hope",
-      adj: "hopeful",
-      verb: "hope(v)",
-      verb_i: "hope",
-      verb_t: "hope for",
-      adverb: "hopefully",
-    },
-  ],
-  [
-    { noun: "credence", notes: "negative adverb “doubtfully” needs a positive adverb" },
-    { noun: "doubt", adj: "doubtful", verb: "doubt(v)", verb_i: "doubt", verb_t: "doubt" },
-    {
-      noun: "belief",
-      adj: "believing",
-      verb: "believe(v)",
-      verb_i: "believe",
-      verb_t: "believe",
-    },
-  ],
-  [
     {
       noun: "aliveness",
       notes: "negative intransitive verb: to die; positive intransitive verb: to live",
@@ -1074,7 +930,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_t: "bring to life",
     },
   ],
-  [{ notes: "duplicate of come/go in the verb forms?" }, { adverb: "here" }, { adverb: "there" }],
   [
     {
       notes:
@@ -1153,11 +1008,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { notes: "duplicate of behind/ahead?" },
-    { noun: "stern", adj: "rear", adverb: "aft" },
-    { noun: "bow", adj: "forward", adverb: "fore" },
-  ],
-  [
     {},
     {
       noun: "insertion",
@@ -1172,25 +1022,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb: "withdraw(v)",
       verb_i: "retreat",
       verb_t: "withdraw",
-    },
-  ],
-  [
-    {},
-    {
-      noun: "service",
-      adj: "subservient",
-      verb: "serve(v)",
-      verb_i: "serve",
-      verb_t: "serve",
-      adverb: "servilely",
-    },
-    {
-      noun: "authority",
-      adj: "in_charge",
-      verb: "be_in_command(v)",
-      verb_i: "lead",
-      verb_t: "direct",
-      adverb: "authoritatively",
     },
   ],
   [
@@ -1228,25 +1059,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "stir",
       verb_t: "animate",
       adverb: "animatedly",
-    },
-  ],
-  [
-    { noun: "activity" },
-    {
-      noun: "idleness",
-      adj: "idle",
-      verb: "rest(v)",
-      verb_i: "rest",
-      verb_t: "rest",
-      adverb: "idly",
-    },
-    {
-      noun: "work",
-      adj: "busy",
-      verb: "work(v)",
-      verb_i: "work",
-      verb_t: "work on",
-      adverb: "busily",
     },
   ],
   [
@@ -1307,25 +1119,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { notes: 'Maybe the opposite of "search" should be "lose"?' },
-    {
-      noun: "hiding",
-      adj: "hidden",
-      verb: "hide(v)",
-      verb_i: "hide",
-      verb_t: "conceal",
-      adverb: "secretly",
-    },
-    {
-      noun: "search",
-      adj: "searching",
-      verb: "search(v)",
-      verb_i: "search",
-      verb_t: "seek",
-      adverb: "searchingly",
-    },
-  ],
-  [
     { noun: "centrality" },
     {
       noun: "center",
@@ -1343,34 +1136,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_t: "disperse",
       adverb: "peripherally",
     },
-  ],
-  [
-    { noun: "awareness" },
-    {
-      noun: "ignorance",
-      adj: "ignorant",
-      verb: "ignore(v)",
-      verb_t: "ignore",
-      adverb: "ignorantly",
-    },
-    {
-      noun: "knowledge",
-      adj: "knowledgeable",
-      verb: "know(v)",
-      verb_t: "know",
-      adverb: "knowingly",
-    },
-  ],
-  [
-    { noun: "memory" },
-    {
-      noun: "oblivion",
-      adj: "forgotten",
-      verb: "forget(v)",
-      verb_i: "forget",
-      verb_t: "forget",
-    },
-    { noun: "learning", adj: "learned", verb: "learn(v)", verb_i: "learn", verb_t: "learn" },
   ],
   [
     { noun: "multiplicity", notes: "none - very few - few - some - many - most - all" },
@@ -1391,7 +1156,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       adverb: "manifold",
     },
   ],
-  [{}, { noun: "femininity", adj: "female" }, { noun: "masculinity", adj: "male" }],
   [
     { noun: "alignment" },
     {
@@ -1450,14 +1214,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    {
-      noun: "appetite",
-      notes: "axis.csv also had revulsion / desire; positive verb forms: to desire",
-    },
-    { noun: "abhorrence", adj: "abhorrent", verb: "abhor(v)", verb_t: "abhor" },
-    { noun: "desire", adj: "desirable", verb: "desire(v)", verb_t: "desire", adverb: "eagerly" },
-  ],
-  [
     { noun: "substance" },
     {
       noun: "immateriality",
@@ -1496,21 +1252,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    {},
-    { noun: "back_side", adj: "back", adverb: "at_the_back" },
-    { noun: "front_side", adj: "front", verb: "face(v)", verb_t: "face", adverb: "in_front" },
-  ],
-  [
-    { noun: "cultivation" },
-    { noun: "harvest", adj: "reaped", verb: "reap(v)", verb_i: "reap", verb_t: "reap" },
-    { noun: "sowing", adj: "sown", verb: "sow(v)", verb_i: "sow", verb_t: "sow" },
-  ],
-  [
-    { noun: "frequency", notes: "negative verb “normalize / normalize” needs a positive verb" },
-    { noun: "normality", adj: "normal", adverb: "normally" },
-    { noun: "rarity", adj: "rare", adverb: "rarely" },
-  ],
-  [
     { noun: "curvature", notes: "negative verb round(v) (no positive verb)" },
     {
       noun: "roundness",
@@ -1542,29 +1283,12 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { notes: "negative verb forms: take; positive verb forms: give" },
-    { noun: "taking", adj: "taken", verb: "take(v)", verb_i: "take", verb_t: "take" },
-    {
-      noun: "gift",
-      adj: "given",
-      verb: "give(v)",
-      verb_i: "give",
-      verb_t: "give",
-      adverb: "generously",
-    },
-  ],
-  [
     {
       noun: "consciousness",
       notes: "negative verb forms: sleep; negative adverb “sleepily” needs a positive adverb",
     },
     { noun: "sleep", adj: "asleep", verb: "sleep(v)", verb_i: "sleep", verb_t: "put to sleep" },
     { noun: "wakefulness", adj: "awake", verb: "wake(v)", verb_i: "wake", verb_t: "wake" },
-  ],
-  [
-    { notes: "negative verb internalize(v) (no positive verb)" },
-    { noun: "interior", adj: "inward", adverb: "inwardly" },
-    { noun: "surface", adj: "superficial", adverb: "superficially" },
   ],
   [
     { notes: "positive verb forms: to create; to self-actualize? / to become" },
@@ -1677,25 +1401,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   [
     {},
     {
-      noun: "war",
-      adj: "warlike",
-      verb: "fight(v)",
-      verb_i: "fight",
-      verb_t: "fight",
-      adverb: "belligerently",
-    },
-    {
-      noun: "peace",
-      adj: "peaceful",
-      verb: "make_peace(v)",
-      verb_i: "make peace",
-      verb_t: "make peace with",
-      adverb: "peacefully",
-    },
-  ],
-  [
-    {},
-    {
       noun: "deflation",
       adj: "deflated",
       verb: "deflate(v)",
@@ -1708,23 +1413,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb: "inflate(v)",
       verb_i: "swell",
       verb_t: "inflate",
-    },
-  ],
-  [
-    { noun: "scope(inclusion)" },
-    {
-      noun: "exclusion",
-      adj: "exclusive",
-      verb: "exclude(v)",
-      verb_t: "exclude",
-      adverb: "exclusively",
-    },
-    {
-      noun: "inclusion",
-      adj: "inclusive",
-      verb: "include(v)",
-      verb_t: "include",
-      adverb: "inclusively",
     },
   ],
   [
@@ -1763,23 +1451,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "go straight",
       verb_t: "aim",
       adverb: "directly",
-    },
-  ],
-  [
-    { noun: "magnetism" },
-    {
-      noun: "repulsion",
-      adj: "repellent",
-      verb: "repel(v)",
-      verb_t: "repel",
-      adverb: "repulsively",
-    },
-    {
-      noun: "attraction",
-      adj: "attractive",
-      verb: "attract(v)",
-      verb_t: "attract",
-      adverb: "attractively",
     },
   ],
   [
@@ -1822,44 +1493,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "get pricier",
       verb_t: "mark up",
       adverb: "expensively",
-    },
-  ],
-  [
-    {},
-    {
-      noun: "attack",
-      adj: "offensive",
-      verb: "attack(v)",
-      verb_i: "attack",
-      verb_t: "attack",
-      adverb: "offensively",
-    },
-    {
-      noun: "defense",
-      adj: "defensive",
-      verb: "defend(v)",
-      verb_i: "defend",
-      verb_t: "defend",
-      adverb: "defensively",
-    },
-  ],
-  [
-    { noun: "care" },
-    {
-      noun: "neglect",
-      adj: "neglected",
-      verb: "neglect(v)",
-      verb_i: "neglect",
-      verb_t: "neglect",
-      adverb: "negligently",
-    },
-    {
-      noun: "stewardship",
-      adj: "tended",
-      verb: "steward(v)",
-      verb_i: "tend",
-      verb_t: "tend",
-      adverb: "carefully",
     },
   ],
   [
@@ -1915,16 +1548,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     {
-      noun: "lineage",
-      notes:
-        "Rank counts generations: child rank_2 is a grandchild, negative child rank_2 a grandparent, and neutral child rank_2 a first cousin (a shared grandparent). Bare words are rank_1, and rank_0 is oneself",
-      scale: ["ancestor", "parent", "aunt / uncle", "sibling", "niece / nephew", "child", "descendant"],
-    },
-    { noun: "parent", adj: "parental" },
-    { noun: "child", adj: "filial" },
-  ],
-  [
-    {
       noun: "restraint",
       notes:
         '"free" is already the positive adjective of the coercion axis; negative adverb “unrestrainedly” needs a positive adverb',
@@ -1961,51 +1584,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "become sacred",
       verb_t: "sanctify",
       adverb: "sacredly",
-    },
-  ],
-  [
-    { notes: "axis name “latitude” needs a positive noun" },
-    { adj: "south", adverb: "southward" },
-    { adj: "north", adverb: "northward" },
-  ],
-  [
-    { notes: "axis name “longitude” needs a positive noun" },
-    { adj: "west", adverb: "westward" },
-    { adj: "east", adverb: "eastward" },
-  ],
-  [
-    {
-      notes:
-        "negative verb forms: to obey; positive verb forms: to command / to rule / to govern; negative adverb “obediently” needs a positive adverb",
-    },
-    { noun: "obedience", adj: "obedient", verb: "obey(v)", verb_i: "obey", verb_t: "obey" },
-    {
-      noun: "command",
-      adj: "commanding",
-      verb: "command(v)",
-      verb_i: "give orders",
-      verb_t: "command",
-    },
-  ],
-  [
-    {
-      noun: "compliance",
-      notes:
-        "negative verb forms: to conduct / to submit; positive verb forms: to resist / to thwart; negative adverb “submissively” needs a positive adverb",
-    },
-    {
-      noun: "submission",
-      adj: "submissive",
-      verb: "submit(v)",
-      verb_i: "submit",
-      verb_t: "submit to",
-    },
-    {
-      noun: "resistance",
-      adj: "resistant",
-      verb: "resist(v)",
-      verb_i: "resist",
-      verb_t: "resist",
     },
   ],
   [
@@ -2048,24 +1626,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "fortitude", notes: "Are these fundamental enough?" },
-    {
-      noun: "vulnerability",
-      adj: "vulnerable",
-      verb: "succumb(v)",
-      verb_i: "succumb",
-      verb_t: "succumb to",
-    },
-    {
-      noun: "resilience",
-      adj: "resilient",
-      verb: "withstand(v)",
-      verb_i: "endure",
-      verb_t: "withstand",
-      adverb: "resiliently",
-    },
-  ],
-  [
     {
       noun: "connectivity",
       notes:
@@ -2084,6 +1644,355 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb: "disconnect(v)",
       verb_i: "come apart",
       verb_t: "disconnect",
+    },
+  ],
+  [
+    {},
+    { noun: "start", adj: "started", verb: "start(v)", verb_i: "start", verb_t: "start" },
+    { noun: "stop", adj: "stopped", verb: "stop(v)", verb_i: "stop", verb_t: "stop" },
+  ],
+  [
+    { noun: "obligation", notes: "axis.csv had privilege, right / obligation, duty" },
+    {
+      noun: "privilege",
+      adj: "privileged",
+      verb: "entitle(v)",
+      verb_i: "become entitled",
+      verb_t: "entitle",
+    },
+    {
+      noun: "duty",
+      adj: "dutiful",
+      verb: "obligate(v)",
+      verb_i: "become obliged",
+      verb_t: "obligate",
+      adverb: "dutifully",
+    },
+  ],
+  [
+    {
+      noun: "modality",
+      notes:
+        "How many cases something holds in, as in modal logic. Possible is not impossible, possibly not is not necessary, and contingent is neutral. Separate from the truth axis, which is likelihood: a conjecture is necessary or impossible while its truth is still neutral",
+    },
+    {
+      noun: "impossibility",
+      adj: "impossible",
+      verb: "rule_out(v)",
+      verb_i: "become impossible",
+      verb_t: "rule out",
+      adverb: "impossibly",
+    },
+    {
+      noun: "necessity",
+      adj: "necessary",
+      verb: "necessitate(v)",
+      verb_i: "become necessary",
+      verb_t: "necessitate",
+      adverb: "necessarily",
+    },
+  ],
+  [
+    { noun: "reasoning" },
+    {
+      noun: "instinct",
+      adj: "intuitive",
+      verb: "intuit(v)",
+      verb_i: "intuit",
+      verb_t: "intuit",
+      adverb: "intuitively",
+    },
+    {
+      noun: "analysis",
+      adj: "analytical",
+      verb: "analyze(v)",
+      verb_i: "analyze",
+      verb_t: "analyze",
+      adverb: "analytically",
+    },
+  ],
+  [
+    { noun: "contest" },
+    { noun: "defeat", adj: "defeated", verb: "lose(v)", verb_i: "lose", verb_t: "lose" },
+    {
+      noun: "victory",
+      adj: "victorious",
+      verb: "win(v)",
+      verb_i: "win",
+      verb_t: "win",
+      adverb: "victoriously",
+    },
+  ],
+  [
+    { noun: "achievement" },
+    {
+      noun: "failure",
+      adj: "unsuccessful",
+      verb: "fail(v)",
+      verb_i: "fail",
+      verb_t: "botch",
+      adverb: "unsuccessfully",
+    },
+    {
+      noun: "success",
+      adj: "successful",
+      verb: "succeed(v)",
+      verb_i: "succeed",
+      verb_t: "accomplish",
+      adverb: "successfully",
+    },
+  ],
+  [
+    {},
+    {
+      noun: "consumption",
+      adj: "consuming",
+      verb: "consume(v)",
+      verb_i: "consume",
+      verb_t: "consume",
+    },
+    {
+      noun: "production",
+      adj: "productive",
+      verb: "produce(v)",
+      verb_i: "produce",
+      verb_t: "produce",
+      adverb: "productively",
+    },
+  ],
+  [
+    { noun: "trade" },
+    { noun: "sale", adj: "sold", verb: "sell(v)", verb_i: "sell", verb_t: "sell" },
+    { noun: "purchase", adj: "bought", verb: "buy(v)", verb_i: "shop", verb_t: "buy" },
+  ],
+  [
+    { noun: "transmission", notes: "duplicate of come/go" },
+    { noun: "receipt", adj: "received", verb: "receive(v)", verb_i: "receive", verb_t: "receive" },
+    { noun: "dispatch", adj: "sent", verb: "send(v)", verb_i: "send", verb_t: "send" },
+  ],
+  [
+    { noun: "expectation" },
+    {
+      noun: "fear",
+      adj: "fearful",
+      verb: "fear(v)",
+      verb_i: "be afraid",
+      verb_t: "fear",
+      adverb: "fearfully",
+    },
+    {
+      noun: "hope",
+      adj: "hopeful",
+      verb: "hope(v)",
+      verb_i: "hope",
+      verb_t: "hope for",
+      adverb: "hopefully",
+    },
+  ],
+  [
+    { noun: "credence", notes: "negative adverb “doubtfully” needs a positive adverb" },
+    { noun: "doubt", adj: "doubtful", verb: "doubt(v)", verb_i: "doubt", verb_t: "doubt" },
+    {
+      noun: "belief",
+      adj: "believing",
+      verb: "believe(v)",
+      verb_i: "believe",
+      verb_t: "believe",
+    },
+  ],
+  [
+    {},
+    {
+      noun: "service",
+      adj: "subservient",
+      verb: "serve(v)",
+      verb_i: "serve",
+      verb_t: "serve",
+      adverb: "servilely",
+    },
+    {
+      noun: "authority",
+      adj: "in_charge",
+      verb: "be_in_command(v)",
+      verb_i: "lead",
+      verb_t: "direct",
+      adverb: "authoritatively",
+    },
+  ],
+  [
+    { noun: "activity" },
+    {
+      noun: "idleness",
+      adj: "idle",
+      verb: "rest(v)",
+      verb_i: "rest",
+      verb_t: "rest",
+      adverb: "idly",
+    },
+    {
+      noun: "work",
+      adj: "busy",
+      verb: "work(v)",
+      verb_i: "work",
+      verb_t: "work on",
+      adverb: "busily",
+    },
+  ],
+  [
+    { notes: 'Maybe the opposite of "search" should be "lose"?' },
+    {
+      noun: "hiding",
+      adj: "hidden",
+      verb: "hide(v)",
+      verb_i: "hide",
+      verb_t: "conceal",
+      adverb: "secretly",
+    },
+    {
+      noun: "search",
+      adj: "searching",
+      verb: "search(v)",
+      verb_i: "search",
+      verb_t: "seek",
+      adverb: "searchingly",
+    },
+  ],
+  [
+    { noun: "memory" },
+    {
+      noun: "oblivion",
+      adj: "forgotten",
+      verb: "forget(v)",
+      verb_i: "forget",
+      verb_t: "forget",
+    },
+    { noun: "learning", adj: "learned", verb: "learn(v)", verb_i: "learn", verb_t: "learn" },
+  ],
+  [
+    { noun: "cultivation" },
+    { noun: "harvest", adj: "reaped", verb: "reap(v)", verb_i: "reap", verb_t: "reap" },
+    { noun: "sowing", adj: "sown", verb: "sow(v)", verb_i: "sow", verb_t: "sow" },
+  ],
+  [
+    { notes: "negative verb forms: take; positive verb forms: give" },
+    { noun: "taking", adj: "taken", verb: "take(v)", verb_i: "take", verb_t: "take" },
+    {
+      noun: "gift",
+      adj: "given",
+      verb: "give(v)",
+      verb_i: "give",
+      verb_t: "give",
+      adverb: "generously",
+    },
+  ],
+  [
+    {},
+    {
+      noun: "war",
+      adj: "warlike",
+      verb: "fight(v)",
+      verb_i: "fight",
+      verb_t: "fight",
+      adverb: "belligerently",
+    },
+    {
+      noun: "peace",
+      adj: "peaceful",
+      verb: "make_peace(v)",
+      verb_i: "make peace",
+      verb_t: "make peace with",
+      adverb: "peacefully",
+    },
+  ],
+  [
+    {},
+    {
+      noun: "attack",
+      adj: "offensive",
+      verb: "attack(v)",
+      verb_i: "attack",
+      verb_t: "attack",
+      adverb: "offensively",
+    },
+    {
+      noun: "defense",
+      adj: "defensive",
+      verb: "defend(v)",
+      verb_i: "defend",
+      verb_t: "defend",
+      adverb: "defensively",
+    },
+  ],
+  [
+    { noun: "care" },
+    {
+      noun: "neglect",
+      adj: "neglected",
+      verb: "neglect(v)",
+      verb_i: "neglect",
+      verb_t: "neglect",
+      adverb: "negligently",
+    },
+    {
+      noun: "stewardship",
+      adj: "tended",
+      verb: "steward(v)",
+      verb_i: "tend",
+      verb_t: "tend",
+      adverb: "carefully",
+    },
+  ],
+  [
+    {
+      notes:
+        "negative verb forms: to obey; positive verb forms: to command / to rule / to govern; negative adverb “obediently” needs a positive adverb",
+    },
+    { noun: "obedience", adj: "obedient", verb: "obey(v)", verb_i: "obey", verb_t: "obey" },
+    {
+      noun: "command",
+      adj: "commanding",
+      verb: "command(v)",
+      verb_i: "give orders",
+      verb_t: "command",
+    },
+  ],
+  [
+    {
+      noun: "compliance",
+      notes:
+        "negative verb forms: to conduct / to submit; positive verb forms: to resist / to thwart; negative adverb “submissively” needs a positive adverb",
+    },
+    {
+      noun: "submission",
+      adj: "submissive",
+      verb: "submit(v)",
+      verb_i: "submit",
+      verb_t: "submit to",
+    },
+    {
+      noun: "resistance",
+      adj: "resistant",
+      verb: "resist(v)",
+      verb_i: "resist",
+      verb_t: "resist",
+    },
+  ],
+  [
+    { noun: "fortitude", notes: "Are these fundamental enough?" },
+    {
+      noun: "vulnerability",
+      adj: "vulnerable",
+      verb: "succumb(v)",
+      verb_i: "succumb",
+      verb_t: "succumb to",
+    },
+    {
+      noun: "resilience",
+      adj: "resilient",
+      verb: "withstand(v)",
+      verb_i: "endure",
+      verb_t: "withstand",
+      adverb: "resiliently",
     },
   ],
   [
@@ -2123,29 +2032,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    {},
-    { noun: "start", adj: "started", verb: "start(v)", verb_i: "start", verb_t: "start" },
-    { noun: "stop", adj: "stopped", verb: "stop(v)", verb_i: "stop", verb_t: "stop" },
-  ],
-  [
-    { noun: "obligation", notes: "axis.csv had privilege, right / obligation, duty" },
-    {
-      noun: "privilege",
-      adj: "privileged",
-      verb: "entitle(v)",
-      verb_i: "become entitled",
-      verb_t: "entitle",
-    },
-    {
-      noun: "duty",
-      adj: "dutiful",
-      verb: "obligate(v)",
-      verb_i: "become obliged",
-      verb_t: "obligate",
-      adverb: "dutifully",
-    },
-  ],
-  [
     { noun: "permissibility" },
     {
       noun: "prohibition",
@@ -2163,27 +2049,143 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
+    { noun: "ownership" },
+    { noun: "lack", adj: "lacking", verb: "lack(v)", verb_t: "lack" },
     {
-      noun: "modality",
+      noun: "possession",
+      adj: "owned",
+      verb: "possess(v)",
+      verb_t: "possess",
+      adverb: "possessively",
+    },
+  ],
+  [
+    {},
+    {},
+    {
+      noun: "characteristic",
+      adj: "intrinsic",
+      verb: "is(v)",
+      verb_t: "be",
+      adverb: "characteristically",
+    },
+  ],
+  [
+    { noun: "similarity" },
+    {
+      noun: "difference",
+      adj: "different",
+      verb: "differ(v)",
+      verb_t: "differ from",
+      adverb: "differently",
+    },
+    { noun: "equality", adj: "same", verb: "equal(v)", verb_t: "equal", adverb: "identically" },
+  ],
+  [
+    { noun: "affection" },
+    { noun: "hatred", adj: "hateful", verb: "hate(v)", verb_t: "hate", adverb: "hatefully" },
+    { noun: "love", adj: "loving", verb: "love(v)", verb_t: "love", adverb: "lovingly" },
+  ],
+  [
+    { noun: "awareness" },
+    {
+      noun: "ignorance",
+      adj: "ignorant",
+      verb: "ignore(v)",
+      verb_t: "ignore",
+      adverb: "ignorantly",
+    },
+    {
+      noun: "knowledge",
+      adj: "knowledgeable",
+      verb: "know(v)",
+      verb_t: "know",
+      adverb: "knowingly",
+    },
+  ],
+  [
+    {
+      noun: "appetite",
+      notes: "axis.csv also had revulsion / desire; positive verb forms: to desire",
+    },
+    { noun: "abhorrence", adj: "abhorrent", verb: "abhor(v)", verb_t: "abhor" },
+    { noun: "desire", adj: "desirable", verb: "desire(v)", verb_t: "desire", adverb: "eagerly" },
+  ],
+  [
+    {},
+    { noun: "back_side", adj: "back", adverb: "at_the_back" },
+    { noun: "front_side", adj: "front", verb: "face(v)", verb_t: "face", adverb: "in_front" },
+  ],
+  [
+    { noun: "scope(inclusion)" },
+    {
+      noun: "exclusion",
+      adj: "exclusive",
+      verb: "exclude(v)",
+      verb_t: "exclude",
+      adverb: "exclusively",
+    },
+    {
+      noun: "inclusion",
+      adj: "inclusive",
+      verb: "include(v)",
+      verb_t: "include",
+      adverb: "inclusively",
+    },
+  ],
+  [
+    { noun: "magnetism" },
+    {
+      noun: "repulsion",
+      adj: "repellent",
+      verb: "repel(v)",
+      verb_t: "repel",
+      adverb: "repulsively",
+    },
+    {
+      noun: "attraction",
+      adj: "attractive",
+      verb: "attract(v)",
+      verb_t: "attract",
+      adverb: "attractively",
+    },
+  ],
+  [{ notes: "duplicate of come/go in the verb forms?" }, { adverb: "here" }, { adverb: "there" }],
+  [
+    { notes: "duplicate of behind/ahead?" },
+    { noun: "stern", adj: "rear", adverb: "aft" },
+    { noun: "bow", adj: "forward", adverb: "fore" },
+  ],
+  [{}, { noun: "femininity", adj: "female" }, { noun: "masculinity", adj: "male" }],
+  [
+    { noun: "frequency", notes: "negative verb “normalize / normalize” needs a positive verb" },
+    { noun: "normality", adj: "normal", adverb: "normally" },
+    { noun: "rarity", adj: "rare", adverb: "rarely" },
+  ],
+  [
+    { notes: "negative verb internalize(v) (no positive verb)" },
+    { noun: "interior", adj: "inward", adverb: "inwardly" },
+    { noun: "surface", adj: "superficial", adverb: "superficially" },
+  ],
+  [
+    {
+      noun: "lineage",
       notes:
-        "How many cases something holds in, as in modal logic. Possible is not impossible, possibly not is not necessary, and contingent is neutral. Separate from the truth axis, which is likelihood: a conjecture is necessary or impossible while its truth is still neutral",
+        "Rank counts generations: child rank_2 is a grandchild, negative child rank_2 a grandparent, and neutral child rank_2 a first cousin (a shared grandparent). Bare words are rank_1, and rank_0 is oneself",
+      scale: ["ancestor", "parent", "aunt / uncle", "sibling", "niece / nephew", "child", "descendant"],
     },
-    {
-      noun: "impossibility",
-      adj: "impossible",
-      verb: "rule_out(v)",
-      verb_i: "become impossible",
-      verb_t: "rule out",
-      adverb: "impossibly",
-    },
-    {
-      noun: "necessity",
-      adj: "necessary",
-      verb: "necessitate(v)",
-      verb_i: "become necessary",
-      verb_t: "necessitate",
-      adverb: "necessarily",
-    },
+    { noun: "parent", adj: "parental" },
+    { noun: "child", adj: "filial" },
+  ],
+  [
+    { notes: "axis name “latitude” needs a positive noun" },
+    { adj: "south", adverb: "southward" },
+    { adj: "north", adverb: "northward" },
+  ],
+  [
+    { notes: "axis name “longitude” needs a positive noun" },
+    { adj: "west", adverb: "westward" },
+    { adj: "east", adverb: "eastward" },
   ],
 ];
 
