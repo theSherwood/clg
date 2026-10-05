@@ -484,6 +484,24 @@ export const comparison_examples: Example[] = [
   },
 ];
 
+// One geometry root; rank counts dimensions
+export const geometry_examples: Example[] = [
+  { title: "Point", english: "no dimensions", transliteration: "geometry rank_0" },
+  { title: "Line", english: "one dimension", transliteration: "geometry rank_1" },
+  { title: "Shape", english: "two dimensions", transliteration: "geometry rank_2" },
+  { title: "Form", english: "three dimensions: a solid", transliteration: "geometry rank_3" },
+  { title: "Straight line", english: "a plumb line", transliteration: "geometry rank_1 plumb" },
+  { title: "Curve", english: "a round line", transliteration: "geometry rank_1 round" },
+  { title: "Circle", english: "a round shape", transliteration: "geometry rank_2 round" },
+  { title: "Polygon", english: "an angled shape", transliteration: "geometry rank_2 angle" },
+  { title: "Sphere", english: "a round form", transliteration: "geometry rank_3 round" },
+  {
+    title: "A sentence",
+    english: "Earth is a sphere",
+    transliteration: "<subject> celestial rank_2 this <verb> is <object> geometry rank_3 round",
+  },
+];
+
 // Universal Declaration of Human Rights
 
 export const udhr_preamble: string[] = [

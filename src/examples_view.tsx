@@ -6,6 +6,7 @@ import {
   color_examples,
   comparison_examples,
   family_examples,
+  geometry_examples,
   question_examples,
   role_examples,
   self_other_examples,
@@ -80,7 +81,7 @@ function Interlinear({ transliteration }: { transliteration: string }) {
   );
 }
 
-// A section that collapses to its heading, open to start with
+// A section that collapses to its heading, closed to start with; open, its body is boxed
 function Section({
   title,
   level = 2,
@@ -91,15 +92,15 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <details open className={level === 2 ? "mb-8" : "mb-6"}>
+    <details className="mb-1 [&[open]]:mb-4 [&[open]>summary]:mb-2">
       <summary
-        className={`cursor-pointer mb-2 ${
+        className={`cursor-pointer ${
           level === 2 ? "text-lg font-semibold" : "font-semibold text-gray-700"
         }`}
       >
         {title}
       </summary>
-      {children}
+      <div className="rounded border border-gray-200 p-3">{children}</div>
     </details>
   );
 }
@@ -131,6 +132,7 @@ const all_transliterations = [
   ...water_fire_examples.map((e) => e.transliteration),
   ...sky_examples.map((e) => e.transliteration),
   ...comparison_examples.map((e) => e.transliteration),
+  ...geometry_examples.map((e) => e.transliteration),
   ...udhr_articles.flatMap((a) => (a.transliteration ? [a.transliteration] : [])),
 ];
 
@@ -217,6 +219,7 @@ export function ExamplesView() {
         { title: "Water and fire", examples: water_fire_examples },
         { title: "Sky", examples: sky_examples },
         { title: "Comparison", examples: comparison_examples },
+        { title: "Geometry", examples: geometry_examples },
       ].map((group) => (
         <Section key={group.title} title={group.title}>
           <ExampleList examples={group.examples} />

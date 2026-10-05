@@ -301,6 +301,14 @@ export function GrammarView() {
         &lt;subject&gt; celestial rank_3 this &lt;verb&gt; exceed &lt;object&gt; all &lt;in&gt; big
       </Example>
 
+      <H2>Geometry</H2>
+      <p>
+        <W w="geometry" /> is one root for geometric figures, and rank counts their dimensions, as{" "}
+        <W w="dimension_0" /> is a point: <i>geometry rank_0</i> is a point, <i>rank_1</i> a line,{" "}
+        <i>rank_2</i> a shape and <i>rank_3</i> a form, a solid. Modifiers say which:{" "}
+        <i>geometry rank_2 round</i> is a circle and <i>geometry rank_3 round</i> a sphere.
+      </p>
+
       <H2>Sky</H2>
       <p>
         <W w="celestial" /> is one root for every body in the sky, and rank picks its level in the

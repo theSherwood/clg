@@ -2417,6 +2417,11 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     gloss: "other / another",
     notes: "person other is another person. With a plural subject, <object> other or <to> other is each other",
   });
+  cr("geometry", {
+    gloss: "geometric figure",
+    notes:
+      "Rank counts dimensions, as dimension_0 is a point: rank_0 point, rank_1 line, rank_2 shape, rank_3 form (a solid). Modifiers say which: geometry rank_2 round is a circle, geometry rank_3 round a sphere",
+  });
   cr("celestial", {
     gloss: "celestial body",
     notes:
@@ -2442,7 +2447,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     notes:
       "Should this be a domain specifier? up - down, forward - back, left - right, north - south, east - west, in - out, future - past",
   });
-  candidate("shape");
   candidate("count");
   candidate("hour");
   candidate("minute");
