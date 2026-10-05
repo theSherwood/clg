@@ -157,7 +157,11 @@ type AxisWordForms = {
   verb_t?: string; // ... and with one (transitive)
   adverb?: string;
   notes?: string;
+  scale?: Scale; // on the axis entry: what each step of the scale means for this axis
 };
+
+// One gloss per scale step, from max_negative through neutral to max_positive
+export type Scale = [string, string, string, string, string, string, string];
 
 // [axis, negative, positive]. The axis noun is axis_of + the positive noun; each negative form is
 // negative + the positive form.
@@ -923,7 +927,11 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { noun: "love", adj: "loving", verb: "love(v)", verb_t: "love", adverb: "lovingly" },
   ],
   [
-    { noun: "truth" },
+    {
+      noun: "truth",
+      notes: "Likelihood, not proof (prove(v)) or necessity (the modality axis)",
+      scale: ["certainly false", "false", "unlikely", "maybe", "probable", "true", "certain"],
+    },
     {
       noun: "falsehood",
       adj: "false",
@@ -942,7 +950,10 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "time" },
+    {
+      noun: "time",
+      scale: ["long ago", "past", "recently", "now", "soon", "future", "far future"],
+    },
     { noun: "history", adj: "past", verb: "pass(v)", verb_i: "pass", adverb: "formerly" },
     {
       noun: "futurity",
@@ -1826,9 +1837,14 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { noun: "whole", adj: "entire", verb: "unify(v)", verb_t: "unify", adverb: "wholly" },
   ],
   [
-    { noun: "lineage", notes: "ancestor - parent - ? - child - descendent" },
-    { noun: "ancestor", adj: "ancestral" },
-    { noun: "descendant", adj: "descended" },
+    {
+      noun: "lineage",
+      notes:
+        "Rank counts generations: child rank_2 is a grandchild, negative child rank_2 a grandparent, and neutral child rank_2 a first cousin (a shared grandparent). Bare words are rank_1, and rank_0 is oneself",
+      scale: ["ancestor", "parent", "aunt / uncle", "sibling", "niece / nephew", "child", "descendant"],
+    },
+    { noun: "parent", adj: "parental" },
+    { noun: "child", adj: "filial" },
   ],
   [
     {
@@ -2187,6 +2203,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("dimension", {
     t: [T.domain_specifier],
   });
+  cr("family", { gloss: "family / kin / relative" });
 
   candidate("color");
 
@@ -2261,6 +2278,7 @@ export type Axis = {
   positive: AxisSide;
   negative: AxisSide; // negative + the positive form
   notes?: string;
+  scale?: Scale;
 };
 
 export const axes: Axis[] = [];
@@ -2342,6 +2360,7 @@ function fill_cells(side: AxisSide, key: FormKey, word: Word, forms: AxisWordFor
       positive: empty_side(),
       negative: empty_side(),
       notes: axis.notes,
+      scale: axis.scale,
     };
     const positive_words: Partial<Record<FormKey, Word>> = {};
 

@@ -239,6 +239,44 @@ export const truth_examples: Example[] = [
   },
 ];
 
+// Kinship is the lineage axis: the scale gives the relation, and rank counts generations.
+export const family_examples: Example[] = [
+  { title: "Parent", english: "negative child", transliteration: "parent" },
+  {
+    title: "Mother",
+    english: "parent, female",
+    transliteration: "parent female",
+  },
+  { title: "Aunt or uncle", english: "a lesser parent", transliteration: "min_negative child" },
+  { title: "Sibling", english: "the same generation", transliteration: "neutral child" },
+  { title: "Niece or nephew", english: "a lesser child", transliteration: "min_positive child" },
+  { title: "Descendants", english: "the whole line down", transliteration: "max_positive child" },
+  { title: "Ancestors", english: "the whole line up", transliteration: "max_negative child" },
+  { title: "Grandchild", english: "two generations down", transliteration: "child rank_2" },
+  { title: "Grandparent", english: "two generations up", transliteration: "parent rank_2" },
+  {
+    title: "First cousin",
+    english: "a shared grandparent, two generations up",
+    transliteration: "neutral child rank_2",
+  },
+  {
+    title: "Second cousin",
+    english: "a shared great-grandparent",
+    transliteration: "neutral child rank_3",
+  },
+  {
+    title: "First cousin once removed",
+    english: "a parent's first cousin",
+    transliteration: "neutral child rank_2 <of> parent",
+  },
+  {
+    title: "A family sentence",
+    english: "My grandparent has many descendants",
+    transliteration:
+      "<subject> parent rank_2 <of> me <verb> possess <object> max_positive child many",
+  },
+];
+
 // Universal Declaration of Human Rights
 
 export const udhr_preamble: string[] = [

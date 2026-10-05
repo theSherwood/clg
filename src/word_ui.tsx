@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import {
   type Axis,
   type AxisCell,
+  type Scale,
   Word,
   axis_by_word,
   candidates,
@@ -108,6 +109,34 @@ function MatrixCell({ cell, current }: { cell: AxisCell; current: Word }) {
   );
 }
 
+const SCALE_STEPS = ["max_negative", "negative", "min_negative", "neutral", "min_positive", "positive", "max_positive"];
+
+// What each step of the scale means for an axis, from max_negative to max_positive
+function ScaleRow({ scale }: { scale: Scale }) {
+  return (
+    <table className="mt-1.5 text-xs border-collapse">
+      <thead>
+        <tr>
+          {SCALE_STEPS.map((step) => (
+            <th key={step} className="px-1.5 pb-0.5 font-normal text-gray-500 text-left">
+              {step}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          {scale.map((gloss, i) => (
+            <td key={i} className="px-1.5 py-0.5 border border-gray-200 whitespace-nowrap text-gray-800">
+              {gloss}
+            </td>
+          ))}
+        </tr>
+      </tbody>
+    </table>
+  );
+}
+
 // The whole axis a word belongs to: every form at both ends
 function AxisMatrix({ axis, current }: { axis: Axis; current: Word }) {
   const phonology = useContext(PhonologyContext);
@@ -149,6 +178,7 @@ function AxisMatrix({ axis, current }: { axis: Axis; current: Word }) {
           ))}
         </tbody>
       </table>
+      {axis.scale && <ScaleRow scale={axis.scale} />}
       {axis.notes && <p className="text-xs text-gray-600 mt-1 max-w-md">{axis.notes}</p>}
     </div>
   );

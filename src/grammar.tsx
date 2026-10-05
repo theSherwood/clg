@@ -203,6 +203,33 @@ export function GrammarView() {
         &lt;verb&gt; go min_positive truly clause_end
       </Example>
 
+      <H2>Family</H2>
+      <p>
+        <W w="family" /> is a root for family, kin or a relative. Relations come from the lineage
+        axis, with <W w="child" /> at the positive end and <W w="parent" /> at the negative. The
+        scale's steps name the rest, following the general pattern that the minor steps are a
+        lesser version and the max steps the fullest: <i>min_negative child</i> is an aunt or uncle
+        (a lesser parent, like Swahili <i>mama mdogo</i>, “small mother”),{" "}
+        <i>neutral child</i> a sibling, <i>min_positive child</i> a niece or nephew, and{" "}
+        <i>max_negative child</i> / <i>max_positive child</i> all ancestors or descendants.
+      </p>
+      <p className="mt-2">
+        Rank counts generations, as in other families of words: <i>child rank_2</i> is a
+        grandchild and <i>parent rank_2</i> a grandparent. For siblings it counts the generations
+        up to the shared ancestor, so <i>neutral child rank_2</i> is a first cousin (a shared
+        grandparent) and <i>neutral child rank_3</i> a second cousin. Bare words are rank_1, and
+        rank_0 is oneself. Marriage isn't a generation step, so in-laws are phrases: family{" "}
+        <i>&lt;of&gt;</i> spouse.
+      </p>
+      <Example meaning="My grandparent has many descendants.">
+        &lt;subject&gt; parent rank_2 &lt;of&gt; me &lt;verb&gt; possess &lt;object&gt; max_positive
+        child many
+      </Example>
+      <Open>
+        Gendered words are long: “mother” is <i>parent female</i>, which is <i>negative child
+        negative male</i>, four syllables for a very common word.
+      </Open>
+
       <H2>Modifiers</H2>
       <p>
         Modifiers follow what they modify: <i>person all</i> is “everyone”, <i>person none</i> is

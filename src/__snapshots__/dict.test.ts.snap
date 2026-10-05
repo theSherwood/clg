@@ -137,7 +137,7 @@ exports[`root IDs 1`] = `
   "23": "perfect_tense_aspect",
   "230": "intact, repair, mend(v)",
   "231": "entire, whole, unify(v), wholly",
-  "232": "descended, descendant",
+  "232": "filial, child",
   "233": "bound, bondage, constrain(v)",
   "234": "sacred, sanctity, sanctify(v), sacredly",
   "235": "north, northward",
@@ -217,5 +217,6 @@ exports[`root IDs 1`] = `
   "95": "number",
   "96": "rank",
   "97": "dimension",
+  "98": "family",
 }
 `;

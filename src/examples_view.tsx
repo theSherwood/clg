@@ -2,6 +2,7 @@ import React, { useContext, useMemo } from "react";
 import {
   type Token,
   number_examples,
+  family_examples,
   tense_examples,
   tokenize,
   truth_examples,
@@ -73,6 +74,7 @@ const all_transliterations = [
   ...number_examples.flatMap((b) => b.examples.map((e) => e.transliteration)),
   ...tense_examples.map((e) => e.transliteration),
   ...truth_examples.map((e) => e.transliteration),
+  ...family_examples.map((e) => e.transliteration),
   ...udhr_articles.flatMap((a) => (a.transliteration ? [a.transliteration] : [])),
 ];
 
@@ -142,6 +144,7 @@ export function ExamplesView() {
       {[
         { title: "Tense and aspect", examples: tense_examples },
         { title: "Truth and possibility", examples: truth_examples },
+        { title: "Family", examples: family_examples },
       ].map((group) => (
         <div key={group.title}>
           <h2 className="text-lg font-semibold mb-2">{group.title}</h2>

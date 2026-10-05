@@ -31,10 +31,10 @@ test("digits, two-word names and unknown words", () => {
 });
 
 test("a trailing ? marks a word as uncertain", () => {
-  const [verb, family] = tokenize("<verb?> family?");
+  const [verb, blorp] = tokenize("<verb?> blorp?");
   expect(verb).toMatchObject({ kind: "word", uncertain: true, word: dictionary.get("_verb") });
-  expect(family).toMatchObject({ kind: "word", uncertain: true });
-  expect(family?.kind === "word" && family.word).toBeFalsy();
+  expect(blorp).toMatchObject({ kind: "word", uncertain: true });
+  expect(blorp?.kind === "word" && blorp.word).toBeFalsy();
 });
 
 test("every word the Grammar page refers to exists", async () => {
