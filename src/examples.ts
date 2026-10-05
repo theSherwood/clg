@@ -54,6 +54,11 @@ export const number_examples: NumberBase[] = [
         transliteration: "person finger number 3 rank_0 big",
       },
       {
+        title: "three small people",
+        english: "rank_0 is needed here too: negative could start a negative rank",
+        transliteration: "person finger number 3 rank_0 small",
+      },
+      {
         title: "0.3",
         english: "A negative rank ends the number too",
         transliteration: "finger number 3 negative rank_1",

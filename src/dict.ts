@@ -2043,7 +2043,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("not", {
     t: [T.grammar_helper],
     gloss: "complement / negative / not",
-    notes: "Complement: use for axis words",
+    notes: "Complement: use for axis words. Always a prefix, applying to the one word after it",
   });
   cr("and", { t: [T.grammar_helper] });
   cr("or", { t: [T.grammar_helper], notes: '"xor" through "or-exclusive"' });

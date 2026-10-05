@@ -220,10 +220,18 @@ export function GrammarView() {
         <W w="min_negative" />, <W w="neutral" />, <W w="min_positive" />, <W w="positive" />,{" "}
         <W w="max_positive" />. <W w="not" /> is the complement, for axis words too.
       </p>
-      <Open>
-        Order in compounds. Axis compounds put the operator first (<i>negative big</i>,{" "}
-        <i>axis_of bigness</i>), while phrases put modifiers after the head (<i>person all</i>).
-      </Open>
+      <p className="mt-2">
+        <b>Order.</b> Two rules do different jobs. Modifiers build phrases and follow their head (
+        <i>person all</i>, <i>kill truly</i>). Axis helpers and <W w="not" /> build words and come
+        before the word they apply to, like prefixes (<i>negative big</i>,{" "}
+        <i>min_positive truly</i>, <i>not impossibly</i>). Spanish splits the same way: adjectives
+        follow the noun, but <i>muy</i> comes before the adjective. Each prefix takes exactly the
+        one word after it, so stacks read left to right without brackets, like logic:{" "}
+        <i>not max_positive true</i> is “not certain”. <W w="not" /> is always a prefix, on content
+        words too, so <i>person not big</i> can only be a person who isn't big. And the sign comes
+        first, so a listener never has to revise what they've heard: in{" "}
+        <i>finger number 2 3 negative rank_2</i>, the negative comes before the rank.
+      </p>
 
       <H2>Prepositions</H2>
       <p>
@@ -279,10 +287,11 @@ export function GrammarView() {
       <p className="mt-2">
         A number ends at its first rank of zero or below, <W w="rank_0" /> or a negative rank. Digits
         share their sounds with the axis words, so the ending tells a listener the next word isn't a
-        digit. The final <W w="rank_0" /> can be dropped unless an axis word comes next, since only
-        axis words can be mistaken for digits: <i>person finger number 3</i>, but{" "}
-        <i>person finger number 3 rank_0 big</i>. Long numbers usually keep it anyway, to make the
-        end easy to hear.
+        digit. The final <W w="rank_0" /> can be dropped unless an axis word or an axis helper comes
+        next. Only axis words can be mistaken for digits, and a helper like <W w="negative" /> could
+        be starting a negative rank: <i>person finger number 3</i>, but{" "}
+        <i>person finger number 3 rank_0 big</i> and <i>person finger number 3 rank_0 small</i>.
+        Long numbers usually keep it anyway, to make the end easy to hear.
       </p>
       <Open>
         Long fractions. Since the first rank of zero or below ends the number, every digit from the
