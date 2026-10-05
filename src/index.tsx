@@ -207,8 +207,11 @@ const SlotCell: React.FC<{ slot: Slot; dimmed: boolean }> = ({ slot, dimmed }) =
   const phonology = useContext(PhonologyContext);
   const { id, roots: slot_roots, groups, reserved } = slot;
   const syllable = syllable_of(id, phonology);
-  // Prefer a non-digit word as the cell's label, since digits share IDs with axis words
-  const label = (slot_roots.find((w) => w.data.section !== "digit") ?? slot_roots[0])?.word;
+  // Prefer a non-digit word as the cell's label, since digits share IDs with axis words. Axis
+  // roots list their verb first; an axis with no verb shows its first word dimmed, as a gap.
+  const label_word = slot_roots.find((w) => w.data.section !== "digit") ?? slot_roots[0];
+  const label = label_word?.word.replace(/\(v\)$/, "");
+  const verbless = label_word?.data.section === "axis" && label_word.data.domain !== "verb";
 
   const cell = (
     <div
@@ -231,7 +234,14 @@ const SlotCell: React.FC<{ slot: Slot; dimmed: boolean }> = ({ slot, dimmed }) =
           {syllable}
         </span>
       </div>
-      {label && <div className="px-1 truncate font-medium text-gray-800">{label}</div>}
+      {label && (
+        <div
+          className={`px-1 truncate ${verbless ? "italic text-gray-400" : "font-medium text-gray-800"}`}
+          title={verbless ? "No verb on this axis yet" : undefined}
+        >
+          {label}
+        </div>
+      )}
       {slot_roots.length > 1 && (
         <div className="absolute bottom-0.5 right-1 text-gray-400">×{slot_roots.length}</div>
       )}

@@ -2311,10 +2311,11 @@ export const axis_by_word = new Map<Word, Axis>();
 // Axis verbs by their English glosses, like "die" and "kill", for looking up words by meaning
 export const verb_glosses = new Map<string, Word>();
 
+// Verbs first, so an axis's root is listed and labelled by its verb
 const AXIS_FORMS = [
-  ["adj", "adjective"],
-  ["noun", "noun"],
   ["verb", "verb"],
+  ["noun", "noun"],
+  ["adj", "adjective"],
   ["adverb", "adverb"],
 ] as const;
 type FormKey = (typeof AXIS_FORMS)[number][0];
@@ -2416,7 +2417,7 @@ function fill_cells(side: AxisSide, key: FormKey, word: Word, forms: AxisWordFor
     } else if (axis.notes) {
       // Without an axis noun, the notes go on the axis's first positive word
       const first =
-        positive_words.adj ?? positive_words.noun ?? positive_words.verb ?? positive_words.adverb;
+        positive_words.verb ?? positive_words.noun ?? positive_words.adj ?? positive_words.adverb;
       if (first) first.data.notes = axis.notes;
     }
 
