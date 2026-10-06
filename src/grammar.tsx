@@ -392,6 +392,18 @@ export function GrammarView() {
       <Example meaning="The sun melts the ice.">
         &lt;subject&gt; celestial &lt;rank_3&gt; this &lt;verb&gt; melt(vt) &lt;object&gt; water matter &lt;rank_0&gt;
       </Example>
+      <p className="mt-2">
+        <W w="element" /> marks the element domain, as <W w="number" /> marks the number domain:
+        the roots after it read as the chemical elements. Each element is on the root of the digit
+        for its atomic number, so <i>element carbon</i> sounds just like <i>element 6</i>, and
+        knowing one means knowing the other. They run from <W w="hydrogen" /> (1) to{" "}
+        <W w="oganesson" /> (118); digit 0 has no element. Bare, <W w="element" /> is any element,
+        and an element with matter's rank gives its phase: <i>element gold matter &lt;rank_0&gt;</i> is
+        solid gold.
+      </p>
+      <Example meaning="This rock is iron.">
+        &lt;subject&gt; rock this &lt;verb&gt; be(vt) &lt;complement&gt; element iron
+      </Example>
 
       <H2>Sky</H2>
       <p>

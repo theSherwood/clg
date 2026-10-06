@@ -562,7 +562,7 @@ export const geometry_examples: Example[] = [
   },
 ];
 
-// thing, the general noun; animal; and matter, whose rank is its phase
+// thing, the general noun; animal; matter, whose rank is its phase; and the elements
 export const thing_examples: Example[] = [
   { title: "Something", english: "something", transliteration: "thing" },
   { title: "Everything", english: "everything", transliteration: "thing all" },
@@ -600,6 +600,18 @@ export const thing_examples: Example[] = [
     title: "Target phase",
     english: "The water evaporated, explicitly",
     transliteration: "<subject> water <verb> evaporate(vi) formerly",
+  },
+  { title: "Element", english: "carbon", transliteration: "element carbon" },
+  {
+    title: "Element by number",
+    english: "carbon, as element 6: the same sound",
+    transliteration: "element 6",
+  },
+  { title: "Gold metal", english: "solid gold", transliteration: "element gold matter <rank_0>" },
+  {
+    title: "Made of",
+    english: "Water is from hydrogen and oxygen",
+    transliteration: "<subject> water <verb> be(vt) <complement> from element hydrogen and element oxygen",
   },
   {
     title: "Condense",

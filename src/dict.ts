@@ -1,3 +1,5 @@
+import { elements } from "./elements";
+
 export const T = {
   // tags
   preposition: "preposition",
@@ -15,8 +17,8 @@ export type Tag = keyof typeof T;
 // Sections reserve fixed ranges of root IDs for kinds of words, with room to grow, so adding a
 // word to one section never shifts the IDs (and so the sounds) of words in another.
 // The first 128 IDs are core words, and domain words must be among them so they're never
-// ambiguous. The last 128 are shared by partial domains (the digits, in the number domain) and
-// the axis words, which are told apart by domain.
+// ambiguous. The last 128 are shared by partial domains (the digits, in the number domain, and
+// the elements, in the element domain) and the axis words, which are told apart by domain.
 export const sections = [
   { key: "marker", label: "Grammar markers", start: 0, end: 16 },
   { key: "grammar", label: "Grammar helpers", start: 16, end: 28 },
@@ -28,6 +30,7 @@ export const sections = [
   { key: "rank", label: "Rank helpers", start: 112, end: 128 },
   { key: "axis", label: "Axis words", start: 128, end: 256 },
   { key: "digit", label: "Digits", start: 128, end: 256 },
+  { key: "element", label: "Elements", start: 128, end: 256 },
 ] as const; // end is exclusive
 
 export type Section = (typeof sections)[number];
@@ -2566,6 +2569,12 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     notes:
       "Rank gives the phase, rising in energy: <rank_0> solid, <rank_1> liquid, <rank_2> gas, <rank_3> plasma. As a modifier it gives a substance's phase: water matter <rank_0> is ice, water matter <rank_2> steam",
   });
+  cr("element", {
+    gloss: "chemical element",
+    t: [T.domain_specifier],
+    notes:
+      "Marks the element domain: what follows reads roots 129-246 as the elements, each on the digit of its atomic number, so element carbon sounds like element 6. Bare, it's any element. matter element <x> is the pure substance, as matter element gold is gold metal",
+  });
 
 
   candidate("prehensile?");
@@ -2608,6 +2617,13 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   for (let i = 0; i < 128; i++) {
     cr(`digit_${i}`, { domain: "number" });
   }
+}
+
+// elements: the element domain reuses the last 128 IDs too, each element on the root of the digit
+// for its atomic number, so element 1 (hydrogen) sounds like digit 1. Digit 0 has no element.
+{
+  section("element");
+  elements.forEach((name, i) => cr(name, { domain: "element", id: 129 + i }));
 }
 
 // axis words
