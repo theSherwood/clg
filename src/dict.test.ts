@@ -5,25 +5,30 @@ import {
   data_errors,
   dictionary,
   is_root,
+  receivers,
   sections,
   verb_types,
   words,
 } from "./dict";
 
-const core = sections.filter((s) => s.start < 128);
+const shared = new Set(["axis", "digit"]);
+const core = sections.filter((s) => !shared.has(s.key));
 const roots = words.filter(is_root);
 
 describe("sections", () => {
-  test("core sections fit in IDs 0-127 without overlapping", () => {
-    const sorted = [...core].sort((a, b) => a.start - b.start);
+  test("the core sections and the domain receivers fill IDs 0-255 without overlapping", () => {
+    const sorted = [...core, receivers].sort((a, b) => a.start - b.start);
+    expect(sorted.reduce((n, s) => n + s.end - s.start, 0)).toBe(256);
     for (const [i, s] of sorted.entries()) {
-      expect(s.end).toBeLessThanOrEqual(128);
+      expect(s.end).toBeLessThanOrEqual(256);
       if (i > 0) expect(s.start).toBeGreaterThanOrEqual(sorted[i - 1]!.end);
     }
   });
 
-  test("the shared sections (axis words, digits) are in IDs 128-255", () => {
-    for (const s of sections.filter((s) => s.start >= 128)) expect(s.end).toBeLessThanOrEqual(256);
+  test("axis words and digits both cover the domain receivers", () => {
+    for (const s of sections.filter((s) => shared.has(s.key))) {
+      expect([s.start, s.end]).toEqual([receivers.start, receivers.end]);
+    }
   });
 
   test("every root is inside its section", () => {
@@ -34,9 +39,10 @@ describe("sections", () => {
     }
   });
 
-  test("domain words are in the first 128 roots", () => {
+  test("domain words are outside the domain receivers", () => {
     for (const word of roots.filter((w) => w.data.t.includes("domain_specifier"))) {
-      expect(word.data.id, word.word).toBeLessThan(128);
+      const inside = word.data.id >= receivers.start && word.data.id < receivers.end;
+      expect(inside, word.word).toBe(false);
     }
   });
 });

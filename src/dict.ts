@@ -17,10 +17,11 @@ export type Tag = keyof typeof T;
 
 // Sections reserve fixed ranges of root IDs for kinds of words, with room to grow, so adding a
 // word to one section never shifts the IDs (and so the sounds) of words in another.
-// The first 128 IDs are core words, and domain words must be among them so they're never
-// ambiguous. The core sections fill them in the order section_order.json gives, which the Roots
-// page can rearrange. The last 128 are shared by partial domains (the digits, in the number
-// domain) and the axis words, which are told apart by domain.
+// Half the 256 IDs are core words. The other half are the domain receivers: 128 IDs shared by
+// partial domains (the digits, in the number domain) and the axis words, told apart by domain.
+// Domain words must be core words, so they're never ambiguous. The core sections and the
+// receivers fill the IDs in the order section_order.json gives, which the Roots page can
+// rearrange.
 const core_sections = [
   { key: "marker", label: "Grammar markers", size: 14 },
   { key: "number_helper", label: "Number helpers", size: 2 },
@@ -32,42 +33,57 @@ const core_sections = [
   { key: "content", label: "Content roots", size: 56 },
   { key: "rank", label: "Rank helpers", size: 16 },
 ] as const;
-const shared_sections = [
-  { key: "axis", label: "Axis words", start: 128, end: 256 },
-  { key: "digit", label: "Digits", start: 128, end: 256 },
+// The domain receivers: both of these sections cover all of its IDs
+const receiver_sections = [
+  { key: "axis", label: "Axis words" },
+  { key: "digit", label: "Digits" },
 ] as const;
+export const RECEIVERS = { key: "receivers", label: "Domain receivers", size: 128 } as const;
 
 export type CoreSectionKey = (typeof core_sections)[number]["key"];
-export type SectionKey = CoreSectionKey | (typeof shared_sections)[number]["key"];
+export type SectionKey = CoreSectionKey | (typeof receiver_sections)[number]["key"];
 export type Section = { key: SectionKey; label: string; start: number; end: number }; // end is exclusive
+// What the order arranges: the core sections, and the receivers as one block
+export type UnitKey = CoreSectionKey | typeof RECEIVERS.key;
+export type Unit = { key: UnitKey; label: string; start: number; end: number };
 
-export const core_section_keys: CoreSectionKey[] = core_sections.map((s) => s.key);
+const unit_keys: UnitKey[] = [...core_sections.map((s) => s.key), RECEIVERS.key];
 
-// An order of the core sections: each one exactly once
-export function is_section_order(value: unknown): value is CoreSectionKey[] {
+// An order of the units: each one exactly once
+export function is_section_order(value: unknown): value is UnitKey[] {
   return (
     Array.isArray(value) &&
-    value.length === core_section_keys.length &&
-    core_section_keys.every((key) => value.includes(key))
+    value.length === unit_keys.length &&
+    unit_keys.every((key) => value.includes(key))
   );
 }
 
-export function layout_sections(order: CoreSectionKey[]): Section[] {
+export function layout_units(order: UnitKey[]): Unit[] {
   let start = 0;
-  const core = order.map((key) => {
-    const { label, size } = core_sections.find((s) => s.key === key)!;
-    const section = { key, label, start, end: start + size };
+  const units = order.map((key) => {
+    const { label, size } =
+      key === RECEIVERS.key ? RECEIVERS : core_sections.find((s) => s.key === key)!;
+    const unit = { key, label, start, end: start + size };
     start += size;
-    return section;
+    return unit;
   });
-  if (start !== 128) throw new Error(`The core sections fill ${start} IDs, not 128`);
-  return [...core, ...shared_sections];
+  if (start !== 256) throw new Error(`The sections fill ${start} IDs, not 256`);
+  return units;
+}
+
+export function layout_sections(order: UnitKey[]): Section[] {
+  return layout_units(order).flatMap<Section>(({ key, label, start, end }) =>
+    key === RECEIVERS.key
+      ? receiver_sections.map((s) => ({ ...s, start, end }))
+      : [{ key, label, start, end }],
+  );
 }
 
 if (!is_section_order(saved_section_order))
-  throw new Error("section_order.json must list each core section once");
-export const section_order: CoreSectionKey[] = saved_section_order;
+  throw new Error("section_order.json must list each core section, and receivers, once");
+export const section_order: UnitKey[] = saved_section_order;
 export const sections: Section[] = layout_sections(section_order);
+export const receivers: Unit = layout_units(section_order).find((u) => u.key === RECEIVERS.key)!;
 
 type WordData = {
   id: number;
@@ -2703,7 +2719,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("number", {
     t: [T.domain_specifier],
     notes:
-      "Marks the number domain: what follows reads roots 128-255 as digits. The base comes from context",
+      "Marks the number domain: what follows reads the domain receivers as digits. The base comes from context",
   });
   cr("rank", {
     t: [T.domain_specifier],
@@ -2795,7 +2811,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   }
 }
 
-// digits: the number domain reuses the last 128 IDs
+// digits: the number domain reads the domain receivers
 {
   section("digit");
   for (let i = 0; i < 128; i++) {

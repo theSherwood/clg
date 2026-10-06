@@ -58,8 +58,9 @@ export function GrammarView() {
 
       <H2>The root space</H2>
       <p>
-        IDs 0–127 are core words. IDs 128–255 are shared: they're read by domain, as digits in the
-        number domain or as axis words otherwise. Domain words must be in 0–127 so they're never
+        Half the IDs are core words. The other half, the domain receivers, are shared: they're read
+        by domain, as digits in the number domain or as axis words otherwise. Domain words must be
+        core words so they're never
         ambiguous. Each kind of word has a section with room to grow:
       </p>
       <table className="mt-2 text-sm">
@@ -87,7 +88,7 @@ export function GrammarView() {
       </p>
       <p className="mt-2">
         Partial domains reuse a restricted part of the root space. The content root{" "}
-        <W w="number" /> marks the number domain, reading the roots 128–255 as digits. The base
+        <W w="number" /> marks the number domain, reading the domain receivers as digits. The base
         comes from context.
       </p>
       <p className="mt-2">

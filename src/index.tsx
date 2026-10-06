@@ -8,10 +8,11 @@ import {
   roots,
   sections,
   section_order,
-  layout_sections,
+  layout_units,
+  RECEIVERS,
   candidates,
   type Candidate,
-  type CoreSectionKey,
+  type UnitKey,
   type SectionKey,
   Word,
   T, // Importing T for tag names
@@ -170,7 +171,8 @@ const WordListDisplay: React.FC<WordListDisplayProps> = ({ words_to_display }) =
 // Roots view: 256 root IDs = 4^4 glyphs, shown as a 16x16 grid (row = high nibble, column = low nibble)
 
 // Spread around the color wheel, with lightness varied between neighbors, so no two sections look
-// alike. Axis words and digits share the upper 128 IDs, so they get the most distinct, calmest pair.
+// alike. Axis words and digits share the domain receivers' 128 IDs, so they get the most distinct,
+// calmest pair.
 const SECTION_SWATCHES: Record<SectionKey, string> = {
   marker: "bg-red-500",
   number_helper: "bg-cyan-600",
@@ -199,15 +201,16 @@ const slots: Slot[] = roots.map((slot_roots, id) => {
   };
 });
 
-// The slots as they'd be with the core sections in another order: each section's slots move
-// together to its new start, so their roots keep their places within it
-function arranged_slots(order: CoreSectionKey[]): Slot[] {
+// The slots as they'd be with the sections in another order: each unit's slots move together
+// to its new start, so their roots keep their places within it
+const current_units = layout_units(section_order);
+function arranged_slots(order: UnitKey[]): Slot[] {
   const arranged = [...slots];
-  for (const section of layout_sections(order).filter((s) => s.start < 128)) {
-    const current = sections.find((s) => s.key === section.key)!;
-    for (let i = 0; i < section.end - section.start; i++) {
-      const id = section.start + i;
-      arranged[id] = { ...slots[current.start + i]!, id, reserved: [section.key] };
+  for (const unit of layout_units(order)) {
+    const current = current_units.find((u) => u.key === unit.key)!;
+    for (let i = 0; i < unit.end - unit.start; i++) {
+      const id = unit.start + i;
+      arranged[id] = { ...slots[current.start + i]!, id };
     }
   }
   return arranged;
@@ -578,13 +581,13 @@ function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) 
   const { phonology } = props;
   const [highlighted, set_highlighted] = useState<SectionKey | null>(null);
   // While rearranging: the order being tried, previewed in the grid until it's saved
-  const [draft_order, set_draft_order] = useState<CoreSectionKey[] | null>(null);
+  const [draft_order, set_draft_order] = useState<UnitKey[] | null>(null);
   const [order_status, set_order_status] = useState("");
   const shown_slots = useMemo(() => (draft_order ? arranged_slots(draft_order) : slots), [draft_order]);
-  const shown_sections = draft_order ? layout_sections(draft_order) : sections;
-  const [dragging, set_dragging] = useState<CoreSectionKey | null>(null);
+  const shown_units = draft_order ? layout_units(draft_order) : current_units;
+  const [dragging, set_dragging] = useState<UnitKey | null>(null);
   // Dragging over another section puts the dragged one in its place, so the order updates live
-  const move_section = (key: CoreSectionKey, onto: CoreSectionKey) =>
+  const move_section = (key: UnitKey, onto: UnitKey) =>
     set_draft_order((order) => {
       if (!order || key === onto) return order;
       const next = order.filter((k) => k !== key);
@@ -651,14 +654,14 @@ function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) 
       {draft_order ? (
         <div className="mb-4 max-w-md">
           <p className="mb-2 text-sm text-gray-600">
-            Drag the core sections into a new order. The grid previews it, with each section at its
+            Drag the sections into a new order. The grid previews it, with each section at its
             new IDs and sounds; popups keep the current sounds until you save.
           </p>
           <ol className="rounded border border-gray-300 divide-y divide-gray-200 bg-white">
-            {shown_sections
-              .filter((s) => s.start < 128)
-              .map((s) => {
-                const key = s.key as CoreSectionKey;
+            {shown_units.map((s) => {
+                const key = s.key;
+                // The receivers highlight as axis words, which cover the same IDs as the digits
+                const section: SectionKey = key === RECEIVERS.key ? "axis" : key;
                 return (
                   <li
                     key={key}
@@ -670,14 +673,26 @@ function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) 
                     onDragEnter={() => dragging && move_section(dragging, key)}
                     onDragOver={(e) => e.preventDefault()}
                     onDragEnd={() => set_dragging(null)}
-                    onMouseEnter={() => set_highlighted(key)}
+                    onMouseEnter={() => set_highlighted(section)}
                     onMouseLeave={() => set_highlighted(null)}
                     className={`flex items-center gap-2 px-2 py-1.5 text-sm cursor-grab select-none
                       ${dragging === key ? "bg-indigo-50 opacity-60" : "hover:bg-gray-50"}`}
                   >
                     <span className="text-gray-400">⠿</span>
-                    <span className={`inline-block w-3 h-3 rounded-sm ${SECTION_SWATCHES[key]}`} />
-                    <span className="flex-1">{s.label}</span>
+                    {key === RECEIVERS.key ? (
+                      <span className="flex">
+                        <span className={`inline-block w-1.5 h-3 rounded-l-sm ${SECTION_SWATCHES.axis}`} />
+                        <span className={`inline-block w-1.5 h-3 rounded-r-sm ${SECTION_SWATCHES.digit}`} />
+                      </span>
+                    ) : (
+                      <span className={`inline-block w-3 h-3 rounded-sm ${SECTION_SWATCHES[key]}`} />
+                    )}
+                    <span className="flex-1">
+                      {s.label}
+                      {key === RECEIVERS.key && (
+                        <span className="text-gray-500"> (axis words and digits)</span>
+                      )}
+                    </span>
                     <span className="font-mono text-xs text-gray-500">
                       {s.start}–{s.end - 1}
                     </span>
@@ -685,9 +700,6 @@ function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) 
                 );
               })}
           </ol>
-          <p className="mt-1 text-xs text-gray-500">
-            Axis words and digits share IDs 128–255 and don't move.
-          </p>
           <div className="mt-2 flex items-center gap-2">
             <button
               onClick={save_order}
@@ -736,7 +748,7 @@ function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) 
           <button
             onClick={() => set_draft_order(section_order)}
             className="px-2 py-1 text-sm rounded border border-gray-300 text-gray-600 hover:bg-gray-100"
-            title="Rearrange the core sections (IDs 0–127), previewing the new sounds"
+            title="Rearrange the sections, previewing the new sounds"
           >
             Edit order
           </button>
