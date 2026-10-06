@@ -8,10 +8,10 @@ const resolved = (transliteration: string) =>
   );
 
 test("bracketed names resolve to grammar markers, bare ones to ordinary words", () => {
-  expect(resolved("<subject> person <verb (prescriptive)> do in value.")).toEqual([
+  expect(resolved("<subject> person <verb_prescriptive> do in value.")).toEqual([
     "<subject>",
     "person",
-    "<verb(prescriptive)>",
+    "<verb_prescriptive>",
     "do(v)",
     "in",
     "value",
@@ -23,12 +23,12 @@ test("bracketed names resolve to grammar markers, bare ones to ordinary words", 
 });
 
 test("digits, two-word names and unknown words", () => {
-  expect(resolved("number 2 rank_4 15 clause start blorp")).toEqual([
+  expect(resolved("number 2 <rank_4> 15 <clause_start> blorp")).toEqual([
     "number",
     "digit_2",
-    "rank_4",
+    "<rank_4>",
     "digit_15",
-    "clause_start",
+    "<clause_start>",
     "?blorp",
   ]);
 });

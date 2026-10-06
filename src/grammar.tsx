@@ -83,7 +83,7 @@ export function GrammarView() {
       <p className="mt-2">
         The first six roots are special grammar markers, and they're also domain words:{" "}
         <W w="<subject>" />, <W w="<object>" />, <W w="<gerund>" />, <W w="<verb>" />,{" "}
-        <W w="<verb(prescriptive)>" /> and <W w="<verb(interrogative)>" />.
+        <W w="<verb_prescriptive>" /> and <W w="<verb_interrogative>" />.
       </p>
       <p className="mt-2">
         Partial domains reuse a restricted part of the root space. The content root{" "}
@@ -172,32 +172,32 @@ export function GrammarView() {
         <W w="is(v)" /> is different: what follows it isn't an object but a subject complement,
         marked <W w="<complement>" />. It says what the subject is, so it reads as a modifier: the
         adjective where there is one (<i>hot</i>, not <i>heat</i>), and otherwise the noun (
-        <i>matter rank_1</i>, a liquid). Mood stays on the verb marker, so “be strong!” is{" "}
-        <i>&lt;verb (prescriptive)&gt; is &lt;complement&gt; strong</i>.
+        <i>matter &lt;rank_1&gt;</i>, a liquid). Mood stays on the verb marker, so “be strong!” is{" "}
+        <i>&lt;verb_prescriptive&gt; is &lt;complement&gt; strong</i>.
       </p>
       <Example meaning="The sky is blue.">
         &lt;subject&gt; sky &lt;verb&gt; is &lt;complement&gt; blue
       </Example>
       <Example meaning="Water is a liquid.">
-        &lt;subject&gt; water &lt;verb&gt; is &lt;complement&gt; matter rank_1
+        &lt;subject&gt; water &lt;verb&gt; is &lt;complement&gt; matter &lt;rank_1&gt;
       </Example>
       <Open>
         Becoming, for relation verbs: maybe a helper, <W w="<become>" /> (<i>&lt;become&gt; possess</i>,
         “gain”).
       </Open>
       <p>
-        <W w="<verb(prescriptive)>" /> makes a verb prescriptive or imperative (should, shall), and{" "}
-        <W w="<verb(interrogative)>" /> makes it a question. In a question, <W w="<blank>" /> stands
+        <W w="<verb_prescriptive>" /> makes a verb prescriptive or imperative (should, shall), and{" "}
+        <W w="<verb_interrogative>" /> makes it a question. In a question, <W w="<blank>" /> stands
         for what's being asked about; without it, the question is yes or no.
       </p>
       <Example meaning="No one shall be held in slavery.">
-        &lt;subject&gt; person none &lt;verb (prescriptive)&gt; is &lt;complement&gt; &lt;ee&gt; force.
+        &lt;subject&gt; person none &lt;verb_prescriptive&gt; is &lt;complement&gt; &lt;ee&gt; force.
       </Example>
       <Example meaning="Who does the soldier kill?">
-        &lt;subject&gt; soldier &lt;verb (interrogative)&gt; kill &lt;object&gt; &lt;blank&gt;
+        &lt;subject&gt; soldier &lt;verb_interrogative&gt; kill &lt;object&gt; &lt;blank&gt;
       </Example>
       <Example meaning="Does the soldier kill the enemy?">
-        &lt;subject&gt; soldier &lt;verb (interrogative)&gt; kill &lt;object&gt; enemy
+        &lt;subject&gt; soldier &lt;verb_interrogative&gt; kill &lt;object&gt; enemy
       </Example>
       <p>
         Other question words come from where <W w="<blank>" /> sits: <i>person &lt;blank&gt;</i> is who,{" "}
@@ -207,7 +207,7 @@ export function GrammarView() {
         many.
       </p>
       <Example meaning="Why do you fight?">
-        &lt;subject&gt; you &lt;verb (interrogative)&gt; fight for &lt;blank&gt;
+        &lt;subject&gt; you &lt;verb_interrogative&gt; fight for &lt;blank&gt;
       </Example>
 
       <H2>Tense and aspect</H2>
@@ -215,22 +215,22 @@ export function GrammarView() {
         Verbs aren't marked for tense. As in Mandarin, a sentence's time comes from context, and
         once a time is set it carries over to the sentences after it. To be explicit, a time adverb
         follows the verb: <W w="henceforth" /> for the future and <W w="formerly" /> for the past.
-        The axis scale grades them: <i>max_negative henceforth</i> is long ago,{" "}
-        <i>min_negative henceforth</i> recently, <i>neutral henceforth</i> now,{" "}
-        <i>min_positive henceforth</i> soon and <i>max_positive henceforth</i> the far future.
+        The axis scale grades them: <i>&lt;max_negative&gt; henceforth</i> is long ago,{" "}
+        <i>&lt;min_negative&gt; henceforth</i> recently, <i>&lt;neutral&gt; henceforth</i> now,{" "}
+        <i>&lt;min_positive&gt; henceforth</i> soon and <i>&lt;max_positive&gt; henceforth</i> the far future.
       </p>
       <p className="mt-2">
-        <W w="continuous_tense_aspect" /> marks something as ongoing and{" "}
-        <W w="perfect_tense_aspect" /> as done, with a result that still holds. They also follow the
+        <W w="<continuous_tense_aspect>" /> marks something as ongoing and{" "}
+        <W w="<perfect_tense_aspect>" /> as done, with a result that still holds. They also follow the
         verb, before any time adverb, so the two combine like English's tenses. With both,
         continuous comes first, and perfect applies to the ongoing action: <i>work
-        continuous_tense_aspect perfect_tense_aspect</i> is “have been working”.
+        &lt;continuous_tense_aspect&gt; &lt;perfect_tense_aspect&gt;</i> is “have been working”.
       </p>
       <Example meaning="I was sleeping.">
-        &lt;subject&gt; I &lt;verb&gt; sleep continuous_tense_aspect formerly
+        &lt;subject&gt; I &lt;verb&gt; sleep &lt;continuous_tense_aspect&gt; formerly
       </Example>
       <Example meaning="The person will have learned the way.">
-        &lt;subject&gt; person &lt;verb&gt; learn perfect_tense_aspect henceforth &lt;object&gt;
+        &lt;subject&gt; person &lt;verb&gt; learn &lt;perfect_tense_aspect&gt; henceforth &lt;object&gt;
         path
       </Example>
       <p className="mt-2">
@@ -241,21 +241,21 @@ export function GrammarView() {
       <H2>Units of time and order</H2>
       <p>
         <W w="time" /> takes rank for its units, a step up a ladder rather than a power of ten:{" "}
-        <i>rank_0</i> second, <i>rank_1</i> minute, <i>rank_2</i> hour, <i>rank_3</i> day,{" "}
-        <i>rank_4</i> week, <i>rank_5</i> month, <i>rank_6</i> year, then decade, century and
-        millennium. A count follows like any other: <i>time rank_3 number 3</i> is three days. The
-        24-hour day is <i>time rank_3</i>, and daytime is <i>time bright</i>.
+        <i>&lt;rank_0&gt;</i> second, <i>&lt;rank_1&gt;</i> minute, <i>&lt;rank_2&gt;</i> hour, <i>&lt;rank_3&gt;</i> day,{" "}
+        <i>&lt;rank_4&gt;</i> week, <i>&lt;rank_5&gt;</i> month, <i>&lt;rank_6&gt;</i> year, then decade, century and
+        millennium. A count follows like any other: <i>time &lt;rank_3&gt; number 3</i> is three days. The
+        24-hour day is <i>time &lt;rank_3&gt;</i>, and daytime is <i>time bright</i>.
       </p>
       <p className="mt-2">
         <W w="next" /> and <W w="previous" /> count steps in any sequence from a reference point.
-        In a main clause that's now, so <i>time rank_3 next</i> is tomorrow and{" "}
-        <i>time rank_3 previous</i> yesterday; in a subclause it's the main clause's time, so the
+        In a main clause that's now, so <i>time &lt;rank_3&gt; next</i> is tomorrow and{" "}
+        <i>time &lt;rank_3&gt; previous</i> yesterday; in a subclause it's the main clause's time, so the
         same words mean the next day and the day before. Rank counts steps, as for generations:{" "}
-        <i>next rank_2</i> is the one after next. As verbs, <W w="precede(v)" /> and{" "}
+        <i>next &lt;rank_2&gt;</i> is the one after next. As verbs, <W w="precede(v)" /> and{" "}
         <W w="follow(v)" /> relate two things in order.
       </p>
       <Example meaning="I slept yesterday.">
-        &lt;subject&gt; I &lt;verb&gt; sleep at time rank_3 previous
+        &lt;subject&gt; I &lt;verb&gt; sleep at time &lt;rank_3&gt; previous
       </Example>
       <Example meaning="Eating comes before sleeping.">
         &lt;subject&gt; &lt;gerund&gt; eat &lt;verb&gt; precede &lt;object&gt; &lt;gerund&gt; sleep
@@ -264,19 +264,19 @@ export function GrammarView() {
       <H2>Truth and possibility</H2>
       <p>
         The truth axis grades likelihood. Its adverb follows the verb, after any aspect or time
-        words: <i>max_negative truly</i> is “certainly not”, <W w="falsely" /> “not so”,{" "}
-        <i>min_negative truly</i> “probably not”, <i>neutral truly</i> “maybe”,{" "}
-        <i>min_positive truly</i> “probably”, <W w="truly" /> “so” and <i>max_positive truly</i>{" "}
+        words: <i>&lt;max_negative&gt; truly</i> is “certainly not”, <W w="falsely" /> “not so”,{" "}
+        <i>&lt;min_negative&gt; truly</i> “probably not”, <i>&lt;neutral&gt; truly</i> “maybe”,{" "}
+        <i>&lt;min_positive&gt; truly</i> “probably”, <W w="truly" /> “so” and <i>&lt;max_positive&gt; truly</i>{" "}
         “certainly”. A plain statement claims something is true, not that it's certain, so it sits
         one step below the top. Proof is how something is known, not how likely it is:{" "}
-        <W w="prove(v)" /> with <W w="perfect_tense_aspect" /> is “has proved”.
+        <W w="prove(v)" /> with <W w="<perfect_tense_aspect>" /> is “has proved”.
       </p>
       <Example meaning="The person probably died.">
-        &lt;subject&gt; person &lt;verb&gt; kill min_positive truly
+        &lt;subject&gt; person &lt;verb&gt; kill &lt;min_positive&gt; truly
       </Example>
       <p className="mt-2">
         Necessity is a separate axis, <W w="modality" />: how many cases something holds in, from{" "}
-        <W w="impossible" /> to <W w="necessary" />. Its middle, <i>neutral necessary</i>, is
+        <W w="impossible" /> to <W w="necessary" />. Its middle, <i>&lt;neutral&gt; necessary</i>, is
         contingent. Possible is <i>not impossible</i> and “possibly not” is <i>not necessary</i>,
         using <W w="not" />. The two axes stay apart because they can disagree: an unproved
         conjecture is necessary or impossible, while its likelihood is still neutral. A third axis,
@@ -287,8 +287,8 @@ export function GrammarView() {
         &lt;subject&gt; person all &lt;verb&gt; kill necessarily
       </Example>
       <Example meaning="I believe the person probably left.">
-        &lt;subject&gt; I &lt;verb&gt; believe &lt;object&gt; clause_start &lt;subject&gt; person
-        &lt;verb&gt; go min_positive truly clause_end
+        &lt;subject&gt; I &lt;verb&gt; believe &lt;object&gt; &lt;clause_start&gt; &lt;subject&gt; person
+        &lt;verb&gt; go &lt;min_positive&gt; truly &lt;clause_end&gt;
       </Example>
 
       <H2>Family</H2>
@@ -296,26 +296,26 @@ export function GrammarView() {
         <W w="family" /> is a root for family, kin or a relative. Relations come from the lineage
         axis, with <W w="child" /> at the positive end and <W w="parent" /> at the negative. The
         scale's steps name the rest, following the general pattern that the minor steps are a
-        lesser version and the max steps the fullest: <i>min_negative child</i> is an aunt or uncle
+        lesser version and the max steps the fullest: <i>&lt;min_negative&gt; child</i> is an aunt or uncle
         (a lesser parent, like Swahili <i>mama mdogo</i>, “small mother”),{" "}
-        <i>neutral child</i> a sibling, <i>min_positive child</i> a niece or nephew, and{" "}
-        <i>max_negative child</i> / <i>max_positive child</i> all ancestors or descendants.
+        <i>&lt;neutral&gt; child</i> a sibling, <i>&lt;min_positive&gt; child</i> a niece or nephew, and{" "}
+        <i>&lt;max_negative&gt; child</i> / <i>&lt;max_positive&gt; child</i> all ancestors or descendants.
       </p>
       <p className="mt-2">
-        Rank counts generations, as in other families of words: <i>child rank_2</i> is a
-        grandchild and <i>parent rank_2</i> a grandparent. For siblings it counts the generations
-        up to the shared ancestor, so <i>neutral child rank_2</i> is a first cousin (a shared
-        grandparent) and <i>neutral child rank_3</i> a second cousin. Bare words are rank_1, and
-        rank_0 is oneself. Marriage isn't a generation step, so in-laws are phrases: family{" "}
+        Rank counts generations, as in other families of words: <i>child &lt;rank_2&gt;</i> is a
+        grandchild and <i>parent &lt;rank_2&gt;</i> a grandparent. For siblings it counts the generations
+        up to the shared ancestor, so <i>&lt;neutral&gt; child &lt;rank_2&gt;</i> is a first cousin (a shared
+        grandparent) and <i>&lt;neutral&gt; child &lt;rank_3&gt;</i> a second cousin. Bare words are &lt;rank_1&gt;, and
+        &lt;rank_0&gt; is oneself. Marriage isn't a generation step, so in-laws are phrases: family{" "}
         <i>of</i> spouse.
       </p>
       <Example meaning="My grandparent has many descendants.">
-        &lt;subject&gt; parent rank_2 of me &lt;verb&gt; possess &lt;object&gt; max_positive
+        &lt;subject&gt; parent &lt;rank_2&gt; of me &lt;verb&gt; possess &lt;object&gt; &lt;max_positive&gt;
         child many
       </Example>
       <Open>
-        Gendered words are long: “mother” is <i>parent female</i>, which is <i>negative child
-        negative male</i>, four syllables for a very common word.
+        Gendered words are long: “mother” is <i>parent female</i>, which is <i>&lt;negative&gt; child
+        &lt;negative&gt; male</i>, four syllables for a very common word.
       </Open>
 
       <H2>Speech, writing and the senses</H2>
@@ -324,8 +324,8 @@ export function GrammarView() {
         <W w="say(v)" /> and <W w="hear(v)" />, <W w="write(v)" /> and <W w="read(v)" />,{" "}
         <W w="sense(v)" /> and <W w="overlook(v)" />, <W w="use(v)" /> and <W w="discard(v)" />,{" "}
         <W w="do(v)" /> and <W w="undo(v)" />, and <W w="touch(v)" /> and <W w="avoid(v)" />. The
-        scale grades them: <i>min_positive write</i>, a lesser writing, is a mark, and{" "}
-        <i>min_negative write</i> is skimming. Nouns come from the role markers: a word is{" "}
+        scale grades them: <i>&lt;min_positive&gt; write</i>, a lesser writing, is a mark, and{" "}
+        <i>&lt;min_negative&gt; write</i> is skimming. Nouns come from the role markers: a word is{" "}
         <i>&lt;ee&gt; say</i>, a text <i>&lt;ee&gt; write</i> and an ear <i>&lt;tool&gt; hear</i>. Attaching is{" "}
         <W w="connect(v)" />.
       </p>
@@ -336,60 +336,60 @@ export function GrammarView() {
         quality compared, optional when context makes it clear. Its negative is “fall short of”,
         and the rest comes from words that already exist: <W w="equal(v)" /> is “as big as”,{" "}
         <i>exceed &lt;object&gt; all</i> is “the biggest”, and the scale grades it, so{" "}
-        <i>max_positive exceed</i> is “much bigger” and <i>min_positive exceed</i> “slightly
+        <i>&lt;max_positive&gt; exceed</i> is “much bigger” and <i>&lt;min_positive&gt; exceed</i> “slightly
         bigger”. Many languages compare this way, like Nigerian Pidgin's “e big pass you”.
       </p>
       <Example meaning="The rock is bigger than the person.">
         &lt;subject&gt; rock &lt;verb&gt; exceed &lt;object&gt; person in big
       </Example>
       <Example meaning="The Sun is the biggest.">
-        &lt;subject&gt; celestial rank_3 this &lt;verb&gt; exceed &lt;object&gt; all in big
+        &lt;subject&gt; celestial &lt;rank_3&gt; this &lt;verb&gt; exceed &lt;object&gt; all in big
       </Example>
 
       <H2>Geometry</H2>
       <p>
         <W w="geometry" /> is one root for geometric figures, and rank counts their dimensions, as{" "}
-        <W w="dimension_0" /> is a point: <i>geometry rank_0</i> is a point, <i>rank_1</i> a line,{" "}
-        <i>rank_2</i> a shape and <i>rank_3</i> a form, a solid. Modifiers say which:{" "}
-        <i>geometry rank_2 round</i> is a circle and <i>geometry rank_3 round</i> a sphere.
+        <W w="<dimension_0>" /> is a point: <i>geometry &lt;rank_0&gt;</i> is a point, <i>&lt;rank_1&gt;</i> a line,{" "}
+        <i>&lt;rank_2&gt;</i> a shape and <i>&lt;rank_3&gt;</i> a form, a solid. Modifiers say which:{" "}
+        <i>geometry &lt;rank_2&gt; round</i> is a circle and <i>geometry &lt;rank_3&gt; round</i> a sphere.
       </p>
 
       <H2>Matter</H2>
       <p>
-        <W w="matter" /> takes rank for its phase, rising in energy: <i>matter rank_0</i> is a
-        solid, <i>rank_1</i> a liquid, <i>rank_2</i> a gas and <i>rank_3</i> a plasma. As a
-        modifier it gives a substance's phase, so <i>water matter rank_0</i> is ice and{" "}
-        <i>water matter rank_2</i> steam.
+        <W w="matter" /> takes rank for its phase, rising in energy: <i>matter &lt;rank_0&gt;</i> is a
+        solid, <i>&lt;rank_1&gt;</i> a liquid, <i>&lt;rank_2&gt;</i> a gas and <i>&lt;rank_3&gt;</i> a plasma. As a
+        modifier it gives a substance's phase, so <i>water matter &lt;rank_0&gt;</i> is ice and{" "}
+        <i>water matter &lt;rank_2&gt;</i> steam.
       </p>
       <p className="mt-2">
         The phase axis changes phase. <W w="melt(v)" /> goes up a phase and{" "}
         <W w="freeze(v)" /> down one, so one verb is melting for ice and evaporating for water.
-        Rank names the target phase, as it does for <W w="matter" />: <i>melt rank_2</i> is to
-        evaporate (<W w="evaporate(v)" />), <i>melt rank_3</i> to ionize, <i>freeze rank_1</i> to
-        condense and <i>freeze rank_0</i> to solidify.
+        Rank names the target phase, as it does for <W w="matter" />: <i>melt &lt;rank_2&gt;</i> is to
+        evaporate (<W w="evaporate(v)" />), <i>melt &lt;rank_3&gt;</i> to ionize, <i>freeze &lt;rank_1&gt;</i> to
+        condense and <i>freeze &lt;rank_0&gt;</i> to solidify.
       </p>
       <Example meaning="The sun melts the ice.">
-        &lt;subject&gt; celestial rank_3 this &lt;verb&gt; melt &lt;object&gt; water matter rank_0
+        &lt;subject&gt; celestial &lt;rank_3&gt; this &lt;verb&gt; melt &lt;object&gt; water matter &lt;rank_0&gt;
       </Example>
 
       <H2>Sky</H2>
       <p>
         <W w="celestial" /> is one root for every body in the sky, and rank picks its level in the
-        orbital hierarchy, each level orbiting the next: <i>celestial rank_0</i> is debris
-        (asteroids, comets), <i>rank_1</i> a moon, <i>rank_2</i> a planet, <i>rank_3</i> a star,{" "}
-        <i>rank_4</i> a galaxy. <W w="this" /> makes it ours: <i>celestial rank_3 this</i> is the
-        Sun, <i>rank_2 this</i> Earth and <i>rank_1 this</i> the Moon.
+        orbital hierarchy, each level orbiting the next: <i>celestial &lt;rank_0&gt;</i> is debris
+        (asteroids, comets), <i>&lt;rank_1&gt;</i> a moon, <i>&lt;rank_2&gt;</i> a planet, <i>&lt;rank_3&gt;</i> a star,{" "}
+        <i>&lt;rank_4&gt;</i> a galaxy. <W w="this" /> makes it ours: <i>celestial &lt;rank_3&gt; this</i> is the
+        Sun, <i>&lt;rank_2&gt; this</i> Earth and <i>&lt;rank_1&gt; this</i> the Moon.
       </p>
       <Example meaning="The Sun is bright.">
-        &lt;subject&gt; celestial rank_3 this &lt;verb&gt; is &lt;complement&gt; bright
+        &lt;subject&gt; celestial &lt;rank_3&gt; this &lt;verb&gt; is &lt;complement&gt; bright
       </Example>
 
       <H2>Directions</H2>
       <p>
         <W w="cardinal" /> is one root for the compass, and rank counts quarter turns clockwise
-        from north: <i>cardinal rank_0</i> is north, <i>rank_1</i> east, <i>rank_2</i> south and{" "}
-        <i>rank_3</i> west. The prepositions do the rest: <i>to cardinal rank_0</i> is
-        northward and <i>at cardinal rank_1</i> in the east.
+        from north: <i>cardinal &lt;rank_0&gt;</i> is north, <i>&lt;rank_1&gt;</i> east, <i>&lt;rank_2&gt;</i> south and{" "}
+        <i>&lt;rank_3&gt;</i> west. The prepositions do the rest: <i>to cardinal &lt;rank_0&gt;</i> is
+        northward and <i>at cardinal &lt;rank_1&gt;</i> in the east.
       </p>
 
       <H2>Colors</H2>
@@ -413,23 +413,23 @@ export function GrammarView() {
         Opposites and scales come from <b>axes</b>. Each axis has one root for its positive end,
         used across the noun, adjective, verb and adverb domains (<W w="big" />, <W w="bigness" />,{" "}
         <W w="grow(v)" />, <W w="hugely" />
-        ). The negative end is <W w="negative" /> plus the positive (<W w="small" />
-        ), and the axis itself is <W w="axis_of" /> plus the positive noun (<W w="size" />
-        ). A seven-step scale grades axis words: <W w="max_negative" />, <W w="negative" />,{" "}
-        <W w="min_negative" />, <W w="neutral" />, <W w="min_positive" />, <W w="positive" />,{" "}
-        <W w="max_positive" />. <W w="not" /> is the complement, for axis words too.
+        ). The negative end is <W w="<negative>" /> plus the positive (<W w="small" />
+        ), and the axis itself is <W w="<axis_of>" /> plus the positive noun (<W w="size" />
+        ). A seven-step scale grades axis words: <W w="<max_negative>" />, <W w="<negative>" />,{" "}
+        <W w="<min_negative>" />, <W w="<neutral>" />, <W w="<min_positive>" />, <W w="<positive>" />,{" "}
+        <W w="<max_positive>" />. <W w="not" /> is the complement, for axis words too.
       </p>
       <p className="mt-2">
         <b>Order.</b> Two rules do different jobs. Modifiers build phrases and follow their head (
         <i>person all</i>, <i>kill truly</i>). Axis helpers and <W w="not" /> build words and come
-        before the word they apply to, like prefixes (<i>negative big</i>,{" "}
-        <i>min_positive truly</i>, <i>not impossibly</i>). Spanish splits the same way: adjectives
+        before the word they apply to, like prefixes (<i>&lt;negative&gt; big</i>,{" "}
+        <i>&lt;min_positive&gt; truly</i>, <i>not impossibly</i>). Spanish splits the same way: adjectives
         follow the noun, but <i>muy</i> comes before the adjective. Each prefix takes exactly the
         one word after it, so stacks read left to right without brackets, like logic:{" "}
-        <i>not max_positive true</i> is “not certain”. <W w="not" /> is always a prefix, on content
+        <i>not &lt;max_positive&gt; true</i> is “not certain”. <W w="not" /> is always a prefix, on content
         words too, so <i>person not big</i> can only be a person who isn't big. And the sign comes
         first, so a listener never has to revise what they've heard: in{" "}
-        <i>number 2 3 negative rank_2</i>, the negative comes before the rank.
+        <i>number 2 3 &lt;negative&gt; &lt;rank_2&gt;</i>, the negative comes before the rank.
       </p>
 
       <H2>Prepositions</H2>
@@ -438,10 +438,10 @@ export function GrammarView() {
         <W w="for" />, <W w="in" />, <W w="of" />, <W w="about" />, <W w="at" /> and{" "}
         <W w="as" /> (“as” or “like”, like Toki Pona's <i>sama</i>). A preposition
         opens a phrase, and there's no word to close it: the phrase ends at the next grammar
-        marker, preposition, clause-level conjunction or <W w="clause_end" />. Within a phrase,
+        marker, preposition, clause-level conjunction or <W w="<clause_end>" />. Within a phrase,
         modifiers come before prepositional phrases, so <i>person big with rod</i> is a big
         person with a rod. Stacked prepositional phrases can be ambiguous, as in most languages;
-        bracket one with <W w="clause_start" /> and <W w="clause_end" /> when it matters.
+        bracket one with <W w="<clause_start>" /> and <W w="<clause_end>" /> when it matters.
       </p>
       <Example meaning="…equal in dignity and rights.">
         free and equal in value and privilege
@@ -455,45 +455,45 @@ export function GrammarView() {
         items.
       </p>
       <p className="mt-2">
-        <W w="clause_start" /> and <W w="clause_end" /> bracket a clause inside another, and the
-        bracket is the one device for every kind of subclause. <W w="clause_end" /> can be dropped
+        <W w="<clause_start>" /> and <W w="<clause_end>" /> bracket a clause inside another, and the
+        bracket is the one device for every kind of subclause. <W w="<clause_end>" /> can be dropped
         at the end of a sentence, but not before more of the main clause, whose next role marker
         would otherwise be read as part of the subclause.
       </p>
       <ul className="mt-2 list-disc pl-6 space-y-1">
         <li>
-          <b>As an object</b>: <i>I believe &lt;object&gt; clause_start … clause_end</i>, I
+          <b>As an object</b>: <i>I believe &lt;object&gt; &lt;clause_start&gt; … &lt;clause_end&gt;</i>, I
           believe that….
         </li>
         <li>
           <b>After a preposition</b>, for because, when, so that and until:{" "}
-          <i>from clause_start …</i> is because…, <i>at time clause_start …</i>{" "}
-          when…, <i>for clause_start …</i> so that… and <i>to time clause_start …</i>{" "}
+          <i>from &lt;clause_start&gt; …</i> is because…, <i>at time &lt;clause_start&gt; …</i>{" "}
+          when…, <i>for &lt;clause_start&gt; …</i> so that… and <i>to time &lt;clause_start&gt; …</i>{" "}
           until…. <W w="if" /> takes one the same way.
         </li>
         <li>
           <b>After a noun</b>, describing it: <W w="<blank>" /> marks the noun's place in the
           clause, in any role or after any preposition. A plain verb marker tells it from a
-          question, which has <W w="<verb(interrogative)>" />, as English uses who and where for
+          question, which has <W w="<verb_interrogative>" />, as English uses who and where for
           both.
         </li>
       </ul>
       <Example meaning="the person who defended me">
-        person clause_start &lt;subject&gt; &lt;blank&gt; &lt;verb&gt; defend &lt;object&gt; me clause_end
+        person &lt;clause_start&gt; &lt;subject&gt; &lt;blank&gt; &lt;verb&gt; defend &lt;object&gt; me &lt;clause_end&gt;
       </Example>
       <Example meaning="the place where I sleep">
-        place clause_start &lt;subject&gt; I &lt;verb&gt; sleep at &lt;blank&gt; clause_end
+        place &lt;clause_start&gt; &lt;subject&gt; I &lt;verb&gt; sleep at &lt;blank&gt; &lt;clause_end&gt;
       </Example>
       <p className="mt-2">
         A subclause with no subject takes the main clause's subject: <i>I desire &lt;object&gt;
-        clause_start &lt;verb&gt; sleep</i> is “I want to sleep”. A main clause with no subject
+        &lt;clause_start&gt; &lt;verb&gt; sleep</i> is “I want to sleep”. A main clause with no subject
         leaves it unspecified, “someone”.
       </p>
 
       <H2>Pronouns</H2>
       <p>
-        <W w="pronoun(first_person)" />, <W w="pronoun(second_person)" /> and{" "}
-        <W w="pronoun(third_person)" />, with number made by compounds: “me” is
+        <W w="<pronoun_first_person>" />, <W w="<pronoun_second_person>" /> and{" "}
+        <W w="<pronoun_third_person>" />, with number made by compounds: “me” is
         first_person-singular, “we” first_person-plural (also -inclusive and -exclusive), “y'all”
         second_person-plural. The third person can optionally specify plural and gender or sex.{" "}
         <W w="this" /> and <W w="that" /> point near and far, and <W w="<blank>" /> is the question
@@ -552,48 +552,48 @@ export function GrammarView() {
       <p>
         A number is <W w="number" /> followed by digits, most significant first. There's one word
         for every base: the base comes from context. A rank after a digit
-        gives that digit's place: <W w="rank_3" /> puts it at base³, and the digits after it carry on
-        down from there. Places a rank jumps over are zeros, so <i>number 1 rank_3 3</i> is
-        1003 and <i>number 1 rank_6</i> is 1,000,000. Negative ranks give fractions and
-        percents: <i>number 2 3 negative rank_2</i> is 23%.
+        gives that digit's place: <W w="<rank_3>" /> puts it at base³, and the digits after it carry on
+        down from there. Places a rank jumps over are zeros, so <i>number 1 &lt;rank_3&gt; 3</i> is
+        1003 and <i>number 1 &lt;rank_6&gt;</i> is 1,000,000. Negative ranks give fractions and
+        percents: <i>number 2 3 &lt;negative&gt; &lt;rank_2&gt;</i> is 23%.
       </p>
       <p className="mt-2">
-        Ranks don't depend on the base: <W w="rank_3" /> is “thousands” in base 10, but “eights” in
-        base 2. By convention ranks work like commas: a base 10 number past <W w="rank_3" /> says{" "}
-        <W w="rank_3" /> somewhere, one past <W w="rank_6" /> says <W w="rank_6" />, and so on up
-        to <W w="rank_15" />, skipping any group that's all zeros. 34,103,487 is{" "}
-        <i>number 3 4 rank_6 1 0 3 rank_3 4 8 7 rank_0</i>. Bases 2 and 16 group every four
-        places instead (<W w="rank_4" />, <W w="rank_8" />, <W w="rank_12" />), so the groups are
+        Ranks don't depend on the base: <W w="<rank_3>" /> is “thousands” in base 10, but “eights” in
+        base 2. By convention ranks work like commas: a base 10 number past <W w="<rank_3>" /> says{" "}
+        <W w="<rank_3>" /> somewhere, one past <W w="<rank_6>" /> says <W w="<rank_6>" />, and so on up
+        to <W w="<rank_15>" />, skipping any group that's all zeros. 34,103,487 is{" "}
+        <i>number 3 4 &lt;rank_6&gt; 1 0 3 &lt;rank_3&gt; 4 8 7 &lt;rank_0&gt;</i>. Bases 2 and 16 group every four
+        places instead (<W w="<rank_4>" />, <W w="<rank_8>" />, <W w="<rank_12>" />), so the groups are
         4 bits and 16 bits. Past{" "}
-        <W w="rank_15" />, <W w="rank" /> takes a subclause holding the place. See the Examples
+        <W w="<rank_15>" />, <W w="rank" /> takes a subclause holding the place. See the Examples
         page.
       </p>
       <p className="mt-2">
-        A number ends at its first rank of zero or below, <W w="rank_0" /> or a negative rank. Digits
+        A number ends at its first rank of zero or below, <W w="<rank_0>" /> or a negative rank. Digits
         share their sounds with the axis words, so the ending tells a listener the next word isn't a
-        digit. The final <W w="rank_0" /> can be dropped unless an axis word or an axis helper comes
-        next. Only axis words can be mistaken for digits, and a helper like <W w="negative" /> could
+        digit. The final <W w="<rank_0>" /> can be dropped unless an axis word or an axis helper comes
+        next. Only axis words can be mistaken for digits, and a helper like <W w="<negative>" /> could
         be starting a negative rank: <i>person number 3</i>, but{" "}
-        <i>person number 3 rank_0 big</i> and <i>person number 3 rank_0 small</i>.
+        <i>person number 3 &lt;rank_0&gt; big</i> and <i>person number 3 &lt;rank_0&gt; small</i>.
         Long numbers usually keep it anyway, to make the end easy to hear.
       </p>
       <Open>
         Long fractions. Since the first rank of zero or below ends the number, every digit from the
         ones place down falls in one group: 3.14159 has to be{" "}
-        <i>number 3 1 4 1 5 9 negative rank_5</i>, with no comma-like ranks inside.
+        <i>number 3 1 4 1 5 9 &lt;negative&gt; &lt;rank_5&gt;</i>, with no comma-like ranks inside.
       </Open>
 
       <H2>Arithmetic</H2>
       <p>
         <W w="count(v)" /> takes rank for the operation, each level repeating the one below, as in
-        the mathematical hyperoperations: bare <i>count</i> is counting, <i>count rank_1</i> adding,{" "}
-        <i>rank_2</i> multiplying and <i>rank_3</i> raising to a power. Its negative end,{" "}
+        the mathematical hyperoperations: bare <i>count</i> is counting, <i>count &lt;rank_1&gt;</i> adding,{" "}
+        <i>&lt;rank_2&gt;</i> multiplying and <i>&lt;rank_3&gt;</i> raising to a power. Its negative end,{" "}
         <W w="count_down(v)" />, is the inverse: counting down, subtracting, dividing and taking a
         root. The object is the number acted on and <W w="by" /> gives the amount, and a logarithm
         is just <W w="rank" />, the exponent a number already has.
       </p>
       <Example meaning="Divide 6 by 3.">
-        &lt;verb (prescriptive)&gt; count_down rank_2 &lt;object&gt; number 6 by number 3
+        &lt;verb_prescriptive&gt; count_down &lt;rank_2&gt; &lt;object&gt; number 6 by number 3
       </Example>
 
       <H2>Other grammar words</H2>

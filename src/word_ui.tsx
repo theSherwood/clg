@@ -307,7 +307,7 @@ function StepSound({
       </FormHover>
     );
   }
-  const helper_word = helper ? dictionary.get(helper) : undefined;
+  const helper_word = helper ? dictionary.get(`<${helper}>`) : undefined;
   const root_word = Object.values(axis.positive).find((cell) => cell.word)?.word;
   if (!helper_word || !root_word) return <>{sound}</>;
   return (
@@ -350,7 +350,7 @@ function AxisMatrix({ axis, form, depth }: { axis: Axis; form: string; depth: nu
   const phonology = useContext(PhonologyContext);
   const root_sound = syllable_of(axis.id, phonology);
   const step_sound = (helper: string) => {
-    const word = dictionary.get(helper);
+    const word = dictionary.get(`<${helper}>`);
     return word ? `${pronounce(word, phonology)}${root_sound}` : "";
   };
   const rows: [label: string, sound: string, side: AxisSide, optional: boolean][] = [

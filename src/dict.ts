@@ -482,7 +482,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   [
     {
       noun: "liberty",
-      notes: "Freedom from restraint; forcing someone to act is max_positive command(v), force(v)",
+      notes: "Freedom from restraint; forcing someone to act is <max_positive> command(v), force(v)",
     },
     {
       noun: "bondage",
@@ -546,7 +546,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "phase",
       notes:
-        "Phase changes: melt(v) goes up a phase and freeze(v) down one, so the same verb is melting for ice and evaporating for water. Rank names the target phase, as matter's ranks do (rank_0 solid, rank_1 liquid, rank_2 gas, rank_3 plasma): melt(v) rank_2 is evaporate, freeze(v) rank_1 condense",
+        "Phase changes: melt(v) goes up a phase and freeze(v) down one, so the same verb is melting for ice and evaporating for water. Rank names the target phase, as matter's ranks do (rank_0 solid, <rank_1> liquid, <rank_2> gas, <rank_3> plasma): melt(v) <rank_2> is evaporate, freeze(v) <rank_1> condense",
     },
     {
       noun: "rigidity(state)",
@@ -828,7 +828,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "elevation",
       notes:
-        "The top is the highest point and the bottom the lowest: max_positive high and max_negative high. Relative position (above, below) is the upper/lower axis",
+        "The top is the highest point and the bottom the lowest: <max_positive> high and <max_negative> high. Relative position (above, below) is the upper/lower axis",
       steps: {
         max_positive: {
           noun: "summit",
@@ -862,7 +862,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "temperature",
       notes:
-        "Heat at its fullest is fire, and cooling at its fullest is putting it out: burn(v) is max_positive heat(v), quench(v) max_negative",
+        "Heat at its fullest is fire, and cooling at its fullest is putting it out: burn(v) is <max_positive> heat(v), quench(v) <max_negative>",
       steps: {
         max_positive: {
           noun: "fire",
@@ -982,7 +982,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "time",
       notes:
-        "Rank gives the unit, a step up a ladder rather than a power of ten: rank_0 second, rank_1 minute, rank_2 hour, rank_3 day, rank_4 week, rank_5 month, rank_6 year, rank_7 decade, rank_8 century, rank_9 millennium. time rank_3 number 3 is three days and time rank_3 this today. A day of 24 hours is time rank_3; daytime is time bright",
+        "Rank gives the unit, a step up a ladder rather than a power of ten: <rank_0> second, <rank_1> minute, <rank_2> hour, <rank_3> day, <rank_4> week, <rank_5> month, <rank_6> year, <rank_7> decade, <rank_8> century, <rank_9> millennium. time <rank_3> number 3 is three days and time <rank_3> this today. A day of 24 hours is time <rank_3>; daytime is time bright",
       steps: {
         max_negative: { adj: "ancient", adverb: "long_ago" },
         min_negative: { adj: "recent", adverb: "recently" },
@@ -1962,7 +1962,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "control",
       notes:
-        "How hard one pushes another to act, from persuading to forcing, and the other's side, from acquiescing to giving in. Ruling is max_positive lead(v)",
+        "How hard one pushes another to act, from persuading to forcing, and the other's side, from acquiescing to giving in. Ruling is <max_positive> lead(v)",
       steps: {
         max_positive: {
           noun: "coercion",
@@ -2089,7 +2089,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   [
     {
       noun: "literacy",
-      notes: "min_positive write is mark, a lesser writing; min_negative write is skim, a lesser reading",
+      notes: "<min_positive> write is mark, a lesser writing; <min_negative> write is skim, a lesser reading",
       steps: {
         max_negative: { verb: "study(v)", verb_i: "study", verb_t: "study" },
         min_negative: { verb: "skim(v)", verb_i: "skim", verb_t: "skim" },
@@ -2125,7 +2125,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "arithmetic",
       notes:
-        "Rank gives the operation, each repeating the one below (the hyperoperations): bare count is counting, rank_1 add, rank_2 multiply, rank_3 raise to a power. The negative end is the inverse: count down, subtract, divide, take a root. The object is the number acted on and <by> gives the amount. A logarithm is rank: the rank of 1000 is 3",
+        "Rank gives the operation, each repeating the one below (the hyperoperations): bare count is counting, <rank_1> add, <rank_2> multiply, <rank_3> raise to a power. The negative end is the inverse: count down, subtract, divide, take a root. The object is the number acted on and <by> gives the amount. A logarithm is rank: the rank of 1000 is 3",
     },
     { noun: "countdown", verb: "count_down(v)", verb_i: "count down", verb_t: "count down" },
     { noun: "counting", adj: "counted", verb: "count(v)", verb_i: "count", verb_t: "count" },
@@ -2236,7 +2236,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "comparison",
       notes:
-        "Comparison is a verb: X exceed Y <in> big is X is bigger than Y. Negative is fall short of (smaller), equal(v) is as big as, exceed all is the biggest, and the scale grades it: max_positive exceed is much bigger",
+        "Comparison is a verb: X exceed Y <in> big is X is bigger than Y. Negative is fall short of (smaller), equal(v) is as big as, exceed all is the biggest, and the scale grades it: <max_positive> exceed is much bigger",
     },
     { noun: "inferiority", adj: "lesser", verb: "fall_short(v)", verb_t: "fall short of" },
     { noun: "superiority", adj: "greater", verb: "exceed(v)", verb_t: "exceed" },
@@ -2245,7 +2245,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "sequence",
       notes:
-        "Order in a sequence, counted from a reference point: now in a main clause, the main clause's time in a subclause. time rank_3 next is tomorrow and time rank_3 previous yesterday. Rank counts steps, as for generations: next rank_2 is the one after next. Bare words are one step",
+        "Order in a sequence, counted from a reference point: now in a main clause, the main clause's time in a subclause. time <rank_3> next is tomorrow and time <rank_3> previous yesterday. Rank counts steps, as for generations: next <rank_2> is the one after next. Bare words are one step",
     },
     {
       noun: "precedence",
@@ -2267,7 +2267,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "lineage",
       notes:
-        "Rank counts generations: child rank_2 is a grandchild, negative child rank_2 a grandparent, and neutral child rank_2 a first cousin (a shared grandparent). Bare words are rank_1, and rank_0 is oneself",
+        "Rank counts generations: child <rank_2> is a grandchild, negative child <rank_2> a grandparent, and neutral child <rank_2> a first cousin (a shared grandparent). Bare words are <rank_1>, and <rank_0> is oneself",
       steps: {
         max_negative: { noun: "ancestor" },
         min_negative: { noun: "aunt_or_uncle" },
@@ -2292,8 +2292,8 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("<object>", { t: marker });
   cr("<gerund>", { t: verb_marker });
   cr("<verb>", { t: verb_marker });
-  cr("<verb(prescriptive)>", { t: verb_marker, gloss: "verb (prescriptive / imperative)" });
-  cr("<verb(interrogative)>", { t: verb_marker });
+  cr("<verb_prescriptive>", { t: verb_marker, gloss: "verb (prescriptive / imperative)" });
+  cr("<verb_interrogative>", { t: verb_marker });
   cr("<er>", {
     t: [T.grammar_helper, T.part_of_speech_specifier],
     gloss: "the subject of a verb, as a noun: <er> eat = eater",
@@ -2322,7 +2322,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     t: [T.grammar_helper, T.part_of_speech_specifier],
     gloss: "a subject complement, after is: what the subject is",
     notes:
-      "What follows describes the subject, so it reads as a modifier: the adjective where there is one (is <complement> hot), otherwise the noun (is <complement> matter rank_1)",
+      "What follows describes the subject, so it reads as a modifier: the adjective where there is one (is <complement> hot), otherwise the noun (is <complement> matter <rank_1>)",
   });
   cr("<foreign>", { t: marker });
   cr("<filler>", {
@@ -2342,10 +2342,10 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("or", { t: [T.grammar_helper], notes: '"xor" through "or-exclusive"' });
   cr("and", { t: [T.grammar_helper] });
   cr("but", { t: [T.grammar_helper], gloss: "but / however" });
-  cr("clause_start", { gloss: "clause start" });
-  cr("clause_end", { gloss: "clause end" });
-  cr("continuous_tense_aspect");
-  cr("perfect_tense_aspect");
+  cr("<clause_start>", { gloss: "clause start" });
+  cr("<clause_end>", { gloss: "clause end" });
+  cr("<continuous_tense_aspect>");
+  cr("<perfect_tense_aspect>");
   cr("if", { t: [T.grammar_helper], notes: '"iff" through "if-exclusive"' });
 
   candidate("possession_indicator");
@@ -2382,16 +2382,16 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
 
 {
   section("pronoun");
-  cr("pronoun(first_person)", {
+  cr("<pronoun_first_person>", {
     t: [T.pronoun],
     notes:
       '"me" through "first_person-singular", "we" through "first_person-plural"; also "first_person-plural-inclusive" and "first_person-plural-exclusive"',
   });
-  cr("pronoun(second_person)", {
+  cr("<pronoun_second_person>", {
     t: [T.pronoun],
     notes: '"you" through "second_person-singular", "y\'all" through "second_person-plural"',
   });
-  cr("pronoun(third_person)", {
+  cr("<pronoun_third_person>", {
     t: [T.pronoun],
     notes: "Plural and gender/sex can be specified optionally",
   });
@@ -2408,30 +2408,30 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
 // axis helpers: axis_of plus a seven-step scale
 {
   section("axis_helper");
-  cr("axis_of", { t: [T.axis_helper] });
-  cr("max_negative", { t: [T.axis_helper] });
-  cr("negative", { t: [T.axis_helper], notes: 'Also called "very-neg"' });
-  cr("min_negative", { t: [T.axis_helper], gloss: "minor negative" });
-  cr("neutral", { t: [T.axis_helper] });
-  cr("min_positive", { t: [T.axis_helper], gloss: "minor positive" });
-  cr("positive", { t: [T.axis_helper], notes: 'Also called "very-pos"' });
-  cr("max_positive", { t: [T.axis_helper] });
+  cr("<axis_of>", { t: [T.axis_helper] });
+  cr("<max_negative>", { t: [T.axis_helper] });
+  cr("<negative>", { t: [T.axis_helper], notes: 'Also called "very-neg"' });
+  cr("<min_negative>", { t: [T.axis_helper], gloss: "minor negative" });
+  cr("<neutral>", { t: [T.axis_helper] });
+  cr("<min_positive>", { t: [T.axis_helper], gloss: "minor positive" });
+  cr("<positive>", { t: [T.axis_helper], notes: 'Also called "very-pos"' });
+  cr("<max_positive>", { t: [T.axis_helper] });
 }
 
 {
   // Higher dimensions go through the number domain: dimension number 4
   section("dimension");
-  cr("dimension_0", { gloss: "point / dimensionless" });
-  cr("dimension_x", { gloss: "the first dimension (x)" });
-  cr("dimension_y", { gloss: "the second dimension (y)" });
-  cr("dimension_z", { gloss: "the third dimension (z)" });
+  cr("<dimension_0>", { gloss: "point / dimensionless" });
+  cr("<dimension_x>", { gloss: "the first dimension (x)" });
+  cr("<dimension_y>", { gloss: "the second dimension (y)" });
+  cr("<dimension_z>", { gloss: "the third dimension (z)" });
 }
 
 {
   // After a digit, rank_N puts that digit at place N (worth base^N)
   section("rank");
   for (let i = 0; i < 16; i++) {
-    cr(`rank_${i}`);
+    cr(`<rank_${i}>`);
   }
 }
 
@@ -2477,7 +2477,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("rank", {
     t: [T.domain_specifier],
     notes:
-      "For places past rank_15: takes a subclause holding the place, as in number 3 rank clause_start number 1 3 9 clause_end (3e139)",
+      "For places past <rank_15>: takes a subclause holding the place, as in number 3 rank <clause_start> number 1 3 9 <clause_end> (3e139)",
   });
   cr("dimension", {
     t: [T.domain_specifier],
@@ -2502,23 +2502,23 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("geometry", {
     gloss: "geometric figure",
     notes:
-      "Rank counts dimensions, as dimension_0 is a point: rank_0 point, rank_1 line, rank_2 shape, rank_3 form (a solid). Modifiers say which: geometry rank_2 round is a circle, geometry rank_3 round a sphere",
+      "Rank counts dimensions, as <dimension_0> is a point: <rank_0> point, <rank_1> line, <rank_2> shape, <rank_3> form (a solid). Modifiers say which: geometry <rank_2> round is a circle, geometry <rank_3> round a sphere",
   });
   cr("celestial", {
     gloss: "celestial body",
     notes:
-      "Rank gives the level in the orbital hierarchy: rank_0 debris (asteroids, comets), rank_1 moon, rank_2 planet, rank_3 star, rank_4 galaxy, rank_5 galaxy cluster. Bare, it's any celestial body. With this, it's ours: celestial rank_3 this is the Sun, celestial rank_2 this Earth, celestial rank_1 this the Moon",
+      "Rank gives the level in the orbital hierarchy: <rank_0> debris (asteroids, comets), <rank_1> moon, <rank_2> planet, <rank_3> star, <rank_4> galaxy, <rank_5> galaxy cluster. Bare, it's any celestial body. With this, it's ours: celestial <rank_3> this is the Sun, celestial <rank_2> this Earth, celestial <rank_1> this the Moon",
   });
   cr("cardinal", {
     gloss: "cardinal direction",
     notes:
-      "Rank counts quarter turns clockwise from north: rank_0 north, rank_1 east, rank_2 south, rank_3 west. <to> cardinal rank_0 is northward",
+      "Rank counts quarter turns clockwise from north: <rank_0> north, <rank_1> east, <rank_2> south, <rank_3> west. <to> cardinal <rank_0> is northward",
   });
   cr("animal");
   cr("matter", {
     gloss: "matter / substance",
     notes:
-      "Rank gives the phase, rising in energy: rank_0 solid, rank_1 liquid, rank_2 gas, rank_3 plasma. As a modifier it gives a substance's phase: water matter rank_0 is ice, water matter rank_2 steam",
+      "Rank gives the phase, rising in energy: <rank_0> solid, <rank_1> liquid, <rank_2> gas, <rank_3> plasma. As a modifier it gives a substance's phase: water matter <rank_0> is ice, water matter <rank_2> steam",
   });
 
 
@@ -2675,14 +2675,14 @@ function fill_cells(side: AxisSide, key: FormKey, word: Word, forms: AxisWordFor
 {
   section("axis");
 
-  const axis_of_word = dictionary.get("axis_of");
-  const negative_word = dictionary.get("negative");
-  const positive_word = dictionary.get("positive");
-  const max_negative_word = dictionary.get("max_negative");
-  const min_negative_word = dictionary.get("min_negative");
-  const neutral_word = dictionary.get("neutral");
-  const min_positive_word = dictionary.get("min_positive");
-  const max_positive_word = dictionary.get("max_positive");
+  const axis_of_word = dictionary.get("<axis_of>");
+  const negative_word = dictionary.get("<negative>");
+  const positive_word = dictionary.get("<positive>");
+  const max_negative_word = dictionary.get("<max_negative>");
+  const min_negative_word = dictionary.get("<min_negative>");
+  const neutral_word = dictionary.get("<neutral>");
+  const min_positive_word = dictionary.get("<min_positive>");
+  const max_positive_word = dictionary.get("<max_positive>");
 
   if (!is_defined(axis_of_word)) throw new Error(`Missing axis_of word`);
   if (!is_defined(negative_word)) throw new Error(`Missing negative word`);
@@ -2791,10 +2791,10 @@ function fill_cells(side: AxisSide, key: FormKey, word: Word, forms: AxisWordFor
     });
   }
   // Phase changes, by target phase
-  phrase("evaporate(v)", ["melt(v)", "rank_2"], "evaporate", "vaporize");
-  phrase("ionize(v)", ["melt(v)", "rank_3"], "ionize", "ionize");
-  phrase("condense(v)", ["freeze(v)", "rank_1"], "condense", "condense");
-  phrase("solidify(v)", ["freeze(v)", "rank_0"], "solidify", "solidify");
+  phrase("evaporate(v)", ["melt(v)", "<rank_2>"], "evaporate", "vaporize");
+  phrase("ionize(v)", ["melt(v)", "<rank_3>"], "ionize", "ionize");
+  phrase("condense(v)", ["freeze(v)", "<rank_1>"], "condense", "condense");
+  phrase("solidify(v)", ["freeze(v)", "<rank_0>"], "solidify", "solidify");
 }
 
 // Toki Pona words and their meanings, for comparison

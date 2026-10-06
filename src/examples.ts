@@ -1,7 +1,7 @@
 import { type Candidate, type Word, candidates, dictionary, verb_glosses } from "./dict";
 
 // Worked examples: English with a draft transliteration. Transliterations are written in English
-// glosses; <...> marks grammar markers, e.g. <subject>, <verb (prescriptive)>, <ee>. Prepositions
+// glosses; <...> marks grammar markers, e.g. <subject>, <verb_prescriptive>, <ee>. Prepositions
 // are written bare: to, in, at.
 
 export type Example = { title: string; english: string; transliteration: string };
@@ -11,8 +11,8 @@ export type Article = { title: string; english: string[]; transliteration?: stri
 // Numbers in each base. The base comes from context; here, the heading. A rank after a digit
 // gives that digit's place. By convention the ranks
 // work like commas, every three places in base 10 and every four in bases 2 and 16: a base 10
-// number past rank_3 says rank_3, one past rank_6 says rank_6, and so on, skipping groups that are
-// all zeros. Long numbers end with rank_0 even where it could be dropped.
+// number past <rank_3> says <rank_3>, one past <rank_6> says <rank_6>, and so on, skipping groups that are
+// all zeros. Long numbers end with <rank_0> even where it could be dropped.
 export type NumberBase = { title: string; examples: Example[] };
 
 export const number_examples: NumberBase[] = [
@@ -21,55 +21,55 @@ export const number_examples: NumberBase[] = [
     examples: [
       {
         title: "7",
-        english: "A lone number drops its final rank_0",
+        english: "A lone number drops its final <rank_0>",
         transliteration: "number 7",
       },
       {
         title: "1003",
         english: "Places a rank jumps over are zeros",
-        transliteration: "number 1 rank_3 3",
+        transliteration: "number 1 <rank_3> 3",
       },
-      { title: "10,000", english: "Like “ten thousand”", transliteration: "number 1 0 rank_3" },
+      { title: "10,000", english: "Like “ten thousand”", transliteration: "number 1 0 <rank_3>" },
       {
         title: "120,034",
         english: "120 thousand 34",
-        transliteration: "number 1 2 0 rank_3 3 4",
+        transliteration: "number 1 2 0 <rank_3> 3 4",
       },
       {
         title: "34,103,487",
         english: "34 million 103 thousand 487",
-        transliteration: "number 3 4 rank_6 1 0 3 rank_3 4 8 7 rank_0",
+        transliteration: "number 3 4 <rank_6> 1 0 3 <rank_3> 4 8 7 <rank_0>",
       },
       {
         title: "1,000,000",
         english: "The empty thousands group is skipped",
-        transliteration: "number 1 rank_6",
+        transliteration: "number 1 <rank_6>",
       },
       {
         title: "2,004,000",
         english: "2 million 4 thousand",
-        transliteration: "number 2 rank_6 4 rank_3",
+        transliteration: "number 2 <rank_6> 4 <rank_3>",
       },
       {
         title: "three big people",
-        english: "rank_0 is needed here: big shares its sound with a digit",
-        transliteration: "person number 3 rank_0 big",
+        english: "<rank_0> is needed here: big shares its sound with a digit",
+        transliteration: "person number 3 <rank_0> big",
       },
       {
         title: "three small people",
-        english: "rank_0 is needed here too: negative could start a negative rank",
-        transliteration: "person number 3 rank_0 small",
+        english: "<rank_0> is needed here too: negative could start a negative rank",
+        transliteration: "person number 3 <rank_0> small",
       },
       {
         title: "0.3",
         english: "A negative rank ends the number too",
-        transliteration: "number 3 negative rank_1",
+        transliteration: "number 3 <negative> <rank_1>",
       },
-      { title: "23%", english: "0.23", transliteration: "number 2 3 negative rank_2" },
+      { title: "23%", english: "0.23", transliteration: "number 2 3 <negative> <rank_2>" },
       {
         title: "3e139",
-        english: "Past rank_15, rank takes a subclause holding the place",
-        transliteration: "number 3 rank clause_start number 1 3 9 clause_end",
+        english: "Past <rank_15>, rank takes a subclause holding the place",
+        transliteration: "number 3 rank <clause_start> number 1 3 9 <clause_end>",
       },
     ],
   },
@@ -80,16 +80,16 @@ export const number_examples: NumberBase[] = [
       {
         title: "34,103,487",
         english: "208,60BF",
-        transliteration: "number 2 0 8 rank_4 6 0 11 15 rank_0",
+        transliteration: "number 2 0 8 <rank_4> 6 0 11 15 <rank_0>",
       },
       { title: "65,535", english: "FFFF", transliteration: "number 15 15 15 15" },
-      { title: "65,536", english: "1,0000", transliteration: "number 1 rank_4" },
+      { title: "65,536", english: "1,0000", transliteration: "number 1 <rank_4>" },
       {
         title: "4,294,967,295",
         english: "FFFF,FFFF: the largest 32-bit number",
-        transliteration: "number 15 15 15 15 rank_4 15 15 15 15 rank_0",
+        transliteration: "number 15 15 15 15 <rank_4> 15 15 15 15 <rank_0>",
       },
-      { title: "1/16", english: "0.1", transliteration: "number 1 negative rank_1" },
+      { title: "1/16", english: "0.1", transliteration: "number 1 <negative> <rank_1>" },
     ],
   },
   {
@@ -99,16 +99,16 @@ export const number_examples: NumberBase[] = [
       {
         title: "1003",
         english: "11,1110,1011",
-        transliteration: "number 1 1 rank_8 1 1 1 0 rank_4 1 0 1 1 rank_0",
+        transliteration: "number 1 1 <rank_8> 1 1 1 0 <rank_4> 1 0 1 1 <rank_0>",
       },
-      { title: "1024", english: "100,0000,0000", transliteration: "number 1 0 0 rank_8" },
+      { title: "1024", english: "100,0000,0000", transliteration: "number 1 0 0 <rank_8>" },
       {
         title: "65,535",
         english: "1111,1111,1111,1111: the largest number the rank roots reach in base 2",
         transliteration:
-          "number 1 1 1 1 rank_12 1 1 1 1 rank_8 1 1 1 1 rank_4 1 1 1 1 rank_0",
+          "number 1 1 1 1 <rank_12> 1 1 1 1 <rank_8> 1 1 1 1 <rank_4> 1 1 1 1 <rank_0>",
       },
-      { title: "1/2", english: "0.1", transliteration: "number 1 negative rank_1" },
+      { title: "1/2", english: "0.1", transliteration: "number 1 <negative> <rank_1>" },
     ],
   },
 ];
@@ -139,53 +139,53 @@ export const tense_examples: Example[] = [
   {
     title: "Continuous",
     english: "I'm sleeping (or was, or will be)",
-    transliteration: "<subject> I <verb> sleep(v) continuous_tense_aspect",
+    transliteration: "<subject> I <verb> sleep(v) <continuous_tense_aspect>",
   },
   {
     title: "Past continuous",
     english: "I was sleeping",
-    transliteration: "<subject> I <verb> sleep(v) continuous_tense_aspect formerly",
+    transliteration: "<subject> I <verb> sleep(v) <continuous_tense_aspect> formerly",
   },
   {
     title: "Perfect",
     english: "The person has learned the way",
-    transliteration: "<subject> person <verb> learn(v) perfect_tense_aspect <object> path",
+    transliteration: "<subject> person <verb> learn(v) <perfect_tense_aspect> <object> path",
   },
   {
     title: "Future perfect",
     english: "The person will have learned the way",
-    transliteration: "<subject> person <verb> learn(v) perfect_tense_aspect henceforth <object> path",
+    transliteration: "<subject> person <verb> learn(v) <perfect_tense_aspect> henceforth <object> path",
   },
   {
     title: "Perfect continuous",
     english: "I have been working",
-    transliteration: "<subject> I <verb> work(v) continuous_tense_aspect perfect_tense_aspect",
+    transliteration: "<subject> I <verb> work(v) <continuous_tense_aspect> <perfect_tense_aspect>",
   },
   {
     title: "Remote past",
     english: "The person died long ago",
-    transliteration: "<subject> person <verb> kill(v) max_negative henceforth",
+    transliteration: "<subject> person <verb> kill(v) <max_negative> henceforth",
   },
   {
     title: "Recent past",
     english: "The person just left",
-    transliteration: "<subject> person <verb> go(v) min_negative henceforth",
+    transliteration: "<subject> person <verb> go(v) <min_negative> henceforth",
   },
   {
     title: "Near future",
     english: "I'll give you money soon",
-    transliteration: "<subject> I <verb> give(v) min_positive henceforth <object> money to you",
+    transliteration: "<subject> I <verb> give(v) <min_positive> henceforth <object> money to you",
   },
   {
     title: "Now",
     english: "Right now, I'm sleeping",
-    transliteration: "<subject> I <verb> sleep(v) continuous_tense_aspect neutral henceforth",
+    transliteration: "<subject> I <verb> sleep(v) <continuous_tense_aspect> <neutral> henceforth",
   },
   {
     title: "Time carries over",
     english: "Long ago, a person gave money. They left. (both past)",
     transliteration:
-      "<subject> person <verb> give(v) max_negative henceforth <object> money. <subject> it <verb> go(v).",
+      "<subject> person <verb> give(v) <max_negative> henceforth <object> money. <subject> it <verb> go(v).",
   },
 ];
 
@@ -193,35 +193,35 @@ export const tense_examples: Example[] = [
 // how many cases something holds in.
 // Units of time are rungs of a ladder on time's rank; next and previous count steps from now
 export const time_examples: Example[] = [
-  { title: "Second", english: "A second", transliteration: "time rank_0" },
-  { title: "Hour", english: "An hour", transliteration: "time rank_2" },
-  { title: "Day", english: "A day (24 hours)", transliteration: "time rank_3" },
+  { title: "Second", english: "A second", transliteration: "time <rank_0>" },
+  { title: "Hour", english: "An hour", transliteration: "time <rank_2>" },
+  { title: "Day", english: "A day (24 hours)", transliteration: "time <rank_3>" },
   { title: "Daytime", english: "Daytime, as against night", transliteration: "time bright" },
-  { title: "Year", english: "A year", transliteration: "time rank_6" },
-  { title: "Counted", english: "Three days", transliteration: "time rank_3 number 3" },
-  { title: "Today", english: "Today", transliteration: "time rank_3 this" },
+  { title: "Year", english: "A year", transliteration: "time <rank_6>" },
+  { title: "Counted", english: "Three days", transliteration: "time <rank_3> number 3" },
+  { title: "Today", english: "Today", transliteration: "time <rank_3> this" },
   {
     title: "Yesterday",
     english: "I slept yesterday",
-    transliteration: "<subject> I <verb> sleep(v) at time rank_3 previous",
+    transliteration: "<subject> I <verb> sleep(v) at time <rank_3> previous",
   },
   {
     title: "Tomorrow",
     english: "I will work tomorrow",
-    transliteration: "<subject> I <verb> work(v) at time rank_3 next",
+    transliteration: "<subject> I <verb> work(v) at time <rank_3> next",
   },
   {
     title: "Two steps",
     english: "The day after tomorrow",
-    transliteration: "time rank_3 next rank_2",
+    transliteration: "time <rank_3> next <rank_2>",
   },
-  { title: "Next year", english: "Next year", transliteration: "time rank_6 next" },
-  { title: "Every day", english: "Every day", transliteration: "time rank_3 all" },
+  { title: "Next year", english: "Next year", transliteration: "time <rank_6> next" },
+  { title: "Every day", english: "Every day", transliteration: "time <rank_3> all" },
   {
     title: "Relative",
     english: "She said she would come the next day",
     transliteration:
-      "<subject> it <verb> say(v) formerly <object> clause_start <verb> come(v) at time rank_3 next",
+      "<subject> it <verb> say(v) formerly <object> <clause_start> <verb> come(v) at time <rank_3> next",
   },
   {
     title: "Precede",
@@ -244,7 +244,7 @@ export const truth_examples: Example[] = [
   {
     title: "Certainly",
     english: "The person certainly died",
-    transliteration: "<subject> person <verb> kill(v) max_positive truly",
+    transliteration: "<subject> person <verb> kill(v) <max_positive> truly",
   },
   {
     title: "Plain",
@@ -254,28 +254,28 @@ export const truth_examples: Example[] = [
   {
     title: "Probably",
     english: "The person probably died",
-    transliteration: "<subject> person <verb> kill(v) min_positive truly",
+    transliteration: "<subject> person <verb> kill(v) <min_positive> truly",
   },
   {
     title: "Maybe",
     english: "Maybe the person left",
-    transliteration: "<subject> person <verb> go(v) neutral truly",
+    transliteration: "<subject> person <verb> go(v) <neutral> truly",
   },
   {
     title: "Probably not",
     english: "The person probably didn't leave",
-    transliteration: "<subject> person <verb> go(v) min_negative truly",
+    transliteration: "<subject> person <verb> go(v) <min_negative> truly",
   },
   {
     title: "Proved",
     english: "The person has proved it",
-    transliteration: "<subject> person <verb> prove(v) perfect_tense_aspect <object> it",
+    transliteration: "<subject> person <verb> prove(v) <perfect_tense_aspect> <object> it",
   },
   {
     title: "Belief and likelihood",
     english: "I believe the person probably left",
     transliteration:
-      "<subject> I <verb> believe(v) <object> clause_start <subject> person <verb> go(v) min_positive truly clause_end",
+      "<subject> I <verb> believe(v) <object> <clause_start> <subject> person <verb> go(v) <min_positive> truly <clause_end>",
   },
   {
     title: "Necessary",
@@ -290,7 +290,7 @@ export const truth_examples: Example[] = [
   {
     title: "Contingent",
     english: "The person dies, but not necessarily",
-    transliteration: "<subject> person <verb> kill(v) neutral necessarily",
+    transliteration: "<subject> person <verb> kill(v) <neutral> necessarily",
   },
 ];
 
@@ -302,33 +302,33 @@ export const family_examples: Example[] = [
     english: "parent, female",
     transliteration: "parent female",
   },
-  { title: "Aunt or uncle", english: "a lesser parent", transliteration: "min_negative child" },
-  { title: "Sibling", english: "the same generation", transliteration: "neutral child" },
-  { title: "Niece or nephew", english: "a lesser child", transliteration: "min_positive child" },
-  { title: "Descendants", english: "the whole line down", transliteration: "max_positive child" },
-  { title: "Ancestors", english: "the whole line up", transliteration: "max_negative child" },
-  { title: "Grandchild", english: "two generations down", transliteration: "child rank_2" },
-  { title: "Grandparent", english: "two generations up", transliteration: "parent rank_2" },
+  { title: "Aunt or uncle", english: "a lesser parent", transliteration: "<min_negative> child" },
+  { title: "Sibling", english: "the same generation", transliteration: "<neutral> child" },
+  { title: "Niece or nephew", english: "a lesser child", transliteration: "<min_positive> child" },
+  { title: "Descendants", english: "the whole line down", transliteration: "<max_positive> child" },
+  { title: "Ancestors", english: "the whole line up", transliteration: "<max_negative> child" },
+  { title: "Grandchild", english: "two generations down", transliteration: "child <rank_2>" },
+  { title: "Grandparent", english: "two generations up", transliteration: "parent <rank_2>" },
   {
     title: "First cousin",
     english: "a shared grandparent, two generations up",
-    transliteration: "neutral child rank_2",
+    transliteration: "<neutral> child <rank_2>",
   },
   {
     title: "Second cousin",
     english: "a shared great-grandparent",
-    transliteration: "neutral child rank_3",
+    transliteration: "<neutral> child <rank_3>",
   },
   {
     title: "First cousin once removed",
     english: "a parent's first cousin",
-    transliteration: "neutral child rank_2 of parent",
+    transliteration: "<neutral> child <rank_2> of parent",
   },
   {
     title: "A family sentence",
     english: "My grandparent has many descendants",
     transliteration:
-      "<subject> parent rank_2 of me <verb> possess <object> max_positive child many",
+      "<subject> parent <rank_2> of me <verb> possess <object> <max_positive> child many",
   },
 ];
 
@@ -362,7 +362,7 @@ export const role_examples: Example[] = [
   { title: "Word", english: "what's said", transliteration: "<ee> say(v)" },
   { title: "Text", english: "what's written", transliteration: "<ee> write(v)" },
   { title: "Reader", english: "whoever reads", transliteration: "<er> read(v)" },
-  { title: "Mark", english: "a lesser writing", transliteration: "min_positive write(v)" },
+  { title: "Mark", english: "a lesser writing", transliteration: "<min_positive> write(v)" },
   { title: "Bed", english: "where you sleep", transliteration: "<place> sleep(v)" },
   { title: "Birthplace", english: "where you came to life", transliteration: "<place> come_alive(v)" },
   { title: "School", english: "where you learn", transliteration: "<place> learn(v)" },
@@ -385,51 +385,51 @@ export const role_examples: Example[] = [
 
 // Questions: <blank> stands for what's asked, in whatever role or phrase it's asked about
 export const question_examples: Example[] = [
-  { title: "Yes or no", english: "Do you sleep?", transliteration: "<subject> you <verb (interrogative)> sleep(v)" },
+  { title: "Yes or no", english: "Do you sleep?", transliteration: "<subject> you <verb_interrogative> sleep(v)" },
   {
     title: "Who",
     english: "Who killed the person?",
-    transliteration: "<subject> person <blank> <verb (interrogative)> kill(v) <object> person",
+    transliteration: "<subject> person <blank> <verb_interrogative> kill(v) <object> person",
   },
   {
     title: "What",
     english: "What do you eat?",
-    transliteration: "<subject> you <verb (interrogative)> eat <object> <blank>",
+    transliteration: "<subject> you <verb_interrogative> eat <object> <blank>",
   },
   {
     title: "Where",
     english: "Where do you sleep?",
-    transliteration: "<subject> you <verb (interrogative)> sleep(v) at <blank>",
+    transliteration: "<subject> you <verb_interrogative> sleep(v) at <blank>",
   },
   {
     title: "Where to",
     english: "Where are you going?",
-    transliteration: "<subject> you <verb (interrogative)> go(v) to <blank>",
+    transliteration: "<subject> you <verb_interrogative> go(v) to <blank>",
   },
   {
     title: "Where from",
     english: "Where do you come from?",
-    transliteration: "<subject> you <verb (interrogative)> come(v) from <blank>",
+    transliteration: "<subject> you <verb_interrogative> come(v) from <blank>",
   },
   {
     title: "When",
     english: "When did the person die?",
-    transliteration: "<subject> person <verb (interrogative)> kill(v) at time <blank>",
+    transliteration: "<subject> person <verb_interrogative> kill(v) at time <blank>",
   },
   {
     title: "Why",
     english: "Why do you fight?",
-    transliteration: "<subject> you <verb (interrogative)> fight(v) for <blank>",
+    transliteration: "<subject> you <verb_interrogative> fight(v) for <blank>",
   },
   {
     title: "How",
     english: "How do you open it?",
-    transliteration: "<subject> you <verb (interrogative)> open(v) <object> it with <blank>",
+    transliteration: "<subject> you <verb_interrogative> open(v) <object> it with <blank>",
   },
   {
     title: "How many",
     english: "How many children do you have?",
-    transliteration: "<subject> you <verb (interrogative)> possess <object> child number <blank>",
+    transliteration: "<subject> you <verb_interrogative> possess <object> child number <blank>",
   },
 ];
 
@@ -444,7 +444,7 @@ export const self_other_examples: Example[] = [
   {
     title: "One another",
     english: "Everyone should act towards one another",
-    transliteration: "<subject> person all <verb (prescriptive)> do to other",
+    transliteration: "<subject> person all <verb_prescriptive> do to other",
   },
   { title: "One's own", english: "one's own family", transliteration: "family of self" },
   { title: "Another", english: "another person", transliteration: "person other" },
@@ -460,7 +460,7 @@ export const water_fire_examples: Example[] = [
   { title: "Water", english: "water", transliteration: "water" },
   { title: "Fire", english: "heat at its fullest (max_positive heat)", transliteration: "fire" },
   { title: "Drink", english: "I drink water", transliteration: "<subject> I <verb> eat <object> water" },
-  { title: "Burn", english: "The land is burning", transliteration: "<subject> land <verb> burn(v) continuous_tense_aspect" },
+  { title: "Burn", english: "The land is burning", transliteration: "<subject> land <verb> burn(v) <continuous_tense_aspect>" },
   {
     title: "Set on fire",
     english: "The person burns the rod",
@@ -482,20 +482,20 @@ export const water_fire_examples: Example[] = [
 // One celestial root; rank picks the level of the orbital hierarchy, and this makes it ours
 export const sky_examples: Example[] = [
   { title: "Celestial body", english: "any body in the sky", transliteration: "celestial" },
-  { title: "Asteroid or comet", english: "rank 0: debris", transliteration: "celestial rank_0" },
-  { title: "Moon", english: "rank 1: orbits a planet", transliteration: "celestial rank_1" },
-  { title: "Planet", english: "rank 2: orbits a star", transliteration: "celestial rank_2" },
-  { title: "Star", english: "rank 3", transliteration: "celestial rank_3" },
-  { title: "Galaxy", english: "rank 4", transliteration: "celestial rank_4" },
-  { title: "The Moon", english: "our moon", transliteration: "celestial rank_1 this" },
-  { title: "Earth", english: "our planet", transliteration: "celestial rank_2 this" },
-  { title: "The Sun", english: "our star", transliteration: "celestial rank_3 this" },
-  { title: "The Milky Way", english: "our galaxy", transliteration: "celestial rank_4 this" },
-  { title: "Many stars", english: "many stars", transliteration: "celestial rank_3 many" },
+  { title: "Asteroid or comet", english: "rank 0: debris", transliteration: "celestial <rank_0>" },
+  { title: "Moon", english: "rank 1: orbits a planet", transliteration: "celestial <rank_1>" },
+  { title: "Planet", english: "rank 2: orbits a star", transliteration: "celestial <rank_2>" },
+  { title: "Star", english: "rank 3", transliteration: "celestial <rank_3>" },
+  { title: "Galaxy", english: "rank 4", transliteration: "celestial <rank_4>" },
+  { title: "The Moon", english: "our moon", transliteration: "celestial <rank_1> this" },
+  { title: "Earth", english: "our planet", transliteration: "celestial <rank_2> this" },
+  { title: "The Sun", english: "our star", transliteration: "celestial <rank_3> this" },
+  { title: "The Milky Way", english: "our galaxy", transliteration: "celestial <rank_4> this" },
+  { title: "Many stars", english: "many stars", transliteration: "celestial <rank_3> many" },
   {
     title: "A sentence",
     english: "The Sun is bright",
-    transliteration: "<subject> celestial rank_3 this <verb> is <complement> bright",
+    transliteration: "<subject> celestial <rank_3> this <verb> is <complement> bright",
   },
 ];
 
@@ -519,18 +519,18 @@ export const comparison_examples: Example[] = [
   {
     title: "Biggest",
     english: "The Sun is the biggest",
-    transliteration: "<subject> celestial rank_3 this <verb> exceed <object> all in big",
+    transliteration: "<subject> celestial <rank_3> this <verb> exceed <object> all in big",
   },
   {
     title: "Much bigger",
     english: "The Sun is much bigger than Earth",
     transliteration:
-      "<subject> celestial rank_3 this <verb> max_positive exceed <object> celestial rank_2 this in big",
+      "<subject> celestial <rank_3> this <verb> <max_positive> exceed <object> celestial <rank_2> this in big",
   },
   {
     title: "Slightly faster",
     english: "You are slightly faster than me",
-    transliteration: "<subject> you <verb> min_positive exceed <object> me in fast",
+    transliteration: "<subject> you <verb> <min_positive> exceed <object> me in fast",
   },
   {
     title: "More than",
@@ -540,25 +540,25 @@ export const comparison_examples: Example[] = [
   {
     title: "Question",
     english: "Who is the strongest?",
-    transliteration: "<subject> person <blank> <verb (interrogative)> exceed <object> all in strong",
+    transliteration: "<subject> person <blank> <verb_interrogative> exceed <object> all in strong",
   },
 ];
 
 // One geometry root; rank counts dimensions
 export const geometry_examples: Example[] = [
-  { title: "Point", english: "no dimensions", transliteration: "geometry rank_0" },
-  { title: "Line", english: "one dimension", transliteration: "geometry rank_1" },
-  { title: "Shape", english: "two dimensions", transliteration: "geometry rank_2" },
-  { title: "Form", english: "three dimensions: a solid", transliteration: "geometry rank_3" },
-  { title: "Straight line", english: "a plumb line", transliteration: "geometry rank_1 plumb" },
-  { title: "Curve", english: "a round line", transliteration: "geometry rank_1 round" },
-  { title: "Circle", english: "a round shape", transliteration: "geometry rank_2 round" },
-  { title: "Polygon", english: "an angled shape", transliteration: "geometry rank_2 angle" },
-  { title: "Sphere", english: "a round form", transliteration: "geometry rank_3 round" },
+  { title: "Point", english: "no dimensions", transliteration: "geometry <rank_0>" },
+  { title: "Line", english: "one dimension", transliteration: "geometry <rank_1>" },
+  { title: "Shape", english: "two dimensions", transliteration: "geometry <rank_2>" },
+  { title: "Form", english: "three dimensions: a solid", transliteration: "geometry <rank_3>" },
+  { title: "Straight line", english: "a plumb line", transliteration: "geometry <rank_1> plumb" },
+  { title: "Curve", english: "a round line", transliteration: "geometry <rank_1> round" },
+  { title: "Circle", english: "a round shape", transliteration: "geometry <rank_2> round" },
+  { title: "Polygon", english: "an angled shape", transliteration: "geometry <rank_2> angle" },
+  { title: "Sphere", english: "a round form", transliteration: "geometry <rank_3> round" },
   {
     title: "A sentence",
     english: "Earth is a sphere",
-    transliteration: "<subject> celestial rank_2 this <verb> is <complement> geometry rank_3 round",
+    transliteration: "<subject> celestial <rank_2> this <verb> is <complement> geometry <rank_3> round",
   },
 ];
 
@@ -570,7 +570,7 @@ export const thing_examples: Example[] = [
   {
     title: "What thing",
     english: "What thing do you want?",
-    transliteration: "<subject> you <verb (interrogative)> desire <object> thing <blank>",
+    transliteration: "<subject> you <verb_interrogative> desire <object> thing <blank>",
   },
   { title: "Animal", english: "an animal", transliteration: "animal" },
   { title: "Young animal", english: "an animal's child", transliteration: "animal child" },
@@ -579,18 +579,18 @@ export const thing_examples: Example[] = [
     english: "The animal eats food",
     transliteration: "<subject> animal <verb> eat <object> <ee> eat",
   },
-  { title: "Solid", english: "rank 0", transliteration: "matter rank_0" },
-  { title: "Liquid", english: "rank 1", transliteration: "matter rank_1" },
-  { title: "Gas", english: "rank 2", transliteration: "matter rank_2" },
-  { title: "Plasma", english: "rank 3", transliteration: "matter rank_3" },
-  { title: "Ice", english: "solid water", transliteration: "water matter rank_0" },
-  { title: "Steam", english: "water as a gas", transliteration: "water matter rank_2" },
+  { title: "Solid", english: "rank 0", transliteration: "matter <rank_0>" },
+  { title: "Liquid", english: "rank 1", transliteration: "matter <rank_1>" },
+  { title: "Gas", english: "rank 2", transliteration: "matter <rank_2>" },
+  { title: "Plasma", english: "rank 3", transliteration: "matter <rank_3>" },
+  { title: "Ice", english: "solid water", transliteration: "water matter <rank_0>" },
+  { title: "Steam", english: "water as a gas", transliteration: "water matter <rank_2>" },
   {
     title: "A sentence",
     english: "Water is a liquid",
-    transliteration: "<subject> water <verb> is <complement> matter rank_1",
+    transliteration: "<subject> water <verb> is <complement> matter <rank_1>",
   },
-  { title: "Melt", english: "The ice melts", transliteration: "<subject> water matter rank_0 <verb> melt(v)" },
+  { title: "Melt", english: "The ice melts", transliteration: "<subject> water matter <rank_0> <verb> melt(v)" },
   {
     title: "Up a phase",
     english: "The water evaporated (melt, said of a liquid)",
@@ -604,152 +604,152 @@ export const thing_examples: Example[] = [
   {
     title: "Condense",
     english: "Steam condenses on the wall",
-    transliteration: "<subject> water matter rank_2 <verb> condense(v) at wall",
+    transliteration: "<subject> water matter <rank_2> <verb> condense(v) at wall",
   },
   {
     title: "With an object",
     english: "The sun melts the ice",
-    transliteration: "<subject> celestial rank_3 this <verb> melt(v) <object> water matter rank_0",
+    transliteration: "<subject> celestial <rank_3> this <verb> melt(v) <object> water matter <rank_0>",
   },
-  { title: "Freeze", english: "Freeze the water", transliteration: "<verb (prescriptive)> freeze(v) <object> water" },
+  { title: "Freeze", english: "Freeze the water", transliteration: "<verb_prescriptive> freeze(v) <object> water" },
 ];
 
 // Pointing words: this, that and <blank> with a preposition or a general noun
 export const pointing_examples: Example[] = [
   { title: "Here", english: "I sleep here", transliteration: "<subject> I <verb> sleep(v) at this" },
   { title: "There", english: "You work there", transliteration: "<subject> you <verb> work(v) at that" },
-  { title: "Where", english: "Where do you sleep?", transliteration: "<subject> you <verb (interrogative)> sleep(v) at <blank>" },
-  { title: "Come here", english: "Come here!", transliteration: "<verb (prescriptive)> come(v) to this" },
+  { title: "Where", english: "Where do you sleep?", transliteration: "<subject> you <verb_interrogative> sleep(v) at <blank>" },
+  { title: "Come here", english: "Come here!", transliteration: "<verb_prescriptive> come(v) to this" },
   { title: "From there", english: "I came from there", transliteration: "<subject> I <verb> come(v) formerly from that" },
   { title: "This place", english: "This place is big", transliteration: "<subject> place this <verb> is <complement> big" },
   { title: "That person", english: "that person", transliteration: "person that" },
-  { title: "Which person", english: "Which person left?", transliteration: "<subject> person <blank> <verb (interrogative)> go(v)" },
+  { title: "Which person", english: "Which person left?", transliteration: "<subject> person <blank> <verb_interrogative> go(v)" },
   { title: "This thing", english: "I want this thing", transliteration: "<subject> I <verb> desire <object> thing this" },
 ];
 
-// Subclauses: one bracket, clause_start ... clause_end, as an object, after a preposition, or
+// Subclauses: one bracket, <clause_start> ... <clause_end>, as an object, after a preposition, or
 // after a noun with <blank> marking the noun's place
 export const clause_examples: Example[] = [
   {
     title: "That…",
     english: "I believe the person left",
-    transliteration: "<subject> I <verb> believe <object> clause_start <subject> person <verb> go(v)",
+    transliteration: "<subject> I <verb> believe <object> <clause_start> <subject> person <verb> go(v)",
   },
   {
     title: "To…",
     english: "I want to sleep (the subclause takes my subject)",
-    transliteration: "<subject> I <verb> desire <object> clause_start <verb> sleep(v)",
+    transliteration: "<subject> I <verb> desire <object> <clause_start> <verb> sleep(v)",
   },
   {
     title: "Because",
     english: "I'm tired because I worked",
     transliteration:
-      "<subject> I <verb> is <complement> weak from clause_start <subject> I <verb> work(v) formerly",
+      "<subject> I <verb> is <complement> weak from <clause_start> <subject> I <verb> work(v) formerly",
   },
   {
     title: "When",
     english: "When you slept, I worked",
     transliteration:
-      "at time clause_start <subject> you <verb> sleep(v) clause_end <subject> I <verb> work(v) formerly",
+      "at time <clause_start> <subject> you <verb> sleep(v) <clause_end> <subject> I <verb> work(v) formerly",
   },
   {
     title: "So that",
     english: "I work so that you can sleep",
     transliteration:
-      "<subject> I <verb> work(v) for clause_start <subject> you <verb> sleep(v) not impossibly",
+      "<subject> I <verb> work(v) for <clause_start> <subject> you <verb> sleep(v) not impossibly",
   },
   {
     title: "Until",
     english: "Work until the Sun rises",
     transliteration:
-      "<verb (prescriptive)> work(v) to time clause_start <subject> celestial rank_3 this <verb> lift(v)",
+      "<verb_prescriptive> work(v) to time <clause_start> <subject> celestial <rank_3> this <verb> lift(v)",
   },
   {
     title: "If",
     english: "If it burns, put it out",
     transliteration:
-      "if clause_start <subject> it <verb> burn(v) clause_end <verb (prescriptive)> quench(v) <object> it",
+      "if <clause_start> <subject> it <verb> burn(v) <clause_end> <verb_prescriptive> quench(v) <object> it",
   },
   {
     title: "Who",
     english: "the person who defended me",
-    transliteration: "person clause_start <subject> <blank> <verb> defend(v) <object> me clause_end",
+    transliteration: "person <clause_start> <subject> <blank> <verb> defend(v) <object> me <clause_end>",
   },
   {
     title: "That (object)",
     english: "the rock that I burned",
-    transliteration: "rock clause_start <subject> I <verb> burn(v) formerly <object> <blank> clause_end",
+    transliteration: "rock <clause_start> <subject> I <verb> burn(v) formerly <object> <blank> <clause_end>",
   },
   {
     title: "Where",
     english: "the place where I sleep",
-    transliteration: "place clause_start <subject> I <verb> sleep(v) at <blank> clause_end",
+    transliteration: "place <clause_start> <subject> I <verb> sleep(v) at <blank> <clause_end>",
   },
   {
     title: "To whom",
     english: "the person I gave money to",
     transliteration:
-      "person clause_start <subject> I <verb> give(v) formerly <object> money to <blank> clause_end",
+      "person <clause_start> <subject> I <verb> give(v) formerly <object> money to <blank> <clause_end>",
   },
   {
     title: "In a sentence",
     english: "The person who defended me is strong",
     transliteration:
-      "<subject> person clause_start <subject> <blank> <verb> defend(v) <object> me clause_end <verb> is <complement> strong",
+      "<subject> person <clause_start> <subject> <blank> <verb> defend(v) <object> me <clause_end> <verb> is <complement> strong",
   },
 ];
 
 // One cardinal root; rank counts quarter turns clockwise from north
 export const direction_examples: Example[] = [
-  { title: "North", english: "rank 0", transliteration: "cardinal rank_0" },
-  { title: "East", english: "rank 1: a quarter turn", transliteration: "cardinal rank_1" },
-  { title: "South", english: "rank 2: a half turn", transliteration: "cardinal rank_2" },
-  { title: "West", english: "rank 3", transliteration: "cardinal rank_3" },
+  { title: "North", english: "rank 0", transliteration: "cardinal <rank_0>" },
+  { title: "East", english: "rank 1: a quarter turn", transliteration: "cardinal <rank_1>" },
+  { title: "South", english: "rank 2: a half turn", transliteration: "cardinal <rank_2>" },
+  { title: "West", english: "rank 3", transliteration: "cardinal <rank_3>" },
   {
     title: "Northward",
     english: "Go north",
-    transliteration: "<verb (prescriptive)> go(v) to cardinal rank_0",
+    transliteration: "<verb_prescriptive> go(v) to cardinal <rank_0>",
   },
   {
     title: "In the east",
     english: "The Sun rises in the east",
-    transliteration: "<subject> celestial rank_3 this <verb> lift(v) at cardinal rank_1",
+    transliteration: "<subject> celestial <rank_3> this <verb> lift(v) at cardinal <rank_1>",
   },
   {
     title: "Where from",
     english: "I came from the south",
-    transliteration: "<subject> I <verb> come(v) formerly from cardinal rank_2",
+    transliteration: "<subject> I <verb> come(v) formerly from cardinal <rank_2>",
   },
 ];
 
 // Arithmetic: count takes rank for the operation and negative for its inverse; by gives the amount
 export const arithmetic_examples: Example[] = [
-  { title: "Count", english: "Count to ten", transliteration: "<verb (prescriptive)> count(v) to number 1 0" },
-  { title: "Count down", english: "Count down from ten", transliteration: "<verb (prescriptive)> count_down(v) from number 1 0" },
-  { title: "Add", english: "Add 2 to 5", transliteration: "<verb (prescriptive)> count(v) rank_1 <object> number 5 by number 2" },
+  { title: "Count", english: "Count to ten", transliteration: "<verb_prescriptive> count(v) to number 1 0" },
+  { title: "Count down", english: "Count down from ten", transliteration: "<verb_prescriptive> count_down(v) from number 1 0" },
+  { title: "Add", english: "Add 2 to 5", transliteration: "<verb_prescriptive> count(v) <rank_1> <object> number 5 by number 2" },
   {
     title: "Subtract",
     english: "Subtract 2 from 5",
-    transliteration: "<verb (prescriptive)> count_down(v) rank_1 <object> number 5 by number 2",
+    transliteration: "<verb_prescriptive> count_down(v) <rank_1> <object> number 5 by number 2",
   },
-  { title: "Multiply", english: "Multiply 5 by 2", transliteration: "<verb (prescriptive)> count(v) rank_2 <object> number 5 by number 2" },
-  { title: "Divide", english: "Divide 6 by 3", transliteration: "<verb (prescriptive)> count_down(v) rank_2 <object> number 6 by number 3" },
-  { title: "Power", english: "Square 5", transliteration: "<verb (prescriptive)> count(v) rank_3 <object> number 5 by number 2" },
+  { title: "Multiply", english: "Multiply 5 by 2", transliteration: "<verb_prescriptive> count(v) <rank_2> <object> number 5 by number 2" },
+  { title: "Divide", english: "Divide 6 by 3", transliteration: "<verb_prescriptive> count_down(v) <rank_2> <object> number 6 by number 3" },
+  { title: "Power", english: "Square 5", transliteration: "<verb_prescriptive> count(v) <rank_3> <object> number 5 by number 2" },
   {
     title: "Root",
     english: "Take the square root of 9",
-    transliteration: "<verb (prescriptive)> count_down(v) rank_3 <object> number 9 by number 2",
+    transliteration: "<verb_prescriptive> count_down(v) <rank_3> <object> number 9 by number 2",
   },
   {
     title: "Logarithm",
     english: "The rank of 1000 is 3",
-    transliteration: "<subject> rank of number 1 rank_3 <verb> equal <object> number 3",
+    transliteration: "<subject> rank of number 1 <rank_3> <verb> equal <object> number 3",
   },
   {
     title: "A sentence",
     english: "If you add 2 to 3, you get 5",
     transliteration:
-      "if clause_start <subject> you <verb> count(v) rank_1 <object> number 3 by number 2 clause_end <subject> you <verb> possess <object> number 5",
+      "if <clause_start> <subject> you <verb> count(v) <rank_1> <object> number 3 by number 2 <clause_end> <subject> you <verb> possess <object> number 5",
   },
 ];
 
@@ -775,7 +775,7 @@ export const udhr_articles: Article[] = [
       "All human beings are born free and equal in dignity and rights. They are endowed with reason and conscience and should act towards one another in a spirit of brotherhood.",
     ],
     transliteration:
-      "<subject> person all <verb?> is <complement> free and equal in value and privilege. <subject> it all <verb> possess <object> reason and conscience? and <verb (prescriptive)> do for other and in manner family?. ??",
+      "<subject> person all <verb?> is <complement> free and equal in value and privilege. <subject> it all <verb> possess <object> reason and conscience? and <verb_prescriptive> do for other and in manner family?. ??",
   },
   {
     title: "Article 2",
@@ -795,7 +795,7 @@ export const udhr_articles: Article[] = [
       "No one shall be held in slavery or servitude; slavery and the slave trade shall be prohibited in all their forms.",
     ],
     transliteration:
-      "<subject> person none <verb (prescriptive)> is <complement> <ee> force(v). <object> <gerund> force(v) and trade <ee> force(v) in geometry rank_2 all <verb (prescriptive)> forbid.",
+      "<subject> person none <verb_prescriptive> is <complement> <ee> force(v). <object> <gerund> force(v) and trade <ee> force(v) in geometry <rank_2> all <verb_prescriptive> forbid.",
   },
   {
     title: "Article 5",
@@ -803,7 +803,7 @@ export const udhr_articles: Article[] = [
       "No one shall be subjected to torture or to cruel, inhuman or degrading treatment or punishment.",
     ],
     transliteration:
-      "<object> person none <verb (prescriptive)> torment(v) or trivialize(v).",
+      "<object> person none <verb_prescriptive> torment(v) or trivialize(v).",
   },
   {
     title: "Article 6",
@@ -827,7 +827,7 @@ export const udhr_articles: Article[] = [
     title: "Article 9",
     english: ["No one shall be subjected to arbitrary arrest, detention or exile."],
     transliteration:
-      "<object> person none <verb (prescriptive)> constrain(v) or eject(v) randomly.",
+      "<object> person none <verb_prescriptive> constrain(v) or eject(v) randomly.",
   },
   {
     title: "Article 10",
@@ -988,13 +988,13 @@ export type Token =
 
 // Transliteration spellings that don't match a dictionary name directly
 const ALIASES: Record<string, string> = {
-  i: "pronoun(first_person)",
-  me: "pronoun(first_person)",
-  you: "pronoun(second_person)",
-  it: "pronoun(third_person)",
+  i: "<pronoun_first_person>",
+  me: "<pronoun_first_person>",
+  you: "<pronoun_second_person>",
+  it: "<pronoun_third_person>",
 };
 
-// A bracketed name is a grammar marker, named <subject>, <verb(prescriptive)> and so on; anything
+// A bracketed name is a grammar marker, named <subject>, <verb_prescriptive> and so on; anything
 // else is an ordinary word, so <to> is the marker and to the preposition
 function lookup(
   name: string,
