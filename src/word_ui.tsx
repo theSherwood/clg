@@ -267,7 +267,7 @@ function MatrixCell({
   return (
     <td
       className={`px-1.5 py-0.5 border border-gray-200 whitespace-nowrap
-        ${here ? "bg-indigo-100 font-semibold" : ""}
+        ${here ? "font-semibold" : ""}
         text-gray-800`}
     >
       {here ? (
@@ -388,7 +388,14 @@ function AxisMatrix({ axis, form, depth }: { axis: Axis; form: string; depth: nu
           </thead>
           <tbody>
             {rows.map(([label, sound, side, optional]) => (
-              <tr key={label} className={STEP_TINTS[label] ?? ""}>
+              <tr
+                key={label}
+                className={`${STEP_TINTS[label] ?? ""} ${
+                  Object.values(side).some((cell) => cell.word && form_key(cell.word) === form)
+                    ? "border-2 border-indigo-600"
+                    : ""
+                }`}
+              >
                 <th
                   className={`pr-1.5 font-normal text-left whitespace-nowrap ${
                     optional ? "text-gray-400" : "text-gray-500"
