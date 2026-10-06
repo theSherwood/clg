@@ -40,7 +40,7 @@ fit as its scale steps.
 - [ ] enclose/release and liberty (free/constrain): release ≈ free; enclose could be max_negative
   liberty. Set aside
 - [ ] transmission (send/receive): with give, or with travel. Kept separate for now
-- [ ] travel (come/go) and distance (near/far): probably keep, since go_vi is the general verb
+- [ ] travel (come/go) and distance (near/far): probably keep, since go(vi) is the general verb
   of motion and "go to X" approaches X
 - [ ] obligation (duty/privilege) and permissibility (forbid/allow/recommend): obligatory as
   max_positive recommend; might give a word for "right"

@@ -92,14 +92,14 @@ export function GrammarView() {
       </p>
       <p className="mt-2">
         <W w="<er>" /> and <W w="<ee>" /> turn a verb into a noun for its subject or object, after
-        English employer and employee: <i>&lt;er&gt; eat_vt</i> is “eater”, <i>&lt;ee&gt; eat_vt</i> is “what is eaten”,
+        English employer and employee: <i>&lt;er&gt; eat(vt)</i> is “eater”, <i>&lt;ee&gt; eat(vt)</i> is “what is eaten”,
         so food. <W w="<er>" /> is whoever or whatever does it, not only a person, like English
         printer or opener. Two more markers name other roles, like the prepositions{" "}
         <W w="with" /> and <W w="at" />: <W w="<tool>" /> is what it's done with (<i>&lt;tool&gt; open</i>,
         a key) and <W w="<place>" /> where it's done (<i>&lt;place&gt; sleep</i>, a bed).{" "}
         <W w="<to>" /> and <W w="<from>" /> follow <W w="to" /> and <W w="from" />: who or where it
-        goes to (<i>&lt;to&gt; send_vt</i>, the addressee; <i>&lt;to&gt; go_vi</i>, the destination) and comes from (
-        <i>&lt;from&gt; come_vi</i>, someone's origin; <i>&lt;from&gt; receive_vt</i>, the sender). Arabic builds
+        goes to (<i>&lt;to&gt; send(vt)</i>, the addressee; <i>&lt;to&gt; go(vi)</i>, the destination) and comes from (
+        <i>&lt;from&gt; come(vi)</i>, someone's origin; <i>&lt;from&gt; receive(vt)</i>, the sender). Arabic builds
         nouns from roots the same way (<i>kātib</i> writer, <i>maktab</i> office, from k-t-b
         “write”), and so does Esperanto (<i>tranĉilo</i> knife, <i>lernejo</i> school).
       </p>
@@ -114,14 +114,14 @@ export function GrammarView() {
         object. Every draft so far is in subject–verb–object order.
       </p>
       <Example meaning="Everyone has the right to life, liberty and security of person.">
-        &lt;subject&gt; person all &lt;verb&gt; possess_vt &lt;object&gt; right of life and freedom and
+        &lt;subject&gt; person all &lt;verb&gt; possess(vt) &lt;object&gt; right of life and freedom and
         safety.
       </Example>
       <p>
         <b>Transitivity.</b> A transitive verb always takes <W w="<object>" />, even when nothing
         about the object is said. Without an object, the verb is intransitive. In examples, a verb is
-        written by the meaning it has there, marked <i>_vi</i> without an object and <i>_vt</i>{" "}
-        with one: the same root is <W w="die_vi" /> and <W w="kill_vt" />. What each means
+        written by the meaning it has there, marked <i>(vi)</i> without an object and <i>(vt)</i>{" "}
+        with one: the same root is <W w="die(vi)" /> and <W w="kill(vt)" />. What each means
         depends on the verb's type, and every axis has one type, shared by both its ends:
       </p>
       <table className="mt-2 text-sm border-collapse">
@@ -145,46 +145,46 @@ export function GrammarView() {
         </tbody>
       </table>
       <p className="mt-2">
-        So <W w="kill_vt" />, a change verb, is “die” without an object and “kill” with one;{" "}
-        <W w="fight_vi" />, an action, is “fight” and “fight someone”; and <W w="possess_vt" />, a
-        relation, only takes an object. Being in a state isn't a verb: it's <W w="be_vt" /> with
-        an adjective. Staying in one is the absence of change, <i>not change_vi</i>, and keeping
-        something going is <W w="persist_vi" /> with an object, “maintain”. The Words view lists
+        So <W w="kill(vt)" />, a change verb, is “die” without an object and “kill” with one;{" "}
+        <W w="fight(vi)" />, an action, is “fight” and “fight someone”; and <W w="possess(vt)" />, a
+        relation, only takes an object. Being in a state isn't a verb: it's <W w="be(vt)" /> with
+        an adjective. Staying in one is the absence of change, <i>not change(vi)</i>, and keeping
+        something going is <W w="persist(vi)" /> with an object, “maintain”. The Words view lists
         every axis verb by type.
       </p>
       <Example meaning="A soldier kills.">
-        &lt;subject&gt; soldier &lt;verb&gt; kill_vt &lt;object&gt;
+        &lt;subject&gt; soldier &lt;verb&gt; kill(vt) &lt;object&gt;
       </Example>
-      <Example meaning="A soldier dies.">&lt;subject&gt; soldier &lt;verb&gt; die_vi</Example>
+      <Example meaning="A soldier dies.">&lt;subject&gt; soldier &lt;verb&gt; die(vi)</Example>
       <p>
         <b>Objects.</b> The object is what the verb acts on: what moves, or what changes. Whoever
         receives it is a <W w="to" /> phrase, and wherever it comes from a <W w="from" /> phrase,
         for every verb, so there's no per-verb list of which slot is which. When nothing moves, the
-        one who changes is the object: <W w="educate_vt" />'s object is the student, who becomes
+        one who changes is the object: <W w="educate(vt)" />'s object is the student, who becomes
         smart.
       </p>
       <Example meaning="I send you money.">
-        &lt;subject&gt; I &lt;verb&gt; send_vt &lt;object&gt; money to you
+        &lt;subject&gt; I &lt;verb&gt; send(vt) &lt;object&gt; money to you
       </Example>
       <p>
-        A relation's verb is the relation itself rather than a change: <W w="equal_vt" /> relates
-        two things and <W w="possess_vt" /> relates an owner to what they own, each with an object.
+        A relation's verb is the relation itself rather than a change: <W w="equal(vt)" /> relates
+        two things and <W w="possess(vt)" /> relates an owner to what they own, each with an object.
       </p>
       <p className="mt-2">
-        <W w="be_vt" /> is different: what follows it isn't an object but a subject complement,
+        <W w="be(vt)" /> is different: what follows it isn't an object but a subject complement,
         marked <W w="<complement>" />. It says what the subject is, so it reads as a modifier: the
         adjective where there is one (<i>hot</i>, not <i>heat</i>), and otherwise the noun (
         <i>matter &lt;rank_1&gt;</i>, a liquid). Mood stays on the verb marker, so “be strong!” is{" "}
-        <i>&lt;verb_prescriptive&gt; be_vt &lt;complement&gt; strong</i>.
+        <i>&lt;verb_prescriptive&gt; be(vt) &lt;complement&gt; strong</i>.
       </p>
       <Example meaning="The sky is blue.">
-        &lt;subject&gt; sky &lt;verb&gt; be_vt &lt;complement&gt; blue
+        &lt;subject&gt; sky &lt;verb&gt; be(vt) &lt;complement&gt; blue
       </Example>
       <Example meaning="Water is a liquid.">
-        &lt;subject&gt; water &lt;verb&gt; be_vt &lt;complement&gt; matter &lt;rank_1&gt;
+        &lt;subject&gt; water &lt;verb&gt; be(vt) &lt;complement&gt; matter &lt;rank_1&gt;
       </Example>
       <Open>
-        Becoming, for relation verbs: maybe a helper, <W w="<become>" /> (<i>&lt;become&gt; possess_vt</i>,
+        Becoming, for relation verbs: maybe a helper, <W w="<become>" /> (<i>&lt;become&gt; possess(vt)</i>,
         “gain”).
       </Open>
       <p>
@@ -193,13 +193,13 @@ export function GrammarView() {
         for what's being asked about; without it, the question is yes or no.
       </p>
       <Example meaning="No one shall be held in slavery.">
-        &lt;subject&gt; person none &lt;verb_prescriptive&gt; be_vt &lt;complement&gt; &lt;ee&gt; force_vt.
+        &lt;subject&gt; person none &lt;verb_prescriptive&gt; be(vt) &lt;complement&gt; &lt;ee&gt; force(vt).
       </Example>
       <Example meaning="Who does the soldier kill?">
-        &lt;subject&gt; soldier &lt;verb_interrogative&gt; kill_vt &lt;object&gt; &lt;blank&gt;
+        &lt;subject&gt; soldier &lt;verb_interrogative&gt; kill(vt) &lt;object&gt; &lt;blank&gt;
       </Example>
       <Example meaning="Does the soldier kill the enemy?">
-        &lt;subject&gt; soldier &lt;verb_interrogative&gt; kill_vt &lt;object&gt; enemy
+        &lt;subject&gt; soldier &lt;verb_interrogative&gt; kill(vt) &lt;object&gt; enemy
       </Example>
       <p>
         Other question words come from where <W w="<blank>" /> sits: <i>person &lt;blank&gt;</i> is who,{" "}
@@ -209,7 +209,7 @@ export function GrammarView() {
         many.
       </p>
       <Example meaning="Why do you fight?">
-        &lt;subject&gt; you &lt;verb_interrogative&gt; fight_vi for &lt;blank&gt;
+        &lt;subject&gt; you &lt;verb_interrogative&gt; fight(vi) for &lt;blank&gt;
       </Example>
 
       <H2>Tense and aspect</H2>
@@ -232,7 +232,7 @@ export function GrammarView() {
         &lt;subject&gt; I &lt;verb&gt; sleep &lt;continuous_tense_aspect&gt; formerly
       </Example>
       <Example meaning="The person will have learned the way.">
-        &lt;subject&gt; person &lt;verb&gt; learn_vt &lt;perfect_tense_aspect&gt; henceforth &lt;object&gt;
+        &lt;subject&gt; person &lt;verb&gt; learn(vt) &lt;perfect_tense_aspect&gt; henceforth &lt;object&gt;
         path
       </Example>
       <p className="mt-2">
@@ -253,14 +253,14 @@ export function GrammarView() {
         In a main clause that's now, so <i>time &lt;rank_3&gt; next</i> is tomorrow and{" "}
         <i>time &lt;rank_3&gt; previous</i> yesterday; in a subclause it's the main clause's time, so the
         same words mean the next day and the day before. Rank counts steps, as for generations:{" "}
-        <i>next &lt;rank_2&gt;</i> is the one after next. As verbs, <W w="precede_vt" /> and{" "}
-        <W w="follow_vt" /> relate two things in order.
+        <i>next &lt;rank_2&gt;</i> is the one after next. As verbs, <W w="precede(vt)" /> and{" "}
+        <W w="follow(vt)" /> relate two things in order.
       </p>
       <Example meaning="I slept yesterday.">
         &lt;subject&gt; I &lt;verb&gt; sleep at time &lt;rank_3&gt; previous
       </Example>
       <Example meaning="Eating comes before sleeping.">
-        &lt;subject&gt; &lt;gerund&gt; eat_vt &lt;verb&gt; precede_vt &lt;object&gt; &lt;gerund&gt; sleep
+        &lt;subject&gt; &lt;gerund&gt; eat(vt) &lt;verb&gt; precede(vt) &lt;object&gt; &lt;gerund&gt; sleep
       </Example>
 
       <H2>Truth and possibility</H2>
@@ -271,10 +271,10 @@ export function GrammarView() {
         <i>&lt;min_positive&gt; truly</i> “probably”, <W w="truly" /> “so” and <i>&lt;max_positive&gt; truly</i>{" "}
         “certainly”. A plain statement claims something is true, not that it's certain, so it sits
         one step below the top. Proof is how something is known, not how likely it is:{" "}
-        <W w="prove_vt" /> with <W w="<perfect_tense_aspect>" /> is “has proved”.
+        <W w="prove(vt)" /> with <W w="<perfect_tense_aspect>" /> is “has proved”.
       </p>
       <Example meaning="The person probably died.">
-        &lt;subject&gt; person &lt;verb&gt; die_vi &lt;min_positive&gt; truly
+        &lt;subject&gt; person &lt;verb&gt; die(vi) &lt;min_positive&gt; truly
       </Example>
       <p className="mt-2">
         Necessity is a separate axis, <W w="modality" />: how many cases something holds in, from{" "}
@@ -282,15 +282,15 @@ export function GrammarView() {
         contingent. Possible is <i>not impossible</i> and “possibly not” is <i>not necessary</i>,
         using <W w="not" />. The two axes stay apart because they can disagree: an unproved
         conjecture is necessary or impossible, while its likelihood is still neutral. A third axis,
-        belief (<W w="doubt_vi" /> to <W w="believe_vi" />), is how strongly someone believes
+        belief (<W w="doubt(vi)" /> to <W w="believe(vi)" />), is how strongly someone believes
         something.
       </p>
       <Example meaning="Everyone necessarily dies.">
-        &lt;subject&gt; person all &lt;verb&gt; die_vi necessarily
+        &lt;subject&gt; person all &lt;verb&gt; die(vi) necessarily
       </Example>
       <Example meaning="I believe the person probably left.">
-        &lt;subject&gt; I &lt;verb&gt; believe_vt &lt;object&gt; &lt;clause_start&gt; &lt;subject&gt; person
-        &lt;verb&gt; go_vi &lt;min_positive&gt; truly &lt;clause_end&gt;
+        &lt;subject&gt; I &lt;verb&gt; believe(vt) &lt;object&gt; &lt;clause_start&gt; &lt;subject&gt; person
+        &lt;verb&gt; go(vi) &lt;min_positive&gt; truly &lt;clause_end&gt;
       </Example>
 
       <H2>Family</H2>
@@ -312,7 +312,7 @@ export function GrammarView() {
         <i>of</i> spouse.
       </p>
       <Example meaning="My grandparent has many descendants.">
-        &lt;subject&gt; parent &lt;rank_2&gt; of me &lt;verb&gt; possess_vt &lt;object&gt; &lt;max_positive&gt;
+        &lt;subject&gt; parent &lt;rank_2&gt; of me &lt;verb&gt; possess(vt) &lt;object&gt; &lt;max_positive&gt;
         child many
       </Example>
       <Open>
@@ -323,29 +323,29 @@ export function GrammarView() {
       <H2>Speech, writing and the senses</H2>
       <p>
         These are action axes, each with its counterpart at the other end:{" "}
-        <W w="say_vt" /> and <W w="hear_vt" />, <W w="write_vi" /> and <W w="read_vi" />,{" "}
-        <W w="sense_vt" /> and <W w="overlook_vt" />, <W w="use_vi" /> and <W w="discard_vi" />,{" "}
-        <W w="do_vt" /> and <W w="undo_vi" />, and <W w="touch_vi" /> and <W w="avoid_vt" />. The
-        scale grades them: <i>&lt;min_positive&gt; write_vi</i>, a lesser writing, is a mark, and{" "}
-        <i>&lt;min_negative&gt; write_vi</i> is skimming. Nouns come from the role markers: a word is{" "}
-        <i>&lt;ee&gt; say_vt</i>, a text <i>&lt;ee&gt; write_vt</i> and an ear <i>&lt;tool&gt; hear_vt</i>. Attaching is{" "}
-        <W w="connect_vi" />.
+        <W w="say(vt)" /> and <W w="hear(vt)" />, <W w="write(vi)" /> and <W w="read(vi)" />,{" "}
+        <W w="sense(vt)" /> and <W w="overlook(vt)" />, <W w="use(vi)" /> and <W w="discard(vi)" />,{" "}
+        <W w="do(vt)" /> and <W w="undo(vi)" />, and <W w="touch(vi)" /> and <W w="avoid(vt)" />. The
+        scale grades them: <i>&lt;min_positive&gt; write(vi)</i>, a lesser writing, is a mark, and{" "}
+        <i>&lt;min_negative&gt; write(vi)</i> is skimming. Nouns come from the role markers: a word is{" "}
+        <i>&lt;ee&gt; say(vt)</i>, a text <i>&lt;ee&gt; write(vt)</i> and an ear <i>&lt;tool&gt; hear(vt)</i>. Attaching is{" "}
+        <W w="connect(vi)" />.
       </p>
 
       <H2>Comparison</H2>
       <p>
-        Comparison is a relation verb, <W w="exceed_vt" />, and an <W w="in" /> phrase names the
+        Comparison is a relation verb, <W w="exceed(vt)" />, and an <W w="in" /> phrase names the
         quality compared, optional when context makes it clear. Its negative is “fall short of”,
-        and the rest comes from words that already exist: <W w="equal_vt" /> is “as big as”,{" "}
-        <i>exceed_vt &lt;object&gt; all</i> is “the biggest”, and the scale grades it, so{" "}
-        <i>&lt;max_positive&gt; exceed_vt</i> is “much bigger” and <i>&lt;min_positive&gt; exceed_vt</i> “slightly
+        and the rest comes from words that already exist: <W w="equal(vt)" /> is “as big as”,{" "}
+        <i>exceed(vt) &lt;object&gt; all</i> is “the biggest”, and the scale grades it, so{" "}
+        <i>&lt;max_positive&gt; exceed(vt)</i> is “much bigger” and <i>&lt;min_positive&gt; exceed(vt)</i> “slightly
         bigger”. Many languages compare this way, like Nigerian Pidgin's “e big pass you”.
       </p>
       <Example meaning="The rock is bigger than the person.">
-        &lt;subject&gt; rock &lt;verb&gt; exceed_vt &lt;object&gt; person in big
+        &lt;subject&gt; rock &lt;verb&gt; exceed(vt) &lt;object&gt; person in big
       </Example>
       <Example meaning="The Sun is the biggest.">
-        &lt;subject&gt; celestial &lt;rank_3&gt; this &lt;verb&gt; exceed_vt &lt;object&gt; all in big
+        &lt;subject&gt; celestial &lt;rank_3&gt; this &lt;verb&gt; exceed(vt) &lt;object&gt; all in big
       </Example>
 
       <H2>Geometry</H2>
@@ -364,14 +364,14 @@ export function GrammarView() {
         <i>water matter &lt;rank_2&gt;</i> steam.
       </p>
       <p className="mt-2">
-        The phase axis changes phase. <W w="melt_vi" /> goes up a phase and{" "}
-        <W w="freeze_vi" /> down one, so one verb is melting for ice and evaporating for water.
-        Rank names the target phase, as it does for <W w="matter" />: <i>melt_vi &lt;rank_2&gt;</i> is to
-        evaporate (<W w="evaporate_vi" />), <i>melt_vi &lt;rank_3&gt;</i> to ionize, <i>freeze_vi &lt;rank_1&gt;</i> to
-        condense and <i>freeze_vi &lt;rank_0&gt;</i> to solidify.
+        The phase axis changes phase. <W w="melt(vi)" /> goes up a phase and{" "}
+        <W w="freeze(vi)" /> down one, so one verb is melting for ice and evaporating for water.
+        Rank names the target phase, as it does for <W w="matter" />: <i>melt(vi) &lt;rank_2&gt;</i> is to
+        evaporate (<W w="evaporate(vi)" />), <i>melt(vi) &lt;rank_3&gt;</i> to ionize, <i>freeze(vi) &lt;rank_1&gt;</i> to
+        condense and <i>freeze(vi) &lt;rank_0&gt;</i> to solidify.
       </p>
       <Example meaning="The sun melts the ice.">
-        &lt;subject&gt; celestial &lt;rank_3&gt; this &lt;verb&gt; melt_vt &lt;object&gt; water matter &lt;rank_0&gt;
+        &lt;subject&gt; celestial &lt;rank_3&gt; this &lt;verb&gt; melt(vt) &lt;object&gt; water matter &lt;rank_0&gt;
       </Example>
 
       <H2>Sky</H2>
@@ -383,7 +383,7 @@ export function GrammarView() {
         Sun, <i>&lt;rank_2&gt; this</i> Earth and <i>&lt;rank_1&gt; this</i> the Moon.
       </p>
       <Example meaning="The Sun is bright.">
-        &lt;subject&gt; celestial &lt;rank_3&gt; this &lt;verb&gt; be_vt &lt;complement&gt; bright
+        &lt;subject&gt; celestial &lt;rank_3&gt; this &lt;verb&gt; be(vt) &lt;complement&gt; bright
       </Example>
 
       <H2>Directions</H2>
@@ -403,7 +403,7 @@ export function GrammarView() {
         <i>red dark</i> maroon, and white and black are just <W w="bright" /> and <W w="dark" />.
       </p>
       <Example meaning="The rock is orange.">
-        &lt;subject&gt; rock &lt;verb&gt; be_vt &lt;complement&gt; red yellow
+        &lt;subject&gt; rock &lt;verb&gt; be(vt) &lt;complement&gt; red yellow
       </Example>
 
       <H2>Modifiers</H2>
@@ -414,7 +414,7 @@ export function GrammarView() {
       <p className="mt-2">
         Opposites and scales come from <b>axes</b>. Each axis has one root for its positive end,
         used across the noun, adjective, verb and adverb domains (<W w="big" />, <W w="bigness" />,{" "}
-        <W w="grow_vi" />, <W w="hugely" />
+        <W w="grow(vi)" />, <W w="hugely" />
         ). The negative end is <W w="<negative>" /> plus the positive (<W w="small" />
         ), and the axis itself is <W w="<axis_of>" /> plus the positive noun (<W w="size" />
         ). A seven-step scale grades axis words: <W w="<max_negative>" />, <W w="<negative>" />,{" "}
@@ -423,7 +423,7 @@ export function GrammarView() {
       </p>
       <p className="mt-2">
         <b>Order.</b> Two rules do different jobs. Modifiers build phrases and follow their head (
-        <i>person all</i>, <i>kill_vt truly</i>). Axis helpers and <W w="not" /> build words and come
+        <i>person all</i>, <i>kill(vt) truly</i>). Axis helpers and <W w="not" /> build words and come
         before the word they apply to, like prefixes (<i>&lt;negative&gt; big</i>,{" "}
         <i>&lt;min_positive&gt; truly</i>, <i>not impossibly</i>). Spanish splits the same way: adjectives
         follow the noun, but <i>muy</i> comes before the adjective. Each prefix takes exactly the
@@ -446,7 +446,7 @@ export function GrammarView() {
         bracket one with <W w="<clause_start>" /> and <W w="<clause_end>" /> when it matters.
       </p>
       <Example meaning="…equal in dignity and rights.">
-        free and equal_vt in value and privilege
+        free and equal(vt) in value and privilege
       </Example>
 
       <H2>Conjunctions and clauses</H2>
@@ -464,7 +464,7 @@ export function GrammarView() {
       </p>
       <ul className="mt-2 list-disc pl-6 space-y-1">
         <li>
-          <b>As an object</b>: <i>I believe_vt &lt;object&gt; &lt;clause_start&gt; … &lt;clause_end&gt;</i>, I
+          <b>As an object</b>: <i>I believe(vt) &lt;object&gt; &lt;clause_start&gt; … &lt;clause_end&gt;</i>, I
           believe that….
         </li>
         <li>
@@ -481,7 +481,7 @@ export function GrammarView() {
         </li>
       </ul>
       <Example meaning="the person who defended me">
-        person &lt;clause_start&gt; &lt;subject&gt; &lt;blank&gt; &lt;verb&gt; defend_vt &lt;object&gt; me &lt;clause_end&gt;
+        person &lt;clause_start&gt; &lt;subject&gt; &lt;blank&gt; &lt;verb&gt; defend(vt) &lt;object&gt; me &lt;clause_end&gt;
       </Example>
       <Example meaning="the place where I sleep">
         place &lt;clause_start&gt; &lt;subject&gt; I &lt;verb&gt; sleep at &lt;blank&gt; &lt;clause_end&gt;
@@ -542,7 +542,7 @@ export function GrammarView() {
         <W w="thing" /> is the general noun, Toki Pona's <i>ijo</i>: <i>thing all</i> is
         everything, <i>thing none</i> nothing and <i>thing &lt;blank&gt;</i> what thing.{" "}
         <W w="self" /> and <W w="other" /> are content roots too. As an object, <W w="self" /> is
-        reflexive (<i>I know_vt self</i>, I know myself), and <i>family of self</i> is one's
+        reflexive (<i>I know(vt) self</i>, I know myself), and <i>family of self</i> is one's
         own family. <i>person other</i> is another person, and with a plural subject,{" "}
         <W w="other" /> is each other.
       </p>
@@ -587,15 +587,15 @@ export function GrammarView() {
 
       <H2>Arithmetic</H2>
       <p>
-        <W w="count_vi" /> takes rank for the operation, each level repeating the one below, as in
-        the mathematical hyperoperations: bare <i>count_vi</i> is counting, <i>count_vi &lt;rank_1&gt;</i> adding,{" "}
+        <W w="count(vi)" /> takes rank for the operation, each level repeating the one below, as in
+        the mathematical hyperoperations: bare <i>count(vi)</i> is counting, <i>count(vi) &lt;rank_1&gt;</i> adding,{" "}
         <i>&lt;rank_2&gt;</i> multiplying and <i>&lt;rank_3&gt;</i> raising to a power. Its negative end,{" "}
-        <W w="count_down_vi" />, is the inverse: counting down, subtracting, dividing and taking a
+        <W w="count_down(vi)" />, is the inverse: counting down, subtracting, dividing and taking a
         root. The object is the number acted on and <W w="by" /> gives the amount, and a logarithm
         is just <W w="rank" />, the exponent a number already has.
       </p>
       <Example meaning="Divide 6 by 3.">
-        &lt;verb_prescriptive&gt; count_down_vt &lt;rank_2&gt; &lt;object&gt; number 6 by number 3
+        &lt;verb_prescriptive&gt; count_down(vt) &lt;rank_2&gt; &lt;object&gt; number 6 by number 3
       </Example>
 
       <H2>Other grammar words</H2>
