@@ -159,8 +159,6 @@ exports[`root IDs 1`] = `
   "251": "rarity, rare, rarely",
   "252": "surface, superficial, superficially",
   "253": "child, filial",
-  "254": "north, northward",
-  "255": "east, eastward",
   "28": "dimension_0",
   "29": "dimension_x",
   "3": "_verb",
@@ -234,7 +232,8 @@ exports[`root IDs 1`] = `
   "91": "other",
   "92": "geometry",
   "93": "celestial",
-  "94": "animal",
-  "95": "matter",
+  "94": "cardinal",
+  "95": "animal",
+  "96": "matter",
 }
 `;

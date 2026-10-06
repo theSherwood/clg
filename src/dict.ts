@@ -2231,16 +2231,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { noun: "parent", adj: "parental" },
     { noun: "child", adj: "filial" },
   ],
-  [
-    { notes: "axis name “latitude” needs a positive noun" },
-    { adj: "south", adverb: "southward" },
-    { adj: "north", adverb: "northward" },
-  ],
-  [
-    { notes: "axis name “longitude” needs a positive noun" },
-    { adj: "west", adverb: "westward" },
-    { adj: "east", adverb: "eastward" },
-  ],
 ];
 
 // Grammar markers, which are also domain words: they mark the role of what follows and its noun
@@ -2459,6 +2449,11 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     gloss: "celestial body",
     notes:
       "Rank gives the level in the orbital hierarchy: rank_0 debris (asteroids, comets), rank_1 moon, rank_2 planet, rank_3 star, rank_4 galaxy, rank_5 galaxy cluster. Bare, it's any celestial body. With this, it's ours: celestial rank_3 this is the Sun, celestial rank_2 this Earth, celestial rank_1 this the Moon",
+  });
+  cr("cardinal", {
+    gloss: "cardinal direction",
+    notes:
+      "Rank counts quarter turns clockwise from north: rank_0 north, rank_1 east, rank_2 south, rank_3 west. <to> cardinal rank_0 is northward",
   });
   cr("animal");
   cr("matter", {

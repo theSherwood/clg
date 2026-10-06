@@ -341,6 +341,14 @@ export function GrammarView() {
         &lt;subject&gt; celestial rank_3 this &lt;verb&gt; is &lt;object&gt; bright
       </Example>
 
+      <H2>Directions</H2>
+      <p>
+        <W w="cardinal" /> is one root for the compass, and rank counts quarter turns clockwise
+        from north: <i>cardinal rank_0</i> is north, <i>rank_1</i> east, <i>rank_2</i> south and{" "}
+        <i>rank_3</i> west. The prepositions do the rest: <i>&lt;to&gt; cardinal rank_0</i> is
+        northward and <i>&lt;at&gt; cardinal rank_1</i> in the east.
+      </p>
+
       <H2>Colors</H2>
       <p>
         <W w="color" /> is a root, and so are three hues: <W w="red" />, <W w="yellow" /> and{" "}

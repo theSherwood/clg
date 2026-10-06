@@ -622,6 +622,29 @@ export const clause_examples: Example[] = [
   },
 ];
 
+// One cardinal root; rank counts quarter turns clockwise from north
+export const direction_examples: Example[] = [
+  { title: "North", english: "rank 0", transliteration: "cardinal rank_0" },
+  { title: "East", english: "rank 1: a quarter turn", transliteration: "cardinal rank_1" },
+  { title: "South", english: "rank 2: a half turn", transliteration: "cardinal rank_2" },
+  { title: "West", english: "rank 3", transliteration: "cardinal rank_3" },
+  {
+    title: "Northward",
+    english: "Go north",
+    transliteration: "<verb (prescriptive)> go(v) <to> cardinal rank_0",
+  },
+  {
+    title: "In the east",
+    english: "The Sun rises in the east",
+    transliteration: "<subject> celestial rank_3 this <verb> lift(v) <at> cardinal rank_1",
+  },
+  {
+    title: "Where from",
+    english: "I came from the south",
+    transliteration: "<subject> I <verb> come(v) formerly <from> cardinal rank_2",
+  },
+];
+
 // Universal Declaration of Human Rights
 
 export const udhr_preamble: string[] = [
