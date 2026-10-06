@@ -281,6 +281,58 @@ function MatrixCell({
   );
 }
 
+// A step's sound in the matrix opens that step's form. A step with no words yet still has
+// parts, the step helper and the root, so its popup shows those.
+function StepSound({
+  sound,
+  side,
+  helper,
+  axis,
+  form,
+  depth,
+}: {
+  sound: string;
+  side: AxisSide;
+  helper?: string;
+  axis: Axis;
+  form: string;
+  depth: number;
+}) {
+  const named = Object.values(side).find((cell) => cell.word)?.word;
+  if (named) {
+    if (form_key(named) === form) return <>{sound}</>;
+    return (
+      <FormHover word={named} depth={depth}>
+        {sound}
+      </FormHover>
+    );
+  }
+  const helper_word = helper ? dictionary.get(helper) : undefined;
+  const root_word = Object.values(axis.positive).find((cell) => cell.word)?.word;
+  if (!helper_word || !root_word) return <>{sound}</>;
+  return (
+    <LazyTippy
+      content={
+        <div className="p-3 bg-white shadow-lg rounded-md border border-gray-200 text-sm font-sans font-normal text-left whitespace-normal">
+          <div className="flex items-baseline gap-2">
+            <span className="font-mono text-lg font-bold text-indigo-700">{sound}</span>
+            <span className="text-xs font-semibold text-blue-600">COMPOUND</span>
+            <span className="text-xs text-gray-500">no words yet</span>
+          </div>
+          <p className="text-xs mt-0.5">
+            <FormHover word={helper_word} depth={depth + 1} />
+            <span className="text-gray-400"> + </span>
+            <FormHover word={root_word} depth={depth + 1} />
+          </p>
+        </div>
+      }
+      {...NESTED_TIPPY}
+    >
+      <span className="cursor-pointer hover:underline">{sound}</span>
+    </LazyTippy>
+  );
+}
+
 // Opposite steps share a tint, so the scale reads as mirrored around neutral
 const STEP_TINTS: Record<string, string> = {
   max_positive: "bg-amber-50",
@@ -344,7 +396,16 @@ function AxisMatrix({ axis, form, depth }: { axis: Axis; form: string; depth: nu
                 >
                   {label}
                 </th>
-                <td className="pr-1.5 font-mono text-indigo-700 whitespace-nowrap">{sound}</td>
+                <td className="pr-1.5 font-mono text-indigo-700 whitespace-nowrap">
+                  <StepSound
+                    sound={sound}
+                    side={side}
+                    helper={label === "positive" ? undefined : label}
+                    axis={axis}
+                    form={form}
+                    depth={depth}
+                  />
+                </td>
                 {AXIS_COLUMNS.map(([key]) => (
                   <MatrixCell
                     key={key}
@@ -363,6 +424,33 @@ function AxisMatrix({ axis, form, depth }: { axis: Axis; form: string; depth: nu
       </div>
       {axis.notes && <p className="text-xs text-gray-600 mt-1 max-w-md">{axis.notes}</p>}
     </div>
+  );
+}
+
+// A verb's meanings without and with an object, each marked; other words show their gloss
+function Meaning({ word }: { word: Word }) {
+  const side = word.data.domain === "verb" ? side_of(word) : undefined;
+  if (!side || side.verb_i.word !== word) {
+    return word.data.gloss ? <span className="italic">{word.data.gloss}</span> : null;
+  }
+  const relation = axis_by_word.get(word)?.verb_type === "relation";
+  const line = (mark: string, gloss?: string, applies = true) => (
+    <span className="block">
+      <span className="text-gray-500">{mark} </span>
+      {gloss ? (
+        <span className="text-gray-800">{gloss}</span>
+      ) : applies ? (
+        <span className="text-red-500">missing</span>
+      ) : (
+        <span className="text-gray-400">n/a</span>
+      )}
+    </span>
+  );
+  return (
+    <>
+      {line("intr.", side.verb_i.gloss, !relation)}
+      {line("tr.", side.verb_t.gloss)}
+    </>
   );
 }
 
@@ -397,7 +485,7 @@ export function FormPopoverContent({
   }
 
   return (
-    <div className="p-3 bg-white shadow-lg rounded-md border border-gray-200 text-sm">
+    <div className="p-3 bg-white shadow-lg rounded-md border border-gray-200 text-sm font-sans font-normal text-left whitespace-normal">
       <div className="flex items-baseline gap-2 flex-wrap">
         <span className="font-mono text-lg font-bold text-indigo-700">
           {pronounce(word, phonology)}
@@ -430,7 +518,7 @@ export function FormPopoverContent({
               </td>
               <td className="pr-2 py-0.5 text-gray-500 whitespace-nowrap">{w.data.domain}</td>
               <td className="py-0.5 text-gray-700 max-w-md">
-                {w.data.gloss && <span className="italic">{w.data.gloss}</span>}
+                <Meaning word={w} />
                 {w.data.notes && !axis_notes.has(w.data.notes) && (
                   <span className="block text-gray-600">{w.data.notes}</span>
                 )}
