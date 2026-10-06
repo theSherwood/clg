@@ -80,8 +80,8 @@ export function GrammarView() {
       </p>
       <p className="mt-2">
         The first six roots are special grammar markers, and they're also domain words:{" "}
-        <W w="_subject" />, <W w="_object" />, <W w="_verb" />, <W w="_verb(prescriptive)" />,{" "}
-        <W w="_verb(interrogative)" /> and <W w="_gerund" />.
+        <W w="_subject" />, <W w="_object" />, <W w="_gerund" />, <W w="_verb" />,{" "}
+        <W w="_verb(prescriptive)" /> and <W w="_verb(interrogative)" />.
       </p>
       <p className="mt-2">
         Partial domains reuse a restricted part of the root space. The content root{" "}

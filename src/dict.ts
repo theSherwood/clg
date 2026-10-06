@@ -2218,10 +2218,10 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   const verb_marker: Tag[] = [...marker, T.verb_specifier];
   cr("_subject", { t: marker });
   cr("_object", { t: marker });
+  cr("_gerund", { t: verb_marker });
   cr("_verb", { t: verb_marker });
   cr("_verb(prescriptive)", { t: verb_marker, gloss: "verb (prescriptive / imperative)" });
   cr("_verb(interrogative)", { t: verb_marker });
-  cr("_gerund", { t: verb_marker });
   cr("_er", {
     t: [T.grammar_helper, T.part_of_speech_specifier],
     gloss: "the subject of a verb, as a noun: _er eat = eater",
@@ -2230,7 +2230,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     t: [T.grammar_helper, T.part_of_speech_specifier],
     gloss: "the object of a verb, as a noun: _ee eat = what is eaten",
   });
-  cr("_foreign", { t: marker });
   cr("_tool", {
     t: [T.grammar_helper, T.part_of_speech_specifier],
     gloss: "what a verb is done with, as a noun: _tool open = key",
@@ -2247,6 +2246,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     t: [T.grammar_helper, T.part_of_speech_specifier],
     gloss: "who or where a verb comes from, as a noun: _from come = origin, _from receive = sender",
   });
+  cr("_foreign", { t: marker });
 }
 
 {
