@@ -2164,7 +2164,15 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { noun: "equality", adj: "same", verb: "equal(vt)", verb_t: "equal", adverb: "identically" },
   ],
   [
-    { noun: "affection" },
+    {
+      noun: "affection",
+      steps: {
+        max_positive: { noun: "adoration", adj: "adoring", verb: "adore(vt)", verb_t: "adore", adverb: "adoringly" },
+        min_positive: { noun: "liking", adj: "fond", verb: "like(vt)", verb_t: "like", adverb: "fondly" },
+        min_negative: { noun: "dislike", adj: "averse", verb: "dislike(vt)", verb_t: "dislike" },
+        max_negative: { noun: "loathing", verb: "loathe(vt)", verb_t: "loathe" },
+      },
+    },
     { noun: "hatred", adj: "hateful", verb: "hate(vt)", verb_t: "hate", adverb: "hatefully" },
     { noun: "love", adj: "loving", verb: "love(vt)", verb_t: "love", adverb: "lovingly" },
   ],
