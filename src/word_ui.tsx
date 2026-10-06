@@ -33,8 +33,8 @@ export const LazyTippy = (props: LazyTippyProps) => {
     }),
   };
 
-  // Wide enough for an axis's word matrix
-  const computedProps = { maxWidth: 640, ...props };
+  // Wide enough for an axis's word matrix, but never wider than the window
+  const computedProps = { maxWidth: "min(960px, calc(100vw - 16px))", ...props };
 
   computedProps.plugins = [lazyPlugin, ...(props.plugins || [])];
 
@@ -275,41 +275,45 @@ function AxisMatrix({ axis, current }: { axis: Axis; current: Word }) {
           </span>
         )}
       </div>
-      <table className="text-xs border-collapse">
-        <thead>
-          <tr>
-            <th />
-            {AXIS_COLUMNS.map(([key, label]) => (
-              <th key={key} className="px-1.5 pb-0.5 font-normal text-gray-500 text-left">
-                {label}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map(([label, sound, side, optional]) => (
-            <tr key={label} className={STEP_TINTS[label] ?? ""}>
-              <th
-                className={`pr-1.5 font-normal text-left whitespace-nowrap ${
-                  optional ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                {label} <span className="font-mono text-indigo-700">{sound}</span>
-              </th>
-              {AXIS_COLUMNS.map(([key]) => (
-                <MatrixCell
-                  key={key}
-                  cell={side[key]}
-                  current={current}
-                  verb={key === "verb_i" || key === "verb_t"}
-                  applies={!(key === "verb_i" && axis.verb_type === "relation")}
-                  optional={optional}
-                />
+      <div className="overflow-x-auto">
+        <table className="text-xs border-collapse">
+          <thead>
+            <tr>
+              <th />
+              <th />
+              {AXIS_COLUMNS.map(([key, label]) => (
+                <th key={key} className="px-1.5 pb-0.5 font-normal text-gray-500 text-left">
+                  {label}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {rows.map(([label, sound, side, optional]) => (
+              <tr key={label} className={STEP_TINTS[label] ?? ""}>
+                <th
+                  className={`pr-1.5 font-normal text-left whitespace-nowrap ${
+                    optional ? "text-gray-400" : "text-gray-500"
+                  }`}
+                >
+                  {label}
+                </th>
+                <td className="pr-1.5 font-mono text-indigo-700 whitespace-nowrap">{sound}</td>
+                {AXIS_COLUMNS.map(([key]) => (
+                  <MatrixCell
+                    key={key}
+                    cell={side[key]}
+                    current={current}
+                    verb={key === "verb_i" || key === "verb_t"}
+                    applies={!(key === "verb_i" && axis.verb_type === "relation")}
+                    optional={optional}
+                  />
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       {axis.notes && <p className="text-xs text-gray-600 mt-1 max-w-md">{axis.notes}</p>}
     </div>
   );
