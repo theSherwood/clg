@@ -1477,15 +1477,32 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "cohesion",
       notes:
-        "There's some relationship between break - mend, part - whole, and divide - group. I'm not yet sure what it is.; negative verb forms: to divide / to partition; positive verb forms: to gather / to group / to collect",
+        "Parts and wholes: a whole is a group at its fullest, and disintegrating is dividing at its fullest. Break and mend (integrity) are related but separate",
+      steps: {
+        max_positive: {
+          noun: "whole",
+          adj: "entire",
+          verb: "unify(v)",
+          verb_i: "unite",
+          verb_t: "unify",
+          adverb: "wholly",
+        },
+        max_negative: {
+          adj: "disintegrated",
+          verb: "disintegrate(v)",
+          verb_i: "disintegrate",
+          verb_t: "disintegrate",
+          adverb: "separately",
+        },
+      },
     },
     {
-      noun: "division",
-      adj: "atomized",
+      noun: "part",
+      adj: "partial",
       verb: "divide(v)",
       verb_i: "split",
       verb_t: "divide",
-      adverb: "separately",
+      adverb: "partly",
     },
     {
       noun: "group",
@@ -1542,29 +1559,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
     { noun: "breakage", adj: "broken", verb: "break(v)", verb_i: "break", verb_t: "break" },
     { noun: "repair", adj: "intact", verb: "mend(v)", verb_i: "heal", verb_t: "mend" },
-  ],
-  [
-    {
-      noun: "entirety",
-      notes:
-        "There's some relationship between break - mend, part - whole, and divide - group. I'm not yet sure what it is.",
-    },
-    {
-      noun: "part",
-      adj: "partial",
-      verb: "partition(v)",
-      verb_i: "split up",
-      verb_t: "partition",
-      adverb: "partly",
-    },
-    {
-      noun: "whole",
-      adj: "entire",
-      verb: "unify(v)",
-      verb_i: "unite",
-      verb_t: "unify",
-      adverb: "wholly",
-    },
   ],
   [
     { noun: "holiness" },
@@ -2592,7 +2586,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "spread_out(v)", "proliferate(v)", "straighten(v)", "improve(v)", "entertain(v)",
     "materialize(v)", "enable(v)", "angle(v)", "rejuvenate(v)", "wake(v)", "create(v)",
     "beautify(v)", "go(v)", "heap_up(v)", "fill_up(v)", "show(v)", "educate(v)",
-    "aim(v)", "group(v)", "mark_up(v)", "emphasize(v)", "mend(v)", "unify(v)",
+    "aim(v)", "group(v)", "mark_up(v)", "emphasize(v)", "mend(v)",
     "sanctify(v)", "contain(v)", "regulate(v)", "disconnect(v)", "stop(v)", "obligate(v)",
     "necessitate(v)",
   ],
