@@ -1763,6 +1763,18 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { noun: "covering", adj: "covered", verb: "cover(vt)", verb_i: "get covered", verb_t: "cover" },
   ],
   [
+    { noun: "security", notes: "Safe from harm or not. Withstanding harm is resilience" },
+    {
+      noun: "danger",
+      adj: "dangerous",
+      verb: "endanger(vt)",
+      verb_i: "become dangerous",
+      verb_t: "endanger",
+      adverb: "dangerously",
+    },
+    { noun: "safety", adj: "safe", verb: "secure(vt)", verb_i: "become safe", verb_t: "secure", adverb: "safely" },
+  ],
+  [
     {
       noun: "capability",
       notes:
@@ -2302,6 +2314,17 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     {
+      noun: "selection",
+      notes: "Preferring is leaning toward choosing: prefer(vt) X exceed(vt) Y is to prefer X to Y",
+      steps: {
+        min_positive: { noun: "preference", adj: "preferred", verb: "prefer(vt)", verb_i: "prefer", verb_t: "prefer" },
+      },
+    },
+    { noun: "rejection", adj: "rejected", verb: "reject(vt)", verb_i: "refuse", verb_t: "reject" },
+    { noun: "choice", adj: "chosen", verb: "choose(vi)", verb_i: "choose", verb_t: "choose" },
+  ],
+  [
+    {
       noun: "accountability",
       notes:
         "Credit and blame. Acknowledging, the neutral step, attributes without judging. The adjectives are about who deserves it: culpable is to blame. Thank you is thanks to you, and sorry blame to me",
@@ -2766,6 +2789,11 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     gloss: "self / oneself / own",
     notes: "As an object it's reflexive: I know self is I know myself. family <of> self is one's own family",
   });
+  cr("meta", {
+    gloss: "meta / about itself",
+    notes:
+      "As a modifier, X about X: merit meta is metaethics, knowledge meta knowing what one knows. Not rank, which many nouns already use for their levels",
+  });
   cr("other", {
     gloss: "other / another",
     notes: "person other is another person. With a plural subject, <object> other or <to> other is each other",
@@ -2809,11 +2837,9 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   candidate("original");
   candidate("un-", { notes: "?" });
   candidate("re-", { notes: "?" });
-  candidate("meta-", { notes: 'Can this be achieved with "rank"?' });
   candidate("mind");
   candidate("machine");
   candidate("sex");
-  candidate("choose");
   candidate("turn");
   candidate("direction", {
     notes:
@@ -2884,14 +2910,14 @@ export const verb_types: Record<VerbType, string[]> = {
     "beautify(vt)", "go(vi)", "heap_up(vt)", "fill_up(vi)", "educate(vt)",
     "aim(vt)", "group(vt)", "mark_up(vt)", "emphasize(vt)", "mend(vt)",
     "sanctify(vt)", "close_in(vi)", "disconnect(vt)", "stop(vi)",
-    "necessitate(vt)", "cover(vt)", "empower(vt)",
+    "necessitate(vt)", "cover(vt)", "empower(vt)", "secure(vt)",
   ],
   action: [
     "analyze(vi)", "succeed(vi)", "produce(vi)", "send(vi)", "hope(vi)",
     "believe(vi)", "lead(vi)", "work(vi)", "search(vi)", "learn(vi)", "sow(vi)", "give(vi)",
     "make_peace(vi)", "defend(vi)", "tend(vi)", "command(vt)", "resist(vi)", "withstand(vt)",
     "participate(vi)", "recommend(vi)", "say(vt)", "write(vi)", "sense(vt)", "use(vi)",
-    "do(vt)", "touch(vi)", "count(vi)", "thank(vt)", "show(vi)", "fly(vi)",
+    "do(vt)", "touch(vi)", "count(vi)", "thank(vt)", "show(vi)", "fly(vi)", "choose(vi)",
   ],
   relation: [
     "possess(vt)", "be(vt)", "be_entitled_to(vt)", "resemble(vt)", "result_from(vt)", "love(vt)", "know(vt)", "desire(vt)", "face(vt)", "include(vt)",
@@ -3256,6 +3282,10 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("never", ["time", "none"]);
   noun("when", ["time", "<blank>"]);
 
+  noun("model", ["<er>", "resemble(vt)"], { gloss: "model / likeness", notes: "What resembles something" });
+  noun("conscience", ["<tool>", "blame(vt)", "self"], {
+    notes: "What one blames oneself with, and by the same axis credits oneself: a clear conscience",
+  });
   noun("law", ["command", "abstract"], {
     gloss: "law / rule",
     notes:

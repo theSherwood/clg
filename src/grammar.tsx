@@ -335,6 +335,22 @@ export function GrammarView() {
         &lt;verb&gt; go(vi) &lt;min_positive&gt; truly &lt;clause_end&gt;
       </Example>
 
+      <H2>Choice, safety, conscience and meta</H2>
+      <p>
+        Choosing is an axis, <W w="choose(vi)" /> and <W w="reject(vt)" />, and preferring is
+        leaning toward choosing, its minor positive step: <W w="prefer(vt)" />. A comparison says
+        what over: <i>prefer(vt) X exceed(vt) Y</i>. Safety is its own axis too, <W w="safe" /> and{" "}
+        <W w="dangerous" />, with <W w="secure(vt)" /> and <W w="endanger(vt)" />; withstanding harm
+        is resilience.
+      </p>
+      <p className="mt-2">
+        <W w="conscience" /> is <i>&lt;tool&gt; blame(vt) self</i>, what you blame yourself with, and by
+        the same axis credit yourself. A <W w="model" /> is <i>&lt;er&gt; resemble(vt)</i>, a thing that
+        resembles another. <W w="meta" /> as a modifier makes X about X: <i>merit meta</i> is
+        metaethics, the study of what good is, and <i>knowledge meta</i> knowing what you know.
+      </p>
+      <Example meaning="I prefer water.">&lt;subject&gt; I &lt;verb&gt; prefer(vt) &lt;object&gt; water</Example>
+
       <H2>Family</H2>
       <p>
         <W w="family" /> is a root for family, kin or a relative. Relations come from the lineage

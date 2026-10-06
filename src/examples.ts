@@ -894,6 +894,12 @@ export const more_grammar_examples: Example[] = [
     english: "Everyone has the right to speak",
     transliteration: "<subject> everyone <verb> be_entitled_to(vt) <object> <gerund> say(vt)",
   },
+  { title: "Prefer", english: "I prefer water", transliteration: "<subject> I <verb> prefer(vt) <object> water" },
+  { title: "Choose", english: "Choose one", transliteration: "<verb_prescriptive> choose(vt) <object> thing number 1" },
+  { title: "Safe", english: "The child is safe", transliteration: "<subject> child <verb> be(vt) <complement> safe" },
+  { title: "Conscience", english: "what you blame yourself with", transliteration: "<tool> blame(vt) self" },
+  { title: "Model", english: "what resembles something", transliteration: "<er> resemble(vt)" },
+  { title: "Metaethics", english: "ethics about ethics", transliteration: "merit meta" },
   { title: "Law", english: "a general command: law, or a rule", transliteration: "command abstract" },
   {
     title: "Obey the law",
