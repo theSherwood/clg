@@ -623,27 +623,32 @@ export function GrammarView() {
       <table className="mt-2 text-sm border-collapse">
         <thead>
           <tr className="text-left text-gray-500">
-            <th className="pr-4 font-normal" />
+            <th className="pr-4 font-normal">bare</th>
             <th className="pr-4 font-normal">this</th>
             <th className="pr-4 font-normal">that</th>
+            <th className="pr-4 font-normal">all</th>
+            <th className="pr-4 font-normal">none</th>
             <th className="font-normal">&lt;blank&gt;</th>
           </tr>
         </thead>
         <tbody>
           {(
             [
-              ["place", "here", "there", "where"],
-              ["person", "this person", "that person", "who"],
-              ["thing", "this thing", "that thing", "what"],
+              ["thing", "something", "this thing", "that thing", "everything", "nothing", "what"],
+              ["person", "someone", "this person", "that person", "everyone", "no_one", "who"],
+              ["place", "somewhere", "here", "there", "everywhere", "nowhere", "where"],
+              ["time", "sometime", "now", "then", "always", "never", "when"],
             ] as const
-          ).map(([noun, near, far, question]) => (
+          ).map(([noun, ...cells]) => (
             <tr key={noun} className="border-t border-gray-100">
               <td className="pr-4 py-0.5">
-                <W w={noun} />
+                <W w={noun} /> <span className="text-gray-500">({cells[0]})</span>
               </td>
-              <td className="pr-4 py-0.5">{near}</td>
-              <td className="pr-4 py-0.5">{far}</td>
-              <td className="py-0.5">{question}</td>
+              {cells.slice(1).map((cell, i) => (
+                <td key={i} className="pr-4 py-0.5">
+                  {i >= 2 ? <W w={cell} /> : cell}
+                </td>
+              ))}
             </tr>
           ))}
         </tbody>
@@ -652,8 +657,10 @@ export function GrammarView() {
         &lt;subject&gt; I &lt;verb&gt; sleep(vi) at this
       </Example>
       <p className="mt-2">
-        <W w="thing" /> is the general noun, Toki Pona's <i>ijo</i>: <i>thing all</i> is
-        everything, <i>thing none</i> nothing and <i>thing &lt;blank&gt;</i> what thing.{" "}
+        <W w="thing" /> is the general noun, Toki Pona's <i>ijo</i>. <W w="everything" /> and{" "}
+        <W w="nothingness" /> (<W w="nothing" />) are already words, the completeness axis's
+        nouns, so <i>thing all</i> and <i>thing none</i> are longer ways to say them. The universe is
+        just <W w="everything" />.{" "}
         <W w="self" /> and <W w="other" /> are content roots too. As an object, <W w="self" /> is
         reflexive (<i>I know(vt) self</i>, I know myself), and <i>family of self</i> is one's
         own family. <i>person other</i> is another person, and with a plural subject,{" "}

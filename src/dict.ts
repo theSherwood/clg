@@ -425,7 +425,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb: "erase(vt)",
       verb_i: "vanish",
       verb_t: "erase",
-      adverb: "none(adverb)",
+      adverb: "not_at_all",
     },
     {
       noun: "everything",
@@ -2533,7 +2533,8 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   section("content");
   cr("thing", {
     gloss: "thing / something",
-    notes: "thing all is everything, thing none nothing, and thing <blank> what thing",
+    notes:
+      "Bare, it's something. Everything and nothing are the completeness axis's nouns, one root and two; thing all and thing none say the same. thing <blank> is what",
   });
   cr("singular");
   cr("plural");
@@ -2968,7 +2969,7 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("earth", ["celestial", "<rank_2>", "this"], { gloss: "Earth / the world" });
   noun("sun", ["celestial", "<rank_3>", "this"], { gloss: "the Sun" });
   noun("milky_way", ["celestial", "<rank_4>", "this"], { gloss: "the Milky Way" });
-  noun("universe", ["thing", "all"], { gloss: "universe / everything" });
+  noun("universe", ["everything"]);
 
   // The compass, by quarter turns clockwise from north; two ranks are the direction between
   noun("north", ["cardinal", "<rank_0>"]);
@@ -3034,6 +3035,20 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("product", ["result", "of", "<gerund>", "multiply(vi)"]);
   noun("quotient", ["result", "of", "<gerund>", "divide(vi)"]);
   noun("power", ["result", "of", "<gerund>", "exponentiate(vt)"]);
+
+  // The correlatives: thing, person, place and time with all, none and <blank>. Everything is the
+  // completeness axis's noun, and nothing its negative
+  noun("nothing", ["nothingness"], { notes: "thing none says the same" });
+  noun("what", ["thing", "<blank>"]);
+  noun("everyone", ["person", "all"]);
+  noun("no_one", ["person", "none"], { gloss: "no one" });
+  noun("who", ["person", "<blank>"]);
+  noun("everywhere", ["place", "all"]);
+  noun("nowhere", ["place", "none"]);
+  noun("where", ["place", "<blank>"]);
+  noun("always", ["time", "all"]);
+  noun("never", ["time", "none"]);
+  noun("when", ["time", "<blank>"]);
 
   noun("chain", ["node", "<rank_1>"], { gloss: "chain / list (nodes in a line)" });
   noun("tree_graph", ["node", "<rank_2>"], { gloss: "tree (graph)" });
