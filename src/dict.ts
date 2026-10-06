@@ -447,17 +447,15 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     {
-      noun: "coercion(axis)",
-      notes:
-        "From axis.csv (as force / choose): positive verb choose? (transitive); positive adjective selected",
+      noun: "liberty",
+      notes: "Freedom from restraint; forcing someone to act is max_positive command(v), force(v)",
     },
     {
-      noun: "coercion(state)",
-      adj: "forced",
-      verb: "force(v)",
-      verb_i: "give in",
-      verb_t: "force",
-      adverb: "under_duress",
+      noun: "bondage",
+      adj: "bound",
+      verb: "constrain(v)",
+      verb_i: "get stuck",
+      verb_t: "constrain",
     },
     {
       noun: "freedom",
@@ -1569,27 +1567,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    {
-      noun: "restraint",
-      notes:
-        '"free" is already the positive adjective of the coercion axis; negative adverb “unrestrainedly” needs a positive adverb',
-    },
-    {
-      noun: "liberty",
-      adj: "free(unbound)",
-      verb: "liberate(v)",
-      verb_i: "get loose",
-      verb_t: "liberate",
-    },
-    {
-      noun: "bondage",
-      adj: "bound",
-      verb: "constrain(v)",
-      verb_i: "get stuck",
-      verb_t: "constrain",
-    },
-  ],
-  [
     { noun: "holiness" },
     {
       noun: "profanity",
@@ -1823,7 +1800,13 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    {},
+    {
+      noun: "leadership",
+      steps: {
+        max_positive: { noun: "sovereignty", adj: "sovereign", verb: "rule(v)", verb_i: "rule", verb_t: "rule over" },
+        min_positive: { noun: "guidance", verb: "guide(v)", verb_i: "guide", verb_t: "guide" },
+      },
+    },
     {
       noun: "service",
       adj: "subservient",
@@ -1835,9 +1818,9 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "authority",
       adj: "in_charge",
-      verb: "be_in_command(v)",
+      verb: "lead(v)",
       verb_i: "lead",
-      verb_t: "direct",
+      verb_t: "lead",
       adverb: "authoritatively",
     },
   ],
@@ -1966,8 +1949,33 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     {
+      noun: "control",
       notes:
-        "negative verb forms: to obey; positive verb forms: to command / to rule / to govern; negative adverb “obediently” needs a positive adverb",
+        "How hard one pushes another to act, from persuading to forcing, and the other's side, from acquiescing to giving in. Ruling is max_positive lead(v)",
+      steps: {
+        max_positive: {
+          noun: "coercion",
+          adj: "coercive",
+          verb: "force(v)",
+          verb_i: "use force",
+          verb_t: "force",
+        },
+        min_positive: {
+          noun: "persuasion",
+          adj: "persuasive",
+          verb: "persuade(v)",
+          verb_i: "persuade",
+          verb_t: "persuade",
+        },
+        min_negative: {
+          noun: "acquiescence",
+          adj: "acquiescent",
+          verb: "acquiesce(v)",
+          verb_i: "acquiesce",
+          verb_t: "acquiesce to",
+        },
+        max_negative: { adj: "forced", verb: "give_in(v)", verb_i: "give in", verb_t: "give in to" },
+      },
     },
     { noun: "obedience", adj: "obedient", verb: "obey(v)", verb_i: "obey", verb_t: "obey" },
     {
@@ -2018,25 +2026,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { notes: "axis.csv had allow / force" },
-    {
-      noun: "permission",
-      adj: "permitted",
-      verb: "allow(v)",
-      verb_i: "allow",
-      verb_t: "allow",
-      adverb: "permissively",
-    },
-    {
-      noun: "compulsion",
-      adj: "compulsory",
-      verb: "compel(v)",
-      verb_i: "compel",
-      verb_t: "compel",
-      adverb: "compulsorily",
-    },
-  ],
-  [
     { noun: "involvement" },
     {
       noun: "abstention",
@@ -2054,7 +2043,18 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "permissibility" },
+    {
+      noun: "permissibility",
+      steps: {
+        neutral: {
+          noun: "permission",
+          adj: "permitted",
+          verb: "allow(v)",
+          verb_i: "allow",
+          verb_t: "allow",
+        },
+      },
+    },
     {
       noun: "prohibition",
       adj: "forbidden",
@@ -2592,15 +2592,15 @@ export const verb_types: Record<VerbType, string[]> = {
     "spread_out(v)", "proliferate(v)", "straighten(v)", "improve(v)", "entertain(v)",
     "materialize(v)", "enable(v)", "angle(v)", "rejuvenate(v)", "wake(v)", "create(v)",
     "beautify(v)", "go(v)", "heap_up(v)", "fill_up(v)", "show(v)", "educate(v)",
-    "aim(v)", "group(v)", "mark_up(v)", "emphasize(v)", "mend(v)", "unify(v)", "constrain(v)",
+    "aim(v)", "group(v)", "mark_up(v)", "emphasize(v)", "mend(v)", "unify(v)",
     "sanctify(v)", "contain(v)", "regulate(v)", "disconnect(v)", "stop(v)", "obligate(v)",
     "necessitate(v)",
   ],
   action: [
     "analyze(v)", "win(v)", "succeed(v)", "produce(v)", "buy(v)", "send(v)", "hope(v)",
-    "believe(v)", "be_in_command(v)", "work(v)", "search(v)", "learn(v)", "sow(v)", "give(v)",
+    "believe(v)", "lead(v)", "work(v)", "search(v)", "learn(v)", "sow(v)", "give(v)",
     "make_peace(v)", "defend(v)", "steward(v)", "command(v)", "resist(v)", "withstand(v)",
-    "compel(v)", "participate(v)", "recommend(v)", "say(v)", "write(v)", "sense(v)", "use(v)",
+    "participate(v)", "recommend(v)", "say(v)", "write(v)", "sense(v)", "use(v)",
     "do(v)", "touch(v)", "count(v)",
   ],
   relation: [
