@@ -897,6 +897,8 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   [
     {
       noun: "time",
+      notes:
+        "Rank gives the unit, a step up a ladder rather than a power of ten: rank_0 second, rank_1 minute, rank_2 hour, rank_3 day, rank_4 week, rank_5 month, rank_6 year, rank_7 decade, rank_8 century, rank_9 millennium. time rank_3 number 3 is three days and time rank_3 this today. A day of 24 hours is time rank_3; daytime is time bright",
       scale: ["long ago", "past", "recently", "now", "soon", "future", "far future"],
     },
     {
@@ -986,25 +988,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "veer right",
       verb_t: "steer right",
       adverb: "rightward",
-    },
-  ],
-  [
-    { notes: "duplicate of back/front?" },
-    {
-      noun: "tail",
-      adj: "trailing",
-      verb: "fall_behind(v)",
-      verb_i: "fall behind",
-      verb_t: "hold back",
-      adverb: "behind",
-    },
-    {
-      noun: "lead",
-      adj: "leading",
-      verb: "advance(v)",
-      verb_i: "advance",
-      verb_t: "advance",
-      adverb: "ahead",
     },
   ],
   [
@@ -2215,6 +2198,27 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { noun: "superiority", adj: "greater", verb: "exceed(v)", verb_t: "exceed" },
   ],
   [
+    {
+      noun: "sequence",
+      notes:
+        "Order in a sequence, counted from a reference point: now in a main clause, the main clause's time in a subclause. time rank_3 next is tomorrow and time rank_3 previous yesterday. Rank counts steps, as for generations: next rank_2 is the one after next. Bare words are one step",
+    },
+    {
+      noun: "precedence",
+      adj: "previous",
+      verb: "precede(v)",
+      verb_t: "precede",
+      adverb: "before",
+    },
+    {
+      noun: "succession",
+      adj: "next",
+      verb: "follow(v)",
+      verb_t: "follow",
+      adverb: "afterwards",
+    },
+  ],
+  [
     { notes: "duplicate of behind/ahead?" },
     { noun: "stern", adj: "rear", adverb: "aft" },
     { noun: "bow", adj: "forward", adverb: "fore" },
@@ -2490,12 +2494,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     notes:
       "Should this be a domain specifier? up - down, forward - back, left - right, north - south, east - west, in - out, future - past",
   });
-  candidate("hour");
-  candidate("minute");
-  candidate("second");
-  candidate("week");
-  candidate("month");
-  candidate("year");
   candidate("exchange", { notes: "Maybe possible on a buy/sell spectrum" });
   candidate("value");
 
@@ -2555,7 +2553,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "perpetuate(v)", "become_essential(v)", "idealize(v)", "nest(v)", "determine(v)",
     "enumerate(v)", "curl(v)", "emerge(v)", "distance(v)", "quiet(v)", "sharpen(v)", "wet(v)",
     "thicken(v)", "lift(v)", "heat(v)", "brighten(v)", "harden(v)", "get_heavier(v)", "prove(v)",
-    "postpone(v)", "come_alive(v)", "eat(v)", "sink(v)", "veer_right(v)", "advance(v)",
+    "postpone(v)", "come_alive(v)", "eat(v)", "sink(v)", "veer_right(v)",
     "withdraw(v)", "spread(v)", "stir(v)", "persist(v)", "bottom_out(v)", "make_artificial(v)",
     "spread_out(v)", "proliferate(v)", "straighten(v)", "improve(v)", "entertain(v)",
     "materialize(v)", "enable(v)", "angle(v)", "rejuvenate(v)", "wake(v)", "create(v)",
@@ -2573,7 +2571,7 @@ export const verb_types: Record<VerbType, string[]> = {
   ],
   relation: [
     "possess(v)", "is(v)", "equal(v)", "love(v)", "know(v)", "desire(v)", "face(v)", "include(v)",
-    "attract(v)", "exceed(v)",
+    "attract(v)", "exceed(v)", "follow(v)",
   ],
 };
 

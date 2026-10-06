@@ -228,6 +228,29 @@ export function GrammarView() {
         was sleeping” needs no time word in the subclause.
       </p>
 
+      <H2>Units of time and order</H2>
+      <p>
+        <W w="time" /> takes rank for its units, a step up a ladder rather than a power of ten:{" "}
+        <i>rank_0</i> second, <i>rank_1</i> minute, <i>rank_2</i> hour, <i>rank_3</i> day,{" "}
+        <i>rank_4</i> week, <i>rank_5</i> month, <i>rank_6</i> year, then decade, century and
+        millennium. A count follows like any other: <i>time rank_3 number 3</i> is three days. The
+        24-hour day is <i>time rank_3</i>, and daytime is <i>time bright</i>.
+      </p>
+      <p className="mt-2">
+        <W w="next" /> and <W w="previous" /> count steps in any sequence from a reference point.
+        In a main clause that's now, so <i>time rank_3 next</i> is tomorrow and{" "}
+        <i>time rank_3 previous</i> yesterday; in a subclause it's the main clause's time, so the
+        same words mean the next day and the day before. Rank counts steps, as for generations:{" "}
+        <i>next rank_2</i> is the one after next. As verbs, <W w="precede(v)" /> and{" "}
+        <W w="follow(v)" /> relate two things in order.
+      </p>
+      <Example meaning="I slept yesterday.">
+        &lt;subject&gt; I &lt;verb&gt; sleep &lt;at&gt; time rank_3 previous
+      </Example>
+      <Example meaning="Eating comes before sleeping.">
+        &lt;subject&gt; _gerund eat &lt;verb&gt; precede &lt;object&gt; _gerund sleep
+      </Example>
+
       <H2>Truth and possibility</H2>
       <p>
         The truth axis grades likelihood. Its adverb follows the verb, after any aspect or time

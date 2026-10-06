@@ -50,7 +50,7 @@ const swadesh_rows: Row[] = [
   ["grease", "", "ko"],
   ["egg", "", "sike mama"],
   ["horn", "head rod", "palisa lawa", "loose"],
-  ["tail", "tail", "palisa monsi", "loose"],
+  ["tail", "rod back", "palisa monsi", "loose"],
   ["feather", "", "len waso"],
   ["hair", "", "linja"],
   ["head", "head", "lawa"],

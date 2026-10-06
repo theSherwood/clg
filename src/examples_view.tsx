@@ -16,6 +16,7 @@ import {
   self_other_examples,
   sky_examples,
   tense_examples,
+  time_examples,
   thing_examples,
   tokenize,
   truth_examples,
@@ -128,6 +129,7 @@ function ExampleList({ examples }: { examples: Example[] }) {
 const all_transliterations = [
   ...number_examples.flatMap((b) => b.examples.map((e) => e.transliteration)),
   ...tense_examples.map((e) => e.transliteration),
+  ...time_examples.map((e) => e.transliteration),
   ...truth_examples.map((e) => e.transliteration),
   ...family_examples.map((e) => e.transliteration),
   ...color_examples.map((e) => e.transliteration),
@@ -220,6 +222,7 @@ export function ExamplesView() {
 
       {[
         { title: "Tense and aspect", examples: tense_examples },
+        { title: "Units of time and order", examples: time_examples },
         { title: "Truth and possibility", examples: truth_examples },
         { title: "Family", examples: family_examples },
         { title: "Colors", examples: color_examples },

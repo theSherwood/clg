@@ -185,6 +185,55 @@ export const tense_examples: Example[] = [
 
 // The truth axis grades likelihood, as an adverb after the verb. The modality axis is separate:
 // how many cases something holds in.
+// Units of time are rungs of a ladder on time's rank; next and previous count steps from now
+export const time_examples: Example[] = [
+  { title: "Second", english: "A second", transliteration: "time rank_0" },
+  { title: "Hour", english: "An hour", transliteration: "time rank_2" },
+  { title: "Day", english: "A day (24 hours)", transliteration: "time rank_3" },
+  { title: "Daytime", english: "Daytime, as against night", transliteration: "time bright" },
+  { title: "Year", english: "A year", transliteration: "time rank_6" },
+  { title: "Counted", english: "Three days", transliteration: "time rank_3 number 3" },
+  { title: "Today", english: "Today", transliteration: "time rank_3 this" },
+  {
+    title: "Yesterday",
+    english: "I slept yesterday",
+    transliteration: "<subject> I <verb> sleep(v) <at> time rank_3 previous",
+  },
+  {
+    title: "Tomorrow",
+    english: "I will work tomorrow",
+    transliteration: "<subject> I <verb> work(v) <at> time rank_3 next",
+  },
+  {
+    title: "Two steps",
+    english: "The day after tomorrow",
+    transliteration: "time rank_3 next rank_2",
+  },
+  { title: "Next year", english: "Next year", transliteration: "time rank_6 next" },
+  { title: "Every day", english: "Every day", transliteration: "time rank_3 all" },
+  {
+    title: "Relative",
+    english: "She said she would come the next day",
+    transliteration:
+      "<subject> it <verb> say(v) formerly <object> clause_start <verb> come(v) <at> time rank_3 next",
+  },
+  {
+    title: "Precede",
+    english: "Eating comes before sleeping",
+    transliteration: "<subject> _gerund eat(v) <verb> precede(v) <object> _gerund sleep(v)",
+  },
+  {
+    title: "Follow",
+    english: "I'm after you (in line)",
+    transliteration: "<subject> I <verb> follow(v) <object> you",
+  },
+  {
+    title: "The next one",
+    english: "The next person came",
+    transliteration: "<subject> person next <verb> come(v) formerly",
+  },
+];
+
 export const truth_examples: Example[] = [
   {
     title: "Certainly",
