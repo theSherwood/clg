@@ -319,7 +319,41 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "orderliness",
       notes:
-        "From axis.csv (as orderliness?: chaos / order): positive noun order, positive verb organize (transitive), positive adjective organized",
+        "Strengths of order: regular is a mild order and determined an order so complete the outcome is fixed; irregular, chaotic and random mirror them",
+      steps: {
+        max_positive: {
+          noun: "determinacy",
+          adj: "determined",
+          verb: "determine(v)",
+          verb_i: "become fixed",
+          verb_t: "determine",
+          adverb: "deterministically",
+        },
+        min_positive: {
+          noun: "regularity",
+          adj: "regular",
+          verb: "regulate(v)",
+          verb_i: "become regular",
+          verb_t: "regulate",
+          adverb: "regularly",
+        },
+        min_negative: {
+          noun: "irregularity",
+          adj: "irregular",
+          verb: "disrupt(v)",
+          verb_i: "become irregular",
+          verb_t: "disrupt",
+          adverb: "irregularly",
+        },
+        max_negative: {
+          noun: "randomness",
+          adj: "random",
+          verb: "randomize(v)",
+          verb_i: "become random",
+          verb_t: "randomize",
+          adverb: "randomly",
+        },
+      },
     },
     {
       noun: "chaos",
@@ -646,25 +680,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "nest",
       verb_t: "embed",
       adverb: "recursively",
-    },
-  ],
-  [
-    { noun: "predictability", notes: "negative verb randomize(v) (no positive verb)" },
-    {
-      noun: "randomness",
-      adj: "random",
-      verb: "randomize(v)",
-      verb_i: "become random",
-      verb_t: "randomize",
-      adverb: "randomly",
-    },
-    {
-      noun: "determinacy",
-      adj: "determined",
-      verb: "determine(v)",
-      verb_i: "become fixed",
-      verb_t: "determine",
-      adverb: "deterministically",
     },
   ],
   [
@@ -1599,25 +1614,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb: "contain(v)",
       verb_i: "close in",
       verb_t: "enclose",
-    },
-  ],
-  [
-    { noun: "consistency", notes: "exception - irregular - ? - regular - exemplar" },
-    {
-      noun: "irregularity",
-      adj: "irregular",
-      verb: "irregulate(v)",
-      verb_i: "become irregular",
-      verb_t: "disrupt",
-      adverb: "irregularly",
-    },
-    {
-      noun: "regularity",
-      adj: "regular",
-      verb: "regulate(v)",
-      verb_i: "become regular",
-      verb_t: "regulate",
-      adverb: "regularly",
     },
   ],
   [
@@ -2607,7 +2603,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "grow(v)", "accelerate(v)", "change(v)", "simplify(v)", "strengthen(v)", "increase(v)",
     "organize(v)", "activate(v)", "demarcate(v)", "fill(v)", "open(v)", "smooth(v)", "free(v)",
     "abstract(v)", "absolutize(v)", "melt(v)", "make_explicit(v)", "externalize(v)",
-    "perpetuate(v)", "become_essential(v)", "idealize(v)", "nest(v)", "determine(v)",
+    "perpetuate(v)", "become_essential(v)", "idealize(v)", "nest(v)",
     "enumerate(v)", "curl(v)", "emerge(v)", "distance(v)", "quiet(v)", "sharpen(v)", "wet(v)",
     "thicken(v)", "lift(v)", "heat(v)", "brighten(v)", "harden(v)", "get_heavier(v)", "prove(v)",
     "postpone(v)", "come_alive(v)", "eat(v)", "sink(v)", "veer_right(v)",
@@ -2616,7 +2612,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "materialize(v)", "enable(v)", "angle(v)", "rejuvenate(v)", "wake(v)", "create(v)",
     "beautify(v)", "go(v)", "heap_up(v)", "fill_up(v)", "show(v)", "educate(v)",
     "aim(v)", "group(v)", "mark_up(v)", "emphasize(v)", "mend(v)",
-    "sanctify(v)", "contain(v)", "regulate(v)", "disconnect(v)", "stop(v)", "obligate(v)",
+    "sanctify(v)", "contain(v)", "disconnect(v)", "stop(v)", "obligate(v)",
     "necessitate(v)", "cover(v)",
   ],
   action: [
