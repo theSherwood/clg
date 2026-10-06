@@ -232,7 +232,8 @@ exports[`root IDs 1`] = `
   "93": "celestial",
   "94": "cardinal",
   "95": "animal",
-  "96": "matter",
-  "97": "element",
+  "96": "plant",
+  "97": "matter",
+  "98": "element",
 }
 `;

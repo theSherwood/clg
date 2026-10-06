@@ -2677,6 +2677,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       "Rank counts quarter turns clockwise from north: <rank_0> north, <rank_1> east, <rank_2> south, <rank_3> west. Two ranks name the direction between them, north or south first as in English: cardinal <rank_0> <rank_1> is northeast, <rank_2> <rank_3> southwest. to cardinal <rank_0> is northward. Rank here numbers points on a circle rather than levels, unlike its other uses; kept for now",
   });
   cr("animal");
+  cr("plant");
   cr("matter", {
     gloss: "matter / substance",
     notes:
