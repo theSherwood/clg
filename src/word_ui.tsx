@@ -126,8 +126,8 @@ function FormHover({
 
 // Verbs first: the language is verb-centric
 const AXIS_COLUMNS = [
-  ["verb_i", "intr. verb (no object)"],
-  ["verb_t", "tr. verb (with object)"],
+  ["verb_i", "vi (no object)"],
+  ["verb_t", "vt (with object)"],
   ["noun", "noun"],
   ["adj", "adjective"],
   ["adverb", "adverb"],
@@ -186,8 +186,8 @@ export function SideVerbs({ side, type }: { side: AxisSide; type?: VerbType }) {
   return (
     <div className="text-xs mt-1">
       {type && <VerbTypeBadge type={type} />}
-      {form("intr.", "verb without an object", side.verb_i.gloss, type !== "relation")}
-      {form("tr.", "verb with an object", side.verb_t.gloss)}
+      {form("vi", "verb without an object", side.verb_i.gloss, type !== "relation")}
+      {form("vt", "verb with an object", side.verb_t.gloss)}
     </div>
   );
 }
@@ -458,8 +458,8 @@ function Meaning({ word }: { word: Word }) {
   );
   return (
     <>
-      {line("intr.", verb_i, !relation)}
-      {line("tr.", verb_t)}
+      {line("vi", verb_i, !relation)}
+      {line("vt", verb_t)}
     </>
   );
 }

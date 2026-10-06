@@ -8,18 +8,24 @@ const resolved = (transliteration: string) =>
   );
 
 test("bracketed names resolve to grammar markers, bare ones to ordinary words", () => {
-  expect(resolved("<subject> person <verb_prescriptive> do in value.")).toEqual([
+  expect(resolved("<subject> person <verb_prescriptive> act_vi in value.")).toEqual([
     "<subject>",
     "person",
     "<verb_prescriptive>",
-    "do(v)",
+    "do_vt",
     "in",
     "value",
     ".",
   ]);
   // <to> is the noun marker (the addressee of send), to the preposition
-  expect(resolved("<to> send to")).toEqual(["<to>", "send(v)", "to"]);
+  expect(resolved("<to> send_vt to")).toEqual(["<to>", "send_vi", "to"]);
   expect(resolved("<in>")).toEqual(["?<in>"]);
+});
+
+test("a verb goes by either meaning's name, and only by those", () => {
+  const word = dictionary.get("kill_vt")!;
+  expect(resolved("die_vi kill_vt kill")).toEqual(["kill_vt", "kill_vt", "?kill"]);
+  expect(dictionary.get("die_vi")).toBe(word);
 });
 
 test("digits, two-word names and unknown words", () => {

@@ -229,11 +229,11 @@ const VerbForms: React.FC<{ intransitive?: string; transitive?: string; relation
   return (
     <div title={title}>
       {intransitive && intransitive === transitive ? (
-        line("intr./tr.", intransitive)
+        line("vi/vt", intransitive)
       ) : (
         <>
-          {line("intr.", intransitive, !relation)}
-          {line("tr.", transitive)}
+          {line("vi", intransitive, !relation)}
+          {line("vt", transitive)}
         </>
       )}
     </div>
