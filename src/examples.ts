@@ -869,7 +869,7 @@ export const conversation_examples: Example[] = [
   {
     title: "Acknowledge",
     english: "I acknowledge your work",
-    transliteration: "<subject> I <verb> acknowledge(vt) <object> <gerund> work(vi) of you",
+    transliteration: "<subject> I <verb> acknowledge(vt) <object> work of you",
   },
   {
     title: "Praise",
