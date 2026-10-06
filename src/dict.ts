@@ -3131,6 +3131,35 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   idiom("thank_you", ["thanks", "to", "<pronoun_second_person>"], { gloss: "thank you", notes: "Thanks to you: the credit goes to you" });
   idiom("sorry", ["blame", "to", "<pronoun_first_person>"], { notes: "Blame to me: my fault" });
 
+  // Parts of things, head first: the kind of part, then the whole. Organs are <tool> + what
+  // they do, where there's a verb; a body part names the like part of another whole
+  noun("skin", ["covering", "body"]);
+  noun("hair", ["covering", "head"]);
+  noun("fur", ["covering", "animal"]);
+  noun("bark", ["covering", "plant"]);
+  noun("horn", ["rod", "head"]);
+  noun("tail", ["rod", "back"]);
+  noun("tongue", ["rod", "mouth"]);
+  noun("tooth", ["rock", "mouth"]);
+  noun("bone", ["rock", "body"]);
+  noun("knee", ["node", "leg"]);
+  noun("neck", ["node", "head"]);
+  noun("claw", ["finger", "sharp"]);
+  noun("eye", ["<tool>", "see(vt)"]);
+  noun("ear", ["<tool>", "hear(vt)"]);
+  noun("nose", ["<tool>", "sense(vt)", "gas"]);
+  noun("brain", ["<tool>", "know(vt)"]);
+  noun("heart", ["center", "body"]);
+  noun("blood", ["liquid", "body"]);
+  noun("flesh", ["matter", "body"]);
+  noun("sap", ["liquid", "plant"]);
+  noun("egg", ["container", "child"]);
+  noun("tree", ["plant", "big"]);
+  noun("root", ["feet", "plant"], { gloss: "root (of a plant)" });
+  noun("trunk", ["torso", "plant"]);
+  noun("branch", ["arm", "plant"]);
+  noun("leaf", ["finger", "plant"]);
+
   noun("chain", ["node", "<rank_1>"], { gloss: "chain / list (nodes in a line)" });
   noun("tree_graph", ["node", "<rank_2>"], { gloss: "tree (graph)" });
   noun("dag", ["node", "<rank_3>"], { gloss: "directed acyclic graph" });

@@ -822,6 +822,23 @@ export const posture_examples: Example[] = [
   { title: "Sit up straight", english: "Sit up straight!", transliteration: "<verb_prescriptive> sit(vi) uprightly" },
 ];
 
+// Parts of things: the kind of part, then the whole
+export const part_examples: Example[] = [
+  { title: "Skin", english: "the body's covering", transliteration: "covering body" },
+  { title: "Bark", english: "the plant's covering", transliteration: "covering plant" },
+  { title: "Tooth", english: "the mouth's rock", transliteration: "rock mouth" },
+  { title: "Eye", english: "what you see with", transliteration: "<tool> see(vt)" },
+  { title: "Heart", english: "the body's center", transliteration: "center body" },
+  { title: "Blood", english: "the body's liquid", transliteration: "liquid body" },
+  { title: "Leaf", english: "a plant's finger", transliteration: "finger plant" },
+  { title: "Root", english: "a plant's feet", transliteration: "feet plant" },
+  {
+    title: "A sentence",
+    english: "The tree's leaves are red",
+    transliteration: "<subject> finger plant plural of plant big <verb> be(vt) <complement> red",
+  },
+];
+
 // Seeing and showing, and saying or showing what isn't so
 export const sight_examples: Example[] = [
   { title: "See", english: "I see you", transliteration: "<subject> I <verb> see(vt) <object> you" },

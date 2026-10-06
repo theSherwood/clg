@@ -403,6 +403,30 @@ export function GrammarView() {
         &lt;subject&gt; I &lt;verb&gt; sit(vi) &lt;continuous_tense_aspect&gt;
       </Example>
 
+      <H2>Parts of things</H2>
+      <p>
+        A part is named head first, like any noun and modifier: the kind of part, then the whole
+        it belongs to. <W w="tail" /> is <i>rod back</i> and <W w="knee" /> <i>node leg</i>. A few
+        kinds go a long way: a <W w="covering" /> is <W w="skin" /> (<i>covering body</i>),{" "}
+        <W w="hair" /> (<i>covering head</i>), <W w="fur" /> or <W w="bark" />; a <W w="rod" /> is a{" "}
+        <W w="horn" />, <W w="tail" /> or <W w="tongue" />; a <W w="rock" /> is a <W w="tooth" /> (
+        <i>rock mouth</i>) or <W w="bone" /> (<i>rock body</i>).
+      </p>
+      <p className="mt-2">
+        Organs are named for what they do, with <W w="<tool>" />: <W w="eye" /> is{" "}
+        <i>&lt;tool&gt; see(vt)</i>, <W w="ear" /> <i>&lt;tool&gt; hear(vt)</i>, <W w="brain" />{" "}
+        <i>&lt;tool&gt; know(vt)</i> and <W w="nose" /> <i>&lt;tool&gt; sense(vt) gas</i>. Where there's no verb for
+        it, the kind-and-whole pattern does: <W w="heart" /> is <i>center body</i>. Substances take a
+        phase: <W w="blood" /> is <i>liquid body</i>, <W w="sap" /> <i>liquid plant</i> and{" "}
+        <W w="flesh" /> <i>matter body</i>.
+      </p>
+      <p className="mt-2">
+        A body part names the like part of another whole, as many languages speak of the foot of a
+        mountain. A plant's parts are its body's: <W w="root" /> is <i>feet plant</i>,{" "}
+        <W w="trunk" /> <i>torso plant</i>, <W w="branch" /> <i>arm plant</i> and <W w="leaf" />{" "}
+        <i>finger plant</i>, and <i>mouth water</i> is a river's mouth.
+      </p>
+
       <H2>Geometry</H2>
       <p>
         <W w="geometry" /> is one root for geometric figures. Rank gives a bounded figure with that
