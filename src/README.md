@@ -42,7 +42,9 @@ fit as its scale steps.
 - [ ] transmission (send/receive): with give, or with travel. Kept separate for now
 - [ ] travel (come/go) and distance (near/far): probably keep, since go(vi) is the general verb
   of motion and "go to X" approaches X
-- [ ] obligation (duty/privilege) and permissibility (forbid/allow/recommend): obligatory as
+- [x] obligation (duty/privilege) and permissibility (forbid/allow/recommend). Kept apart:
+  permissibility is the five-step deontic scale (forbid … require), obligation is right/duty.
+  Was: obligatory as
   max_positive recommend; might give a word for "right"
 - [ ] compliance (submit/resist) and fortitude (succumb/endure): submit ≈ succumb, both near
   control's "give in"

@@ -885,6 +885,20 @@ export const more_grammar_examples: Example[] = [
   },
   { title: "Ratio", english: "three to one", transliteration: "number 3 <per> number 1" },
   { title: "Can", english: "I can work", transliteration: "<subject> I <verb> work(vi) ably" },
+  { title: "Must", english: "You must work", transliteration: "<subject> you <verb> work(vi) obligatorily" },
+  { title: "Should", english: "You should sleep", transliteration: "<subject> you <verb> sleep(vi) advisably" },
+  { title: "May", english: "You may go", transliteration: "<subject> you <verb> go(vi) permissibly" },
+  { title: "Must not", english: "You must not kill", transliteration: "<subject> you <verb> kill(vt) impermissibly" },
+  {
+    title: "A right",
+    english: "Everyone has the right to speak",
+    transliteration: "<subject> everyone <verb> be_entitled_to(vt) <object> <gerund> say(vt)",
+  },
+  {
+    title: "A duty",
+    english: "I'm bound not to interfere",
+    transliteration: "<subject> I <verb> be_bound_to(vt) <object> <gerund> not touch(vi)",
+  },
   { title: "Can't", english: "I can't sleep", transliteration: "<subject> I <verb> sleep(vi) incapably" },
   { title: "Again", english: "Open it again", transliteration: "<verb_prescriptive> open(vt) <again> <object> it" },
   {
@@ -962,7 +976,7 @@ export const udhr_articles: Article[] = [
       "All human beings are born free and equal in dignity and rights. They are endowed with reason and conscience and should act towards one another in a spirit of brotherhood.",
     ],
     transliteration:
-      "<subject> everyone <verb?> be(vt) <complement> free and same in value and privilege. <subject> it all <verb> possess(vt) <object> reason and conscience? and <verb_prescriptive> act(vi) for other and in path family. ??",
+      "<subject> everyone <verb?> be(vt) <complement> free and same in value and right. <subject> it all <verb> possess(vt) <object> reason and conscience? and <verb_prescriptive> act(vi) for other and in path family. ??",
   },
   {
     title: "Article 2",

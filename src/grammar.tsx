@@ -293,6 +293,23 @@ export function GrammarView() {
         ways.
       </p>
       <Example meaning="I can work.">&lt;subject&gt; I &lt;verb&gt; work(vi) ably</Example>
+      <p className="mt-2">
+        How required an act is, the other kind of “must” and “may”, is the permissibility axis, a
+        five-step scale: <W w="forbid(vi)" />, <W w="discourage(vt)" />, <W w="allow(vi)" />,{" "}
+        <W w="recommend(vi)" /> and <W w="require(vt)" />. Its adverbs are the modals:{" "}
+        <W w="obligatorily" /> is must, <W w="advisably" /> should, <W w="permissibly" /> may,{" "}
+        <W w="inadvisably" /> shouldn't and <W w="impermissibly" /> must not.
+      </p>
+      <Example meaning="You should sleep.">&lt;subject&gt; you &lt;verb&gt; sleep(vi) advisably</Example>
+      <p className="mt-2">
+        Rights and duties are their own axis: <W w="be_entitled_to(vt)" /> (a <W w="right" />) and{" "}
+        <W w="be_bound_to(vt)" /> (a <W w="duty" />), to do something or to refrain. It doesn't say
+        whose duty answers whose right; a right to speak may ask of others only that they not
+        interfere, and the sentence says so.
+      </p>
+      <Example meaning="Everyone has the right to speak.">
+        &lt;subject&gt; everyone &lt;verb&gt; be_entitled_to(vt) &lt;object&gt; &lt;gerund&gt; say(vt)
+      </Example>
       <Example meaning="The person probably died.">
         &lt;subject&gt; person &lt;verb&gt; die(vi) &lt;min_positive&gt; truly
       </Example>

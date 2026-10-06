@@ -1698,21 +1698,24 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { noun: "stop", adj: "stopped", verb: "stop(vi)", verb_i: "stop", verb_t: "stop" },
   ],
   [
-    { noun: "obligation", notes: "axis.csv had privilege, right / obligation, duty" },
     {
-      noun: "privilege",
-      adj: "privileged",
-      verb: "entitle(vt)",
-      verb_i: "become entitled",
-      verb_t: "entitle",
+      noun: "obligation",
+      notes:
+        "What one is entitled to and what one is bound to. It doesn't say whose duty answers whose right: a right to speak may ask of others only that they not interfere, and the sentence says so. How required an act is, from forbidden to obligatory, is permissibility",
     },
     {
       noun: "duty",
-      adj: "dutiful",
-      verb: "obligate(vt)",
-      verb_i: "become obliged",
-      verb_t: "obligate",
+      adj: "obliged",
+      verb: "be_bound_to(vt)",
+      verb_t: "be bound to",
       adverb: "dutifully",
+    },
+    {
+      noun: "right",
+      adj: "entitled",
+      verb: "be_entitled_to(vt)",
+      verb_t: "be entitled to",
+      adverb: "rightfully",
     },
   ],
   [
@@ -2153,22 +2156,42 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   [
     {
       noun: "permissibility",
+      notes:
+        "How required an act is, the deontic scale: forbidden, discouraged, permitted, recommended, obligatory. The adverbs are the modals: obligatorily is must, advisably should, permissibly may, inadvisably shouldn't, impermissibly must not",
       steps: {
+        max_positive: {
+          noun: "requirement",
+          adj: "obligatory",
+          verb: "require(vt)",
+          verb_i: "require",
+          verb_t: "require",
+          adverb: "obligatorily",
+        },
         neutral: {
           noun: "permission",
           adj: "permitted",
           verb: "allow(vi)",
           verb_i: "allow",
           verb_t: "allow",
+          adverb: "permissibly",
+        },
+        max_negative: {
+          noun: "prohibition",
+          adj: "forbidden",
+          verb: "forbid(vi)",
+          verb_i: "forbid",
+          verb_t: "forbid",
+          adverb: "impermissibly",
         },
       },
     },
     {
-      noun: "prohibition",
-      adj: "forbidden",
-      verb: "forbid(vi)",
-      verb_i: "forbid",
-      verb_t: "forbid",
+      noun: "discouragement",
+      adj: "discouraged",
+      verb: "discourage(vt)",
+      verb_i: "discourage",
+      verb_t: "discourage",
+      adverb: "inadvisably",
     },
     {
       noun: "recommendation",
@@ -2176,6 +2199,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb: "recommend(vi)",
       verb_i: "recommend",
       verb_t: "recommend",
+      adverb: "advisably",
     },
   ],
   [
@@ -2859,7 +2883,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "materialize(vi)", "enable(vt)", "angle(vt)", "rejuvenate(vt)", "wake(vi)", "create(vt)",
     "beautify(vt)", "go(vi)", "heap_up(vt)", "fill_up(vi)", "educate(vt)",
     "aim(vt)", "group(vt)", "mark_up(vt)", "emphasize(vt)", "mend(vt)",
-    "sanctify(vt)", "close_in(vi)", "disconnect(vt)", "stop(vi)", "obligate(vt)",
+    "sanctify(vt)", "close_in(vi)", "disconnect(vt)", "stop(vi)",
     "necessitate(vt)", "cover(vt)", "empower(vt)",
   ],
   action: [
@@ -2870,7 +2894,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "do(vt)", "touch(vi)", "count(vi)", "thank(vt)", "show(vi)", "fly(vi)",
   ],
   relation: [
-    "possess(vt)", "be(vt)", "resemble(vt)", "result_from(vt)", "love(vt)", "know(vt)", "desire(vt)", "face(vt)", "include(vt)",
+    "possess(vt)", "be(vt)", "be_entitled_to(vt)", "resemble(vt)", "result_from(vt)", "love(vt)", "know(vt)", "desire(vt)", "face(vt)", "include(vt)",
     "attract(vt)", "exceed(vt)", "follow(vt)",
   ],
 };
