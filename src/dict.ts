@@ -1728,19 +1728,24 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "contest" },
-    { noun: "defeat", adj: "defeated", verb: "lose(v)", verb_i: "lose", verb_t: "lose" },
     {
-      noun: "victory",
-      adj: "victorious",
-      verb: "win(v)",
-      verb_i: "win",
-      verb_t: "win",
-      adverb: "victoriously",
+      noun: "achievement",
+      notes:
+        "Winning is succeeding at its fullest, against everyone else, and losing is failing completely; progress and setbacks are the lesser steps. To beat someone is exceed(v)",
+      steps: {
+        max_positive: {
+          noun: "victory",
+          adj: "victorious",
+          verb: "win(v)",
+          verb_i: "win",
+          verb_t: "win",
+          adverb: "victoriously",
+        },
+        min_positive: { noun: "progress", verb: "progress(v)", verb_i: "make progress", verb_t: "further" },
+        min_negative: { noun: "setback", verb: "set_back(v)", verb_i: "slip back", verb_t: "set back" },
+        max_negative: { noun: "defeat", adj: "defeated", verb: "lose(v)", verb_i: "lose", verb_t: "lose" },
+      },
     },
-  ],
-  [
-    { noun: "achievement" },
     {
       noun: "failure",
       adj: "unsuccessful",
@@ -2615,7 +2620,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "necessitate(v)", "cover(v)",
   ],
   action: [
-    "analyze(v)", "win(v)", "succeed(v)", "produce(v)", "send(v)", "hope(v)",
+    "analyze(v)", "succeed(v)", "produce(v)", "send(v)", "hope(v)",
     "believe(v)", "lead(v)", "work(v)", "search(v)", "learn(v)", "sow(v)", "give(v)",
     "make_peace(v)", "defend(v)", "steward(v)", "command(v)", "resist(v)", "withstand(v)",
     "participate(v)", "recommend(v)", "say(v)", "write(v)", "sense(v)", "use(v)",
