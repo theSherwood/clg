@@ -81,7 +81,7 @@ export function GrammarView() {
         word in modifier position, trailing a noun or verb, is read as an adjective or adverb.
       </p>
       <p className="mt-2">
-        The first six roots are special grammar markers, and they're also domain words:{" "}
+        Six of the grammar markers are special, since they're also domain words:{" "}
         <W w="<subject>" />, <W w="<object>" />, <W w="<gerund>" />, <W w="<verb>" />,{" "}
         <W w="<verb_prescriptive>" /> and <W w="<verb_interrogative>" />.
       </p>

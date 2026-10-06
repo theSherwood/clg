@@ -1,4 +1,5 @@
 import { elements } from "./elements";
+import saved_section_order from "./section_order.json";
 
 export const T = {
   // tags
@@ -17,24 +18,56 @@ export type Tag = keyof typeof T;
 // Sections reserve fixed ranges of root IDs for kinds of words, with room to grow, so adding a
 // word to one section never shifts the IDs (and so the sounds) of words in another.
 // The first 128 IDs are core words, and domain words must be among them so they're never
-// ambiguous. The last 128 are shared by partial domains (the digits, in the number domain) and
-// the axis words, which are told apart by domain.
-export const sections = [
-  { key: "marker", label: "Grammar markers", start: 0, end: 14 },
-  { key: "number_helper", label: "Number helpers", start: 14, end: 16 },
-  { key: "grammar", label: "Grammar helpers", start: 16, end: 28 },
-  { key: "dimension", label: "Dimension helpers", start: 28, end: 32 },
-  { key: "preposition", label: "Prepositions", start: 32, end: 42 },
-  { key: "pronoun", label: "Pronouns", start: 42, end: 48 },
-  { key: "axis_helper", label: "Axis helpers", start: 48, end: 56 },
-  { key: "content", label: "Content roots", start: 56, end: 112 },
-  { key: "rank", label: "Rank helpers", start: 112, end: 128 },
+// ambiguous. The core sections fill them in the order section_order.json gives, which the Roots
+// page can rearrange. The last 128 are shared by partial domains (the digits, in the number
+// domain) and the axis words, which are told apart by domain.
+const core_sections = [
+  { key: "marker", label: "Grammar markers", size: 14 },
+  { key: "number_helper", label: "Number helpers", size: 2 },
+  { key: "grammar", label: "Grammar helpers", size: 12 },
+  { key: "dimension", label: "Dimension helpers", size: 4 },
+  { key: "preposition", label: "Prepositions", size: 10 },
+  { key: "pronoun", label: "Pronouns", size: 6 },
+  { key: "axis_helper", label: "Axis helpers", size: 8 },
+  { key: "content", label: "Content roots", size: 56 },
+  { key: "rank", label: "Rank helpers", size: 16 },
+] as const;
+const shared_sections = [
   { key: "axis", label: "Axis words", start: 128, end: 256 },
   { key: "digit", label: "Digits", start: 128, end: 256 },
-] as const; // end is exclusive
+] as const;
 
-export type Section = (typeof sections)[number];
-export type SectionKey = Section["key"];
+export type CoreSectionKey = (typeof core_sections)[number]["key"];
+export type SectionKey = CoreSectionKey | (typeof shared_sections)[number]["key"];
+export type Section = { key: SectionKey; label: string; start: number; end: number }; // end is exclusive
+
+export const core_section_keys: CoreSectionKey[] = core_sections.map((s) => s.key);
+
+// An order of the core sections: each one exactly once
+export function is_section_order(value: unknown): value is CoreSectionKey[] {
+  return (
+    Array.isArray(value) &&
+    value.length === core_section_keys.length &&
+    core_section_keys.every((key) => value.includes(key))
+  );
+}
+
+export function layout_sections(order: CoreSectionKey[]): Section[] {
+  let start = 0;
+  const core = order.map((key) => {
+    const { label, size } = core_sections.find((s) => s.key === key)!;
+    const section = { key, label, start, end: start + size };
+    start += size;
+    return section;
+  });
+  if (start !== 128) throw new Error(`The core sections fill ${start} IDs, not 128`);
+  return [...core, ...shared_sections];
+}
+
+if (!is_section_order(saved_section_order))
+  throw new Error("section_order.json must list each core section once");
+export const section_order: CoreSectionKey[] = saved_section_order;
+export const sections: Section[] = layout_sections(section_order);
 
 type WordData = {
   id: number;
@@ -75,7 +108,7 @@ function validate_word(word: Word): string | undefined {
   if (id < 0 && parts_length === 0) return `Word ${word.word} has negative ID and no parts`;
 }
 
-let current_section: Section = sections[0];
+let current_section: Section = sections[0]!;
 let root_index: number = current_section.start;
 
 function section(key: SectionKey) {

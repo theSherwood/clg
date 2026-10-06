@@ -7,8 +7,11 @@ import {
   data_errors,
   roots,
   sections,
+  section_order,
+  layout_sections,
   candidates,
   type Candidate,
+  type CoreSectionKey,
   type SectionKey,
   Word,
   T, // Importing T for tag names
@@ -195,6 +198,20 @@ const slots: Slot[] = roots.map((slot_roots, id) => {
     reserved: sections.filter((s) => s.start <= id && id < s.end).map((s) => s.key),
   };
 });
+
+// The slots as they'd be with the core sections in another order: each section's slots move
+// together to its new start, so their roots keep their places within it
+function arranged_slots(order: CoreSectionKey[]): Slot[] {
+  const arranged = [...slots];
+  for (const section of layout_sections(order).filter((s) => s.start < 128)) {
+    const current = sections.find((s) => s.key === section.key)!;
+    for (let i = 0; i < section.end - section.start; i++) {
+      const id = section.start + i;
+      arranged[id] = { ...slots[current.start + i]!, id, reserved: [section.key] };
+    }
+  }
+  return arranged;
+}
 
 function empty_ranges(): [number, number][] {
   const ranges: [number, number][] = [];
@@ -560,6 +577,40 @@ function PhonologyPanel(props: { phonology: Phonology; set_phonology: (p: Phonol
 function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) => void }) {
   const { phonology } = props;
   const [highlighted, set_highlighted] = useState<SectionKey | null>(null);
+  // While rearranging: the order being tried, previewed in the grid until it's saved
+  const [draft_order, set_draft_order] = useState<CoreSectionKey[] | null>(null);
+  const [order_status, set_order_status] = useState("");
+  const shown_slots = useMemo(() => (draft_order ? arranged_slots(draft_order) : slots), [draft_order]);
+  const shown_sections = draft_order ? layout_sections(draft_order) : sections;
+  const move_section = (key: CoreSectionKey, step: -1 | 1) =>
+    set_draft_order((order) => {
+      if (!order) return order;
+      const i = order.indexOf(key);
+      const j = i + step;
+      if (j < 0 || j >= order.length) return order;
+      const next = [...order];
+      [next[i], next[j]] = [next[j]!, next[i]!];
+      return next;
+    });
+  // Writes section_order.json through the dev server, which restarts, then reloads to pick it up
+  const save_order = async () => {
+    set_order_status("Saving…");
+    try {
+      const response = await fetch("/api/section-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(draft_order),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error ?? response.statusText);
+      set_order_status(`Saved to ${result.saved}; reloading`);
+      setTimeout(() => window.location.reload(), 1500);
+    } catch (error) {
+      set_order_status(
+        `Couldn't save (${error instanceof Error ? error.message : error}). Is the dev server running?`,
+      );
+    }
+  };
 
   // A column fixes the two fastest digits of the ID and a row the two slowest,
   // so describe each by the marks those digits select
@@ -598,33 +649,88 @@ function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) 
           .join(", ")}
         )
       </div>
-      <div className="mb-4 flex flex-wrap gap-2">
-        {sections.map((s) => {
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        {shown_sections.map((s) => {
           const { used, planned } = usage[s.key];
           const capacity = s.end - s.start;
           const over = used + planned > capacity;
+          const movable = draft_order && s.start < 128 ? (s.key as CoreSectionKey) : null;
+          const arrow = "px-1 text-gray-500 hover:text-indigo-700 disabled:opacity-30";
           return (
-            <button
+            <div
               key={s.key}
               onMouseEnter={() => set_highlighted(s.key)}
               onMouseLeave={() => set_highlighted(null)}
               onClick={() => set_highlighted((h) => (h === s.key ? null : s.key))}
               title={`IDs ${s.start}–${s.end - 1}: ${used} roots, ${planned} candidates, ${capacity} slots`}
-              className={`flex items-center gap-1.5 px-2 py-1 text-sm rounded border bg-white hover:bg-gray-100
+              className={`flex items-center gap-1.5 px-2 py-1 text-sm rounded border bg-white hover:bg-gray-100 cursor-pointer
                 ${over ? "border-red-400" : "border-gray-300"}`}
             >
+              {movable && (
+                <button
+                  className={arrow}
+                  disabled={s.start === 0}
+                  onClick={(e) => (e.stopPropagation(), move_section(movable, -1))}
+                  title="Move earlier"
+                >
+                  ◀
+                </button>
+              )}
               <span className={`inline-block w-3 h-3 rounded-sm ${SECTION_SWATCHES[s.key]}`} />
               {s.label}
               <span className="text-gray-400">
-                {used}/{capacity}
+                {draft_order && s.start < 128 ? `${s.start}–${s.end - 1}` : `${used}/${capacity}`}
               </span>
-              {planned > 0 && (
+              {!draft_order && planned > 0 && (
                 <span className={over ? "text-red-600" : "text-amber-600"}>+{planned}</span>
               )}
-            </button>
+              {movable && (
+                <button
+                  className={arrow}
+                  disabled={s.end === 128}
+                  onClick={(e) => (e.stopPropagation(), move_section(movable, 1))}
+                  title="Move later"
+                >
+                  ▶
+                </button>
+              )}
+            </div>
           );
         })}
+        {draft_order ? (
+          <>
+            <button
+              onClick={save_order}
+              disabled={draft_order.join() === section_order.join()}
+              className="px-2 py-1 text-sm rounded border border-indigo-400 text-indigo-700 hover:bg-indigo-50 disabled:opacity-40"
+              title="Write this order to section_order.json. Every root in a moved section gets a new ID and sound"
+            >
+              Save order
+            </button>
+            <button
+              onClick={() => (set_draft_order(null), set_order_status(""))}
+              className="px-2 py-1 text-sm rounded border border-gray-300 hover:bg-gray-100"
+            >
+              Cancel
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={() => set_draft_order(section_order)}
+            className="px-2 py-1 text-sm rounded border border-gray-300 text-gray-600 hover:bg-gray-100"
+            title="Rearrange the core sections (IDs 0–127), previewing the new sounds"
+          >
+            Edit order
+          </button>
+        )}
+        {order_status && <span className="text-sm text-gray-600">{order_status}</span>}
       </div>
+      {draft_order && (
+        <p className="mb-3 text-sm text-amber-700">
+          Previewing: the grid shows each section at its new IDs, with their new sounds. Popups still
+          show the current sounds until you save.
+        </p>
+      )}
       <p className="mb-3 flex items-center gap-2 text-sm text-gray-600">
         Axis verbs:
         {(["change", "action", "relation"] as const).map((type) => (
@@ -658,7 +764,7 @@ function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) 
                 </div>
               ))}
             </div>
-            {slots.slice(row * 16, row * 16 + 16).map((slot) => (
+            {shown_slots.slice(row * 16, row * 16 + 16).map((slot) => (
               <SlotCell
                 key={slot.id}
                 slot={slot}

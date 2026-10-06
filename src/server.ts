@@ -1,10 +1,12 @@
-// Dev server: serves the app with hot reloading, plus an endpoint the phonology playground uses
-// to save its settings as the defaults. Run it through dev.ts (bun run dev).
+// Dev server: serves the app with hot reloading, plus endpoints the Roots page uses to save the
+// phonology playground's settings as the defaults and the order of the core sections. Run it through dev.ts (bun run dev).
 import { join } from "node:path";
 import index from "./index.html";
+import { is_section_order } from "./dict";
 import { is_phonology, phonology_to_json } from "./phonology";
 
 const DEFAULTS_FILE = "phonology.defaults.json";
+const SECTION_ORDER_FILE = "section_order.json";
 
 const server = Bun.serve({
   hostname: "localhost",
@@ -20,6 +22,19 @@ const server = Bun.serve({
         }
         await Bun.write(join(import.meta.dir, DEFAULTS_FILE), phonology_to_json(phonology));
         return Response.json({ saved: DEFAULTS_FILE });
+      },
+    },
+    "/api/section-order": {
+      POST: async (request) => {
+        const order = await request.json().catch(() => null);
+        if (!is_section_order(order)) {
+          return Response.json({ error: "Not an order of the core sections" }, { status: 400 });
+        }
+        await Bun.write(
+          join(import.meta.dir, SECTION_ORDER_FILE),
+          `[${order.map((key) => JSON.stringify(key)).join(", ")}]\n`,
+        );
+        return Response.json({ saved: SECTION_ORDER_FILE });
       },
     },
   },
