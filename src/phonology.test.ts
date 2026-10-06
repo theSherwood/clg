@@ -54,7 +54,7 @@ describe("syllables", () => {
   test("a compound is its roots' syllables in sequence, unchanged", () => {
     const small = dictionary.get("small")!;
     const parts = small.data.parts.map((part) => pronounce(part, fixture));
-    expect(pronounce(small, fixture)).toBe(parts.join("."));
+    expect(pronounce(small, fixture)).toBe(parts.join(""));
   });
 });
 

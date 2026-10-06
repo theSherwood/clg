@@ -80,10 +80,10 @@ export function syllable_of(id: number, phonology: Phonology): string {
     .join("");
 }
 
-// A compound is its roots' syllables in sequence, unchanged.
+// A compound is its roots' syllables run together, unchanged: syllables can only be split one way.
 export function pronounce(word: Word, phonology: Phonology): string {
   if (is_root(word)) return syllable_of(word.data.id, phonology);
-  return word.data.parts.map((part) => pronounce(part, phonology)).join(".");
+  return word.data.parts.map((part) => pronounce(part, phonology)).join("");
 }
 
 // Describes what a subset of marks has in common, e.g. the column or row of the Roots grid.
