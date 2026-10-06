@@ -570,7 +570,7 @@ export const thing_examples: Example[] = [
   {
     title: "What thing",
     english: "What thing do you want?",
-    transliteration: "<subject> you <verb_interrogative> desire <object> thing <blank>",
+    transliteration: "<subject> you <verb_interrogative> desire(vt) <object> thing <blank>",
   },
   { title: "Animal", english: "an animal", transliteration: "animal" },
   { title: "Young animal", english: "an animal's child", transliteration: "animal child" },
@@ -624,7 +624,7 @@ export const pointing_examples: Example[] = [
   { title: "This place", english: "This place is big", transliteration: "<subject> place this <verb> be(vt) <complement> big" },
   { title: "That person", english: "that person", transliteration: "person that" },
   { title: "Which person", english: "Which person left?", transliteration: "<subject> person <blank> <verb_interrogative> go(vi)" },
-  { title: "This thing", english: "I want this thing", transliteration: "<subject> I <verb> desire <object> thing this" },
+  { title: "This thing", english: "I want this thing", transliteration: "<subject> I <verb> desire(vt) <object> thing this" },
 ];
 
 // Subclauses: one bracket, <clause_start> ... <clause_end>, as an object, after a preposition, or
@@ -638,7 +638,7 @@ export const clause_examples: Example[] = [
   {
     title: "To…",
     english: "I want to sleep (the subclause takes my subject)",
-    transliteration: "<subject> I <verb> desire <object> <clause_start> <verb> sleep(vi)",
+    transliteration: "<subject> I <verb> desire(vt) <object> <clause_start> <verb> sleep(vi)",
   },
   {
     title: "Because",
@@ -753,6 +753,52 @@ export const arithmetic_examples: Example[] = [
   },
 ];
 
+// Existence and location, ordinals, ability, again, manner and counterfactuals
+export const more_grammar_examples: Example[] = [
+  {
+    title: "Somewhere",
+    english: "There's water here",
+    transliteration: "<subject> water <verb> be(vi) at this",
+  },
+  { title: "Location", english: "The rock is in the water", transliteration: "<subject> rock <verb> be(vi) in water" },
+  { title: "Existence", english: "Animals exist", transliteration: "<subject> animal <verb> be(vi)" },
+  { title: "Ordinal", english: "the third person", transliteration: "person <ordinal> number 3" },
+  { title: "Cardinal", english: "three people", transliteration: "person number 3" },
+  { title: "Can", english: "I can work", transliteration: "<subject> I <verb> work(vi) ably" },
+  { title: "Can't", english: "I can't sleep", transliteration: "<subject> I <verb> sleep(vi) incapably" },
+  { title: "Again", english: "Open it again", transliteration: "<verb_prescriptive> open(vt) <again> <object> it" },
+  {
+    title: "Undo",
+    english: "The ice froze again (it had melted)",
+    transliteration: "<subject> water <verb> freeze(vi) <again> formerly",
+  },
+  {
+    title: "How",
+    english: "How do you work?",
+    transliteration: "<subject> you <verb_interrogative> work(vi) <blank>",
+  },
+  {
+    title: "Counterfactual",
+    english: "If you had slept, you would be strong",
+    transliteration:
+      "if <clause_start> <subject> you <verb> sleep(vi) formerly falsely <clause_end> <subject> you <verb> be(vt) <complement> strong",
+  },
+];
+
+// Conversation: no special words, just axis words used as answers and greetings
+export const conversation_examples: Example[] = [
+  { title: "Yes", english: "Yes (that's so)", transliteration: "true" },
+  { title: "No", english: "No (that's not so)", transliteration: "false" },
+  { title: "Hello", english: "Hello", transliteration: "good" },
+  { title: "Goodbye", english: "Goodbye", transliteration: "go(vi) well" },
+  { title: "Thank you", english: "Thank you", transliteration: "you good" },
+  {
+    title: "A question",
+    english: "Are you sleeping? Yes.",
+    transliteration: "<subject> you <verb_interrogative> sleep(vi) <continuous_tense_aspect>. true.",
+  },
+];
+
 // Universal Declaration of Human Rights
 
 export const udhr_preamble: string[] = [
@@ -775,7 +821,7 @@ export const udhr_articles: Article[] = [
       "All human beings are born free and equal in dignity and rights. They are endowed with reason and conscience and should act towards one another in a spirit of brotherhood.",
     ],
     transliteration:
-      "<subject> person all <verb?> be(vt) <complement> free and equal(vt) in value and privilege. <subject> it all <verb> possess(vt) <object> reason and conscience? and <verb_prescriptive> act(vi) for other and in manner family?. ??",
+      "<subject> person all <verb?> be(vt) <complement> free and equal(vt) in value and privilege. <subject> it all <verb> possess(vt) <object> reason and conscience? and <verb_prescriptive> act(vi) for other and in path family. ??",
   },
   {
     title: "Article 2",

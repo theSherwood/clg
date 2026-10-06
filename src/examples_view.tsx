@@ -4,6 +4,8 @@ import {
   type Token,
   number_examples,
   arithmetic_examples,
+  conversation_examples,
+  more_grammar_examples,
   clause_examples,
   color_examples,
   comparison_examples,
@@ -145,6 +147,8 @@ const all_transliterations = [
   ...clause_examples.map((e) => e.transliteration),
   ...direction_examples.map((e) => e.transliteration),
   ...arithmetic_examples.map((e) => e.transliteration),
+  ...more_grammar_examples.map((e) => e.transliteration),
+  ...conversation_examples.map((e) => e.transliteration),
   ...udhr_articles.flatMap((a) => (a.transliteration ? [a.transliteration] : [])),
 ];
 
@@ -230,6 +234,8 @@ export function ExamplesView() {
         { title: "Questions", examples: question_examples },
         { title: "Here and there", examples: pointing_examples },
         { title: "Clauses", examples: clause_examples },
+        { title: "Being, ability, again and ordinals", examples: more_grammar_examples },
+        { title: "Conversation", examples: conversation_examples },
         { title: "Self and other", examples: self_other_examples },
         { title: "Water and fire", examples: water_fire_examples },
         { title: "Sky", examples: sky_examples },

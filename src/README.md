@@ -48,3 +48,5 @@ fit as its scale steps.
   control's "give in"
 - [ ] aliveness (dead/alive) and animacy (inanimate/animate): partial overlap
 - [ ] internality (internal/external) and in/out: noted on the axis as a possible duplicate
+- [ ] effort (difficult/easy, hinder/enable): may not make much sense as it stands; revisit now
+  that capability (able/unable) holds ability

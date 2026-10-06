@@ -1686,6 +1686,29 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { noun: "covering", adj: "covered", verb: "cover(vt)", verb_i: "get covered", verb_t: "cover" },
   ],
   [
+    {
+      noun: "capability",
+      notes:
+        "Ability, the can of I can swim. Its adverb is the modal and follows the verb like the others: work(vi) ably is can work, incapably can't",
+    },
+    {
+      noun: "inability",
+      adj: "unable",
+      verb: "disable(vt)",
+      verb_i: "lose ability",
+      verb_t: "disable",
+      adverb: "incapably",
+    },
+    {
+      noun: "ability",
+      adj: "able",
+      verb: "empower(vt)",
+      verb_i: "become able",
+      verb_t: "empower",
+      adverb: "ably",
+    },
+  ],
+  [
     { noun: "reasoning" },
     {
       noun: "instinct",
@@ -2143,11 +2166,15 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     {},
-    {},
+    {
+      notes:
+        "be(vt) takes a <complement>: what the subject is. be(vi), with no complement, is existing or being somewhere: water be(vi) at this, there's water here. The one relation verb with a meaning without an object",
+    },
     {
       noun: "characteristic",
       adj: "intrinsic",
       verb: "be(vt)",
+      verb_i: "be",
       verb_t: "be",
       adverb: "characteristically",
     },
@@ -2333,11 +2360,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       "What follows describes the subject, so it reads as a modifier: the adjective where there is one (is <complement> hot), otherwise the noun (is <complement> matter <rank_1>)",
   });
   cr("<foreign>", { t: marker });
-  cr("<filler>", {
-    t: marker,
-    gloss: "a hesitation, like um or pues",
-    notes: "Means nothing and goes anywhere, even mid-phrase; the grammar carries on as if it weren't there",
-  });
 }
 
 {
@@ -2355,6 +2377,22 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("<continuous_tense_aspect>");
   cr("<perfect_tense_aspect>");
   cr("if", { t: [T.grammar_helper], notes: '"iff" through "if-exclusive"' });
+  cr("<ordinal>", {
+    t: [T.grammar_helper],
+    gloss: "makes a number an ordinal: <ordinal> number 3 is third",
+    notes: "Before number: dimension <ordinal> number 4 is the fourth dimension, while person number 3 is three people",
+  });
+  cr("<again>", {
+    t: [T.grammar_helper],
+    gloss: "again, re-",
+    notes:
+      "Follows the verb, with the aspects: open(vt) <again> is reopen. With the negative end it undoes, implying the thing was done: <negative> cover(vt) <again> is uncover",
+  });
+  cr("<filler>", {
+    t: [T.grammar_helper],
+    gloss: "a hesitation, like um or pues",
+    notes: "Means nothing and goes anywhere, even mid-phrase; the grammar carries on as if it weren't there",
+  });
 
   candidate("possession_indicator");
   candidate("<become>", {
@@ -2427,7 +2465,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
 }
 
 {
-  // Higher dimensions go through the number domain: dimension number 4
+  // Higher dimensions go through the number domain: dimension <ordinal> number 4
   section("dimension");
   cr("<dimension_0>", { gloss: "point / dimensionless" });
   cr("<dimension_x>", { gloss: "the first dimension (x)" });
@@ -2613,7 +2651,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "beautify(vt)", "go(vi)", "heap_up(vt)", "fill_up(vi)", "show(vt)", "educate(vt)",
     "aim(vt)", "group(vt)", "mark_up(vt)", "emphasize(vt)", "mend(vt)",
     "sanctify(vt)", "close_in(vi)", "disconnect(vt)", "stop(vi)", "obligate(vt)",
-    "necessitate(vt)", "cover(vt)",
+    "necessitate(vt)", "cover(vt)", "empower(vt)",
   ],
   action: [
     "analyze(vi)", "succeed(vi)", "produce(vi)", "send(vi)", "hope(vi)",

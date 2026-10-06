@@ -84,8 +84,11 @@ describe("verb types", () => {
         if (!verb) return [];
         const { gloss: no_object } = side.verb_i;
         const { gloss: with_object } = side.verb_t;
+        // be(vi), existing or being somewhere, is the one relation verb with a meaning without an object
         const ok =
-          axis.verb_type === "relation" ? !no_object && !!with_object : !!no_object && !!with_object;
+          axis.verb_type === "relation"
+            ? (!no_object || verb === "be(vt)") && !!with_object
+            : !!no_object && !!with_object;
         return ok ? [] : [`${verb} (${axis.verb_type})`];
       }),
     );

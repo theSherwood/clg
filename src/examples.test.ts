@@ -53,3 +53,29 @@ test("every word the Grammar page refers to exists", async () => {
   const unknown = names.filter((n) => !dictionary.has(n) && !candidates.some((c) => c.word === n));
   expect(unknown).toEqual([]);
 });
+
+// A noun that shares a verb's name (sleep, desire) would otherwise slip in where the verb belongs
+test("every verb marker is followed by a verb", async () => {
+  const examples = await import("./examples");
+  const transliterations = (Object.values(examples) as unknown[])
+    .filter(Array.isArray)
+    .flat()
+    .flatMap((e: any) => [e?.transliteration, ...(e?.examples ?? []).map((x: any) => x.transliteration)])
+    .filter((t): t is string => typeof t === "string");
+  const markers = ["<verb>", "<verb_prescriptive>", "<verb_interrogative>", "<er>", "<ee>", "<tool>", "<place>", "<to>", "<from>", "<gerund>"];
+  const skip = (t: any) => t?.word?.data.t.includes("axis_helper") || t?.text === "not" || t?.text === "<filler>";
+  const broken = transliterations.flatMap((transliteration) => {
+    const tokens = tokenize(transliteration);
+    return tokens.flatMap((token, i) => {
+      if (token.kind !== "word" || !markers.includes(token.text.replace("?", "").toLowerCase())) return [];
+      let j = i + 1;
+      while (skip(tokens[j])) j++;
+      const next = tokens[j];
+      return next?.kind === "word" && next.word && next.word.data.domain !== "verb"
+        ? [`${token.text} ${next.text}: ${transliteration}`]
+        : [];
+    });
+  });
+  expect(broken).toEqual([]);
+});
+

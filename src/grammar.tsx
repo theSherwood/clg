@@ -95,8 +95,8 @@ export function GrammarView() {
         English employer and employee: <i>&lt;er&gt; eat(vt)</i> is “eater”, <i>&lt;ee&gt; eat(vt)</i> is “what is eaten”,
         so food. <W w="<er>" /> is whoever or whatever does it, not only a person, like English
         printer or opener. Two more markers name other roles, like the prepositions{" "}
-        <W w="with" /> and <W w="at" />: <W w="<tool>" /> is what it's done with (<i>&lt;tool&gt; open</i>,
-        a key) and <W w="<place>" /> where it's done (<i>&lt;place&gt; sleep</i>, a bed).{" "}
+        <W w="with" /> and <W w="at" />: <W w="<tool>" /> is what it's done with (<i>&lt;tool&gt; open(vt)</i>,
+        a key) and <W w="<place>" /> where it's done (<i>&lt;place&gt; sleep(vi)</i>, a bed).{" "}
         <W w="<to>" /> and <W w="<from>" /> follow <W w="to" /> and <W w="from" />: who or where it
         goes to (<i>&lt;to&gt; send(vt)</i>, the addressee; <i>&lt;to&gt; go(vi)</i>, the destination) and comes from (
         <i>&lt;from&gt; come(vi)</i>, someone's origin; <i>&lt;from&gt; receive(vt)</i>, the sender). Arabic builds
@@ -183,6 +183,13 @@ export function GrammarView() {
       <Example meaning="Water is a liquid.">
         &lt;subject&gt; water &lt;verb&gt; be(vt) &lt;complement&gt; matter &lt;rank_1&gt;
       </Example>
+      <p className="mt-2">
+        Without a complement, <W w="be(vi)" /> is existing or being somewhere, with a preposition
+        for where. It's the one relation verb with a meaning without an object.
+      </p>
+      <Example meaning="There's water here.">
+        &lt;subject&gt; water &lt;verb&gt; be(vi) at this
+      </Example>
       <Open>
         Becoming, for relation verbs: maybe a helper, <W w="<become>" /> (<i>&lt;become&gt; possess(vt)</i>,
         “gain”).
@@ -228,8 +235,13 @@ export function GrammarView() {
         continuous comes first, and perfect applies to the ongoing action: <i>work
         &lt;continuous_tense_aspect&gt; &lt;perfect_tense_aspect&gt;</i> is “have been working”.
       </p>
+      <p className="mt-2">
+        <W w="<again>" /> goes with the aspects, after the verb: <i>open(vt) &lt;again&gt;</i> is
+        “reopen”. On a verb's negative end it undoes, and says the thing had been done:{" "}
+        <i>&lt;negative&gt; cover(vt) &lt;again&gt;</i> is “uncover”, made exposed again.
+      </p>
       <Example meaning="I was sleeping.">
-        &lt;subject&gt; I &lt;verb&gt; sleep &lt;continuous_tense_aspect&gt; formerly
+        &lt;subject&gt; I &lt;verb&gt; sleep(vi) &lt;continuous_tense_aspect&gt; formerly
       </Example>
       <Example meaning="The person will have learned the way.">
         &lt;subject&gt; person &lt;verb&gt; learn(vt) &lt;perfect_tense_aspect&gt; henceforth &lt;object&gt;
@@ -257,10 +269,10 @@ export function GrammarView() {
         <W w="follow(vt)" /> relate two things in order.
       </p>
       <Example meaning="I slept yesterday.">
-        &lt;subject&gt; I &lt;verb&gt; sleep at time &lt;rank_3&gt; previous
+        &lt;subject&gt; I &lt;verb&gt; sleep(vi) at time &lt;rank_3&gt; previous
       </Example>
       <Example meaning="Eating comes before sleeping.">
-        &lt;subject&gt; &lt;gerund&gt; eat(vt) &lt;verb&gt; precede(vt) &lt;object&gt; &lt;gerund&gt; sleep
+        &lt;subject&gt; &lt;gerund&gt; eat(vt) &lt;verb&gt; precede(vt) &lt;object&gt; &lt;gerund&gt; sleep(vi)
       </Example>
 
       <H2>Truth and possibility</H2>
@@ -273,6 +285,13 @@ export function GrammarView() {
         one step below the top. Proof is how something is known, not how likely it is:{" "}
         <W w="prove(vt)" /> with <W w="<perfect_tense_aspect>" /> is “has proved”.
       </p>
+      <p className="mt-2">
+        Ability, the “can” of “I can swim”, is the capability axis, and its adverb is the modal:{" "}
+        <W w="ably" /> is can and <W w="incapably" /> can't. Possibility is the modality axis (
+        <i>not impossibly</i>) and permission is <W w="allow(vt)" />, so English “can” splits three
+        ways.
+      </p>
+      <Example meaning="I can work.">&lt;subject&gt; I &lt;verb&gt; work(vi) ably</Example>
       <Example meaning="The person probably died.">
         &lt;subject&gt; person &lt;verb&gt; die(vi) &lt;min_positive&gt; truly
       </Example>
@@ -434,6 +453,14 @@ export function GrammarView() {
         <i>number 2 3 &lt;negative&gt; &lt;rank_2&gt;</i>, the negative comes before the rank.
       </p>
 
+      <Open>
+        Scope, tentatively: a modifier modifies the word just before it, and modifiers that share a
+        word are joined with <W w="and" />. So <i>red yellow</i> is a yellowish red, orange, and{" "}
+        <i>rock red and yellow</i> a rock that's red and yellow. It may break down where{" "}
+        <W w="and" /> could also start a second noun (<i>person big and dog</i>), and context may
+        have to decide.
+      </Open>
+
       <H2>Prepositions</H2>
       <p>
         The prepositions are <W w="with" />, <W w="to" />, <W w="from" />, <W w="by" />,{" "}
@@ -484,13 +511,21 @@ export function GrammarView() {
         person &lt;clause_start&gt; &lt;subject&gt; &lt;blank&gt; &lt;verb&gt; defend(vt) &lt;object&gt; me &lt;clause_end&gt;
       </Example>
       <Example meaning="the place where I sleep">
-        place &lt;clause_start&gt; &lt;subject&gt; I &lt;verb&gt; sleep at &lt;blank&gt; &lt;clause_end&gt;
+        place &lt;clause_start&gt; &lt;subject&gt; I &lt;verb&gt; sleep(vi) at &lt;blank&gt; &lt;clause_end&gt;
       </Example>
       <p className="mt-2">
-        A subclause with no subject takes the main clause's subject: <i>I desire &lt;object&gt;
-        &lt;clause_start&gt; &lt;verb&gt; sleep</i> is “I want to sleep”. A main clause with no subject
+        A subclause with no subject takes the main clause's subject: <i>I desire(vt) &lt;object&gt;
+        &lt;clause_start&gt; &lt;verb&gt; sleep(vi)</i> is “I want to sleep”. A main clause with no subject
         leaves it unspecified, “someone”.
       </p>
+      <p className="mt-2">
+        Counterfactuals need nothing special. As in Mandarin, <W w="if" /> and context say whether a
+        condition is real, and to be explicit the if-clause can say it's false with the truth axis.
+      </p>
+      <Example meaning="If you had slept, you would be strong.">
+        if &lt;clause_start&gt; &lt;subject&gt; you &lt;verb&gt; sleep(vi) formerly falsely &lt;clause_end&gt;
+        &lt;subject&gt; you &lt;verb&gt; be(vt) &lt;complement&gt; strong
+      </Example>
 
       <H2>Pronouns</H2>
       <p>
@@ -536,7 +571,7 @@ export function GrammarView() {
         </tbody>
       </table>
       <Example meaning="I sleep here.">
-        &lt;subject&gt; I &lt;verb&gt; sleep at this
+        &lt;subject&gt; I &lt;verb&gt; sleep(vi) at this
       </Example>
       <p className="mt-2">
         <W w="thing" /> is the general noun, Toki Pona's <i>ijo</i>: <i>thing all</i> is
@@ -547,7 +582,7 @@ export function GrammarView() {
         <W w="other" /> is each other.
       </p>
       <Example meaning="They love each other.">
-        &lt;subject&gt; it plural &lt;verb&gt; love &lt;object&gt; other
+        &lt;subject&gt; it plural &lt;verb&gt; love(vt) &lt;object&gt; other
       </Example>
 
       <H2>Numbers</H2>
@@ -558,6 +593,10 @@ export function GrammarView() {
         down from there. Places a rank jumps over are zeros, so <i>number 1 &lt;rank_3&gt; 3</i> is
         1003 and <i>number 1 &lt;rank_6&gt;</i> is 1,000,000. Negative ranks give fractions and
         percents: <i>number 2 3 &lt;negative&gt; &lt;rank_2&gt;</i> is 23%.
+      </p>
+      <p className="mt-2">
+        <W w="<ordinal>" /> before <W w="number" /> makes it an ordinal: <i>person number 3</i> is
+        three people, and <i>person &lt;ordinal&gt; number 3</i> the third person.
       </p>
       <p className="mt-2">
         Ranks don't depend on the base: <W w="<rank_3>" /> is “thousands” in base 10, but “eights” in
@@ -598,6 +637,21 @@ export function GrammarView() {
         &lt;verb_prescriptive&gt; count_down(vt) &lt;rank_2&gt; &lt;object&gt; number 6 by number 3
       </Example>
 
+      <H2>Conversation</H2>
+      <p>
+        There are no special words for answers and greetings; axis words do the work. Yes and no
+        are <W w="true" /> and <W w="false" />, “that's so” and “that's not so”. Hello is{" "}
+        <W w="good" />, goodbye <i>go(vi) well</i>, and thank you <i>you good</i>.
+      </p>
+      <p className="mt-2">
+        “How” needs no word either: after the verb is where manner goes, so <W w="<blank>" /> there
+        asks for it. Manner or way as a noun is <W w="path" />, as in “in a spirit of brotherhood”,{" "}
+        <i>in path family</i>.
+      </p>
+      <Example meaning="How do you work?">
+        &lt;subject&gt; you &lt;verb_interrogative&gt; work(vi) &lt;blank&gt;
+      </Example>
+
       <H2>Other grammar words</H2>
       <p>
         <W w="<foreign>" /> marks a foreign word or name. Planned: <W w="possession_indicator" />.
@@ -607,7 +661,7 @@ export function GrammarView() {
         anywhere, even inside a phrase or a number; the grammar carries on as if it weren't there.
       </p>
       <Example meaning="I, um, slept.">
-        &lt;subject&gt; I &lt;verb&gt; &lt;filler&gt; sleep formerly
+        &lt;subject&gt; I &lt;verb&gt; &lt;filler&gt; sleep(vi) formerly
       </Example>
     </div>
   );
