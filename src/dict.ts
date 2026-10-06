@@ -2167,10 +2167,10 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "affection",
       steps: {
-        max_positive: { noun: "adoration", adj: "adoring", verb: "adore(vt)", verb_t: "adore", adverb: "adoringly" },
+        max_positive: { noun: "worship", adj: "devoted", verb: "worship(vt)", verb_t: "worship", adverb: "devotedly" },
         min_positive: { noun: "liking", adj: "fond", verb: "like(vt)", verb_t: "like", adverb: "fondly" },
         min_negative: { noun: "dislike", adj: "averse", verb: "dislike(vt)", verb_t: "dislike" },
-        max_negative: { noun: "loathing", verb: "loathe(vt)", verb_t: "loathe" },
+        max_negative: { noun: "loathing", verb: "abominate(vt)", verb_t: "abominate" },
       },
     },
     { noun: "hatred", adj: "hateful", verb: "hate(vt)", verb_t: "hate", adverb: "hatefully" },
