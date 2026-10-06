@@ -345,12 +345,19 @@ export function GrammarView() {
       <p>
         These are action axes, each with its counterpart at the other end:{" "}
         <W w="say(vt)" /> and <W w="hear(vt)" />, <W w="write(vi)" /> and <W w="read(vi)" />,{" "}
+        <W w="show(vi)" /> and <W w="see(vt)" /> (<W w="look(vi)" /> without an object),{" "}
         <W w="sense(vt)" /> and <W w="overlook(vt)" />, <W w="use(vi)" /> and <W w="discard(vi)" />,{" "}
         <W w="do(vt)" /> and <W w="undo(vi)" />, and <W w="touch(vi)" /> and <W w="avoid(vt)" />. The
         scale grades them: <i>&lt;min_positive&gt; write(vi)</i>, a lesser writing, is a mark, and{" "}
         <i>&lt;min_negative&gt; write(vi)</i> is skimming. Nouns come from the role markers: a word is{" "}
         <i>&lt;ee&gt; say(vt)</i>, a text <i>&lt;ee&gt; write(vt)</i> and an ear <i>&lt;tool&gt; hear(vt)</i>. Attaching is{" "}
         <W w="connect(vi)" />.
+      </p>
+      <p className="mt-2">
+        Untruth is the truth axis's adverb: <W w="tell_a_lie(vi)" /> is <i>say(vt) falsely</i>, and{" "}
+        <W w="pretend(vi)" /> is <i>show(vi) falsely</i>, which with an object is to disguise it.
+        Appearing and disappearing aren't showing: they're <W w="emerge(vi)" /> and{" "}
+        <W w="vanish(vi)" />.
       </p>
 
       <H2>Comparison</H2>

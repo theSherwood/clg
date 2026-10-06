@@ -1449,29 +1449,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    {
-      noun: "visibility",
-      notes:
-        "negative verb forms: to disguise / to encrypt; positive verb forms: to show / to demonstrate; to appear",
-    },
-    {
-      noun: "disguise",
-      adj: "disguised",
-      verb: "disguise(vt)",
-      verb_i: "disappear",
-      verb_t: "disguise",
-      adverb: "covertly",
-    },
-    {
-      noun: "demonstration",
-      adj: "visible",
-      verb: "show(vt)",
-      verb_i: "appear",
-      verb_t: "show",
-      adverb: "visibly",
-    },
-  ],
-  [
     { noun: "intellect" },
     {
       noun: "stupidity",
@@ -2143,6 +2120,26 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
+    {
+      noun: "visibility",
+      notes:
+        "Showing and seeing, as saying and hearing. Appearing is emerge(vi) and disappearing vanish(vi); disguising is show(vt) falsely",
+      steps: {
+        max_positive: { noun: "display", verb: "display(vi)", verb_i: "display", verb_t: "display" },
+        min_negative: { noun: "glimpse", verb: "glimpse(vt)", verb_i: "glance", verb_t: "glimpse" },
+      },
+    },
+    { noun: "sight", adj: "seen", verb: "see(vt)", verb_i: "look", verb_t: "see", adverb: "visually" },
+    {
+      noun: "demonstration",
+      adj: "visible",
+      verb: "show(vi)",
+      verb_i: "show",
+      verb_t: "show",
+      adverb: "visibly",
+    },
+  ],
+  [
     { noun: "conversation" },
     { noun: "hearing", adj: "heard", verb: "hear(vt)", verb_i: "listen", verb_t: "hear" },
     { noun: "speech", adj: "spoken", verb: "say(vt)", verb_i: "speak", verb_t: "say", adverb: "aloud" },
@@ -2778,7 +2775,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "withdraw(vt)", "spread(vi)", "stir(vi)", "persist(vi)", "make_artificial(vt)",
     "spread_out(vi)", "straighten(vi)", "improve(vi)", "entertain(vt)",
     "materialize(vi)", "enable(vt)", "angle(vt)", "rejuvenate(vt)", "wake(vi)", "create(vt)",
-    "beautify(vt)", "go(vi)", "heap_up(vt)", "fill_up(vi)", "show(vt)", "educate(vt)",
+    "beautify(vt)", "go(vi)", "heap_up(vt)", "fill_up(vi)", "educate(vt)",
     "aim(vt)", "group(vt)", "mark_up(vt)", "emphasize(vt)", "mend(vt)",
     "sanctify(vt)", "close_in(vi)", "disconnect(vt)", "stop(vi)", "obligate(vt)",
     "necessitate(vt)", "cover(vt)", "empower(vt)",
@@ -2788,7 +2785,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "believe(vi)", "lead(vi)", "work(vi)", "search(vi)", "learn(vi)", "sow(vi)", "give(vi)",
     "make_peace(vi)", "defend(vi)", "tend(vi)", "command(vt)", "resist(vi)", "withstand(vt)",
     "participate(vi)", "recommend(vi)", "say(vt)", "write(vi)", "sense(vt)", "use(vi)",
-    "do(vt)", "touch(vi)", "count(vi)", "thank(vt)",
+    "do(vt)", "touch(vi)", "count(vi)", "thank(vt)", "show(vi)",
   ],
   relation: [
     "possess(vt)", "be(vt)", "resemble(vt)", "result_from(vt)", "love(vt)", "know(vt)", "desire(vt)", "face(vt)", "include(vt)",
@@ -2990,6 +2987,10 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   phrase("ionize(vi)", ["melt(vi)", "<rank_3>"], "ionize", "ionize");
   phrase("condense(vi)", ["freeze(vi)", "<rank_1>"], "condense", "condense");
   phrase("solidify(vi)", ["freeze(vi)", "<rank_0>"], "solidify", "solidify");
+
+  // Saying or showing what isn't so
+  phrase("tell_a_lie(vi)", ["say(vt)", "falsely"], "tell a lie", "lie about");
+  phrase("pretend(vi)", ["show(vi)", "falsely"], "pretend", "disguise");
 
   // Arithmetic, by rank; count_down is the inverse
   phrase("add(vi)", ["count(vi)", "<rank_1>"], "add", "add");

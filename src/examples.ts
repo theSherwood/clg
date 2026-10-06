@@ -822,6 +822,18 @@ export const posture_examples: Example[] = [
   { title: "Sit up straight", english: "Sit up straight!", transliteration: "<verb_prescriptive> sit(vi) uprightly" },
 ];
 
+// Seeing and showing, and saying or showing what isn't so
+export const sight_examples: Example[] = [
+  { title: "See", english: "I see you", transliteration: "<subject> I <verb> see(vt) <object> you" },
+  { title: "Look", english: "Look!", transliteration: "<verb_prescriptive> look(vi)" },
+  { title: "Show", english: "Show me the rock", transliteration: "<verb_prescriptive> show(vt) <object> rock to me" },
+  { title: "Glimpse", english: "I glimpsed an animal", transliteration: "<subject> I <verb> glimpse(vt) formerly <object> animal" },
+  { title: "Lie", english: "You lied", transliteration: "<subject> you <verb> say(vt) formerly falsely" },
+  { title: "Pretend", english: "The child is pretending", transliteration: "<subject> child <verb> show(vi) falsely <continuous_tense_aspect>" },
+  { title: "Feign", english: "The child pretends to sleep", transliteration: "<subject> child <verb> show(vt) falsely <object> <gerund> sleep(vi)" },
+  { title: "Disguise", english: "Disguise yourself", transliteration: "<verb_prescriptive> show(vt) falsely <object> self" },
+];
+
 // Existence and location, ordinals and per, ability, again, manner and counterfactuals
 export const more_grammar_examples: Example[] = [
   {
