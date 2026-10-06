@@ -2546,7 +2546,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("color");
   cr("red", {
     notes:
-      "Hues mix by modifying: red yellow is orange (a yellowish red), yellow blue green, red blue purple. Lightness comes from the brightness axis: red bright is pink, and white and black are bright and dark",
+      "Two hues together are an even blend, in either order: red yellow is orange, yellow blue green, red blue purple. Lightness comes from the brightness axis: red bright is pink, and white and black are bright and dark. Brown is the neutral color, color <neutral>",
   });
   cr("yellow");
   cr("blue");
@@ -2971,6 +2971,19 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("spouse", ["family", "united"], {
     gloss: "spouse / partner",
     notes: "Family by union rather than descent. In-laws are family of spouse",
+  });
+
+  // Colors: two hues are an even blend, lightness is the brightness axis
+  noun("orange", ["red", "yellow"]);
+  noun("green", ["yellow", "blue"]);
+  noun("purple", ["red", "blue"]);
+  noun("pink", ["red", "bright"]);
+  noun("maroon", ["red", "dark"]);
+  noun("white", ["color", "bright"]);
+  noun("black", ["color", "dark"]);
+  noun("gray", ["color", "<neutral>", "bright"]);
+  noun("brown", ["color", "<neutral>"], {
+    notes: "The neutral color. Since <neutral> steps a following axis word, put it after any axis words: rock big brown, not rock brown big",
   });
 
   noun("chain", ["node", "<rank_1>"], { gloss: "chain / list (nodes in a line)" });

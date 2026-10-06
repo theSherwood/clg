@@ -468,10 +468,17 @@ export function GrammarView() {
       <H2>Colors</H2>
       <p>
         <W w="color" /> is a root, and so are three hues: <W w="red" />, <W w="yellow" /> and{" "}
-        <W w="blue" />. Other hues mix by modifying, like any other noun and modifier: <i>red
-        yellow</i> is orange (a yellowish red), <i>yellow blue</i> green and <i>red blue</i>{" "}
-        purple. Lightness comes from the brightness axis: <i>red bright</i> is pink,{" "}
-        <i>red dark</i> maroon, and white and black are just <W w="bright" /> and <W w="dark" />.
+        <W w="blue" />. Two hues together are an even blend, in either order: <W w="orange" /> is{" "}
+        <i>red yellow</i>, <W w="green" /> <i>yellow blue</i> and <W w="purple" /> <i>red blue</i>.
+        Lightness comes from the brightness axis: <W w="pink" /> is <i>red bright</i> and{" "}
+        <W w="maroon" /> <i>red dark</i>. As modifiers, white and black are just <W w="bright" /> and{" "}
+        <W w="dark" />; as nouns they're <W w="white" /> (<i>color bright</i>) and <W w="black" />{" "}
+        (<i>color dark</i>), and <W w="gray" /> is <i>color &lt;neutral&gt; bright</i>.
+      </p>
+      <p className="mt-2">
+        <W w="brown" /> is the neutral color, <i>color &lt;neutral&gt;</i>. Since{" "}
+        <W w="<neutral>" /> steps an axis word that follows it, brown goes after any axis words:{" "}
+        <i>rock big brown</i>, not <i>rock brown big</i>, which would read as a medium-sized color.
       </p>
       <Example meaning="The rock is orange.">
         &lt;subject&gt; rock &lt;verb&gt; be(vt) &lt;complement&gt; red yellow
