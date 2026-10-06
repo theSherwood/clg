@@ -854,7 +854,23 @@ export const conversation_examples: Example[] = [
   { title: "No", english: "No (that's not so)", transliteration: "false" },
   { title: "Hello", english: "Hello", transliteration: "good" },
   { title: "Goodbye", english: "Goodbye", transliteration: "go(vi) well" },
-  { title: "Thank you", english: "Thank you", transliteration: "you good" },
+  { title: "Thank you", english: "Thanks to you", transliteration: "thanks to you" },
+  { title: "Sorry", english: "My fault", transliteration: "blame to me" },
+  {
+    title: "Thank you, in full",
+    english: "I thank you",
+    transliteration: "<subject> I <verb> thank(vt) <object> you",
+  },
+  {
+    title: "I'm to blame",
+    english: "I'm sorry",
+    transliteration: "<subject> I <verb> be(vt) <complement> culpable",
+  },
+  {
+    title: "Praise",
+    english: "They praised the person",
+    transliteration: "<subject> it plural <verb> praise(vt) formerly <object> person",
+  },
   {
     title: "A question",
     english: "Are you sleeping? Yes.",

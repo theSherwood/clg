@@ -750,7 +750,10 @@ export function GrammarView() {
       <p>
         There are no special words for answers and greetings; axis words do the work. Yes and no
         are <W w="true" /> and <W w="false" />, “that's so” and “that's not so”. Hello is{" "}
-        <W w="good" />, goodbye <i>go(vi) well</i>, and thank you <i>you good</i>.
+        <W w="good" /> and goodbye <i>go(vi) well</i>. Thanks and apologies come from the
+        accountability axis, credit and blame: thank you is <i>thanks to you</i>, the credit goes
+        to you, and sorry is <i>blame to me</i>, my fault. In full, <i>I thank(vt) you</i> and{" "}
+        <i>I be(vt) &lt;complement&gt; culpable</i>, I'm to blame.
       </p>
       <p className="mt-2">
         “How” needs no word either: after the verb is where manner goes, so <W w="<blank>" /> there

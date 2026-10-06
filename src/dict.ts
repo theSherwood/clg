@@ -2158,6 +2158,33 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { noun: "counting", adj: "counted", verb: "count(vi)", verb_i: "count", verb_t: "count" },
   ],
   [
+    {
+      noun: "accountability",
+      notes:
+        "Credit and blame. The adjectives are about who deserves it: culpable is to blame. Thank you is thanks to you, and sorry blame to me",
+      steps: {
+        max_positive: { noun: "praise", verb: "praise(vt)", verb_i: "praise", verb_t: "praise" },
+        max_negative: { noun: "condemnation", verb: "condemn(vt)", verb_i: "condemn", verb_t: "condemn" },
+      },
+    },
+    {
+      noun: "blame",
+      adj: "culpable",
+      verb: "blame(vt)",
+      verb_i: "lay blame",
+      verb_t: "blame",
+      adverb: "reproachfully",
+    },
+    {
+      noun: "thanks",
+      adj: "creditable",
+      verb: "thank(vt)",
+      verb_i: "give thanks",
+      verb_t: "thank",
+      adverb: "gratefully",
+    },
+  ],
+  [
     { noun: "ownership" },
     { noun: "lack", adj: "lacking", verb: "lack(vt)", verb_t: "lack" },
     {
@@ -2720,7 +2747,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "believe(vi)", "lead(vi)", "work(vi)", "search(vi)", "learn(vi)", "sow(vi)", "give(vi)",
     "make_peace(vi)", "defend(vi)", "tend(vi)", "command(vt)", "resist(vi)", "withstand(vt)",
     "participate(vi)", "recommend(vi)", "say(vt)", "write(vi)", "sense(vt)", "use(vi)",
-    "do(vt)", "touch(vi)", "count(vi)",
+    "do(vt)", "touch(vi)", "count(vi)", "thank(vt)",
   ],
   relation: [
     "possess(vt)", "be(vt)", "resemble(vt)", "result_from(vt)", "love(vt)", "know(vt)", "desire(vt)", "face(vt)", "include(vt)",
