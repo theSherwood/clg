@@ -157,11 +157,13 @@ type AxisWordForms = {
   verb_t?: string; // ... and with one (transitive)
   adverb?: string;
   notes?: string;
-  scale?: Scale; // on the axis entry: what each step of the scale means for this axis
+  steps?: Partial<Record<MinorStep, AxisWordForms>>; // on the axis entry: words for the other steps
 };
 
-// One gloss per scale step, from max_negative through neutral to max_positive
-export type Scale = [string, string, string, string, string, string, string];
+// The scale steps besides negative and positive. Their words are the step helper plus the positive
+// form, as the negative forms are negative plus the positive form.
+export const MINOR_STEPS = ["max_negative", "min_negative", "neutral", "min_positive", "max_positive"] as const;
+export type MinorStep = (typeof MINOR_STEPS)[number];
 
 // [axis, negative, positive]. The axis noun is axis_of + the positive noun; each negative form is
 // negative + the positive form. Axes are grouped by verb type (see verb_types), so their IDs run
@@ -875,7 +877,13 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "truth",
       notes: "Likelihood, not proof (prove(v)) or necessity (the modality axis)",
-      scale: ["certainly false", "false", "unlikely", "maybe", "probable", "true", "certain"],
+      steps: {
+        max_negative: { adj: "certainly_false", adverb: "certainly_not" },
+        min_negative: { adj: "unlikely", adverb: "probably_not" },
+        neutral: { adj: "uncertain", adverb: "maybe" },
+        min_positive: { adj: "probable", adverb: "probably" },
+        max_positive: { adj: "certain", adverb: "certainly" },
+      },
     },
     {
       noun: "falsehood",
@@ -899,7 +907,13 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "time",
       notes:
         "Rank gives the unit, a step up a ladder rather than a power of ten: rank_0 second, rank_1 minute, rank_2 hour, rank_3 day, rank_4 week, rank_5 month, rank_6 year, rank_7 decade, rank_8 century, rank_9 millennium. time rank_3 number 3 is three days and time rank_3 this today. A day of 24 hours is time rank_3; daytime is time bright",
-      scale: ["long ago", "past", "recently", "now", "soon", "future", "far future"],
+      steps: {
+        max_negative: { adj: "ancient", adverb: "long_ago" },
+        min_negative: { adj: "recent", adverb: "recently" },
+        neutral: { adj: "current", adverb: "now" },
+        min_positive: { adj: "upcoming", adverb: "soon" },
+        max_positive: { adj: "far_future", adverb: "in_the_far_future" },
+      },
     },
     {
       noun: "history",
@@ -2052,7 +2066,13 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "literacy",
       notes: "min_positive write is mark, a lesser writing; min_negative write is skim, a lesser reading",
-      scale: ["study", "read", "skim", "copy", "mark", "write", "compose"],
+      steps: {
+        max_negative: { verb: "study(v)", verb_i: "study", verb_t: "study" },
+        min_negative: { verb: "skim(v)", verb_i: "skim", verb_t: "skim" },
+        neutral: { verb: "copy(v)", verb_i: "copy", verb_t: "copy" },
+        min_positive: { verb: "mark(v)", verb_i: "make a mark", verb_t: "mark" },
+        max_positive: { verb: "compose(v)", verb_i: "compose", verb_t: "compose" },
+      },
     },
     { noun: "reading", adj: "read", verb: "read(v)", verb_i: "read", verb_t: "read" },
     { noun: "writing", adj: "written", verb: "write(v)", verb_i: "write", verb_t: "write" },
@@ -2239,7 +2259,13 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "lineage",
       notes:
         "Rank counts generations: child rank_2 is a grandchild, negative child rank_2 a grandparent, and neutral child rank_2 a first cousin (a shared grandparent). Bare words are rank_1, and rank_0 is oneself",
-      scale: ["ancestor", "parent", "aunt / uncle", "sibling", "niece / nephew", "child", "descendant"],
+      steps: {
+        max_negative: { noun: "ancestor" },
+        min_negative: { noun: "aunt_or_uncle" },
+        neutral: { noun: "sibling" },
+        min_positive: { noun: "niece_or_nephew" },
+        max_positive: { noun: "descendant" },
+      },
     },
     { noun: "parent", adj: "parental" },
     { noun: "child", adj: "filial" },
@@ -2530,8 +2556,8 @@ export type Axis = {
   name: AxisCell; // axis_of + the positive noun
   positive: AxisSide;
   negative: AxisSide; // negative + the positive form
+  steps: Record<MinorStep, AxisSide>; // each step helper + the positive form, where named
   notes?: string;
-  scale?: Scale;
   verb_type?: VerbType; // from verb_types, for axes with a verb
 };
 
@@ -2648,6 +2674,14 @@ function fill_cells(side: AxisSide, key: FormKey, word: Word, forms: AxisWordFor
   if (!is_defined(min_positive_word)) throw new Error(`Missing min_positive word`);
   if (!is_defined(max_positive_word)) throw new Error(`Missing max_positive word`);
 
+  const step_words: Record<MinorStep, Word> = {
+    max_negative: max_negative_word,
+    min_negative: min_negative_word,
+    neutral: neutral_word,
+    min_positive: min_positive_word,
+    max_positive: max_positive_word,
+  };
+
   function positive_of(positive: Word | undefined, word: string): Word {
     if (!is_defined(positive)) throw new Error(`Axis word ${word} has no positive counterpart`);
     return positive;
@@ -2660,8 +2694,8 @@ function fill_cells(side: AxisSide, key: FormKey, word: Word, forms: AxisWordFor
       name: {},
       positive: empty_side(),
       negative: empty_side(),
+      steps: Object.fromEntries(MINOR_STEPS.map((step) => [step, empty_side()])) as Axis["steps"],
       notes: axis.notes,
-      scale: axis.scale,
       verb_type: positive.verb ? verb_type_of.get(positive.verb) : undefined,
     };
     const positive_words: Partial<Record<FormKey, Word>> = {};
@@ -2679,6 +2713,17 @@ function fill_cells(side: AxisSide, key: FormKey, word: Word, forms: AxisWordFor
       const parts = [negative_word, positive_of(positive_words[key], name)];
       const word = cw(name, { t: [T.axis_word], domain, parts });
       fill_cells(entry.negative, key, word, negative);
+    }
+    for (const step of MINOR_STEPS) {
+      const forms = axis.steps?.[step];
+      if (!forms) continue;
+      for (const [key, domain] of AXIS_FORMS) {
+        const name = forms[key];
+        if (!name) continue;
+        const parts = [step_words[step], positive_of(positive_words[key], name)];
+        const word = cw(name, { t: [T.axis_word], domain, parts });
+        fill_cells(entry.steps[step], key, word, forms);
+      }
     }
 
     const axis_name = axis.noun;
@@ -2703,6 +2748,7 @@ function fill_cells(side: AxisSide, key: FormKey, word: Word, forms: AxisWordFor
       entry.name,
       ...Object.values(entry.positive),
       ...Object.values(entry.negative),
+      ...Object.values(entry.steps).flatMap((side) => Object.values(side)),
     ]) {
       if (cell.word) axis_by_word.set(cell.word, entry);
     }

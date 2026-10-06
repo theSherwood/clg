@@ -3,7 +3,6 @@ import {
   type Axis,
   type AxisCell,
   type AxisSide,
-  type Scale,
   type VerbType,
   VERB_TYPE_RULES,
   Word,
@@ -195,17 +194,20 @@ export function VerbsByType() {
   );
 }
 
-// Missing verbs are red, since they're the gaps that matter most
+// Missing verbs are red, since they're the gaps that matter most. On the minor steps nothing is
+// required, so their gaps are just gray.
 function MatrixCell({
   cell,
   current,
   verb,
   applies = true,
+  optional = false,
 }: {
   cell: AxisCell;
   current: Word;
   verb: boolean;
   applies?: boolean;
+  optional?: boolean;
 }) {
   if (verb && cell.word && !cell.gloss && !applies) {
     return (
@@ -216,7 +218,7 @@ function MatrixCell({
     return (
       <td
         className={`px-1.5 py-0.5 border border-gray-200 text-center ${
-          verb ? "bg-red-50 text-red-400" : "text-gray-300"
+          verb && !optional ? "bg-red-50 text-red-400" : "text-gray-300"
         }`}
       >
         —
@@ -234,40 +236,24 @@ function MatrixCell({
   );
 }
 
-const SCALE_STEPS = ["max_negative", "negative", "min_negative", "neutral", "min_positive", "positive", "max_positive"];
-
-// What each step of the scale means for an axis, from max_negative to max_positive
-function ScaleRow({ scale }: { scale: Scale }) {
-  return (
-    <table className="mt-1.5 text-xs border-collapse">
-      <thead>
-        <tr>
-          {SCALE_STEPS.map((step) => (
-            <th key={step} className="px-1.5 pb-0.5 font-normal text-gray-500 text-left">
-              {step}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          {scale.map((gloss, i) => (
-            <td key={i} className="px-1.5 py-0.5 border border-gray-200 whitespace-nowrap text-gray-800">
-              {gloss}
-            </td>
-          ))}
-        </tr>
-      </tbody>
-    </table>
-  );
-}
-
-// The whole axis a word belongs to: every form at both ends
+// The whole axis a word belongs to: every form at every step of the scale, from max_positive down
+// to max_negative. The bare root is the positive step.
 function AxisMatrix({ axis, current }: { axis: Axis; current: Word }) {
   const phonology = useContext(PhonologyContext);
   const root_sound = syllable_of(axis.id, phonology);
-  const negative = dictionary.get("negative");
-  const negative_sound = negative ? `${pronounce(negative, phonology)}${root_sound}` : "";
+  const step_sound = (helper: string) => {
+    const word = dictionary.get(helper);
+    return word ? `${pronounce(word, phonology)}${root_sound}` : "";
+  };
+  const rows: [label: string, sound: string, side: AxisSide, optional: boolean][] = [
+    ["max_positive", step_sound("max_positive"), axis.steps.max_positive, true],
+    ["positive", root_sound, axis.positive, false],
+    ["min_positive", step_sound("min_positive"), axis.steps.min_positive, true],
+    ["neutral", step_sound("neutral"), axis.steps.neutral, true],
+    ["min_negative", step_sound("min_negative"), axis.steps.min_negative, true],
+    ["negative", step_sound("negative"), axis.negative, false],
+    ["max_negative", step_sound("max_negative"), axis.steps.max_negative, true],
+  ];
   return (
     <div className="mt-2 mb-2">
       <div className="text-xs mb-1">
@@ -291,14 +277,13 @@ function AxisMatrix({ axis, current }: { axis: Axis; current: Word }) {
           </tr>
         </thead>
         <tbody>
-          {(
-            [
-              ["root", root_sound, axis.positive],
-              ["negative", negative_sound, axis.negative],
-            ] as const
-          ).map(([label, sound, side]) => (
+          {rows.map(([label, sound, side, optional]) => (
             <tr key={label}>
-              <th className="pr-1.5 font-normal text-gray-500 text-left whitespace-nowrap">
+              <th
+                className={`pr-1.5 font-normal text-left whitespace-nowrap ${
+                  optional ? "text-gray-400" : "text-gray-500"
+                }`}
+              >
                 {label} <span className="font-mono text-indigo-700">{sound}</span>
               </th>
               {AXIS_COLUMNS.map(([key]) => (
@@ -308,13 +293,13 @@ function AxisMatrix({ axis, current }: { axis: Axis; current: Word }) {
                   current={current}
                   verb={key === "verb_i" || key === "verb_t"}
                   applies={!(key === "verb_i" && axis.verb_type === "relation")}
+                  optional={optional}
                 />
               ))}
             </tr>
           ))}
         </tbody>
       </table>
-      {axis.scale && <ScaleRow scale={axis.scale} />}
       {axis.notes && <p className="text-xs text-gray-600 mt-1 max-w-md">{axis.notes}</p>}
     </div>
   );
