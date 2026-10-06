@@ -3,6 +3,7 @@ import {
   type Example,
   type Token,
   number_examples,
+  arithmetic_examples,
   clause_examples,
   color_examples,
   comparison_examples,
@@ -141,6 +142,7 @@ const all_transliterations = [
   ...pointing_examples.map((e) => e.transliteration),
   ...clause_examples.map((e) => e.transliteration),
   ...direction_examples.map((e) => e.transliteration),
+  ...arithmetic_examples.map((e) => e.transliteration),
   ...udhr_articles.flatMap((a) => (a.transliteration ? [a.transliteration] : [])),
 ];
 
@@ -229,6 +231,7 @@ export function ExamplesView() {
         { title: "Water and fire", examples: water_fire_examples },
         { title: "Sky", examples: sky_examples },
         { title: "Directions", examples: direction_examples },
+        { title: "Arithmetic", examples: arithmetic_examples },
         { title: "Comparison", examples: comparison_examples },
         { title: "Geometry", examples: geometry_examples },
         { title: "Things, animals and matter", examples: thing_examples },

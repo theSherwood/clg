@@ -1150,9 +1150,9 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "multitude",
       adj: "many",
-      verb: "multiply(v)",
-      verb_i: "multiply",
-      verb_t: "multiply",
+      verb: "proliferate(v)",
+      verb_i: "proliferate",
+      verb_t: "propagate",
       adverb: "manifold",
     },
   ],
@@ -2095,6 +2095,15 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { noun: "contact", adj: "touching", verb: "touch(v)", verb_i: "touch", verb_t: "touch" },
   ],
   [
+    {
+      noun: "arithmetic",
+      notes:
+        "Rank gives the operation, each repeating the one below (the hyperoperations): bare count is counting, rank_1 add, rank_2 multiply, rank_3 raise to a power. The negative end is the inverse: count down, subtract, divide, take a root. The object is the number acted on and <by> gives the amount. A logarithm is rank: the rank of 1000 is 3",
+    },
+    { noun: "countdown", verb: "count_down(v)", verb_i: "count down", verb_t: "count down" },
+    { noun: "counting", adj: "counted", verb: "count(v)", verb_i: "count", verb_t: "count" },
+  ],
+  [
     { noun: "ownership" },
     { noun: "lack", adj: "lacking", verb: "lack(v)", verb_t: "lack" },
     {
@@ -2481,7 +2490,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     notes:
       "Should this be a domain specifier? up - down, forward - back, left - right, north - south, east - west, in - out, future - past",
   });
-  candidate("count");
   candidate("hour");
   candidate("minute");
   candidate("second");
@@ -2549,7 +2557,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "thicken(v)", "lift(v)", "heat(v)", "brighten(v)", "harden(v)", "get_heavier(v)", "prove(v)",
     "postpone(v)", "come_alive(v)", "eat(v)", "sink(v)", "veer_right(v)", "advance(v)",
     "withdraw(v)", "spread(v)", "stir(v)", "persist(v)", "bottom_out(v)", "make_artificial(v)",
-    "spread_out(v)", "multiply(v)", "straighten(v)", "improve(v)", "entertain(v)",
+    "spread_out(v)", "proliferate(v)", "straighten(v)", "improve(v)", "entertain(v)",
     "materialize(v)", "enable(v)", "angle(v)", "rejuvenate(v)", "wake(v)", "create(v)",
     "beautify(v)", "go(v)", "heap_up(v)", "fill_up(v)", "show(v)", "inflate(v)", "educate(v)",
     "aim(v)", "group(v)", "mark_up(v)", "emphasize(v)", "mend(v)", "unify(v)", "constrain(v)",
@@ -2561,7 +2569,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "believe(v)", "be_in_command(v)", "work(v)", "search(v)", "learn(v)", "sow(v)", "give(v)",
     "make_peace(v)", "defend(v)", "steward(v)", "command(v)", "resist(v)", "withstand(v)",
     "compel(v)", "participate(v)", "recommend(v)", "say(v)", "write(v)", "sense(v)", "use(v)",
-    "do(v)", "touch(v)",
+    "do(v)", "touch(v)", "count(v)",
   ],
   relation: [
     "possess(v)", "is(v)", "equal(v)", "love(v)", "know(v)", "desire(v)", "face(v)", "include(v)",

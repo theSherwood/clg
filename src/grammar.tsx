@@ -540,6 +540,19 @@ export function GrammarView() {
         <i>number 3 1 4 1 5 9 negative rank_5</i>, with no comma-like ranks inside.
       </Open>
 
+      <H2>Arithmetic</H2>
+      <p>
+        <W w="count(v)" /> takes rank for the operation, each level repeating the one below, as in
+        the mathematical hyperoperations: bare <i>count</i> is counting, <i>count rank_1</i> adding,{" "}
+        <i>rank_2</i> multiplying and <i>rank_3</i> raising to a power. Its negative end,{" "}
+        <W w="count_down(v)" />, is the inverse: counting down, subtracting, dividing and taking a
+        root. The object is the number acted on and <W w="by" /> gives the amount, and a logarithm
+        is just <W w="rank" />, the exponent a number already has.
+      </p>
+      <Example meaning="Divide 6 by 3.">
+        &lt;verb (prescriptive)&gt; count_down rank_2 &lt;object&gt; number 6 &lt;by&gt; number 3
+      </Example>
+
       <H2>Other grammar words</H2>
       <p>
         <W w="_foreign" /> marks a foreign word or name. Planned: <W w="possession_indicator" />.

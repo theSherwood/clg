@@ -645,6 +645,37 @@ export const direction_examples: Example[] = [
   },
 ];
 
+// Arithmetic: count takes rank for the operation and negative for its inverse; <by> gives the amount
+export const arithmetic_examples: Example[] = [
+  { title: "Count", english: "Count to ten", transliteration: "<verb (prescriptive)> count(v) <to> number 1 0" },
+  { title: "Count down", english: "Count down from ten", transliteration: "<verb (prescriptive)> count_down(v) <from> number 1 0" },
+  { title: "Add", english: "Add 2 to 5", transliteration: "<verb (prescriptive)> count(v) rank_1 <object> number 5 <by> number 2" },
+  {
+    title: "Subtract",
+    english: "Subtract 2 from 5",
+    transliteration: "<verb (prescriptive)> count_down(v) rank_1 <object> number 5 <by> number 2",
+  },
+  { title: "Multiply", english: "Multiply 5 by 2", transliteration: "<verb (prescriptive)> count(v) rank_2 <object> number 5 <by> number 2" },
+  { title: "Divide", english: "Divide 6 by 3", transliteration: "<verb (prescriptive)> count_down(v) rank_2 <object> number 6 <by> number 3" },
+  { title: "Power", english: "Square 5", transliteration: "<verb (prescriptive)> count(v) rank_3 <object> number 5 <by> number 2" },
+  {
+    title: "Root",
+    english: "Take the square root of 9",
+    transliteration: "<verb (prescriptive)> count_down(v) rank_3 <object> number 9 <by> number 2",
+  },
+  {
+    title: "Logarithm",
+    english: "The rank of 1000 is 3",
+    transliteration: "<subject> rank <of> number 1 rank_3 <verb> equal <object> number 3",
+  },
+  {
+    title: "A sentence",
+    english: "If you add 2 to 3, you get 5",
+    transliteration:
+      "if clause_start <subject> you <verb> count(v) rank_1 <object> number 3 <by> number 2 clause_end <subject> you <verb> possess <object> number 5",
+  },
+];
+
 // Universal Declaration of Human Rights
 
 export const udhr_preamble: string[] = [
