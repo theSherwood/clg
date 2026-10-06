@@ -590,6 +590,8 @@ export const thing_examples: Example[] = [
   { title: "Plasma", english: "rank 3", transliteration: "matter <rank_3>" },
   { title: "Ice", english: "solid water", transliteration: "water matter <rank_0>" },
   { title: "Steam", english: "water as a gas", transliteration: "water matter <rank_2>" },
+  { title: "Lava", english: "molten rock", transliteration: "rock matter <rank_1>" },
+  { title: "Air", english: "our gas", transliteration: "matter <rank_2> this" },
   {
     title: "A sentence",
     english: "Water is a liquid",

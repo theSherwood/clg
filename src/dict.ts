@@ -2889,6 +2889,17 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("plane", ["geometry", "<dimension_y>"]);
   noun("space", ["geometry", "<dimension_z>"], { gloss: "space (3D Euclidean)" });
 
+  // Phases by rank, and substances in a phase. The phase axis (rigid, fluid) is how something
+  // behaves, not its phase: glass is rigid, and sand pours
+  noun("solid", ["matter", "<rank_0>"]);
+  noun("liquid", ["matter", "<rank_1>"]);
+  noun("gas", ["matter", "<rank_2>"], { notes: "Usually enough for air; gas this when it needs saying" });
+  noun("plasma", ["matter", "<rank_3>"]);
+  noun("air", ["matter", "<rank_2>", "this"], { gloss: "air (our gas)" });
+  noun("ice", ["water", "matter", "<rank_0>"]);
+  noun("steam", ["water", "matter", "<rank_2>"]);
+  noun("lava", ["rock", "matter", "<rank_1>"], { gloss: "lava / magma" });
+
   noun("chain", ["node", "<rank_1>"], { gloss: "chain / list (nodes in a line)" });
   noun("tree_graph", ["node", "<rank_2>"], { gloss: "tree (graph)" });
   noun("dag", ["node", "<rank_3>"], { gloss: "directed acyclic graph" });

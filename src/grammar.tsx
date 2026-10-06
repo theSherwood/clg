@@ -394,8 +394,15 @@ export function GrammarView() {
       <p>
         <W w="matter" /> takes rank for its phase, rising in energy: <i>matter &lt;rank_0&gt;</i> is a
         solid, <i>&lt;rank_1&gt;</i> a liquid, <i>&lt;rank_2&gt;</i> a gas and <i>&lt;rank_3&gt;</i> a plasma. As a
-        modifier it gives a substance's phase, so <i>water matter &lt;rank_0&gt;</i> is ice and{" "}
-        <i>water matter &lt;rank_2&gt;</i> steam.
+        modifier it gives a substance's phase, so <W w="ice" /> is <i>water matter &lt;rank_0&gt;</i>,{" "}
+        <W w="steam" /> is <i>water matter &lt;rank_2&gt;</i> and <W w="lava" /> is{" "}
+        <i>rock matter &lt;rank_1&gt;</i>. Bare <W w="water" /> is the liquid. <W w="gas" /> usually does
+        for air; <W w="air" />, <i>gas this</i> (our gas), says it outright, as <i>celestial &lt;rank_2&gt;
+        this</i> is Earth.
+      </p>
+      <p className="mt-2">
+        The phase axis (<W w="rigid" />, <W w="fluid" />) is separate: it's how something behaves,
+        not its phase. Glass is rigid, and sand pours like a fluid without being a liquid.
       </p>
       <p className="mt-2">
         The phase axis changes phase. <W w="melt(vi)" /> goes up a phase and{" "}
