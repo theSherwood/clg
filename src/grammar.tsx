@@ -752,7 +752,8 @@ export function GrammarView() {
         are <W w="true" /> and <W w="false" />, “that's so” and “that's not so”. Hello is{" "}
         <W w="good" /> and goodbye <i>go(vi) well</i>. Thanks and apologies come from the
         accountability axis, credit and blame: thank you is <i>thanks to you</i>, the credit goes
-        to you, and sorry is <i>blame to me</i>, my fault. In full, <i>I thank(vt) you</i> and{" "}
+        to you, and sorry is <i>blame to me</i>, my fault. Between them, <W w="acknowledge(vt)" /> says
+        whose something is without judging it. In full, <i>I thank(vt) you</i> and{" "}
         <i>I be(vt) &lt;complement&gt; culpable</i>, I'm to blame.
       </p>
       <p className="mt-2">

@@ -2161,9 +2161,15 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "accountability",
       notes:
-        "Credit and blame. The adjectives are about who deserves it: culpable is to blame. Thank you is thanks to you, and sorry blame to me",
+        "Credit and blame. Acknowledging, the neutral step, attributes without judging. The adjectives are about who deserves it: culpable is to blame. Thank you is thanks to you, and sorry blame to me",
       steps: {
         max_positive: { noun: "praise", verb: "praise(vt)", verb_i: "praise", verb_t: "praise" },
+        neutral: {
+          noun: "acknowledgment",
+          verb: "acknowledge(vt)",
+          verb_i: "acknowledge",
+          verb_t: "acknowledge",
+        },
         max_negative: { noun: "condemnation", verb: "condemn(vt)", verb_i: "condemn", verb_t: "condemn" },
       },
     },

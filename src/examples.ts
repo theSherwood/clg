@@ -867,6 +867,11 @@ export const conversation_examples: Example[] = [
     transliteration: "<subject> I <verb> be(vt) <complement> culpable",
   },
   {
+    title: "Acknowledge",
+    english: "I acknowledge your work",
+    transliteration: "<subject> I <verb> acknowledge(vt) <object> <gerund> work(vi) of you",
+  },
+  {
     title: "Praise",
     english: "They praised the person",
     transliteration: "<subject> it plural <verb> praise(vt) formerly <object> person",
