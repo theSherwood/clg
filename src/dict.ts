@@ -2560,7 +2560,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("cardinal", {
     gloss: "cardinal direction",
     notes:
-      "Rank counts quarter turns clockwise from north: <rank_0> north, <rank_1> east, <rank_2> south, <rank_3> west. <to> cardinal <rank_0> is northward",
+      "Rank counts quarter turns clockwise from north: <rank_0> north, <rank_1> east, <rank_2> south, <rank_3> west. Two ranks name the direction between them, north or south first as in English: cardinal <rank_0> <rank_1> is northeast, <rank_2> <rank_3> southwest. to cardinal <rank_0> is northward. Rank here numbers points on a circle rather than levels, unlike its other uses; kept for now",
   });
   cr("animal");
   cr("matter", {
@@ -2915,6 +2915,16 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("sun", ["celestial", "<rank_3>", "this"], { gloss: "the Sun" });
   noun("milky_way", ["celestial", "<rank_4>", "this"], { gloss: "the Milky Way" });
   noun("universe", ["thing", "all"], { gloss: "universe / everything" });
+
+  // The compass, by quarter turns clockwise from north; two ranks are the direction between
+  noun("north", ["cardinal", "<rank_0>"]);
+  noun("east", ["cardinal", "<rank_1>"]);
+  noun("south", ["cardinal", "<rank_2>"]);
+  noun("west", ["cardinal", "<rank_3>"]);
+  noun("northeast", ["cardinal", "<rank_0>", "<rank_1>"]);
+  noun("southeast", ["cardinal", "<rank_2>", "<rank_1>"]);
+  noun("southwest", ["cardinal", "<rank_2>", "<rank_3>"]);
+  noun("northwest", ["cardinal", "<rank_0>", "<rank_3>"]);
 
   noun("chain", ["node", "<rank_1>"], { gloss: "chain / list (nodes in a line)" });
   noun("tree_graph", ["node", "<rank_2>"], { gloss: "tree (graph)" });

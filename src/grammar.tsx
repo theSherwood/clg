@@ -450,9 +450,17 @@ export function GrammarView() {
       <H2>Directions</H2>
       <p>
         <W w="cardinal" /> is one root for the compass, and rank counts quarter turns clockwise
-        from north: <i>cardinal &lt;rank_0&gt;</i> is north, <i>&lt;rank_1&gt;</i> east, <i>&lt;rank_2&gt;</i> south and{" "}
-        <i>&lt;rank_3&gt;</i> west. The prepositions do the rest: <i>to cardinal &lt;rank_0&gt;</i> is
-        northward and <i>at cardinal &lt;rank_1&gt;</i> in the east.
+        from north: <W w="north" /> is <i>cardinal &lt;rank_0&gt;</i>, <W w="east" /> <i>&lt;rank_1&gt;</i>,{" "}
+        <W w="south" /> <i>&lt;rank_2&gt;</i> and <W w="west" /> <i>&lt;rank_3&gt;</i>. Two ranks name the
+        direction between them, north or south first as in English: <W w="northeast" /> is{" "}
+        <i>cardinal &lt;rank_0&gt; &lt;rank_1&gt;</i> and <W w="southwest" />{" "}
+        <i>cardinal &lt;rank_2&gt; &lt;rank_3&gt;</i>. The prepositions do the rest:{" "}
+        <i>to cardinal &lt;rank_0&gt;</i> is northward and <i>at cardinal &lt;rank_1&gt;</i> in the east.
+      </p>
+      <p className="mt-2">
+        Rank is a little out of place here. Elsewhere it's a level (a phase, an orbit, a
+        generation); here it only numbers points around a circle. It's short and easy to learn, so
+        it stays for now.
       </p>
 
       <H2>Colors</H2>

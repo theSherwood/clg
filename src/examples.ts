@@ -726,6 +726,8 @@ export const direction_examples: Example[] = [
   { title: "East", english: "rank 1: a quarter turn", transliteration: "cardinal <rank_1>" },
   { title: "South", english: "rank 2: a half turn", transliteration: "cardinal <rank_2>" },
   { title: "West", english: "rank 3", transliteration: "cardinal <rank_3>" },
+  { title: "Northeast", english: "between north and east", transliteration: "cardinal <rank_0> <rank_1>" },
+  { title: "Southwest", english: "between south and west", transliteration: "cardinal <rank_2> <rank_3>" },
   {
     title: "Northward",
     english: "Go north",
