@@ -985,7 +985,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "time",
       notes:
-        "Rank gives the unit, a step up a ladder rather than a power of ten: <rank_0> second, <rank_1> minute, <rank_2> hour, <rank_3> day, <rank_4> week, <rank_5> month, <rank_6> year, <rank_7> decade, <rank_8> century, <rank_9> millennium. time <rank_3> number 3 is three days and time <rank_3> this today. A day of 24 hours is time <rank_3>; daytime is time bright",
+        "Rank gives the unit, a step up a ladder rather than a power of ten: <rank_0> second, <rank_1> minute, <rank_2> hour, <rank_3> day, <rank_4> week, <rank_5> month, <rank_6> year, <rank_7> decade, <rank_8> century, <rank_9> millennium. time <rank_3> number 3 is three days and time <rank_3> this today. A day of 24 hours is time <rank_3>; daytime is time bright and night time dark",
       steps: {
         max_negative: { adj: "ancient", adverb: "long_ago" },
         min_negative: { adj: "recent", adverb: "recently" },
@@ -2925,6 +2925,23 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("southeast", ["cardinal", "<rank_2>", "<rank_1>"]);
   noun("southwest", ["cardinal", "<rank_2>", "<rank_3>"]);
   noun("northwest", ["cardinal", "<rank_0>", "<rank_3>"]);
+
+  // Units of time, a step up a ladder per rank; this, next and previous count from now
+  noun("second", ["time", "<rank_0>"]);
+  noun("minute", ["time", "<rank_1>"]);
+  noun("hour", ["time", "<rank_2>"]);
+  noun("day", ["time", "<rank_3>"]);
+  noun("week", ["time", "<rank_4>"]);
+  noun("month", ["time", "<rank_5>"]);
+  noun("year", ["time", "<rank_6>"]);
+  noun("decade", ["time", "<rank_7>"]);
+  noun("century", ["time", "<rank_8>"]);
+  noun("millennium", ["time", "<rank_9>"]);
+  noun("today", ["time", "<rank_3>", "this"]);
+  noun("tomorrow", ["time", "<rank_3>", "next"]);
+  noun("yesterday", ["time", "<rank_3>", "previous"]);
+  noun("daytime", ["time", "bright"]);
+  noun("night", ["time", "dark"]);
 
   noun("chain", ["node", "<rank_1>"], { gloss: "chain / list (nodes in a line)" });
   noun("tree_graph", ["node", "<rank_2>"], { gloss: "tree (graph)" });

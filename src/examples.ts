@@ -197,6 +197,7 @@ export const time_examples: Example[] = [
   { title: "Hour", english: "An hour", transliteration: "time <rank_2>" },
   { title: "Day", english: "A day (24 hours)", transliteration: "time <rank_3>" },
   { title: "Daytime", english: "Daytime, as against night", transliteration: "time bright" },
+  { title: "Night", english: "Night", transliteration: "time dark" },
   { title: "Year", english: "A year", transliteration: "time <rank_6>" },
   { title: "Counted", english: "Three days", transliteration: "time <rank_3> number 3" },
   { title: "Today", english: "Today", transliteration: "time <rank_3> this" },

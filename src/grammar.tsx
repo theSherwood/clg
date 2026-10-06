@@ -258,7 +258,8 @@ export function GrammarView() {
         <i>&lt;rank_0&gt;</i> second, <i>&lt;rank_1&gt;</i> minute, <i>&lt;rank_2&gt;</i> hour, <i>&lt;rank_3&gt;</i> day,{" "}
         <i>&lt;rank_4&gt;</i> week, <i>&lt;rank_5&gt;</i> month, <i>&lt;rank_6&gt;</i> year, then decade, century and
         millennium. A count follows like any other: <i>time &lt;rank_3&gt; number 3</i> is three days. The
-        24-hour day is <i>time &lt;rank_3&gt;</i>, and daytime is <i>time bright</i>.
+        24-hour day is <W w="day" />, <i>time &lt;rank_3&gt;</i>; <W w="daytime" /> is <i>time bright</i> and{" "}
+        <W w="night" /> <i>time dark</i>.
       </p>
       <p className="mt-2">
         <W w="next" /> and <W w="previous" /> count steps in any sequence from a reference point.
