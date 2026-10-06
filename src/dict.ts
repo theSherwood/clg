@@ -2403,14 +2403,14 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     t: [T.pronoun],
     notes: "Plural and gender/sex can be specified optionally",
   });
-  cr("this", { t: [T.pronoun], notes: 'Could this be "it-near"?' });
-  cr("that", { t: [T.pronoun], notes: 'Could this be "it-far"?' });
   cr("<blank>", {
     t: [T.pronoun],
     gloss: "what a question asks about",
     notes:
-      "Was interrogative_blank. With <verb(interrogative)>: <subject> soldier <verb (interrogative)> kill <object> <blank> = who does the soldier kill?",
+      "Was interrogative_blank. With <verb_interrogative>: <subject> soldier <verb_interrogative> kill(vt) <object> <blank> = who does the soldier kill?",
   });
+  cr("this", { t: [T.pronoun], notes: 'Could this be "it-near"?' });
+  cr("that", { t: [T.pronoun], notes: 'Could this be "it-far"?' });
 }
 
 // axis helpers: axis_of plus a seven-step scale
