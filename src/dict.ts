@@ -551,7 +551,10 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "internality(axis)", notes: "Duplicate of in/out" },
+    {
+      noun: "internality(axis)",
+      notes: "Possibly a duplicate of in/out: internal ≈ inner, go inward ≈ enter, come out ≈ emerge",
+    },
     {
       noun: "internality(state)",
       adj: "internal",
@@ -1685,6 +1688,27 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
+    {
+      noun: "cover",
+      notes:
+        "Covering and exposing, physically or of information. A covering is skin, bark, a shell or cloth (body covering is skin). The surface of a thing is its outside",
+      steps: {
+        max_positive: { adj: "buried", verb: "bury(v)", verb_i: "get buried", verb_t: "bury" },
+        min_positive: {
+          noun: "coating",
+          adj: "coated",
+          verb: "coat(v)",
+          verb_i: "get coated",
+          verb_t: "coat",
+        },
+        min_negative: { noun: "hint", verb: "hint(v)", verb_i: "show through", verb_t: "hint at" },
+        max_negative: { adj: "bare", verb: "strip(v)", verb_i: "be laid bare", verb_t: "strip" },
+      },
+    },
+    { noun: "exposure", adj: "exposed", verb: "expose(v)", verb_i: "get exposed", verb_t: "expose" },
+    { noun: "covering", adj: "covered", verb: "cover(v)", verb_i: "get covered", verb_t: "cover" },
+  ],
+  [
     { noun: "reasoning" },
     {
       noun: "instinct",
@@ -2246,11 +2270,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [{}, { noun: "femininity", adj: "female" }, { noun: "masculinity", adj: "male" }],
   [
-    { notes: "negative verb internalize(v) (no positive verb)" },
-    { noun: "interior", adj: "inward", adverb: "inwardly" },
-    { noun: "surface", adj: "superficial", adverb: "superficially" },
-  ],
-  [
     {
       noun: "lineage",
       notes:
@@ -2582,7 +2601,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "beautify(v)", "go(v)", "heap_up(v)", "fill_up(v)", "show(v)", "educate(v)",
     "aim(v)", "group(v)", "mark_up(v)", "emphasize(v)", "mend(v)",
     "sanctify(v)", "contain(v)", "regulate(v)", "disconnect(v)", "stop(v)", "obligate(v)",
-    "necessitate(v)",
+    "necessitate(v)", "cover(v)",
   ],
   action: [
     "analyze(v)", "win(v)", "succeed(v)", "produce(v)", "buy(v)", "send(v)", "hope(v)",
