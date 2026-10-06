@@ -296,11 +296,11 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "quantity",
       notes:
-        "From axis.csv (as quantity?): negative noun poverty, negative verb to decrease (transitive); positive noun abundance, positive verb to increase (transitive)",
+        "Amounts and counts alike: water many is much water, person many many people. More and less are the comparison axis's greater and lesser",
     },
     {
       noun: "scarcity",
-      adj: "less",
+      adj: "few",
       verb: "decrease(v)",
       verb_i: "decrease",
       verb_t: "decrease",
@@ -308,7 +308,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
     {
       noun: "abundance",
-      adj: "more",
+      adj: "many",
       verb: "increase(v)",
       verb_i: "increase",
       verb_t: "increase",
@@ -1189,25 +1189,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "spread out",
       verb_t: "disperse",
       adverb: "peripherally",
-    },
-  ],
-  [
-    { noun: "multiplicity", notes: "none - very few - few - some - many - most - all" },
-    {
-      noun: "paucity",
-      adj: "few",
-      verb: "diminish(v)",
-      verb_i: "dwindle",
-      verb_t: "diminish",
-      adverb: "sparsely",
-    },
-    {
-      noun: "multitude",
-      adj: "many",
-      verb: "proliferate(v)",
-      verb_i: "proliferate",
-      verb_t: "propagate",
-      adverb: "manifold",
     },
   ],
   [
@@ -2608,7 +2589,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "thicken(v)", "lift(v)", "heat(v)", "brighten(v)", "harden(v)", "get_heavier(v)", "prove(v)",
     "postpone(v)", "come_alive(v)", "eat(v)", "sink(v)", "veer_right(v)",
     "withdraw(v)", "spread(v)", "stir(v)", "persist(v)", "make_artificial(v)",
-    "spread_out(v)", "proliferate(v)", "straighten(v)", "improve(v)", "entertain(v)",
+    "spread_out(v)", "straighten(v)", "improve(v)", "entertain(v)",
     "materialize(v)", "enable(v)", "angle(v)", "rejuvenate(v)", "wake(v)", "create(v)",
     "beautify(v)", "go(v)", "heap_up(v)", "fill_up(v)", "show(v)", "educate(v)",
     "aim(v)", "group(v)", "mark_up(v)", "emphasize(v)", "mend(v)",
