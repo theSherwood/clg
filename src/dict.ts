@@ -1501,9 +1501,9 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "part",
       adj: "partial",
-      verb: "divide(vt)",
+      verb: "split(vi)",
       verb_i: "split",
-      verb_t: "divide",
+      verb_t: "split",
       adverb: "partly",
     },
     {
@@ -2883,6 +2883,14 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   phrase("ionize(vi)", ["melt(vi)", "<rank_3>"], "ionize", "ionize");
   phrase("condense(vi)", ["freeze(vi)", "<rank_1>"], "condense", "condense");
   phrase("solidify(vi)", ["freeze(vi)", "<rank_0>"], "solidify", "solidify");
+
+  // Arithmetic, by rank; count_down is the inverse
+  phrase("add(vi)", ["count(vi)", "<rank_1>"], "add", "add");
+  phrase("multiply(vi)", ["count(vi)", "<rank_2>"], "multiply", "multiply");
+  phrase("exponentiate(vt)", ["count(vi)", "<rank_3>"], "raise to a power", "exponentiate");
+  phrase("subtract(vi)", ["count_down(vi)", "<rank_1>"], "subtract", "subtract");
+  phrase("divide(vi)", ["count_down(vi)", "<rank_2>"], "divide", "divide");
+  phrase("root(vt)", ["count_down(vi)", "<rank_3>"], "take a root", "root");
 
   // Networks, by how general the links are. Direction is a modifier, so a directed graph is a
   // graph with a word for directed (none yet)

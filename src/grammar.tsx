@@ -699,10 +699,11 @@ export function GrammarView() {
       <H2>Arithmetic</H2>
       <p>
         <W w="count(vi)" /> takes rank for the operation, each level repeating the one below, as in
-        the mathematical hyperoperations: bare <i>count(vi)</i> is counting, <i>count(vi) &lt;rank_1&gt;</i> adding,{" "}
-        <i>&lt;rank_2&gt;</i> multiplying and <i>&lt;rank_3&gt;</i> raising to a power. Its negative end,{" "}
-        <W w="count_down(vi)" />, is the inverse: counting down, subtracting, dividing and taking a
-        root. The object is the number acted on and <W w="by" /> gives the amount, and a logarithm
+        the mathematical hyperoperations: bare <i>count(vi)</i> is counting, <W w="add(vi)" /> is{" "}
+        <i>count(vi) &lt;rank_1&gt;</i>, <W w="multiply(vi)" /> <i>&lt;rank_2&gt;</i> and <W w="exponentiate(vt)" />{" "}
+        <i>&lt;rank_3&gt;</i>. Its negative end, <W w="count_down(vi)" />, is the inverse: counting down,{" "}
+        <W w="subtract(vi)" />, <W w="divide(vi)" /> and <W w="root(vt)" />. Splitting a thing
+        into parts is <W w="split(vi)" />, on the part axis. The object is the number acted on and <W w="by" /> gives the amount, and a logarithm
         is just <W w="rank" />, the exponent a number already has.
       </p>
       <Example meaning="Divide 6 by 3.">
