@@ -2675,6 +2675,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   });
   cr("animal");
   cr("plant");
+  cr("fungus");
   cr("matter", {
     gloss: "matter / substance",
     notes:
