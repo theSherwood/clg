@@ -2397,7 +2397,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     notes: "Means nothing and goes anywhere, even mid-phrase; the grammar carries on as if it weren't there",
   });
 
-  candidate("possession_indicator");
   candidate("<become>", {
     gloss: "come to, begin to: <become> possess(vt) = gain",
     notes:
@@ -2573,7 +2572,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     gloss: "chemical element",
     t: [T.domain_specifier],
     notes:
-      "Marks the element domain: what follows reads roots 129-246 as the elements, each on the digit of its atomic number, so element carbon sounds like element 6. Bare, it's any element. matter element <x> is the pure substance, as matter element gold is gold metal",
+      "Marks the element domain: what follows reads roots 129-246 as the elements, each on the digit of its atomic number, so element carbon sounds like element 6. Bare, it's any element. With matter it gives the phase: element gold matter <rank_0> is solid gold",
   });
 
 

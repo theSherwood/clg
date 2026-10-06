@@ -666,7 +666,7 @@ export function GrammarView() {
 
       <H2>Other grammar words</H2>
       <p>
-        <W w="<foreign>" /> marks a foreign word or name. Planned: <W w="possession_indicator" />.
+        <W w="<foreign>" /> marks a foreign word or name. Possession needs no word of its own: <W w="of" /> covers it, as in <i>family of me</i>.
       </p>
       <p className="mt-2">
         <W w="<filler>" /> is a hesitation, like “um” or Spanish “pues”. It means nothing and can go
