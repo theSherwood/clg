@@ -584,6 +584,28 @@ export const thing_examples: Example[] = [
     english: "Water is a liquid",
     transliteration: "<subject> water <verb> is <object> matter rank_1",
   },
+  { title: "Melt", english: "The ice melts", transliteration: "<subject> water matter rank_0 <verb> melt(v)" },
+  {
+    title: "Up a phase",
+    english: "The water evaporated (melt, said of a liquid)",
+    transliteration: "<subject> water <verb> melt(v) formerly",
+  },
+  {
+    title: "Target phase",
+    english: "The water evaporated, explicitly",
+    transliteration: "<subject> water <verb> evaporate(v) formerly",
+  },
+  {
+    title: "Condense",
+    english: "Steam condenses on the wall",
+    transliteration: "<subject> water matter rank_2 <verb> condense(v) <at> wall",
+  },
+  {
+    title: "With an object",
+    english: "The sun melts the ice",
+    transliteration: "<subject> celestial rank_3 this <verb> melt(v) <object> water matter rank_0",
+  },
+  { title: "Freeze", english: "Freeze the water", transliteration: "<verb (prescriptive)> freeze(v) <object> water" },
 ];
 
 // Pointing words: this, that and _blank with a preposition or a general noun

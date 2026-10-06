@@ -351,6 +351,16 @@ export function GrammarView() {
         modifier it gives a substance's phase, so <i>water matter rank_0</i> is ice and{" "}
         <i>water matter rank_2</i> steam.
       </p>
+      <p className="mt-2">
+        The phase axis changes phase. <W w="melt(v)" /> goes up a phase and{" "}
+        <W w="freeze(v)" /> down one, so one verb is melting for ice and evaporating for water.
+        Rank names the target phase, as it does for <W w="matter" />: <i>melt rank_2</i> is to
+        evaporate (<W w="evaporate(v)" />), <i>melt rank_3</i> to ionize, <i>freeze rank_1</i> to
+        condense and <i>freeze rank_0</i> to solidify.
+      </p>
+      <Example meaning="The sun melts the ice.">
+        &lt;subject&gt; celestial rank_3 this &lt;verb&gt; melt &lt;object&gt; water matter rank_0
+      </Example>
 
       <H2>Sky</H2>
       <p>

@@ -437,9 +437,12 @@ function AxisMatrix({ axis, form, depth }: { axis: Axis; form: string; depth: nu
 // A verb's meanings without and with an object, each marked; other words show their gloss
 function Meaning({ word }: { word: Word }) {
   const side = word.data.domain === "verb" ? side_of(word) : undefined;
-  if (!side || side.verb_i.word !== word) {
+  const on_axis = side?.verb_i.word === word;
+  if (!on_axis && !word.data.verb_i && !word.data.verb_t) {
     return word.data.gloss ? <span className="italic">{word.data.gloss}</span> : null;
   }
+  const verb_i = on_axis ? side!.verb_i.gloss : word.data.verb_i;
+  const verb_t = on_axis ? side!.verb_t.gloss : word.data.verb_t;
   const relation = axis_by_word.get(word)?.verb_type === "relation";
   const line = (mark: string, gloss?: string, applies = true) => (
     <span className="block">
@@ -455,8 +458,8 @@ function Meaning({ word }: { word: Word }) {
   );
   return (
     <>
-      {line("intr.", side.verb_i.gloss, !relation)}
-      {line("tr.", side.verb_t.gloss)}
+      {line("intr.", verb_i, !relation)}
+      {line("tr.", verb_t)}
     </>
   );
 }

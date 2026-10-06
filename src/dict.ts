@@ -39,6 +39,8 @@ type WordData = {
   section: SectionKey;
   gloss?: string; // fuller English meaning, when the word name is a shorthand
   notes?: string;
+  verb_i?: string; // for a verb that isn't on an axis: its meaning without an object
+  verb_t?: string; // ... and with one
 
   homonyms: Word[];
   uses: Word[];
@@ -509,21 +511,25 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "rigidity(axis)" },
+    {
+      noun: "phase",
+      notes:
+        "Phase changes: melt(v) goes up a phase and freeze(v) down one, so the same verb is melting for ice and evaporating for water. Rank names the target phase, as matter's ranks do (rank_0 solid, rank_1 liquid, rank_2 gas, rank_3 plasma): melt(v) rank_2 is evaporate, freeze(v) rank_1 condense",
+    },
     {
       noun: "rigidity(state)",
       adj: "rigid",
-      verb: "stiffen(v)",
-      verb_i: "stiffen",
-      verb_t: "stiffen",
+      verb: "freeze(v)",
+      verb_i: "freeze",
+      verb_t: "freeze",
       adverb: "stiffly",
     },
     {
       noun: "fluidity",
       adj: "fluid",
-      verb: "liquefy(v)",
+      verb: "melt(v)",
       verb_i: "melt",
-      verb_t: "liquefy",
+      verb_t: "melt",
       adverb: "fluidly",
     },
   ],
@@ -2582,7 +2588,7 @@ export const verb_types: Record<VerbType, string[]> = {
   change: [
     "grow(v)", "accelerate(v)", "change(v)", "simplify(v)", "strengthen(v)", "increase(v)",
     "organize(v)", "activate(v)", "demarcate(v)", "fill(v)", "open(v)", "smooth(v)", "free(v)",
-    "abstract(v)", "absolutize(v)", "liquefy(v)", "make_explicit(v)", "externalize(v)",
+    "abstract(v)", "absolutize(v)", "melt(v)", "make_explicit(v)", "externalize(v)",
     "perpetuate(v)", "become_essential(v)", "idealize(v)", "nest(v)", "determine(v)",
     "enumerate(v)", "curl(v)", "emerge(v)", "distance(v)", "quiet(v)", "sharpen(v)", "wet(v)",
     "thicken(v)", "lift(v)", "heat(v)", "brighten(v)", "harden(v)", "get_heavier(v)", "prove(v)",
@@ -2760,6 +2766,29 @@ function fill_cells(side: AxisSide, key: FormKey, word: Word, forms: AxisWordFor
       if (cell.word) axis_by_word.set(cell.word, entry);
     }
   }
+}
+
+// Named phrases: an axis verb with a rank, for meanings common enough to want their own entry
+{
+  function phrase(name: string, parts: string[], verb_i: string, verb_t: string) {
+    const words = parts.map((part) => {
+      const word = dictionary.get(part);
+      if (!word) throw new Error(`Missing ${part} for ${name}`);
+      return word;
+    });
+    cw(name, {
+      domain: "verb",
+      parts: words,
+      verb_i,
+      verb_t,
+      gloss: `${verb_i} (without an object) / ${verb_t} (with an object)`,
+    });
+  }
+  // Phase changes, by target phase
+  phrase("evaporate(v)", ["melt(v)", "rank_2"], "evaporate", "vaporize");
+  phrase("ionize(v)", ["melt(v)", "rank_3"], "ionize", "ionize");
+  phrase("condense(v)", ["freeze(v)", "rank_1"], "condense", "condense");
+  phrase("solidify(v)", ["freeze(v)", "rank_0"], "solidify", "solidify");
 }
 
 // Toki Pona words and their meanings, for comparison
