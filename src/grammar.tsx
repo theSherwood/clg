@@ -374,6 +374,13 @@ export function GrammarView() {
         <i>&lt;rank_2&gt;</i> a shape and <i>&lt;rank_3&gt;</i> a form, a solid. Modifiers say which:{" "}
         <i>geometry &lt;rank_2&gt; round</i> is a circle and <i>geometry &lt;rank_3&gt; round</i> a sphere.
       </p>
+      <p className="mt-2">
+        <W w="node" /> takes rank for networks, each more general than the last:{" "}
+        <W w="chain" /> (<i>node &lt;rank_1&gt;</i>), <W w="tree_graph" /> (<i>&lt;rank_2&gt;</i>),{" "}
+        <W w="dag" /> (<i>&lt;rank_3&gt;</i>), <W w="graph" /> (<i>&lt;rank_4&gt;</i>), <W w="hypergraph" />{" "}
+        (<i>&lt;rank_5&gt;</i>) and <W w="higher_order_network" /> (<i>&lt;rank_6&gt;</i>). Whether a graph's
+        links have a direction is a modifier.
+      </p>
 
       <H2>Matter</H2>
       <p>

@@ -2513,7 +2513,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("leg");
   cr("node", {
     notes:
-      'Use "rank" to lift "node" to sequence, tree, dag, directed graph, hypergraph, higher-order network. The downside is that it takes 3 syllables to say each of those',
+      "Rank lifts it to more general networks: <rank_1> chain, <rank_2> tree, <rank_3> DAG, <rank_4> graph, <rank_5> hypergraph, <rank_6> higher-order network. Each takes 3 syllables",
   });
   cr("edge");
 
@@ -2851,22 +2851,35 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   }
 }
 
-// Named phrases: an axis verb with a rank, for meanings common enough to want their own entry
+// Named phrases: compounds common enough to want their own entry, like an axis verb with a rank
 {
-  function phrase(name: string, parts: string[], verb_i: string, verb_t: string) {
-    const words = parts.map((part) => {
+  const words_of = (name: string, parts: string[]) =>
+    parts.map((part) => {
       const word = dictionary.get(part);
       if (!word) throw new Error(`Missing ${part} for ${name}`);
       return word;
     });
-    const word = cw(name, { domain: "verb", parts: words, verb_i, verb_t });
+  function phrase(name: string, parts: string[], verb_i: string, verb_t: string) {
+    const word = cw(name, { domain: "verb", parts: words_of(name, parts), verb_i, verb_t });
     name_verb(word, verb_i, verb_t);
+  }
+  function noun(name: string, parts: string[], data: Pick<WordData, "gloss" | "notes"> = {}) {
+    cw(name, { domain: "noun", parts: words_of(name, parts), ...data });
   }
   // Phase changes, by target phase
   phrase("evaporate(vi)", ["melt(vi)", "<rank_2>"], "evaporate", "vaporize");
   phrase("ionize(vi)", ["melt(vi)", "<rank_3>"], "ionize", "ionize");
   phrase("condense(vi)", ["freeze(vi)", "<rank_1>"], "condense", "condense");
   phrase("solidify(vi)", ["freeze(vi)", "<rank_0>"], "solidify", "solidify");
+
+  // Networks, by how general the links are. Direction is a modifier, so a directed graph is a
+  // graph with a word for directed (none yet)
+  noun("chain", ["node", "<rank_1>"], { gloss: "chain / list (nodes in a line)" });
+  noun("tree_graph", ["node", "<rank_2>"], { gloss: "tree (graph)" });
+  noun("dag", ["node", "<rank_3>"], { gloss: "directed acyclic graph" });
+  noun("graph", ["node", "<rank_4>"], { gloss: "graph / network" });
+  noun("hypergraph", ["node", "<rank_5>"]);
+  noun("higher_order_network", ["node", "<rank_6>"], { gloss: "higher-order network" });
 }
 
 // Toki Pona words and their meanings, for comparison

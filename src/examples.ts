@@ -555,6 +555,8 @@ export const geometry_examples: Example[] = [
   { title: "Circle", english: "a round shape", transliteration: "geometry <rank_2> round" },
   { title: "Polygon", english: "an angled shape", transliteration: "geometry <rank_2> angle" },
   { title: "Sphere", english: "a round form", transliteration: "geometry <rank_3> round" },
+  { title: "Tree", english: "a tree, as a graph", transliteration: "node <rank_2>" },
+  { title: "Network", english: "a graph", transliteration: "node <rank_4>" },
   {
     title: "A sentence",
     english: "Earth is a sphere",
