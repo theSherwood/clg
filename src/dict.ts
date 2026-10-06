@@ -19,12 +19,12 @@ export type Tag = keyof typeof T;
 // the axis words, which are told apart by domain.
 export const sections = [
   { key: "marker", label: "Grammar markers", start: 0, end: 16 },
-  { key: "grammar", label: "Grammar helpers", start: 16, end: 32 },
+  { key: "grammar", label: "Grammar helpers", start: 16, end: 28 },
+  { key: "dimension", label: "Dimension helpers", start: 28, end: 32 },
   { key: "preposition", label: "Prepositions", start: 32, end: 48 },
   { key: "pronoun", label: "Pronouns", start: 48, end: 56 },
   { key: "axis_helper", label: "Axis helpers", start: 56, end: 64 },
-  { key: "content", label: "Content roots", start: 64, end: 108 },
-  { key: "dimension", label: "Dimension helpers", start: 108, end: 112 },
+  { key: "content", label: "Content roots", start: 64, end: 112 },
   { key: "rank", label: "Rank helpers", start: 112, end: 128 },
   { key: "axis", label: "Axis words", start: 128, end: 256 },
   { key: "digit", label: "Digits", start: 128, end: 256 },
@@ -2266,8 +2266,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("perfect_tense_aspect");
   cr("but", { t: [T.grammar_helper], gloss: "but / however" });
 
-  candidate("clause_and", { notes: "And between clauses, as opposed to list_and" });
-  candidate("list_and", { notes: "And between list items, as opposed to clause_and" });
   candidate("possession_indicator");
   candidate("_become", {
     gloss: "come to, begin to: _become possess(v) = gain",
@@ -2293,6 +2291,11 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("of", { t: [T.preposition] });
   cr("about", { t: [T.preposition] });
   cr("at", { t: [T.preposition] });
+  cr("as", {
+    t: [T.preposition],
+    gloss: "as / like",
+    notes: "In the role of, or in the manner of: <as> person is as a person, and like a person",
+  });
 }
 
 {

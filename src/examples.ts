@@ -558,7 +558,7 @@ export const udhr_articles: Article[] = [
     title: "Article 6",
     english: ["Everyone has the right to recognition everywhere as a person before the law."],
     transliteration:
-      "<subject> person all <verb> possess <object> right of _gerund know(v) as person by law.",
+      "<subject> person all <verb> possess <object> right of _gerund know(v) <as> person by law.",
   },
   {
     title: "Article 7",

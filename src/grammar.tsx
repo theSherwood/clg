@@ -364,7 +364,8 @@ export function GrammarView() {
       <H2>Prepositions</H2>
       <p>
         The prepositions are <W w="with" />, <W w="to" />, <W w="from" />, <W w="by" />,{" "}
-        <W w="for" />, <W w="in" />, <W w="of" />, <W w="about" /> and <W w="at" />. A preposition
+        <W w="for" />, <W w="in" />, <W w="of" />, <W w="about" />, <W w="at" /> and{" "}
+        <W w="as" /> (“as” or “like”, like Toki Pona's <i>sama</i>). A preposition
         opens a phrase, and there's no word to close it: the phrase ends at the next grammar
         marker, preposition, clause-level conjunction or <W w="clause_end" />. Within a phrase,
         modifiers come before prepositional phrases, so <i>person big &lt;with&gt; rod</i> is a big
@@ -378,8 +379,9 @@ export function GrammarView() {
       <H2>Conjunctions and clauses</H2>
       <p>
         <W w="and" />, <W w="or" />, <W w="if" /> and <W w="but" />. Exclusive forms are compounds: xor is
-        “or-exclusive” and iff is “if-exclusive”. Planned: <W w="clause_and" /> and{" "}
-        <W w="list_and" /> to tell joining clauses from joining list items. <W w="clause_start" />{" "}
+        “or-exclusive” and iff is “if-exclusive”. One <W w="and" /> joins both clauses and list
+        items: followed by a role marker it joins clauses, and followed by a noun it joins list
+        items. <W w="clause_start" />{" "}
         and <W w="clause_end" /> mark where a clause starts and ends.
       </p>
 
