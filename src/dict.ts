@@ -176,6 +176,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       notes:
         "From axis.csv: positive noun giant; positive verb to grow something (transitive), to grow (intransitive)",
       steps: {
+        max_positive: { verb: "explode(v)", verb_i: "explode", verb_t: "blow up" },
         min_positive: {
           noun: "inflation",
           adj: "inflated",
@@ -190,6 +191,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
           verb_i: "collapse",
           verb_t: "deflate",
         },
+        max_negative: { verb: "implode(v)", verb_i: "implode", verb_t: "implode" },
       },
     },
     {
@@ -395,7 +397,13 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "openness(axis)", notes: "From axis.csv: positive verb to open (transitive)" },
+    {
+      noun: "openness(axis)",
+      notes: "From axis.csv: positive verb to open (transitive)",
+      steps: {
+        min_positive: { adj: "ajar", verb: "crack(v)", verb_i: "crack open", verb_t: "crack" },
+      },
+    },
     {
       noun: "closure",
       adj: "closed",
