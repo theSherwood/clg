@@ -2288,38 +2288,44 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   section("marker");
   const marker: Tag[] = [T.grammar_helper, T.part_of_speech_specifier, T.domain_specifier];
   const verb_marker: Tag[] = [...marker, T.verb_specifier];
-  cr("_subject", { t: marker });
-  cr("_object", { t: marker });
-  cr("_gerund", { t: verb_marker });
-  cr("_verb", { t: verb_marker });
-  cr("_verb(prescriptive)", { t: verb_marker, gloss: "verb (prescriptive / imperative)" });
-  cr("_verb(interrogative)", { t: verb_marker });
-  cr("_er", {
+  cr("<subject>", { t: marker });
+  cr("<object>", { t: marker });
+  cr("<gerund>", { t: verb_marker });
+  cr("<verb>", { t: verb_marker });
+  cr("<verb(prescriptive)>", { t: verb_marker, gloss: "verb (prescriptive / imperative)" });
+  cr("<verb(interrogative)>", { t: verb_marker });
+  cr("<er>", {
     t: [T.grammar_helper, T.part_of_speech_specifier],
-    gloss: "the subject of a verb, as a noun: _er eat = eater",
+    gloss: "the subject of a verb, as a noun: <er> eat = eater",
   });
-  cr("_ee", {
+  cr("<ee>", {
     t: [T.grammar_helper, T.part_of_speech_specifier],
-    gloss: "the object of a verb, as a noun: _ee eat = what is eaten",
+    gloss: "the object of a verb, as a noun: <ee> eat = what is eaten",
   });
-  cr("_tool", {
+  cr("<tool>", {
     t: [T.grammar_helper, T.part_of_speech_specifier],
-    gloss: "what a verb is done with, as a noun: _tool open = key",
+    gloss: "what a verb is done with, as a noun: <tool> open = key",
   });
-  cr("_place", {
+  cr("<place>", {
     t: [T.grammar_helper, T.part_of_speech_specifier],
-    gloss: "where a verb is done, as a noun: _place sleep = bed",
+    gloss: "where a verb is done, as a noun: <place> sleep = bed",
   });
-  cr("_to", {
+  cr("<to>", {
     t: [T.grammar_helper, T.part_of_speech_specifier],
-    gloss: "who or where a verb goes to, as a noun: _to send = addressee, _to go = destination",
+    gloss: "who or where a verb goes to, as a noun: <to> send = addressee, <to> go = destination",
   });
-  cr("_from", {
+  cr("<from>", {
     t: [T.grammar_helper, T.part_of_speech_specifier],
-    gloss: "who or where a verb comes from, as a noun: _from come = origin, _from receive = sender",
+    gloss: "who or where a verb comes from, as a noun: <from> come = origin, <from> receive = sender",
   });
-  cr("_foreign", { t: marker });
-  cr("_filler", {
+  cr("<complement>", {
+    t: [T.grammar_helper, T.part_of_speech_specifier],
+    gloss: "a subject complement, after is: what the subject is",
+    notes:
+      "What follows describes the subject, so it reads as a modifier: the adjective where there is one (is <complement> hot), otherwise the noun (is <complement> matter rank_1)",
+  });
+  cr("<foreign>", { t: marker });
+  cr("<filler>", {
     t: marker,
     gloss: "a hesitation, like um or pues",
     notes: "Means nothing and goes anywhere, even mid-phrase; the grammar carries on as if it weren't there",
@@ -2343,8 +2349,8 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("if", { t: [T.grammar_helper], notes: '"iff" through "if-exclusive"' });
 
   candidate("possession_indicator");
-  candidate("_become", {
-    gloss: "come to, begin to: _become possess(v) = gain",
+  candidate("<become>", {
+    gloss: "come to, begin to: <become> possess(v) = gain",
     notes:
       'Like Toki Pona\'s "kama jo" (come to have = get). Not sure yet whether this should be a helper',
   });
@@ -2391,11 +2397,11 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   });
   cr("this", { t: [T.pronoun], notes: 'Could this be "it-near"?' });
   cr("that", { t: [T.pronoun], notes: 'Could this be "it-far"?' });
-  cr("_blank", {
+  cr("<blank>", {
     t: [T.pronoun],
     gloss: "what a question asks about",
     notes:
-      "Was interrogative_blank. With _verb(interrogative): <subject> soldier <verb (interrogative)> kill <object> _blank = who does the soldier kill?",
+      "Was interrogative_blank. With <verb(interrogative)>: <subject> soldier <verb (interrogative)> kill <object> <blank> = who does the soldier kill?",
   });
 }
 
@@ -2433,7 +2439,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   section("content");
   cr("thing", {
     gloss: "thing / something",
-    notes: "thing all is everything, thing none nothing, and thing _blank what thing",
+    notes: "thing all is everything, thing none nothing, and thing <blank> what thing",
   });
   cr("singular");
   cr("plural");

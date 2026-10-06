@@ -7,16 +7,19 @@ const resolved = (transliteration: string) =>
     t.kind === "punctuation" ? t.text : (t.word?.word ?? t.candidate?.word ?? `?${t.text}`),
   );
 
-test("grammar markers resolve to domain words and prepositions", () => {
-  expect(resolved("<subject> person <verb (prescriptive)> do <in> value.")).toEqual([
-    "_subject",
+test("bracketed names resolve to grammar markers, bare ones to ordinary words", () => {
+  expect(resolved("<subject> person <verb (prescriptive)> do in value.")).toEqual([
+    "<subject>",
     "person",
-    "_verb(prescriptive)",
+    "<verb(prescriptive)>",
     "do(v)",
     "in",
     "value",
     ".",
   ]);
+  // <to> is the noun marker (the addressee of send), to the preposition
+  expect(resolved("<to> send to")).toEqual(["<to>", "send(v)", "to"]);
+  expect(resolved("<in>")).toEqual(["?<in>"]);
 });
 
 test("digits, two-word names and unknown words", () => {
@@ -32,7 +35,7 @@ test("digits, two-word names and unknown words", () => {
 
 test("a trailing ? marks a word as uncertain", () => {
   const [verb, blorp] = tokenize("<verb?> blorp?");
-  expect(verb).toMatchObject({ kind: "word", uncertain: true, word: dictionary.get("_verb") });
+  expect(verb).toMatchObject({ kind: "word", uncertain: true, word: dictionary.get("<verb>") });
   expect(blorp).toMatchObject({ kind: "word", uncertain: true });
   expect(blorp?.kind === "word" && blorp.word).toBeFalsy();
 });

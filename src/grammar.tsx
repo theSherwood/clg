@@ -32,7 +32,9 @@ export function GrammarView() {
       <h1 className="text-xl font-bold">Grammar and syntax</h1>
       <p className="text-sm text-gray-600">
         A working draft. Words are shown with their current sound; hover one for details. Amber
-        words are candidates with no root yet.
+        words are candidates with no root yet. In examples, grammar markers are in angle brackets (
+        <i>&lt;subject&gt;</i>, <i>&lt;ee&gt;</i>) and prepositions are bare (<i>to</i>,{" "}
+        <i>at</i>).
       </p>
 
       <H2>Words and sounds</H2>
@@ -80,8 +82,8 @@ export function GrammarView() {
       </p>
       <p className="mt-2">
         The first six roots are special grammar markers, and they're also domain words:{" "}
-        <W w="_subject" />, <W w="_object" />, <W w="_gerund" />, <W w="_verb" />,{" "}
-        <W w="_verb(prescriptive)" /> and <W w="_verb(interrogative)" />.
+        <W w="<subject>" />, <W w="<object>" />, <W w="<gerund>" />, <W w="<verb>" />,{" "}
+        <W w="<verb(prescriptive)>" /> and <W w="<verb(interrogative)>" />.
       </p>
       <p className="mt-2">
         Partial domains reuse a restricted part of the root space. The content root{" "}
@@ -89,15 +91,15 @@ export function GrammarView() {
         comes from context.
       </p>
       <p className="mt-2">
-        <W w="_er" /> and <W w="_ee" /> turn a verb into a noun for its subject or object, after
-        English employer and employee: <i>_er eat</i> is “eater”, <i>_ee eat</i> is “what is eaten”,
-        so food. <W w="_er" /> is whoever or whatever does it, not only a person, like English
+        <W w="<er>" /> and <W w="<ee>" /> turn a verb into a noun for its subject or object, after
+        English employer and employee: <i>&lt;er&gt; eat</i> is “eater”, <i>&lt;ee&gt; eat</i> is “what is eaten”,
+        so food. <W w="<er>" /> is whoever or whatever does it, not only a person, like English
         printer or opener. Two more markers name other roles, like the prepositions{" "}
-        <W w="with" /> and <W w="at" />: <W w="_tool" /> is what it's done with (<i>_tool open</i>,
-        a key) and <W w="_place" /> where it's done (<i>_place sleep</i>, a bed).{" "}
-        <W w="_to" /> and <W w="_from" /> follow <W w="to" /> and <W w="from" />: who or where it
-        goes to (<i>_to send</i>, the addressee; <i>_to go</i>, the destination) and comes from (
-        <i>_from come</i>, someone's origin; <i>_from receive</i>, the sender). Arabic builds
+        <W w="with" /> and <W w="at" />: <W w="<tool>" /> is what it's done with (<i>&lt;tool&gt; open</i>,
+        a key) and <W w="<place>" /> where it's done (<i>&lt;place&gt; sleep</i>, a bed).{" "}
+        <W w="<to>" /> and <W w="<from>" /> follow <W w="to" /> and <W w="from" />: who or where it
+        goes to (<i>&lt;to&gt; send</i>, the addressee; <i>&lt;to&gt; go</i>, the destination) and comes from (
+        <i>&lt;from&gt; come</i>, someone's origin; <i>&lt;from&gt; receive</i>, the sender). Arabic builds
         nouns from roots the same way (<i>kātib</i> writer, <i>maktab</i> office, from k-t-b
         “write”), and so does Esperanto (<i>tranĉilo</i> knife, <i>lernejo</i> school).
       </p>
@@ -107,8 +109,8 @@ export function GrammarView() {
 
       <H2>Sentences</H2>
       <p>
-        Role markers come before their phrases: <W w="_subject" /> before the subject,{" "}
-        <W w="_verb" /> (or another verb specifier) before the verb, <W w="_object" /> before the
+        Role markers come before their phrases: <W w="<subject>" /> before the subject,{" "}
+        <W w="<verb>" /> (or another verb specifier) before the verb, <W w="<object>" /> before the
         object. Every draft so far is in subject–verb–object order.
       </p>
       <Example meaning="Everyone has the right to life, liberty and security of person.">
@@ -116,7 +118,7 @@ export function GrammarView() {
         safety.
       </Example>
       <p>
-        <b>Transitivity.</b> A transitive verb always takes <W w="_object" />, even when nothing
+        <b>Transitivity.</b> A transitive verb always takes <W w="<object>" />, even when nothing
         about the object is said. Without an object, the verb is intransitive. What each means
         depends on the verb's type, and every axis has one type, shared by both its ends:
       </p>
@@ -160,44 +162,52 @@ export function GrammarView() {
         smart.
       </p>
       <Example meaning="I send you money.">
-        &lt;subject&gt; I &lt;verb&gt; send &lt;object&gt; money &lt;to&gt; you
+        &lt;subject&gt; I &lt;verb&gt; send &lt;object&gt; money to you
       </Example>
       <p>
-        A relation's complement is read as a noun. Its verb is the relation itself rather than a
-        change: <W w="is(v)" /> relates a
-        thing to a characteristic, <W w="equal(v)" /> relates two things, and <W w="possess(v)" />{" "}
-        relates an owner to what they own.
+        A relation's verb is the relation itself rather than a change: <W w="equal(v)" /> relates
+        two things and <W w="possess(v)" /> relates an owner to what they own, each with an object.
+      </p>
+      <p className="mt-2">
+        <W w="is(v)" /> is different: what follows it isn't an object but a subject complement,
+        marked <W w="<complement>" />. It says what the subject is, so it reads as a modifier: the
+        adjective where there is one (<i>hot</i>, not <i>heat</i>), and otherwise the noun (
+        <i>matter rank_1</i>, a liquid). Mood stays on the verb marker, so “be strong!” is{" "}
+        <i>&lt;verb (prescriptive)&gt; is &lt;complement&gt; strong</i>.
       </p>
       <Example meaning="The sky is blue.">
-        &lt;subject&gt; sky &lt;verb&gt; is &lt;object&gt; blueness
+        &lt;subject&gt; sky &lt;verb&gt; is &lt;complement&gt; blue
+      </Example>
+      <Example meaning="Water is a liquid.">
+        &lt;subject&gt; water &lt;verb&gt; is &lt;complement&gt; matter rank_1
       </Example>
       <Open>
-        Becoming, for relation verbs: maybe a helper, <W w="_become" /> (<i>_become possess</i>,
+        Becoming, for relation verbs: maybe a helper, <W w="<become>" /> (<i>&lt;become&gt; possess</i>,
         “gain”).
       </Open>
       <p>
-        <W w="_verb(prescriptive)" /> makes a verb prescriptive or imperative (should, shall), and{" "}
-        <W w="_verb(interrogative)" /> makes it a question. In a question, <W w="_blank" /> stands
+        <W w="<verb(prescriptive)>" /> makes a verb prescriptive or imperative (should, shall), and{" "}
+        <W w="<verb(interrogative)>" /> makes it a question. In a question, <W w="<blank>" /> stands
         for what's being asked about; without it, the question is yes or no.
       </p>
       <Example meaning="No one shall be held in slavery.">
-        &lt;subject&gt; person none &lt;verb (prescriptive)&gt; is &lt;object&gt; _ee force.
+        &lt;subject&gt; person none &lt;verb (prescriptive)&gt; is &lt;complement&gt; &lt;ee&gt; force.
       </Example>
       <Example meaning="Who does the soldier kill?">
-        &lt;subject&gt; soldier &lt;verb (interrogative)&gt; kill &lt;object&gt; _blank
+        &lt;subject&gt; soldier &lt;verb (interrogative)&gt; kill &lt;object&gt; &lt;blank&gt;
       </Example>
       <Example meaning="Does the soldier kill the enemy?">
         &lt;subject&gt; soldier &lt;verb (interrogative)&gt; kill &lt;object&gt; enemy
       </Example>
       <p>
-        Other question words come from where <W w="_blank" /> sits: <i>person _blank</i> is who,{" "}
-        <i>&lt;at&gt; _blank</i> where, <i>&lt;to&gt; _blank</i> where to,{" "}
-        <i>&lt;from&gt; _blank</i> where from, <i>&lt;at&gt; time _blank</i> when,{" "}
-        <i>&lt;for&gt; _blank</i> why, <i>&lt;with&gt; _blank</i> how and <i>number _blank</i> how
+        Other question words come from where <W w="<blank>" /> sits: <i>person &lt;blank&gt;</i> is who,{" "}
+        <i>at &lt;blank&gt;</i> where, <i>to &lt;blank&gt;</i> where to,{" "}
+        <i>from &lt;blank&gt;</i> where from, <i>at time &lt;blank&gt;</i> when,{" "}
+        <i>for &lt;blank&gt;</i> why, <i>with &lt;blank&gt;</i> how and <i>number &lt;blank&gt;</i> how
         many.
       </p>
       <Example meaning="Why do you fight?">
-        &lt;subject&gt; you &lt;verb (interrogative)&gt; fight &lt;for&gt; _blank
+        &lt;subject&gt; you &lt;verb (interrogative)&gt; fight for &lt;blank&gt;
       </Example>
 
       <H2>Tense and aspect</H2>
@@ -245,10 +255,10 @@ export function GrammarView() {
         <W w="follow(v)" /> relate two things in order.
       </p>
       <Example meaning="I slept yesterday.">
-        &lt;subject&gt; I &lt;verb&gt; sleep &lt;at&gt; time rank_3 previous
+        &lt;subject&gt; I &lt;verb&gt; sleep at time rank_3 previous
       </Example>
       <Example meaning="Eating comes before sleeping.">
-        &lt;subject&gt; _gerund eat &lt;verb&gt; precede &lt;object&gt; _gerund sleep
+        &lt;subject&gt; &lt;gerund&gt; eat &lt;verb&gt; precede &lt;object&gt; &lt;gerund&gt; sleep
       </Example>
 
       <H2>Truth and possibility</H2>
@@ -297,10 +307,10 @@ export function GrammarView() {
         up to the shared ancestor, so <i>neutral child rank_2</i> is a first cousin (a shared
         grandparent) and <i>neutral child rank_3</i> a second cousin. Bare words are rank_1, and
         rank_0 is oneself. Marriage isn't a generation step, so in-laws are phrases: family{" "}
-        <i>&lt;of&gt;</i> spouse.
+        <i>of</i> spouse.
       </p>
       <Example meaning="My grandparent has many descendants.">
-        &lt;subject&gt; parent rank_2 &lt;of&gt; me &lt;verb&gt; possess &lt;object&gt; max_positive
+        &lt;subject&gt; parent rank_2 of me &lt;verb&gt; possess &lt;object&gt; max_positive
         child many
       </Example>
       <Open>
@@ -316,7 +326,7 @@ export function GrammarView() {
         <W w="do(v)" /> and <W w="undo(v)" />, and <W w="touch(v)" /> and <W w="avoid(v)" />. The
         scale grades them: <i>min_positive write</i>, a lesser writing, is a mark, and{" "}
         <i>min_negative write</i> is skimming. Nouns come from the role markers: a word is{" "}
-        <i>_ee say</i>, a text <i>_ee write</i> and an ear <i>_tool hear</i>. Attaching is{" "}
+        <i>&lt;ee&gt; say</i>, a text <i>&lt;ee&gt; write</i> and an ear <i>&lt;tool&gt; hear</i>. Attaching is{" "}
         <W w="connect(v)" />.
       </p>
 
@@ -330,10 +340,10 @@ export function GrammarView() {
         bigger”. Many languages compare this way, like Nigerian Pidgin's “e big pass you”.
       </p>
       <Example meaning="The rock is bigger than the person.">
-        &lt;subject&gt; rock &lt;verb&gt; exceed &lt;object&gt; person &lt;in&gt; big
+        &lt;subject&gt; rock &lt;verb&gt; exceed &lt;object&gt; person in big
       </Example>
       <Example meaning="The Sun is the biggest.">
-        &lt;subject&gt; celestial rank_3 this &lt;verb&gt; exceed &lt;object&gt; all &lt;in&gt; big
+        &lt;subject&gt; celestial rank_3 this &lt;verb&gt; exceed &lt;object&gt; all in big
       </Example>
 
       <H2>Geometry</H2>
@@ -371,15 +381,15 @@ export function GrammarView() {
         Sun, <i>rank_2 this</i> Earth and <i>rank_1 this</i> the Moon.
       </p>
       <Example meaning="The Sun is bright.">
-        &lt;subject&gt; celestial rank_3 this &lt;verb&gt; is &lt;object&gt; bright
+        &lt;subject&gt; celestial rank_3 this &lt;verb&gt; is &lt;complement&gt; bright
       </Example>
 
       <H2>Directions</H2>
       <p>
         <W w="cardinal" /> is one root for the compass, and rank counts quarter turns clockwise
         from north: <i>cardinal rank_0</i> is north, <i>rank_1</i> east, <i>rank_2</i> south and{" "}
-        <i>rank_3</i> west. The prepositions do the rest: <i>&lt;to&gt; cardinal rank_0</i> is
-        northward and <i>&lt;at&gt; cardinal rank_1</i> in the east.
+        <i>rank_3</i> west. The prepositions do the rest: <i>to cardinal rank_0</i> is
+        northward and <i>at cardinal rank_1</i> in the east.
       </p>
 
       <H2>Colors</H2>
@@ -391,7 +401,7 @@ export function GrammarView() {
         <i>red dark</i> maroon, and white and black are just <W w="bright" /> and <W w="dark" />.
       </p>
       <Example meaning="The rock is orange.">
-        &lt;subject&gt; rock &lt;verb&gt; is &lt;object&gt; red yellow
+        &lt;subject&gt; rock &lt;verb&gt; is &lt;complement&gt; red yellow
       </Example>
 
       <H2>Modifiers</H2>
@@ -429,12 +439,12 @@ export function GrammarView() {
         <W w="as" /> (“as” or “like”, like Toki Pona's <i>sama</i>). A preposition
         opens a phrase, and there's no word to close it: the phrase ends at the next grammar
         marker, preposition, clause-level conjunction or <W w="clause_end" />. Within a phrase,
-        modifiers come before prepositional phrases, so <i>person big &lt;with&gt; rod</i> is a big
+        modifiers come before prepositional phrases, so <i>person big with rod</i> is a big
         person with a rod. Stacked prepositional phrases can be ambiguous, as in most languages;
         bracket one with <W w="clause_start" /> and <W w="clause_end" /> when it matters.
       </p>
       <Example meaning="…equal in dignity and rights.">
-        free and equal &lt;in&gt; value and privilege
+        free and equal in value and privilege
       </Example>
 
       <H2>Conjunctions and clauses</H2>
@@ -457,22 +467,22 @@ export function GrammarView() {
         </li>
         <li>
           <b>After a preposition</b>, for because, when, so that and until:{" "}
-          <i>&lt;from&gt; clause_start …</i> is because…, <i>&lt;at&gt; time clause_start …</i>{" "}
-          when…, <i>&lt;for&gt; clause_start …</i> so that… and <i>&lt;to&gt; time clause_start …</i>{" "}
+          <i>from clause_start …</i> is because…, <i>at time clause_start …</i>{" "}
+          when…, <i>for clause_start …</i> so that… and <i>to time clause_start …</i>{" "}
           until…. <W w="if" /> takes one the same way.
         </li>
         <li>
-          <b>After a noun</b>, describing it: <W w="_blank" /> marks the noun's place in the
+          <b>After a noun</b>, describing it: <W w="<blank>" /> marks the noun's place in the
           clause, in any role or after any preposition. A plain verb marker tells it from a
-          question, which has <W w="_verb(interrogative)" />, as English uses who and where for
+          question, which has <W w="<verb(interrogative)>" />, as English uses who and where for
           both.
         </li>
       </ul>
       <Example meaning="the person who defended me">
-        person clause_start &lt;subject&gt; _blank &lt;verb&gt; defend &lt;object&gt; me clause_end
+        person clause_start &lt;subject&gt; &lt;blank&gt; &lt;verb&gt; defend &lt;object&gt; me clause_end
       </Example>
       <Example meaning="the place where I sleep">
-        place clause_start &lt;subject&gt; I &lt;verb&gt; sleep &lt;at&gt; _blank clause_end
+        place clause_start &lt;subject&gt; I &lt;verb&gt; sleep at &lt;blank&gt; clause_end
       </Example>
       <p className="mt-2">
         A subclause with no subject takes the main clause's subject: <i>I desire &lt;object&gt;
@@ -486,13 +496,13 @@ export function GrammarView() {
         <W w="pronoun(third_person)" />, with number made by compounds: “me” is
         first_person-singular, “we” first_person-plural (also -inclusive and -exclusive), “y'all”
         second_person-plural. The third person can optionally specify plural and gender or sex.{" "}
-        <W w="this" /> and <W w="that" /> point near and far, and <W w="_blank" /> is the question
+        <W w="this" /> and <W w="that" /> point near and far, and <W w="<blank>" /> is the question
         word: what a question asks about.
       </p>
       <p className="mt-2">
         Together they make a table of pointing and question words with a few general nouns, like
         Esperanto's correlatives. There's no word for “here” or “there”: like Toki Pona's{" "}
-        <i>lon ni</i>, here is <i>&lt;at&gt; this</i> and there <i>&lt;at&gt; that</i>, with{" "}
+        <i>lon ni</i>, here is <i>at this</i> and there <i>at that</i>, with{" "}
         <i>place this</i> when it needs to be a noun.
       </p>
       <table className="mt-2 text-sm border-collapse">
@@ -501,7 +511,7 @@ export function GrammarView() {
             <th className="pr-4 font-normal" />
             <th className="pr-4 font-normal">this</th>
             <th className="pr-4 font-normal">that</th>
-            <th className="font-normal">_blank</th>
+            <th className="font-normal">&lt;blank&gt;</th>
           </tr>
         </thead>
         <tbody>
@@ -524,13 +534,13 @@ export function GrammarView() {
         </tbody>
       </table>
       <Example meaning="I sleep here.">
-        &lt;subject&gt; I &lt;verb&gt; sleep &lt;at&gt; this
+        &lt;subject&gt; I &lt;verb&gt; sleep at this
       </Example>
       <p className="mt-2">
         <W w="thing" /> is the general noun, Toki Pona's <i>ijo</i>: <i>thing all</i> is
-        everything, <i>thing none</i> nothing and <i>thing _blank</i> what thing.{" "}
+        everything, <i>thing none</i> nothing and <i>thing &lt;blank&gt;</i> what thing.{" "}
         <W w="self" /> and <W w="other" /> are content roots too. As an object, <W w="self" /> is
-        reflexive (<i>I know self</i>, I know myself), and <i>family &lt;of&gt; self</i> is one's
+        reflexive (<i>I know self</i>, I know myself), and <i>family of self</i> is one's
         own family. <i>person other</i> is another person, and with a plural subject,{" "}
         <W w="other" /> is each other.
       </p>
@@ -583,19 +593,19 @@ export function GrammarView() {
         is just <W w="rank" />, the exponent a number already has.
       </p>
       <Example meaning="Divide 6 by 3.">
-        &lt;verb (prescriptive)&gt; count_down rank_2 &lt;object&gt; number 6 &lt;by&gt; number 3
+        &lt;verb (prescriptive)&gt; count_down rank_2 &lt;object&gt; number 6 by number 3
       </Example>
 
       <H2>Other grammar words</H2>
       <p>
-        <W w="_foreign" /> marks a foreign word or name. Planned: <W w="possession_indicator" />.
+        <W w="<foreign>" /> marks a foreign word or name. Planned: <W w="possession_indicator" />.
       </p>
       <p className="mt-2">
-        <W w="_filler" /> is a hesitation, like “um” or Spanish “pues”. It means nothing and can go
+        <W w="<filler>" /> is a hesitation, like “um” or Spanish “pues”. It means nothing and can go
         anywhere, even inside a phrase or a number; the grammar carries on as if it weren't there.
       </p>
       <Example meaning="I, um, slept.">
-        &lt;subject&gt; I &lt;verb&gt; _filler sleep formerly
+        &lt;subject&gt; I &lt;verb&gt; &lt;filler&gt; sleep formerly
       </Example>
     </div>
   );
