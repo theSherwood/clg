@@ -42,7 +42,7 @@ export function GrammarView() {
       </p>
       <p className="mt-2">
         A syllable is <b>C M V N</b>: a consonant, its manner (unvoiced, voiced, fricative, voiced
-        fricative), a vowel (a, e, o, u) and a final (none, n/m, r/l, y). Onsets and finals share no
+        fricative), a vowel (a, e, o, u) and a final (none, n/m, r/l, i). Onsets and finals share no
         sounds, so the boundary between syllables is always audible, even when a syllable has no
         final. n/m and r/l are each a single sound; speakers can use either. The exact inventory and
         the order that maps IDs to syllables are set in the playground on the Roots page.

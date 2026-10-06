@@ -8,6 +8,6 @@
     ["gh", "dh", "bh", "zh"]
   ],
   "vowels": ["a", "e", "o", "u"],
-  "finals": ["", "n/m", "r/l", "y"],
+  "finals": ["", "n/m", "r/l", "i"],
   "order": ["C", "V", "N", "M"]
 }

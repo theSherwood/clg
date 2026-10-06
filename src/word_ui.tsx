@@ -267,7 +267,7 @@ function AxisMatrix({ axis, current }: { axis: Axis; current: Word }) {
   const phonology = useContext(PhonologyContext);
   const root_sound = syllable_of(axis.id, phonology);
   const negative = dictionary.get("negative");
-  const negative_sound = negative ? `${pronounce(negative, phonology)}.${root_sound}` : "";
+  const negative_sound = negative ? `${pronounce(negative, phonology)}${root_sound}` : "";
   return (
     <div className="mt-2 mb-2">
       <div className="text-xs mb-1">

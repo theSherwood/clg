@@ -24,7 +24,7 @@ const fixture: Phonology = {
     ["v", "gh", "dh", "zh"],
   ],
   vowels: ["a", "e", "o", "u"],
-  finals: ["", "n/m", "r/l", "y"],
+  finals: ["", "n/m", "r/l", "i"],
   order: ["C", "M", "V", "N"],
 };
 
@@ -47,7 +47,7 @@ describe("syllables", () => {
       "ba",
       "pe",
       "pan",
-      "zhuy",
+      "zhui",
     ]);
   });
 
@@ -76,7 +76,7 @@ describe("checks", () => {
 
   test("catch a sound that is an onset and a final, in any variant", () => {
     expect(
-      check_phonology({ ...fixture, finals: ["", "n/m", "r/l", "y/s"] }).onset_final_overlap,
+      check_phonology({ ...fixture, finals: ["", "n/m", "r/l", "i/s"] }).onset_final_overlap,
     ).toEqual(["s"]);
   });
 
