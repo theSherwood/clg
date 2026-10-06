@@ -544,7 +544,7 @@ export const udhr_articles: Article[] = [
       "No one shall be held in slavery or servitude; slavery and the slave trade shall be prohibited in all their forms.",
     ],
     transliteration:
-      "<subject> person none <verb (prescriptive)> is <object> _ee force(v). <subject> _gerund force(v) and trade _ee force(v) in manner all <verb (prescriptive)> forbid.",
+      "<subject> person none <verb (prescriptive)> is <object> _ee force(v). <object> _gerund force(v) and trade _ee force(v) <in> geometry rank_2 all <verb (prescriptive)> forbid.",
   },
   {
     title: "Article 5",
@@ -552,13 +552,13 @@ export const udhr_articles: Article[] = [
       "No one shall be subjected to torture or to cruel, inhuman or degrading treatment or punishment.",
     ],
     transliteration:
-      "<subject> person none <verb (prescriptive)> be-subjected to actions cruel or punishment cruel.",
+      "<object> person none <verb (prescriptive)> torment(v) or trivialize(v).",
   },
   {
     title: "Article 6",
     english: ["Everyone has the right to recognition everywhere as a person before the law."],
     transliteration:
-      "<subject> person all <verb> possess <object> right of be-seen as person by law.",
+      "<subject> person all <verb> possess <object> right of _gerund know(v) as person by law.",
   },
   {
     title: "Article 7",
@@ -576,7 +576,7 @@ export const udhr_articles: Article[] = [
     title: "Article 9",
     english: ["No one shall be subjected to arbitrary arrest, detention or exile."],
     transliteration:
-      "<subject> person none <verb (prescriptive)> be-subjected to punishment arbitrary.",
+      "<object> person none <verb (prescriptive)> constrain(v) or eject(v) randomly.",
   },
   {
     title: "Article 10",
