@@ -2184,7 +2184,20 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "similarity" },
+    {
+      noun: "similarity",
+      notes: "Equal is the fullest similarity. Opposite is the fullest difference, as people use the word",
+      steps: {
+        max_positive: { noun: "equality", adj: "same", verb: "equal(vt)", verb_t: "equal", adverb: "identically" },
+        max_negative: {
+          noun: "antithesis",
+          adj: "opposite",
+          verb: "contrast_with(vt)",
+          verb_t: "contrast with",
+          adverb: "conversely",
+        },
+      },
+    },
     {
       noun: "difference",
       adj: "different",
@@ -2192,7 +2205,28 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_t: "differ from",
       adverb: "differently",
     },
-    { noun: "equality", adj: "same", verb: "equal(vt)", verb_t: "equal", adverb: "identically" },
+    {
+      noun: "resemblance",
+      adj: "similar",
+      verb: "resemble(vt)",
+      verb_t: "resemble",
+      adverb: "similarly",
+    },
+  ],
+  [
+    {
+      noun: "causality",
+      notes:
+        "The subject of result_from is the effect, and of cause the cause. Change verbs with an object already mean making something happen directly (melt(vt) is to make melt); cause(vt) is for causes that are things or events: the storm caused the flood",
+    },
+    { noun: "cause", adj: "causal", verb: "cause(vt)", verb_t: "cause", adverb: "causally" },
+    {
+      noun: "result",
+      adj: "resulting",
+      verb: "result_from(vt)",
+      verb_t: "result from",
+      adverb: "consequently",
+    },
   ],
   [
     {
@@ -2688,7 +2722,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "do(vt)", "touch(vi)", "count(vi)",
   ],
   relation: [
-    "possess(vt)", "be(vt)", "equal(vt)", "love(vt)", "know(vt)", "desire(vt)", "face(vt)", "include(vt)",
+    "possess(vt)", "be(vt)", "resemble(vt)", "result_from(vt)", "love(vt)", "know(vt)", "desire(vt)", "face(vt)", "include(vt)",
     "attract(vt)", "exceed(vt)", "follow(vt)",
   ],
 };
@@ -2993,6 +3027,13 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("brown", ["color", "<neutral>"], {
     notes: "The neutral color. Since <neutral> steps a following axis word, put it after any axis words: rock big brown, not rock brown big",
   });
+
+  // What arithmetic gives: the result of the operation
+  noun("sum", ["result", "of", "<gerund>", "add(vi)"]);
+  noun("arithmetic_difference", ["result", "of", "<gerund>", "subtract(vi)"], { gloss: "difference (of numbers)" });
+  noun("product", ["result", "of", "<gerund>", "multiply(vi)"]);
+  noun("quotient", ["result", "of", "<gerund>", "divide(vi)"]);
+  noun("power", ["result", "of", "<gerund>", "exponentiate(vt)"]);
 
   noun("chain", ["node", "<rank_1>"], { gloss: "chain / list (nodes in a line)" });
   noun("tree_graph", ["node", "<rank_2>"], { gloss: "tree (graph)" });

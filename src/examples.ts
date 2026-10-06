@@ -510,6 +510,23 @@ export const sky_examples: Example[] = [
 // Comparison is a relation verb, exceed; in names the quality compared
 export const comparison_examples: Example[] = [
   {
+    title: "Resemble",
+    english: "The Moon resembles a rock",
+    transliteration: "<subject> celestial <rank_1> this <verb> resemble(vt) <object> rock",
+  },
+  { title: "Same", english: "the same color", transliteration: "color same" },
+  { title: "Opposite", english: "the opposite direction", transliteration: "cardinal opposite" },
+  {
+    title: "Cause",
+    english: "The Sun causes daytime",
+    transliteration: "<subject> celestial <rank_3> this <verb> cause(vt) <object> time bright",
+  },
+  {
+    title: "Result",
+    english: "Daytime results from the Sun",
+    transliteration: "<subject> time bright <verb> result_from(vt) <object> celestial <rank_3> this",
+  },
+  {
     title: "Bigger than",
     english: "The rock is bigger than the person",
     transliteration: "<subject> rock <verb> exceed(vt) <object> person in big",
@@ -762,6 +779,12 @@ export const arithmetic_examples: Example[] = [
     transliteration: "<verb_prescriptive> count_down(vt) <rank_1> <object> number 5 by number 2",
   },
   { title: "Multiply", english: "Multiply 5 by 2", transliteration: "<verb_prescriptive> count(vt) <rank_2> <object> number 5 by number 2" },
+  {
+    title: "Equals",
+    english: "2 + 3 = 5",
+    transliteration: "<subject> <gerund> add(vt) <object> number 2 by number 3 <verb> equal(vt) <object> number 5",
+  },
+  { title: "Sum", english: "the sum", transliteration: "result of <gerund> add(vt)" },
   { title: "Divide", english: "Divide 6 by 3", transliteration: "<verb_prescriptive> count_down(vt) <rank_2> <object> number 6 by number 3" },
   { title: "Power", english: "Square 5", transliteration: "<verb_prescriptive> count(vt) <rank_3> <object> number 5 by number 2" },
   {

@@ -368,6 +368,15 @@ export function GrammarView() {
       <Example meaning="The Sun is the biggest.">
         &lt;subject&gt; celestial &lt;rank_3&gt; this &lt;verb&gt; exceed(vt) &lt;object&gt; all in big
       </Example>
+      <p className="mt-2">
+        Likeness is the similarity axis: <W w="resemble(vt)" /> and <W w="similar" /> at the positive
+        end, <W w="differ_from(vt)" /> and <W w="different" /> at the negative. Its fullest steps are{" "}
+        <W w="equal(vt)" /> (<W w="same" />) and, as people use the word, <W w="opposite" /> (
+        <W w="contrast_with(vt)" />).
+      </p>
+      <Example meaning="The moon resembles a rock.">
+        &lt;subject&gt; celestial &lt;rank_1&gt; this &lt;verb&gt; resemble(vt) &lt;object&gt; rock
+      </Example>
 
       <H2>Geometry</H2>
       <p>
@@ -578,6 +587,16 @@ export function GrammarView() {
         leaves it unspecified, “someone”.
       </p>
       <p className="mt-2">
+        Cause and effect is the causality axis, a relation: <W w="result_from(vt)" /> has the
+        effect as its subject and <W w="cause(vt)" /> the cause. A plain “because” is{" "}
+        <i>from &lt;clause_start&gt; …</i>; for a cause that's a thing or an event, the verbs say it outright.
+        Change verbs with an object already mean making something happen directly, so{" "}
+        <W w="cause(vt)" /> is for the looser kind: the storm caused the flood.
+      </p>
+      <Example meaning="Daytime results from the Sun.">
+        &lt;subject&gt; time bright &lt;verb&gt; result_from(vt) &lt;object&gt; celestial &lt;rank_3&gt; this
+      </Example>
+      <p className="mt-2">
         Counterfactuals need nothing special. As in Mandarin, <W w="if" /> and context say whether a
         condition is real, and to be explicit the if-clause can say it's false with the truth axis.
       </p>
@@ -703,9 +722,19 @@ export function GrammarView() {
         <i>count(vi) &lt;rank_1&gt;</i>, <W w="multiply(vi)" /> <i>&lt;rank_2&gt;</i> and <W w="exponentiate(vt)" />{" "}
         <i>&lt;rank_3&gt;</i>. Its negative end, <W w="count_down(vi)" />, is the inverse: counting down,{" "}
         <W w="subtract(vi)" />, <W w="divide(vi)" /> and <W w="root(vt)" />. Splitting a thing
-        into parts is <W w="split(vi)" />, on the part axis. The object is the number acted on and <W w="by" /> gives the amount, and a logarithm
+        into parts is <W w="split(vi)" />, on the part axis.
+      </p>
+      <p className="mt-2">
+        What an operation gives is its <W w="result" />: <W w="sum" /> is{" "}
+        <i>result of &lt;gerund&gt; add(vt)</i>, and likewise <W w="arithmetic_difference" />,{" "}
+        <W w="product" />, <W w="quotient" /> and <W w="power" />. Equals is <W w="equal(vt)" />, the
+        top of the similarity axis. The object is the number acted on and <W w="by" /> gives the amount, and a logarithm
         is just <W w="rank" />, the exponent a number already has.
       </p>
+      <Example meaning="Two plus three equals five.">
+        &lt;subject&gt; &lt;gerund&gt; add(vt) &lt;object&gt; number 2 by number 3 &lt;verb&gt; equal(vt) &lt;object&gt;
+        number 5
+      </Example>
       <Example meaning="Divide 6 by 3.">
         &lt;verb_prescriptive&gt; count_down(vt) &lt;rank_2&gt; &lt;object&gt; number 6 by number 3
       </Example>
