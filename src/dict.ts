@@ -2940,6 +2940,10 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   function noun(name: string, parts: string[], data: Pick<WordData, "gloss" | "notes"> = {}) {
     cw(name, { domain: "noun", parts: words_of(name, parts), ...data });
   }
+  // Set expressions said on their own, like greetings, which have no part of speech
+  function idiom(name: string, parts: string[], data: Pick<WordData, "gloss" | "notes"> = {}) {
+    cw(name, { parts: words_of(name, parts), ...data });
+  }
   // Phase changes, by target phase
   phrase("evaporate(vi)", ["melt(vi)", "<rank_2>"], "evaporate", "vaporize");
   phrase("ionize(vi)", ["melt(vi)", "<rank_3>"], "ionize", "ionize");
@@ -3076,6 +3080,14 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("always", ["time", "all"]);
   noun("never", ["time", "none"]);
   noun("when", ["time", "<blank>"]);
+
+  // Conversation
+  idiom("yes", ["true"], { notes: "That's so" });
+  idiom("no", ["false"], { notes: "That's not so" });
+  idiom("hello", ["good"]);
+  idiom("goodbye", ["go(vi)", "well"]);
+  idiom("thank_you", ["thanks", "to", "<pronoun_second_person>"], { gloss: "thank you", notes: "Thanks to you: the credit goes to you" });
+  idiom("sorry", ["blame", "to", "<pronoun_first_person>"], { notes: "Blame to me: my fault" });
 
   noun("chain", ["node", "<rank_1>"], { gloss: "chain / list (nodes in a line)" });
   noun("tree_graph", ["node", "<rank_2>"], { gloss: "tree (graph)" });
