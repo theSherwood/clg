@@ -805,6 +805,23 @@ export const arithmetic_examples: Example[] = [
   },
 ];
 
+// Posture: how upright a body is
+export const posture_examples: Example[] = [
+  { title: "Stand up", english: "Stand up!", transliteration: "<verb_prescriptive> stand(vi)" },
+  { title: "Sitting", english: "I'm sitting", transliteration: "<subject> I <verb> sit(vi) <continuous_tense_aspect>" },
+  { title: "Seat", english: "Seat the child", transliteration: "<verb_prescriptive> seat(vt) <object> child" },
+  { title: "Crouch", english: "The animal crouches", transliteration: "<subject> animal <verb> crouch(vi)" },
+  { title: "Crawl", english: "The child crawls", transliteration: "<subject> child <verb> crawl(vi)" },
+  { title: "Lie down", english: "I lay down", transliteration: "<subject> I <verb> lie(vi) formerly" },
+  {
+    title: "Lay down",
+    english: "Lay the child down",
+    transliteration: "<verb_prescriptive> lay_down(vt) <object> child",
+  },
+  { title: "Slouch", english: "You stand with a slouch", transliteration: "<subject> you <verb> stand(vi) slouchingly" },
+  { title: "Sit up straight", english: "Sit up straight!", transliteration: "<verb_prescriptive> sit(vi) uprightly" },
+];
+
 // Existence and location, ordinals and per, ability, again, manner and counterfactuals
 export const more_grammar_examples: Example[] = [
   {

@@ -864,6 +864,40 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     {
+      noun: "posture",
+      notes:
+        "How upright a body is, not how high it is (that's elevation). The verbs take a position: sit(vi) <continuous_tense_aspect> is to be sitting. Slouching is a manner, the negative adverb: stand(vi) slouchingly",
+      steps: {
+        min_positive: { noun: "sitting", adj: "seated", verb: "sit(vi)", verb_i: "sit", verb_t: "seat" },
+        neutral: { noun: "crouch", adj: "crouched", verb: "crouch(vi)", verb_i: "crouch", verb_t: "crouch" },
+        min_negative: {
+          noun: "crawl",
+          adj: "on_all_fours",
+          verb: "crawl(vi)",
+          verb_i: "crawl",
+          verb_t: "crawl",
+        },
+      },
+    },
+    {
+      noun: "recumbency",
+      adj: "prone",
+      verb: "lie(vi)",
+      verb_i: "lie",
+      verb_t: "lay down",
+      adverb: "slouchingly",
+    },
+    {
+      noun: "stance",
+      adj: "upright",
+      verb: "stand(vi)",
+      verb_i: "stand",
+      verb_t: "stand up",
+      adverb: "uprightly",
+    },
+  ],
+  [
+    {
       noun: "temperature",
       notes:
         "Heat at its fullest is fire, and cooling at its fullest is putting it out: burn(vi) is <max_positive> heat(vt), quench(vt) <max_negative>",
@@ -2738,7 +2772,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "abstract(vt)", "absolutize(vt)", "melt(vi)", "make_explicit(vt)", "externalize(vt)",
     "perpetuate(vt)", "become_essential(vi)", "idealize(vt)", "nest(vi)",
     "enumerate(vt)", "curl(vt)", "emerge(vi)", "distance(vt)", "quiet(vt)", "sharpen(vt)", "wet(vt)",
-    "thicken(vi)", "lift(vt)", "heat(vt)", "brighten(vi)", "harden(vi)", "get_heavier(vi)", "prove(vt)",
+    "thicken(vi)", "lift(vt)", "stand(vi)", "heat(vt)", "brighten(vi)", "harden(vi)", "get_heavier(vi)", "prove(vt)",
     "postpone(vt)", "come_to_life(vi)", "eat(vt)", "sink(vi)", "veer_right(vi)",
     "withdraw(vt)", "spread(vi)", "stir(vi)", "persist(vi)", "make_artificial(vt)",
     "spread_out(vi)", "straighten(vi)", "improve(vi)", "entertain(vt)",

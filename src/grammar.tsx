@@ -378,6 +378,24 @@ export function GrammarView() {
         &lt;subject&gt; celestial &lt;rank_1&gt; this &lt;verb&gt; resemble(vt) &lt;object&gt; rock
       </Example>
 
+      <H2>Posture</H2>
+      <p>
+        The posture axis is how upright a body is, from <W w="stand(vi)" /> (<W w="upright" />) at the
+        positive end to <W w="lie(vi)" /> (<W w="prone" />) at the negative, with{" "}
+        <W w="sit(vi)" />, <W w="crouch(vi)" /> and <W w="crawl(vi)" /> (<W w="on_all_fours" />) as the
+        steps between. It's about the body's orientation, not its height, which is elevation. Its
+        verbs take a position: without an object, to sit down or lie down; with one, to seat
+        someone or lay them down. Being in a posture is the continuous aspect.
+      </p>
+      <p className="mt-2">
+        Slouching is a manner rather than a posture, since you can slouch standing or sitting, so
+        it's the negative adverb: <i>stand(vi) slouchingly</i> is to stand with a slouch, and{" "}
+        <i>sit(vi) uprightly</i> to sit up straight.
+      </p>
+      <Example meaning="I'm sitting.">
+        &lt;subject&gt; I &lt;verb&gt; sit(vi) &lt;continuous_tense_aspect&gt;
+      </Example>
+
       <H2>Geometry</H2>
       <p>
         <W w="geometry" /> is one root for geometric figures. Rank gives a bounded figure with that
