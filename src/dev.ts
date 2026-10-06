@@ -1,6 +1,6 @@
-// Runs server.ts and restarts it when a source file is added to this directory or server.ts
-// changes. Bun's dev bundler (as of 1.2.11) doesn't notice files created after it starts, so a
-// newly imported module would otherwise be served stale.
+// Runs server.ts and restarts it whenever a source file in this directory changes. Bun's dev
+// bundler (as of 1.2.11) doesn't notice files created after it starts, and sometimes stops
+// picking up edits too, so it would otherwise serve a stale build.
 import { existsSync, readdirSync, watch } from "node:fs";
 import type { Subprocess } from "bun";
 
@@ -26,10 +26,8 @@ watch(dir, (event, file) => {
   if (!file || !SOURCE.test(file)) return;
   const added = event === "rename" && existsSync(`${dir}/${file}`) && !known.has(file);
   known = new Set(readdirSync(dir));
-  if (added || file === "server.ts") {
-    clearTimeout(restart_timer);
-    restart_timer = setTimeout(() => restart(added ? `${file} added` : `${file} changed`), 100);
-  }
+  clearTimeout(restart_timer);
+  restart_timer = setTimeout(() => restart(added ? `${file} added` : `${file} changed`), 100);
 });
 
 for (const signal of ["SIGINT", "SIGTERM"] as const) {
