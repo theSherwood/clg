@@ -1370,7 +1370,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
         "come - stay - go; negative verb forms: to bring; to come; positive verb forms: to send; to go",
     },
     {
-      noun: "departure",
+      noun: "arrival",
       adj: "incoming",
       verb: "come(v)",
       verb_i: "come",
@@ -1378,7 +1378,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       adverb: "hither",
     },
     {
-      noun: "arrival",
+      noun: "departure",
       adj: "outgoing",
       verb: "go(v)",
       verb_i: "go",

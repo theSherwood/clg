@@ -27,3 +27,24 @@ check the diff is what you meant, then run `bun test --update-snapshots`.
 - [ ] keep track of word depth (how far to the furthest root)
   - [ ] allow filtering by depth
 - [ ] allow looking up all the compounds that have some word as a part
+
+## Axis merge candidates
+
+Still to assess, one at a time. Merging frees an axis slot; a merged axis's extra words often
+fit as its scale steps.
+
+- [ ] capacity (empty/full) and completeness (none/all): both have "fill up / fill". Set aside:
+  vanish/erase may not belong to completeness
+- [ ] alignment (skew / true up, plumb) and directness (veer / aim): set aside until aim's
+  direction is settled
+- [ ] enclose/release and liberty (free/constrain): release ≈ free; enclose could be max_negative
+  liberty. Set aside
+- [ ] transmission (send/receive): with give, or with travel. Kept separate for now
+- [ ] travel (come/go) and distance (near/far): probably keep, since go(v) is the general verb
+  of motion and "go to X" approaches X
+- [ ] obligation (duty/privilege) and permissibility (forbid/allow/recommend): obligatory as
+  max_positive recommend; might give a word for "right"
+- [ ] compliance (submit/resist) and fortitude (succumb/endure): submit ≈ succumb, both near
+  control's "give in"
+- [ ] aliveness (dead/alive) and animacy (inanimate/animate): partial overlap
+- [ ] internality (internal/external) and in/out: noted on the axis as a possible duplicate

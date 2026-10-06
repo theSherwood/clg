@@ -83,7 +83,7 @@ exports[`root IDs 1`] = `
   "182": "wake(v), wakefulness, awake",
   "183": "create(v), creation, creative, creatively",
   "184": "beautify(v), beauty, beautiful, beautifully",
-  "185": "go(v), arrival, outgoing, away",
+  "185": "go(v), departure, outgoing, away",
   "186": "heap_up(v), mound, heaped",
   "187": "fill_up(v), fullness, full, fully",
   "188": "show(v), demonstration, visible, visibly",
