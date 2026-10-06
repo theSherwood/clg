@@ -2244,11 +2244,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       adverb: "afterwards",
     },
   ],
-  [
-    { notes: "duplicate of behind/ahead?" },
-    { noun: "stern", adj: "rear", adverb: "aft" },
-    { noun: "bow", adj: "forward", adverb: "fore" },
-  ],
   [{}, { noun: "femininity", adj: "female" }, { noun: "masculinity", adj: "male" }],
   [
     { notes: "negative verb internalize(v) (no positive verb)" },
