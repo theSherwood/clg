@@ -220,9 +220,9 @@ export const MINOR_STEPS = ["max_negative", "min_negative", "neutral", "min_posi
 export type MinorStep = (typeof MINOR_STEPS)[number];
 
 // [axis, negative, positive]. The axis noun is axis_of + the positive noun; each negative form is
-// negative + the positive form. Axes are grouped by verb type (see verb_types), so their IDs run
-// change, action, relation, then axes with no verb yet. Adding an axis inside a group shifts the
-// IDs, and so the sounds, of every axis after it; adding one at the very end shifts none.
+// negative + the positive form. Each axis's ID is in its verb type's subsection (see
+// AXIS_SUBSECTIONS), in the order listed here. Adding an axis inside a group shifts the IDs, and
+// so the sounds, of the axes after it in that subsection; adding one at a group's end shifts none.
 const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   [
     {
@@ -2881,6 +2881,23 @@ const verb_type_of = new Map(
   ),
 );
 
+// The axis words' subsections of the domain receivers, whole rows of 16: relations, then actions,
+// then changes. Axes with no verb yet go with the relations
+export const AXIS_SUBSECTIONS = [
+  { type: "relation", label: "Relation axes", size: 16 },
+  { type: "action", label: "Action axes", size: 32 },
+  { type: "change", label: "Change axes", size: 80 },
+] as const satisfies readonly { type: VerbType; label: string; size: number }[];
+
+export function axis_subsections() {
+  let start = receivers.start;
+  return AXIS_SUBSECTIONS.map((s) => {
+    const subsection = { ...s, start, end: start + s.size };
+    start += s.size;
+    return subsection;
+  });
+}
+
 export const axes: Axis[] = [];
 export const axis_by_word = new Map<Word, Axis>();
 
@@ -2977,8 +2994,18 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
     return positive;
   }
 
+  // Each subsection fills from its own start
+  const next_id = {} as Record<VerbType, number>;
+  for (const { type, start } of axis_subsections()) next_id[type] = start;
+
   for (const [axis, negative, positive] of axis_words_config) {
-    const id = root_index++;
+    const verb_type = positive.verb ? verb_type_of.get(positive.verb) : undefined;
+    const type = verb_type ?? "relation";
+    const id = next_id[type]++;
+    const subsection = axis_subsections().find((s) => s.type === type)!;
+    if (id >= subsection.end) {
+      throw new Error(`No room for ${axis.noun} in ${subsection.label}, which holds ${subsection.size} axes`);
+    }
     const entry: Axis = {
       id,
       name: {},
@@ -2986,7 +3013,7 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
       negative: empty_side(),
       steps: Object.fromEntries(MINOR_STEPS.map((step) => [step, empty_side()])) as Axis["steps"],
       notes: axis.notes,
-      verb_type: positive.verb ? verb_type_of.get(positive.verb) : undefined,
+      verb_type,
     };
     const positive_words: Partial<Record<FormKey, Word>> = {};
 

@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   axes,
+  axis_subsections,
   candidates,
   data_errors,
   dictionary,
@@ -81,6 +82,16 @@ describe("verb types", () => {
     expect(positive_verbs.filter((a) => !a.verb_type).map((a) => a.positive.verb_i.word!.word)).toEqual([]);
     const names = new Set(positive_verbs.map((a) => a.positive.verb_i.word!.word));
     expect(Object.values(verb_types).flat().filter((v) => !names.has(v))).toEqual([]);
+  });
+
+  test("each axis is in its verb type's subsection, with no verb counting as a relation", () => {
+    const subsections = axis_subsections();
+    expect(subsections.at(-1)!.end).toBe(receivers.end);
+    for (const axis of axes) {
+      const { start, end } = subsections.find((s) => s.type === (axis.verb_type ?? "relation"))!;
+      expect(axis.id, axis.name.word?.word).toBeGreaterThanOrEqual(start);
+      expect(axis.id, axis.name.word?.word).toBeLessThan(end);
+    }
   });
 
   test("each side's verb forms follow its axis's type", () => {
