@@ -582,14 +582,13 @@ function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) 
   const [order_status, set_order_status] = useState("");
   const shown_slots = useMemo(() => (draft_order ? arranged_slots(draft_order) : slots), [draft_order]);
   const shown_sections = draft_order ? layout_sections(draft_order) : sections;
-  const move_section = (key: CoreSectionKey, step: -1 | 1) =>
+  const [dragging, set_dragging] = useState<CoreSectionKey | null>(null);
+  // Dragging over another section puts the dragged one in its place, so the order updates live
+  const move_section = (key: CoreSectionKey, onto: CoreSectionKey) =>
     set_draft_order((order) => {
-      if (!order) return order;
-      const i = order.indexOf(key);
-      const j = i + step;
-      if (j < 0 || j >= order.length) return order;
-      const next = [...order];
-      [next[i], next[j]] = [next[j]!, next[i]!];
+      if (!order || key === onto) return order;
+      const next = order.filter((k) => k !== key);
+      next.splice(order.indexOf(onto), 0, key);
       return next;
     });
   // Writes section_order.json through the dev server, which restarts, then reloads to pick it up
@@ -649,56 +648,47 @@ function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) 
           .join(", ")}
         )
       </div>
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        {shown_sections.map((s) => {
-          const { used, planned } = usage[s.key];
-          const capacity = s.end - s.start;
-          const over = used + planned > capacity;
-          const movable = draft_order && s.start < 128 ? (s.key as CoreSectionKey) : null;
-          const arrow = "px-1 text-gray-500 hover:text-indigo-700 disabled:opacity-30";
-          return (
-            <div
-              key={s.key}
-              onMouseEnter={() => set_highlighted(s.key)}
-              onMouseLeave={() => set_highlighted(null)}
-              onClick={() => set_highlighted((h) => (h === s.key ? null : s.key))}
-              title={`IDs ${s.start}–${s.end - 1}: ${used} roots, ${planned} candidates, ${capacity} slots`}
-              className={`flex items-center gap-1.5 px-2 py-1 text-sm rounded border bg-white hover:bg-gray-100 cursor-pointer
-                ${over ? "border-red-400" : "border-gray-300"}`}
-            >
-              {movable && (
-                <button
-                  className={arrow}
-                  disabled={s.start === 0}
-                  onClick={(e) => (e.stopPropagation(), move_section(movable, -1))}
-                  title="Move earlier"
-                >
-                  ◀
-                </button>
-              )}
-              <span className={`inline-block w-3 h-3 rounded-sm ${SECTION_SWATCHES[s.key]}`} />
-              {s.label}
-              <span className="text-gray-400">
-                {draft_order && s.start < 128 ? `${s.start}–${s.end - 1}` : `${used}/${capacity}`}
-              </span>
-              {!draft_order && planned > 0 && (
-                <span className={over ? "text-red-600" : "text-amber-600"}>+{planned}</span>
-              )}
-              {movable && (
-                <button
-                  className={arrow}
-                  disabled={s.end === 128}
-                  onClick={(e) => (e.stopPropagation(), move_section(movable, 1))}
-                  title="Move later"
-                >
-                  ▶
-                </button>
-              )}
-            </div>
-          );
-        })}
-        {draft_order ? (
-          <>
+      {draft_order ? (
+        <div className="mb-4 max-w-md">
+          <p className="mb-2 text-sm text-gray-600">
+            Drag the core sections into a new order. The grid previews it, with each section at its
+            new IDs and sounds; popups keep the current sounds until you save.
+          </p>
+          <ol className="rounded border border-gray-300 divide-y divide-gray-200 bg-white">
+            {shown_sections
+              .filter((s) => s.start < 128)
+              .map((s) => {
+                const key = s.key as CoreSectionKey;
+                return (
+                  <li
+                    key={key}
+                    draggable
+                    onDragStart={(e) => {
+                      set_dragging(key);
+                      e.dataTransfer.effectAllowed = "move";
+                    }}
+                    onDragEnter={() => dragging && move_section(dragging, key)}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDragEnd={() => set_dragging(null)}
+                    onMouseEnter={() => set_highlighted(key)}
+                    onMouseLeave={() => set_highlighted(null)}
+                    className={`flex items-center gap-2 px-2 py-1.5 text-sm cursor-grab select-none
+                      ${dragging === key ? "bg-indigo-50 opacity-60" : "hover:bg-gray-50"}`}
+                  >
+                    <span className="text-gray-400">⠿</span>
+                    <span className={`inline-block w-3 h-3 rounded-sm ${SECTION_SWATCHES[key]}`} />
+                    <span className="flex-1">{s.label}</span>
+                    <span className="font-mono text-xs text-gray-500">
+                      {s.start}–{s.end - 1}
+                    </span>
+                  </li>
+                );
+              })}
+          </ol>
+          <p className="mt-1 text-xs text-gray-500">
+            Axis words and digits share IDs 128–255 and don't move.
+          </p>
+          <div className="mt-2 flex items-center gap-2">
             <button
               onClick={save_order}
               disabled={draft_order.join() === section_order.join()}
@@ -713,8 +703,36 @@ function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) 
             >
               Cancel
             </button>
-          </>
-        ) : (
+            {order_status && <span className="text-sm text-gray-600">{order_status}</span>}
+          </div>
+        </div>
+      ) : (
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          {sections.map((s) => {
+            const { used, planned } = usage[s.key];
+            const capacity = s.end - s.start;
+            const over = used + planned > capacity;
+            return (
+              <button
+                key={s.key}
+                onMouseEnter={() => set_highlighted(s.key)}
+                onMouseLeave={() => set_highlighted(null)}
+                onClick={() => set_highlighted((h) => (h === s.key ? null : s.key))}
+                title={`IDs ${s.start}–${s.end - 1}: ${used} roots, ${planned} candidates, ${capacity} slots`}
+                className={`flex items-center gap-1.5 px-2 py-1 text-sm rounded border bg-white hover:bg-gray-100
+                  ${over ? "border-red-400" : "border-gray-300"}`}
+              >
+                <span className={`inline-block w-3 h-3 rounded-sm ${SECTION_SWATCHES[s.key]}`} />
+                {s.label}
+                <span className="text-gray-400">
+                  {used}/{capacity}
+                </span>
+                {planned > 0 && (
+                  <span className={over ? "text-red-600" : "text-amber-600"}>+{planned}</span>
+                )}
+              </button>
+            );
+          })}
           <button
             onClick={() => set_draft_order(section_order)}
             className="px-2 py-1 text-sm rounded border border-gray-300 text-gray-600 hover:bg-gray-100"
@@ -722,14 +740,7 @@ function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) 
           >
             Edit order
           </button>
-        )}
-        {order_status && <span className="text-sm text-gray-600">{order_status}</span>}
-      </div>
-      {draft_order && (
-        <p className="mb-3 text-sm text-amber-700">
-          Previewing: the grid shows each section at its new IDs, with their new sounds. Popups still
-          show the current sounds until you save.
-        </p>
+        </div>
       )}
       <p className="mb-3 flex items-center gap-2 text-sm text-gray-600">
         Axis verbs:
