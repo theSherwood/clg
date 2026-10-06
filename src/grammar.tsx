@@ -59,7 +59,7 @@ export function GrammarView() {
       <H2>The root space</H2>
       <p>
         IDs 0–127 are core words. IDs 128–255 are shared: they're read by domain, as digits in the
-        number domain or as axis words otherwise. Domain words must be in 0–127 so they're never
+        number domain, elements in the element domain, or as axis words otherwise. Domain words must be in 0–127 so they're never
         ambiguous. Each kind of word has a section with room to grow:
       </p>
       <table className="mt-2 text-sm">
