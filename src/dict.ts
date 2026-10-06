@@ -2319,6 +2319,11 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     gloss: "who or where a verb comes from, as a noun: _from come = origin, _from receive = sender",
   });
   cr("_foreign", { t: marker });
+  cr("_filler", {
+    t: marker,
+    gloss: "a hesitation, like um or pues",
+    notes: "Means nothing and goes anywhere, even mid-phrase; the grammar carries on as if it weren't there",
+  });
 }
 
 {

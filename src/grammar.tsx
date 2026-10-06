@@ -590,6 +590,13 @@ export function GrammarView() {
       <p>
         <W w="_foreign" /> marks a foreign word or name. Planned: <W w="possession_indicator" />.
       </p>
+      <p className="mt-2">
+        <W w="_filler" /> is a hesitation, like “um” or Spanish “pues”. It means nothing and can go
+        anywhere, even inside a phrase or a number; the grammar carries on as if it weren't there.
+      </p>
+      <Example meaning="I, um, slept.">
+        &lt;subject&gt; I &lt;verb&gt; _filler sleep formerly
+      </Example>
     </div>
   );
 }

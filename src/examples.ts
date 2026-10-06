@@ -131,6 +131,11 @@ export const tense_examples: Example[] = [
     transliteration: "<subject> I <verb> sleep(v) henceforth",
   },
   {
+    title: "Hesitation",
+    english: "I, um, slept",
+    transliteration: "<subject> I <verb> _filler sleep(v) formerly",
+  },
+  {
     title: "Continuous",
     english: "I'm sleeping (or was, or will be)",
     transliteration: "<subject> I <verb> sleep(v) continuous_tense_aspect",
