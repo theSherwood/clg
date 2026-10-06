@@ -884,7 +884,7 @@ export const udhr_articles: Article[] = [
       "All human beings are born free and equal in dignity and rights. They are endowed with reason and conscience and should act towards one another in a spirit of brotherhood.",
     ],
     transliteration:
-      "<subject> person all <verb?> be(vt) <complement> free and equal(vt) in value and privilege. <subject> it all <verb> possess(vt) <object> reason and conscience? and <verb_prescriptive> act(vi) for other and in path family. ??",
+      "<subject> person all <verb?> be(vt) <complement> free and same in value and privilege. <subject> it all <verb> possess(vt) <object> reason and conscience? and <verb_prescriptive> act(vi) for other and in path family. ??",
   },
   {
     title: "Article 2",
