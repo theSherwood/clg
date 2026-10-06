@@ -403,6 +403,26 @@ export function GrammarView() {
         &lt;subject&gt; I &lt;verb&gt; sit(vi) &lt;continuous_tense_aspect&gt;
       </Example>
 
+      <H2>Moving</H2>
+      <p>
+        The locomotion axis names a way of moving by the medium it goes through, from thinnest to
+        densest: <W w="spacefly(vi)" /> through space, <W w="fly(vi)" /> through air,{" "}
+        <W w="leap(vi)" /> (a brief flight), <W w="walk(vi)" /> on the ground, <W w="wade(vi)" />{" "}
+        through shallow water, <W w="swim(vi)" /> through water and <W w="burrow(vi)" /> through
+        solid ground. <W w="go(vi)" /> is moving in general.
+      </p>
+      <p className="mt-2">
+        The verb names the medium, not who or what moves, so a boat swims and a plane flies; as
+        Russian <i>плыть</i> is both to swim and to sail. Vehicles are <W w="<tool>" /> and the verb:{" "}
+        <W w="boat" /> is <i>&lt;tool&gt; swim(vi)</i>, <W w="aircraft" /> <i>&lt;tool&gt; fly(vi)</i> and{" "}
+        <W w="spacecraft" /> <i>&lt;tool&gt; spacefly(vi)</i>. Animals are named loosely by how they move,
+        as in English: <W w="bird" /> is <i>animal flying</i> and <W w="fish" /> <i>animal swimming</i>,
+        and a <W w="feather" /> is <i>covering bird</i>.
+      </p>
+      <Example meaning="The bird flies to the tree.">
+        &lt;subject&gt; animal flying &lt;verb&gt; fly(vi) to plant big
+      </Example>
+
       <H2>Parts of things</H2>
       <p>
         A part is named head first, like any noun and modifier: the kind of part, then the whole

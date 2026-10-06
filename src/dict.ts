@@ -2190,6 +2190,35 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     {
+      noun: "locomotion",
+      notes:
+        "Moving by the medium moved through, from thinnest to densest: space, air, a leap, the ground, shallow water, water, solid ground. The verb names the medium, so a boat swims and a plane flies, as Russian plyt' is to swim and to sail; vehicles are <tool> + the verb",
+      steps: {
+        max_positive: {
+          noun: "spaceflight",
+          adj: "spacefaring",
+          verb: "spacefly(vi)",
+          verb_i: "spacefly",
+          verb_t: "spacefly",
+        },
+        min_positive: { noun: "leap", verb: "leap(vi)", verb_i: "leap", verb_t: "leap over" },
+        neutral: { noun: "walk", adj: "pedestrian", verb: "walk(vi)", verb_i: "walk", verb_t: "walk" },
+        min_negative: { verb: "wade(vi)", verb_i: "wade", verb_t: "wade through" },
+        max_negative: { noun: "burrow", verb: "burrow(vi)", verb_i: "burrow", verb_t: "burrow through" },
+      },
+    },
+    {
+      noun: "swim",
+      adj: "swimming",
+      verb: "swim(vi)",
+      verb_i: "swim",
+      verb_t: "swim across",
+      adverb: "by_water",
+    },
+    { noun: "flight", adj: "flying", verb: "fly(vi)", verb_i: "fly", verb_t: "fly", adverb: "by_air" },
+  ],
+  [
+    {
       noun: "accountability",
       notes:
         "Credit and blame. Acknowledging, the neutral step, attributes without judging. The adjectives are about who deserves it: culpable is to blame. Thank you is thanks to you, and sorry blame to me",
@@ -2786,7 +2815,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "believe(vi)", "lead(vi)", "work(vi)", "search(vi)", "learn(vi)", "sow(vi)", "give(vi)",
     "make_peace(vi)", "defend(vi)", "tend(vi)", "command(vt)", "resist(vi)", "withstand(vt)",
     "participate(vi)", "recommend(vi)", "say(vt)", "write(vi)", "sense(vt)", "use(vi)",
-    "do(vt)", "touch(vi)", "count(vi)", "thank(vt)", "show(vi)",
+    "do(vt)", "touch(vi)", "count(vi)", "thank(vt)", "show(vi)", "fly(vi)",
   ],
   relation: [
     "possess(vt)", "be(vt)", "resemble(vt)", "result_from(vt)", "love(vt)", "know(vt)", "desire(vt)", "face(vt)", "include(vt)",
@@ -3160,6 +3189,14 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("trunk", ["torso", "plant"]);
   noun("branch", ["arm", "plant"]);
   noun("leaf", ["finger", "plant"]);
+
+  // Animals and vehicles by how they move
+  noun("bird", ["animal", "flying"]);
+  noun("fish", ["animal", "swimming"]);
+  noun("feather", ["covering", "bird"]);
+  noun("boat", ["<tool>", "swim(vi)"], { gloss: "boat / ship" });
+  noun("aircraft", ["<tool>", "fly(vi)"]);
+  noun("spacecraft", ["<tool>", "spacefly(vi)"]);
 
   noun("chain", ["node", "<rank_1>"], { gloss: "chain / list (nodes in a line)" });
   noun("tree_graph", ["node", "<rank_2>"], { gloss: "tree (graph)" });

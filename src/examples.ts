@@ -822,6 +822,19 @@ export const posture_examples: Example[] = [
   { title: "Sit up straight", english: "Sit up straight!", transliteration: "<verb_prescriptive> sit(vi) uprightly" },
 ];
 
+// Moving: the verb names the medium
+export const moving_examples: Example[] = [
+  { title: "Bird", english: "a flying animal", transliteration: "animal flying" },
+  { title: "Fish", english: "a swimming animal", transliteration: "animal swimming" },
+  { title: "Feather", english: "a bird's covering", transliteration: "covering animal flying" },
+  { title: "Walk", english: "I walk to the water", transliteration: "<subject> I <verb> walk(vi) to water" },
+  { title: "Wade", english: "Wade across the water", transliteration: "<verb_prescriptive> wade_through(vt) <object> water" },
+  { title: "Sail", english: "The boat sails north", transliteration: "<subject> <tool> swim(vi) <verb> swim(vi) to cardinal <rank_0>" },
+  { title: "Fly", english: "We flew", transliteration: "<subject> I plural <verb> fly(vi) formerly" },
+  { title: "Space", english: "The spacecraft travels to the Moon", transliteration: "<subject> <tool> spacefly(vi) <verb> spacefly(vi) to celestial <rank_1> this" },
+  { title: "Burrow", english: "The animal burrows", transliteration: "<subject> animal <verb> burrow(vi)" },
+];
+
 // Parts of things: the kind of part, then the whole
 export const part_examples: Example[] = [
   { title: "Skin", english: "the body's covering", transliteration: "covering body" },
