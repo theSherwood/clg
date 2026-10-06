@@ -79,3 +79,26 @@ test("every verb marker is followed by a verb", async () => {
   expect(broken).toEqual([]);
 });
 
+// A sentence uses a compound's name, as a speaker would, rather than spelling out its parts.
+// Phrases on their own show how a word is built, so they're left spelled out
+test("sentences use compound words rather than spelling them out", async () => {
+  const examples = await import("./examples");
+  const { words } = await import("./dict");
+  const compounds = words.filter((w) => w.data.parts.length >= 2 && !w.data.t.includes("axis_word"));
+  // These teach the construction itself
+  const spelled_on_purpose = ["show(vi) falsely", "show(vt) falsely"];
+  const sentences = (Object.values(examples) as unknown[])
+    .filter(Array.isArray)
+    .flat()
+    .flatMap((e: any) => [e?.transliteration, ...(e?.examples ?? []).map((x: any) => x.transliteration)])
+    .filter((t): t is string => typeof t === "string")
+    .filter((t) => /<subject>|<verb>|<verb_prescriptive>|<verb_interrogative>/.test(t))
+    .filter((t) => !spelled_on_purpose.some((s) => t.includes(s)));
+  const spelled = sentences.flatMap((t) => {
+    const resolved = tokenize(t).map((k) => (k.kind === "word" ? k.word : undefined));
+    return compounds.flatMap((c) =>
+      resolved.some((_, i) => c.data.parts.every((p, j) => resolved[i + j] === p)) ? [`${c.word}: ${t}`] : [],
+    );
+  });
+  expect(spelled).toEqual([]);
+});

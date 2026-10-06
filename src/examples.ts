@@ -204,12 +204,12 @@ export const time_examples: Example[] = [
   {
     title: "Yesterday",
     english: "I slept yesterday",
-    transliteration: "<subject> I <verb> sleep(vi) at time <rank_3> previous",
+    transliteration: "<subject> I <verb> sleep(vi) at yesterday",
   },
   {
     title: "Tomorrow",
     english: "I will work tomorrow",
-    transliteration: "<subject> I <verb> work(vi) at time <rank_3> next",
+    transliteration: "<subject> I <verb> work(vi) at tomorrow",
   },
   {
     title: "Two steps",
@@ -222,7 +222,7 @@ export const time_examples: Example[] = [
     title: "Relative",
     english: "She said she would come the next day",
     transliteration:
-      "<subject> it <verb> say(vt) formerly <object> <clause_start> <verb> come(vi) at time <rank_3> next",
+      "<subject> it <verb> say(vt) formerly <object> <clause_start> <verb> come(vi) at tomorrow",
   },
   {
     title: "Precede",
@@ -281,7 +281,7 @@ export const truth_examples: Example[] = [
   {
     title: "Necessary",
     english: "Everyone necessarily dies",
-    transliteration: "<subject> person all <verb> die(vi) necessarily",
+    transliteration: "<subject> everyone <verb> die(vi) necessarily",
   },
   {
     title: "Possible",
@@ -331,7 +331,7 @@ export const family_examples: Example[] = [
     title: "A family sentence",
     english: "My grandparent has many descendants",
     transliteration:
-      "<subject> parent <rank_2> of me <verb> possess(vt) <object> <max_positive> child many",
+      "<subject> grandparent of me <verb> possess(vt) <object> <max_positive> child many",
   },
 ];
 
@@ -350,7 +350,7 @@ export const color_examples: Example[] = [
   {
     title: "A sentence",
     english: "The rock is orange",
-    transliteration: "<subject> rock <verb> be(vt) <complement> red yellow",
+    transliteration: "<subject> rock <verb> be(vt) <complement> orange",
   },
 ];
 
@@ -395,7 +395,7 @@ export const question_examples: Example[] = [
   {
     title: "Who",
     english: "Who killed the person?",
-    transliteration: "<subject> person <blank> <verb_interrogative> kill(vt) <object> person",
+    transliteration: "<subject> who <verb_interrogative> kill(vt) <object> person",
   },
   {
     title: "What",
@@ -420,7 +420,7 @@ export const question_examples: Example[] = [
   {
     title: "When",
     english: "When did the person die?",
-    transliteration: "<subject> person <verb_interrogative> die(vi) at time <blank>",
+    transliteration: "<subject> person <verb_interrogative> die(vi) at when",
   },
   {
     title: "Why",
@@ -450,7 +450,7 @@ export const self_other_examples: Example[] = [
   {
     title: "One another",
     english: "Everyone should act towards one another",
-    transliteration: "<subject> person all <verb_prescriptive> act(vi) to other",
+    transliteration: "<subject> everyone <verb_prescriptive> act(vi) to other",
   },
   { title: "One's own", english: "one's own family", transliteration: "family of self" },
   { title: "Another", english: "another person", transliteration: "person other" },
@@ -503,7 +503,7 @@ export const sky_examples: Example[] = [
   {
     title: "A sentence",
     english: "The Sun is bright",
-    transliteration: "<subject> celestial <rank_3> this <verb> be(vt) <complement> bright",
+    transliteration: "<subject> sun <verb> be(vt) <complement> bright",
   },
 ];
 
@@ -512,19 +512,19 @@ export const comparison_examples: Example[] = [
   {
     title: "Resemble",
     english: "The Moon resembles a rock",
-    transliteration: "<subject> celestial <rank_1> this <verb> resemble(vt) <object> rock",
+    transliteration: "<subject> the_moon <verb> resemble(vt) <object> rock",
   },
   { title: "Same", english: "the same color", transliteration: "color same" },
   { title: "Opposite", english: "the opposite direction", transliteration: "cardinal opposite" },
   {
     title: "Cause",
     english: "The Sun causes daytime",
-    transliteration: "<subject> celestial <rank_3> this <verb> cause(vt) <object> time bright",
+    transliteration: "<subject> sun <verb> cause(vt) <object> daytime",
   },
   {
     title: "Result",
     english: "Daytime results from the Sun",
-    transliteration: "<subject> time bright <verb> result_from(vt) <object> celestial <rank_3> this",
+    transliteration: "<subject> daytime <verb> result_from(vt) <object> sun",
   },
   {
     title: "Bigger than",
@@ -544,13 +544,13 @@ export const comparison_examples: Example[] = [
   {
     title: "Biggest",
     english: "The Sun is the biggest",
-    transliteration: "<subject> celestial <rank_3> this <verb> exceed(vt) <object> all in big",
+    transliteration: "<subject> sun <verb> exceed(vt) <object> all in big",
   },
   {
     title: "Much bigger",
     english: "The Sun is much bigger than Earth",
     transliteration:
-      "<subject> celestial <rank_3> this <verb> <max_positive> exceed(vt) <object> celestial <rank_2> this in big",
+      "<subject> sun <verb> <max_positive> exceed(vt) <object> earth in big",
   },
   {
     title: "Slightly faster",
@@ -565,7 +565,7 @@ export const comparison_examples: Example[] = [
   {
     title: "Question",
     english: "Who is the strongest?",
-    transliteration: "<subject> person <blank> <verb_interrogative> exceed(vt) <object> all in strong",
+    transliteration: "<subject> who <verb_interrogative> exceed(vt) <object> all in strong",
   },
 ];
 
@@ -588,7 +588,7 @@ export const geometry_examples: Example[] = [
   {
     title: "A sentence",
     english: "Earth is a sphere",
-    transliteration: "<subject> celestial <rank_2> this <verb> be(vt) <complement> geometry <rank_3> round",
+    transliteration: "<subject> earth <verb> be(vt) <complement> sphere",
   },
 ];
 
@@ -600,7 +600,7 @@ export const thing_examples: Example[] = [
   {
     title: "What thing",
     english: "What thing do you want?",
-    transliteration: "<subject> you <verb_interrogative> desire(vt) <object> thing <blank>",
+    transliteration: "<subject> you <verb_interrogative> desire(vt) <object> what",
   },
   { title: "Animal", english: "an animal", transliteration: "animal" },
   { title: "Young animal", english: "an animal's child", transliteration: "animal child" },
@@ -620,9 +620,9 @@ export const thing_examples: Example[] = [
   {
     title: "A sentence",
     english: "Water is a liquid",
-    transliteration: "<subject> water <verb> be(vt) <complement> matter <rank_1>",
+    transliteration: "<subject> water <verb> be(vt) <complement> liquid",
   },
-  { title: "Melt", english: "The ice melts", transliteration: "<subject> water matter <rank_0> <verb> melt(vi)" },
+  { title: "Melt", english: "The ice melts", transliteration: "<subject> ice <verb> melt(vi)" },
   {
     title: "Up a phase",
     english: "The water evaporated (melt, said of a liquid)",
@@ -644,12 +644,12 @@ export const thing_examples: Example[] = [
   {
     title: "Condense",
     english: "Steam condenses on the wall",
-    transliteration: "<subject> water matter <rank_2> <verb> condense(vi) at wall",
+    transliteration: "<subject> steam <verb> condense(vi) at wall",
   },
   {
     title: "With an object",
     english: "The sun melts the ice",
-    transliteration: "<subject> celestial <rank_3> this <verb> melt(vt) <object> water matter <rank_0>",
+    transliteration: "<subject> sun <verb> melt(vt) <object> ice",
   },
   { title: "Freeze", english: "Freeze the water", transliteration: "<verb_prescriptive> freeze(vt) <object> water" },
 ];
@@ -663,7 +663,7 @@ export const pointing_examples: Example[] = [
   { title: "From there", english: "I came from there", transliteration: "<subject> I <verb> come(vi) formerly from that" },
   { title: "This place", english: "This place is big", transliteration: "<subject> place this <verb> be(vt) <complement> big" },
   { title: "That person", english: "that person", transliteration: "person that" },
-  { title: "Which person", english: "Which person left?", transliteration: "<subject> person <blank> <verb_interrogative> go(vi)" },
+  { title: "Which person", english: "Which person left?", transliteration: "<subject> who <verb_interrogative> go(vi)" },
   { title: "This thing", english: "I want this thing", transliteration: "<subject> I <verb> desire(vt) <object> thing this" },
 ];
 
@@ -702,7 +702,7 @@ export const clause_examples: Example[] = [
     title: "Until",
     english: "Work until the Sun rises",
     transliteration:
-      "<verb_prescriptive> work(vi) to time <clause_start> <subject> celestial <rank_3> this <verb> rise(vi)",
+      "<verb_prescriptive> work(vi) to time <clause_start> <subject> sun <verb> rise(vi)",
   },
   {
     title: "If",
@@ -750,17 +750,17 @@ export const direction_examples: Example[] = [
   {
     title: "Northward",
     english: "Go north",
-    transliteration: "<verb_prescriptive> go(vi) to cardinal <rank_0>",
+    transliteration: "<verb_prescriptive> go(vi) to north",
   },
   {
     title: "In the east",
     english: "The Sun rises in the east",
-    transliteration: "<subject> celestial <rank_3> this <verb> rise(vi) at cardinal <rank_1>",
+    transliteration: "<subject> sun <verb> rise(vi) at east",
   },
   {
     title: "Where from",
     english: "I came from the south",
-    transliteration: "<subject> I <verb> come(vi) formerly from cardinal <rank_2>",
+    transliteration: "<subject> I <verb> come(vi) formerly from south",
   },
 ];
 
@@ -768,25 +768,25 @@ export const direction_examples: Example[] = [
 export const arithmetic_examples: Example[] = [
   { title: "Count", english: "Count to ten", transliteration: "<verb_prescriptive> count(vi) to number 1 0" },
   { title: "Count down", english: "Count down from ten", transliteration: "<verb_prescriptive> count_down(vi) from number 1 0" },
-  { title: "Add", english: "Add 2 to 5", transliteration: "<verb_prescriptive> count(vt) <rank_1> <object> number 5 by number 2" },
+  { title: "Add", english: "Add 2 to 5", transliteration: "<verb_prescriptive> add(vt) <object> number 5 by number 2" },
   {
     title: "Subtract",
     english: "Subtract 2 from 5",
-    transliteration: "<verb_prescriptive> count_down(vt) <rank_1> <object> number 5 by number 2",
+    transliteration: "<verb_prescriptive> subtract(vt) <object> number 5 by number 2",
   },
-  { title: "Multiply", english: "Multiply 5 by 2", transliteration: "<verb_prescriptive> count(vt) <rank_2> <object> number 5 by number 2" },
+  { title: "Multiply", english: "Multiply 5 by 2", transliteration: "<verb_prescriptive> multiply(vt) <object> number 5 by number 2" },
   {
     title: "Equals",
     english: "2 + 3 = 5",
     transliteration: "<subject> <gerund> add(vt) <object> number 2 by number 3 <verb> equal(vt) <object> number 5",
   },
   { title: "Sum", english: "the sum", transliteration: "result of <gerund> add(vt)" },
-  { title: "Divide", english: "Divide 6 by 3", transliteration: "<verb_prescriptive> count_down(vt) <rank_2> <object> number 6 by number 3" },
-  { title: "Power", english: "Square 5", transliteration: "<verb_prescriptive> count(vt) <rank_3> <object> number 5 by number 2" },
+  { title: "Divide", english: "Divide 6 by 3", transliteration: "<verb_prescriptive> divide(vt) <object> number 6 by number 3" },
+  { title: "Power", english: "Square 5", transliteration: "<verb_prescriptive> exponentiate(vt) <object> number 5 by number 2" },
   {
     title: "Root",
     english: "Take the square root of 9",
-    transliteration: "<verb_prescriptive> count_down(vt) <rank_3> <object> number 9 by number 2",
+    transliteration: "<verb_prescriptive> root(vt) <object> number 9 by number 2",
   },
   {
     title: "Logarithm",
@@ -797,7 +797,7 @@ export const arithmetic_examples: Example[] = [
     title: "A sentence",
     english: "If you add 2 to 3, you get 5",
     transliteration:
-      "if <clause_start> <subject> you <verb> count(vt) <rank_1> <object> number 3 by number 2 <clause_end> <subject> you <verb> possess(vt) <object> number 5",
+      "if <clause_start> <subject> you <verb> add(vt) <object> number 3 by number 2 <clause_end> <subject> you <verb> possess(vt) <object> number 5",
   },
 ];
 
@@ -825,9 +825,9 @@ export const moving_examples: Example[] = [
   { title: "Feather", english: "a bird's covering", transliteration: "covering animal flying" },
   { title: "Walk", english: "I walk to the water", transliteration: "<subject> I <verb> walk(vi) to water" },
   { title: "Wade", english: "Wade across the water", transliteration: "<verb_prescriptive> wade_through(vt) <object> water" },
-  { title: "Sail", english: "The boat sails north", transliteration: "<subject> <tool> swim(vi) <verb> swim(vi) to cardinal <rank_0>" },
+  { title: "Sail", english: "The boat sails north", transliteration: "<subject> boat <verb> swim(vi) to north" },
   { title: "Fly", english: "We flew", transliteration: "<subject> I plural <verb> fly(vi) formerly" },
-  { title: "Space", english: "The spacecraft travels to the Moon", transliteration: "<subject> <tool> spacefly(vi) <verb> spacefly(vi) to celestial <rank_1> this" },
+  { title: "Space", english: "The spacecraft travels to the Moon", transliteration: "<subject> spacecraft <verb> spacefly(vi) to the_moon" },
   { title: "Burrow", english: "The animal burrows", transliteration: "<subject> animal <verb> burrow(vi)" },
 ];
 
@@ -846,7 +846,7 @@ export const part_examples: Example[] = [
   {
     title: "A sentence",
     english: "The tree's leaves are red",
-    transliteration: "<subject> finger plant plural of plant big <verb> be(vt) <complement> red",
+    transliteration: "<subject> leaf plural of tree <verb> be(vt) <complement> red",
   },
 ];
 
@@ -881,7 +881,7 @@ export const more_grammar_examples: Example[] = [
   {
     title: "Rate",
     english: "I sleep eight hours a day",
-    transliteration: "<subject> I <verb> sleep(vi) time <rank_2> number 8 <per> time <rank_3>",
+    transliteration: "<subject> I <verb> sleep(vi) hour number 8 <per> day",
   },
   { title: "Ratio", english: "three to one", transliteration: "number 3 <per> number 1" },
   { title: "Can", english: "I can work", transliteration: "<subject> I <verb> work(vi) ably" },
@@ -962,7 +962,7 @@ export const udhr_articles: Article[] = [
       "All human beings are born free and equal in dignity and rights. They are endowed with reason and conscience and should act towards one another in a spirit of brotherhood.",
     ],
     transliteration:
-      "<subject> person all <verb?> be(vt) <complement> free and same in value and privilege. <subject> it all <verb> possess(vt) <object> reason and conscience? and <verb_prescriptive> act(vi) for other and in path family. ??",
+      "<subject> everyone <verb?> be(vt) <complement> free and same in value and privilege. <subject> it all <verb> possess(vt) <object> reason and conscience? and <verb_prescriptive> act(vi) for other and in path family. ??",
   },
   {
     title: "Article 2",
@@ -974,7 +974,7 @@ export const udhr_articles: Article[] = [
     title: "Article 3",
     english: ["Everyone has the right to life, liberty and security of person."],
     transliteration:
-      "<subject> person all <verb> possess(vt) <object> right of life and freedom and safety.",
+      "<subject> everyone <verb> possess(vt) <object> right of life and freedom and safety.",
   },
   {
     title: "Article 4",
@@ -982,7 +982,7 @@ export const udhr_articles: Article[] = [
       "No one shall be held in slavery or servitude; slavery and the slave trade shall be prohibited in all their forms.",
     ],
     transliteration:
-      "<subject> person none <verb_prescriptive> be(vt) <complement> <ee> force(vt). <object> <gerund> use_force(vi) and trade <ee> force(vt) in geometry <rank_2> all <verb_prescriptive> forbid(vi).",
+      "<subject> no_one <verb_prescriptive> be(vt) <complement> <ee> force(vt). <object> <gerund> use_force(vi) and trade <ee> force(vt) in shape all <verb_prescriptive> forbid(vi).",
   },
   {
     title: "Article 5",
@@ -990,13 +990,13 @@ export const udhr_articles: Article[] = [
       "No one shall be subjected to torture or to cruel, inhuman or degrading treatment or punishment.",
     ],
     transliteration:
-      "<object> person none <verb_prescriptive> suffer(vi) or lose_importance(vi).",
+      "<object> no_one <verb_prescriptive> suffer(vi) or lose_importance(vi).",
   },
   {
     title: "Article 6",
     english: ["Everyone has the right to recognition everywhere as a person before the law."],
     transliteration:
-      "<subject> person all <verb> possess(vt) <object> right of <gerund> know(vt) as person by law.",
+      "<subject> everyone <verb> possess(vt) <object> right of <gerund> know(vt) as person by law.",
   },
   {
     title: "Article 7",
@@ -1014,7 +1014,7 @@ export const udhr_articles: Article[] = [
     title: "Article 9",
     english: ["No one shall be subjected to arbitrary arrest, detention or exile."],
     transliteration:
-      "<object> person none <verb_prescriptive> get_stuck(vi) or exit(vi) randomly.",
+      "<object> no_one <verb_prescriptive> get_stuck(vi) or exit(vi) randomly.",
   },
   {
     title: "Article 10",

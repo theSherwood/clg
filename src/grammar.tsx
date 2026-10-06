@@ -114,8 +114,7 @@ export function GrammarView() {
         object. Every draft so far is in subject–verb–object order.
       </p>
       <Example meaning="Everyone has the right to life, liberty and security of person.">
-        &lt;subject&gt; person all &lt;verb&gt; possess(vt) &lt;object&gt; right of life and freedom and
-        safety.
+        &lt;subject&gt; everyone &lt;verb&gt; possess(vt) &lt;object&gt; right of life and freedom and safety.
       </Example>
       <p>
         <b>Transitivity.</b> A transitive verb always takes <W w="<object>" />, even when nothing
@@ -181,7 +180,7 @@ export function GrammarView() {
         &lt;subject&gt; sky &lt;verb&gt; be(vt) &lt;complement&gt; blue
       </Example>
       <Example meaning="Water is a liquid.">
-        &lt;subject&gt; water &lt;verb&gt; be(vt) &lt;complement&gt; matter &lt;rank_1&gt;
+        &lt;subject&gt; water &lt;verb&gt; be(vt) &lt;complement&gt; liquid
       </Example>
       <p className="mt-2">
         Without a complement, <W w="be(vi)" /> is existing or being somewhere, with a preposition
@@ -200,7 +199,7 @@ export function GrammarView() {
         for what's being asked about; without it, the question is yes or no.
       </p>
       <Example meaning="No one shall be held in slavery.">
-        &lt;subject&gt; person none &lt;verb_prescriptive&gt; be(vt) &lt;complement&gt; &lt;ee&gt; force(vt).
+        &lt;subject&gt; no_one &lt;verb_prescriptive&gt; be(vt) &lt;complement&gt; &lt;ee&gt; force(vt).
       </Example>
       <Example meaning="Who does the soldier kill?">
         &lt;subject&gt; soldier &lt;verb_interrogative&gt; kill(vt) &lt;object&gt; &lt;blank&gt;
@@ -270,7 +269,7 @@ export function GrammarView() {
         <W w="follow(vt)" /> relate two things in order.
       </p>
       <Example meaning="I slept yesterday.">
-        &lt;subject&gt; I &lt;verb&gt; sleep(vi) at time &lt;rank_3&gt; previous
+        &lt;subject&gt; I &lt;verb&gt; sleep(vi) at yesterday
       </Example>
       <Example meaning="Eating comes before sleeping.">
         &lt;subject&gt; &lt;gerund&gt; eat(vt) &lt;verb&gt; precede(vt) &lt;object&gt; &lt;gerund&gt; sleep(vi)
@@ -306,7 +305,7 @@ export function GrammarView() {
         something.
       </p>
       <Example meaning="Everyone necessarily dies.">
-        &lt;subject&gt; person all &lt;verb&gt; die(vi) necessarily
+        &lt;subject&gt; everyone &lt;verb&gt; die(vi) necessarily
       </Example>
       <Example meaning="I believe the person probably left.">
         &lt;subject&gt; I &lt;verb&gt; believe(vt) &lt;object&gt; &lt;clause_start&gt; &lt;subject&gt; person
@@ -333,8 +332,7 @@ export function GrammarView() {
         modifiers: <W w="mother" /> is <i>parent female</i>, <W w="brother" /> <i>sibling male</i>.
       </p>
       <Example meaning="My grandparent has many descendants.">
-        &lt;subject&gt; parent &lt;rank_2&gt; of me &lt;verb&gt; possess(vt) &lt;object&gt; &lt;max_positive&gt;
-        child many
+        &lt;subject&gt; grandparent of me &lt;verb&gt; possess(vt) &lt;object&gt; &lt;max_positive&gt; child many
       </Example>
       <Open>
         Gendered words are long: “mother” is <i>parent female</i>, which is <i>&lt;negative&gt; child
@@ -373,7 +371,7 @@ export function GrammarView() {
         &lt;subject&gt; rock &lt;verb&gt; exceed(vt) &lt;object&gt; person in big
       </Example>
       <Example meaning="The Sun is the biggest.">
-        &lt;subject&gt; celestial &lt;rank_3&gt; this &lt;verb&gt; exceed(vt) &lt;object&gt; all in big
+        &lt;subject&gt; sun &lt;verb&gt; exceed(vt) &lt;object&gt; all in big
       </Example>
       <p className="mt-2">
         Likeness is the similarity axis: <W w="resemble(vt)" /> and <W w="similar" /> at the positive
@@ -382,7 +380,7 @@ export function GrammarView() {
         <W w="contrast_with(vt)" />).
       </p>
       <Example meaning="The moon resembles a rock.">
-        &lt;subject&gt; celestial &lt;rank_1&gt; this &lt;verb&gt; resemble(vt) &lt;object&gt; rock
+        &lt;subject&gt; the_moon &lt;verb&gt; resemble(vt) &lt;object&gt; rock
       </Example>
 
       <H2>Posture</H2>
@@ -420,7 +418,7 @@ export function GrammarView() {
         and a <W w="feather" /> is <i>covering bird</i>.
       </p>
       <Example meaning="The bird flies to the tree.">
-        &lt;subject&gt; animal flying &lt;verb&gt; fly(vi) to plant big
+        &lt;subject&gt; bird &lt;verb&gt; fly(vi) to tree
       </Example>
 
       <H2>Parts of things</H2>
@@ -494,7 +492,7 @@ export function GrammarView() {
         condense and <i>freeze(vi) &lt;rank_0&gt;</i> to solidify.
       </p>
       <Example meaning="The sun melts the ice.">
-        &lt;subject&gt; celestial &lt;rank_3&gt; this &lt;verb&gt; melt(vt) &lt;object&gt; water matter &lt;rank_0&gt;
+        &lt;subject&gt; sun &lt;verb&gt; melt(vt) &lt;object&gt; ice
       </Example>
       <p className="mt-2">
         <W w="element" /> marks the element domain, as <W w="number" /> marks the number domain:
@@ -526,7 +524,7 @@ export function GrammarView() {
         <W w="universe" /> is <i>thing all</i>, everything.
       </p>
       <Example meaning="The Sun is bright.">
-        &lt;subject&gt; celestial &lt;rank_3&gt; this &lt;verb&gt; be(vt) &lt;complement&gt; bright
+        &lt;subject&gt; sun &lt;verb&gt; be(vt) &lt;complement&gt; bright
       </Example>
 
       <H2>Directions</H2>
@@ -561,7 +559,7 @@ export function GrammarView() {
         <i>rock big brown</i>, not <i>rock brown big</i>, which would read as a medium-sized color.
       </p>
       <Example meaning="The rock is orange.">
-        &lt;subject&gt; rock &lt;verb&gt; be(vt) &lt;complement&gt; red yellow
+        &lt;subject&gt; rock &lt;verb&gt; be(vt) &lt;complement&gt; orange
       </Example>
 
       <H2>Modifiers</H2>
@@ -665,7 +663,7 @@ export function GrammarView() {
         <W w="cause(vt)" /> is for the looser kind: the storm caused the flood.
       </p>
       <Example meaning="Daytime results from the Sun.">
-        &lt;subject&gt; time bright &lt;verb&gt; result_from(vt) &lt;object&gt; celestial &lt;rank_3&gt; this
+        &lt;subject&gt; daytime &lt;verb&gt; result_from(vt) &lt;object&gt; sun
       </Example>
       <p className="mt-2">
         Counterfactuals need nothing special. As in Mandarin, <W w="if" /> and context say whether a
@@ -765,7 +763,7 @@ export function GrammarView() {
         digits in base 10.
       </p>
       <Example meaning="I work five days a week.">
-        &lt;subject&gt; I &lt;verb&gt; work(vi) time &lt;rank_3&gt; number 5 &lt;per&gt; time &lt;rank_4&gt;
+        &lt;subject&gt; I &lt;verb&gt; work(vi) day number 5 &lt;per&gt; week
       </Example>
       <p className="mt-2">
         Ranks don't depend on the base: <W w="<rank_3>" /> is “thousands” in base 10, but “eights” in
@@ -814,7 +812,7 @@ export function GrammarView() {
         number 5
       </Example>
       <Example meaning="Divide 6 by 3.">
-        &lt;verb_prescriptive&gt; count_down(vt) &lt;rank_2&gt; &lt;object&gt; number 6 by number 3
+        &lt;verb_prescriptive&gt; divide(vt) &lt;object&gt; number 6 by number 3
       </Example>
 
       <H2>Conversation</H2>
