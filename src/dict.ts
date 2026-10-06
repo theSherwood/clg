@@ -810,9 +810,27 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "elevation",
       notes:
-        "negative intransitive verb: to lower oneself / to bow / to crouch / to postrate oneself / to descend; positive intransitive verb: to rise",
+        "The top is the highest point and the bottom the lowest: max_positive high and max_negative high. Relative position (above, below) is the upper/lower axis",
+      steps: {
+        max_positive: {
+          noun: "summit",
+          adj: "top",
+          verb: "peak(v)",
+          verb_i: "peak",
+          verb_t: "top off",
+          adverb: "atop",
+        },
+        max_negative: {
+          noun: "base",
+          adj: "bottom",
+          verb: "bottom_out(v)",
+          verb_i: "bottom out",
+          verb_t: "bring down",
+          adverb: "beneath",
+        },
+      },
     },
-    { noun: "deep", adj: "low", verb: "lower(v)", verb_i: "descend", verb_t: "lower" },
+    { noun: "depth", adj: "low", verb: "lower(v)", verb_i: "descend", verb_t: "lower" },
     {
       noun: "height",
       adj: "high",
@@ -1115,25 +1133,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "persist",
       verb_t: "maintain",
       adverb: "persistently",
-    },
-  ],
-  [
-    { notes: "duplicate of low/high? Expressible as max-low and max-high?" },
-    {
-      noun: "summit",
-      adj: "top",
-      verb: "peak(v)",
-      verb_i: "peak",
-      verb_t: "top off",
-      adverb: "atop",
-    },
-    {
-      noun: "base",
-      adj: "bottom",
-      verb: "bottom_out(v)",
-      verb_i: "bottom out",
-      verb_t: "bring down",
-      adverb: "beneath",
     },
   ],
   [
@@ -2528,12 +2527,12 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   // Groups of related concepts
   for (const group of [
     ["number", "symbol"],
-    ["width", "height", "depth"], // height and width are nouns of the low/high and narrow/wide axes
+    ["width", "height", "depth"], // all nouns of axes, which are built after this
     ["sound", "taste"],
     ["animal", "plant", "fungus"],
   ]) {
     for (const word of group) {
-      if (dictionary.has(word) || word === "height" || word === "width") continue; // already a word
+      if (dictionary.has(word) || ["height", "width", "depth"].includes(word)) continue; // already a word
       candidate(word, group.length > 1 ? { notes: `Group: ${group.join(", ")}` } : {});
     }
   }
@@ -2582,7 +2581,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "enumerate(v)", "curl(v)", "emerge(v)", "distance(v)", "quiet(v)", "sharpen(v)", "wet(v)",
     "thicken(v)", "lift(v)", "heat(v)", "brighten(v)", "harden(v)", "get_heavier(v)", "prove(v)",
     "postpone(v)", "come_alive(v)", "eat(v)", "sink(v)", "veer_right(v)",
-    "withdraw(v)", "spread(v)", "stir(v)", "persist(v)", "bottom_out(v)", "make_artificial(v)",
+    "withdraw(v)", "spread(v)", "stir(v)", "persist(v)", "make_artificial(v)",
     "spread_out(v)", "proliferate(v)", "straighten(v)", "improve(v)", "entertain(v)",
     "materialize(v)", "enable(v)", "angle(v)", "rejuvenate(v)", "wake(v)", "create(v)",
     "beautify(v)", "go(v)", "heap_up(v)", "fill_up(v)", "show(v)", "educate(v)",
