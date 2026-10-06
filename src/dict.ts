@@ -1636,7 +1636,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       adj: "connected",
       verb: "connect(v)",
       verb_i: "connect",
-      verb_t: "connect",
+      verb_t: "attach",
     },
     {
       noun: "disconnection",
@@ -2061,6 +2061,40 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
+    { noun: "conversation" },
+    { noun: "hearing", adj: "heard", verb: "hear(v)", verb_i: "listen", verb_t: "hear" },
+    { noun: "speech", adj: "spoken", verb: "say(v)", verb_i: "speak", verb_t: "say", adverb: "aloud" },
+  ],
+  [
+    {
+      noun: "literacy",
+      notes: "min_positive write is mark, a lesser writing; min_negative write is skim, a lesser reading",
+      scale: ["study", "read", "skim", "copy", "mark", "write", "compose"],
+    },
+    { noun: "reading", adj: "read", verb: "read(v)", verb_i: "read", verb_t: "read" },
+    { noun: "writing", adj: "written", verb: "write(v)", verb_i: "write", verb_t: "write" },
+  ],
+  [
+    { noun: "attention" },
+    { noun: "oversight", adj: "unnoticed", verb: "overlook(v)", verb_i: "miss", verb_t: "overlook" },
+    { noun: "perception", adj: "perceptive", verb: "sense(v)", verb_i: "feel", verb_t: "sense" },
+  ],
+  [
+    { noun: "utility" },
+    { noun: "disposal", adj: "discarded", verb: "discard(v)", verb_i: "discard", verb_t: "discard" },
+    { noun: "usage", adj: "used", verb: "use(v)", verb_i: "use", verb_t: "use" },
+  ],
+  [
+    { noun: "action", notes: "negative do is undo: reversing an action" },
+    { noun: "reversal", adj: "undone", verb: "undo(v)", verb_i: "undo", verb_t: "undo" },
+    { noun: "deed", adj: "done", verb: "do(v)", verb_i: "act", verb_t: "do" },
+  ],
+  [
+    { noun: "tactility" },
+    { noun: "avoidance", adj: "avoided", verb: "avoid(v)", verb_i: "keep away", verb_t: "avoid" },
+    { noun: "contact", adj: "touching", verb: "touch(v)", verb_i: "touch", verb_t: "touch" },
+  ],
+  [
     { noun: "ownership" },
     { noun: "lack", adj: "lacking", verb: "lack(v)", verb_t: "lack" },
     {
@@ -2364,21 +2398,14 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("wall");
   cr("rod");
   cr("person");
-  cr("saying");
-  cr("feel", { gloss: "feel / sense" });
   cr("money");
   cr("place");
   cr("container");
   cr("mouth");
-  cr("use");
   cr("rock");
-  cr("attach");
   cr("path");
   cr("sound");
-  cr("touch");
-  cr("do");
   cr("body", { gloss: "body / organ" });
-  cr("mark");
   cr("symbol");
   cr("hand");
   cr("finger");
@@ -2473,7 +2500,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   for (const group of [
     ["number", "symbol"],
     ["width", "height", "depth"], // height and width are nouns of the low/high and narrow/wide axes
-    ["sound", "taste", "touch"],
+    ["sound", "taste"],
     ["animal", "plant", "fungus"],
   ]) {
     for (const word of group) {
@@ -2538,7 +2565,8 @@ export const verb_types: Record<VerbType, string[]> = {
     "analyze(v)", "win(v)", "succeed(v)", "produce(v)", "buy(v)", "send(v)", "hope(v)",
     "believe(v)", "be_in_command(v)", "work(v)", "search(v)", "learn(v)", "sow(v)", "give(v)",
     "make_peace(v)", "defend(v)", "steward(v)", "command(v)", "resist(v)", "withstand(v)",
-    "compel(v)", "participate(v)", "recommend(v)",
+    "compel(v)", "participate(v)", "recommend(v)", "say(v)", "write(v)", "sense(v)", "use(v)",
+    "do(v)", "touch(v)",
   ],
   relation: [
     "possess(v)", "is(v)", "equal(v)", "love(v)", "know(v)", "desire(v)", "face(v)", "include(v)",

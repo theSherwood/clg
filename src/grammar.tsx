@@ -285,6 +285,18 @@ export function GrammarView() {
         negative male</i>, four syllables for a very common word.
       </Open>
 
+      <H2>Speech, writing and the senses</H2>
+      <p>
+        These are action axes, each with its counterpart at the other end:{" "}
+        <W w="say(v)" /> and <W w="hear(v)" />, <W w="write(v)" /> and <W w="read(v)" />,{" "}
+        <W w="sense(v)" /> and <W w="overlook(v)" />, <W w="use(v)" /> and <W w="discard(v)" />,{" "}
+        <W w="do(v)" /> and <W w="undo(v)" />, and <W w="touch(v)" /> and <W w="avoid(v)" />. The
+        scale grades them: <i>min_positive write</i>, a lesser writing, is a mark, and{" "}
+        <i>min_negative write</i> is skimming. Nouns come from the role markers: a word is{" "}
+        <i>_ee say</i>, a text <i>_ee write</i> and an ear <i>_tool hear</i>. Attaching is{" "}
+        <W w="connect(v)" />.
+      </p>
+
       <H2>Comparison</H2>
       <p>
         Comparison is a relation verb, <W w="exceed(v)" />, and an <W w="in" /> phrase names the

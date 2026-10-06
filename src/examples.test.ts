@@ -12,7 +12,7 @@ test("grammar markers resolve to domain words and prepositions", () => {
     "_subject",
     "person",
     "_verb(prescriptive)",
-    "do",
+    "do(v)",
     "in",
     "value",
     ".",
