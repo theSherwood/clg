@@ -900,6 +900,8 @@ export const more_grammar_examples: Example[] = [
   { title: "Infer", english: "I infer that you slept", transliteration: "<subject> I <verb> infer(vt) <object> <clause_start> <subject> you <verb> sleep(vi) formerly" },
   { title: "Assume", english: "Assume it's true", transliteration: "<verb_prescriptive> assume(vt) <object> <clause_start> <verb> be(vt) <complement> true" },
   { title: "Reason", english: "the faculty: what you reason with", transliteration: "<tool> infer(vt)" },
+  { title: "Computation", english: "transforming data", transliteration: "<gerund> transform(vt) information" },
+  { title: "Computer", english: "what transforms data", transliteration: "<tool> transform(vt) information" },
   { title: "Mind", english: "what perceives itself", transliteration: "<er> sense(vt) self" },
   { title: "Conscience", english: "what you blame yourself with", transliteration: "<tool> blame(vt) self" },
   { title: "Model", english: "what resembles something", transliteration: "<er> resemble(vt)" },

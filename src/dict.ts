@@ -287,7 +287,16 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   [
     {
       noun: "adaptability",
-      notes: "From axis.csv (as dynamism: static / dynamic): positive verb change? (transitive)",
+      notes: "Changing at its fullest is transforming: into something else entirely",
+      steps: {
+        max_positive: {
+          noun: "transformation",
+          adj: "transformed",
+          verb: "transform(vi)",
+          verb_i: "transform",
+          verb_t: "transform",
+        },
+      },
     },
     {
       noun: "stability",
@@ -2770,6 +2779,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("sound");
   cr("body", { gloss: "body / organ" });
   cr("symbol");
+  cr("information", { gloss: "information / data" });
   cr("hand");
   cr("finger");
   cr("feet");
@@ -2850,7 +2860,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
 
 
   candidate("prehensile?");
-  candidate("information", { gloss: "information / data" });
   candidate("net", { gloss: "net / graph" });
   candidate("image", { gloss: "image / projection" });
   candidate("simulation", { gloss: "simulation / model" });
@@ -3301,6 +3310,8 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("never", ["time", "none"]);
   noun("when", ["time", "<blank>"]);
 
+  noun("computation", ["<gerund>", "transform(vi)", "information"], { notes: "Transforming data" });
+  noun("computer", ["<tool>", "transform(vi)", "information"]);
   noun("reason", ["<tool>", "infer(vt)"], { gloss: "reason (the faculty)", notes: "What one reasons with" });
   noun("mind", ["<er>", "sense(vt)", "self"], { notes: "What perceives itself" });
   noun("model", ["<er>", "resemble(vt)"], { gloss: "model / likeness", notes: "What resembles something" });
