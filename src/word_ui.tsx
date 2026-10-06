@@ -9,6 +9,7 @@ import {
   axes,
   axis_by_word,
   candidates,
+  words,
   dictionary,
   is_root,
   sections,
@@ -48,44 +49,78 @@ export const LazyTippy = (props: LazyTippyProps) => {
   return <Tippy {...computedProps} />;
 };
 
-interface WordPopoverContentProps {
-  word: Word;
-  depth: number; // To manage potential z-index or for debugging
+// A form is a sequence of root IDs, so one sound. Several English words can share a form (a
+// root's homonyms, or compounds built the same way, like small and shrink), and a popup shows
+// the form, with every meaning it has.
+function root_ids(word: Word): number[] {
+  return is_root(word) ? [word.data.id] : word.data.parts.flatMap(root_ids);
 }
 
-export function WordPopoverList(props: { label: string; list: Word[]; depth: number }) {
-  const { list, depth, label } = props;
+export function form_key(word: Word): string {
+  return root_ids(word).join("-");
+}
+
+const DOMAIN_ORDER = ["verb", "noun", "adjective", "adverb"];
+
+let forms: Map<string, Word[]> | undefined;
+
+// Every word with the same form as this one, verbs first
+export function words_of_form(word: Word): Word[] {
+  if (!forms) {
+    forms = new Map();
+    for (const w of words) {
+      const key = form_key(w);
+      forms.set(key, [...(forms.get(key) ?? []), w]);
+    }
+    const rank = (w: Word) => {
+      const i = DOMAIN_ORDER.indexOf(w.data.domain ?? "");
+      return i < 0 ? DOMAIN_ORDER.length : i;
+    };
+    for (const list of forms.values()) list.sort((a, b) => rank(a) - rank(b));
+  }
+  return forms.get(form_key(word)) ?? [word];
+}
+
+const NESTED_TIPPY: Partial<TippyProps> = {
+  placement: "right-start",
+  interactive: true,
+  delay: [150, 0],
+  theme: "light",
+  popperOptions: {
+    strategy: "fixed",
+    modifiers: [
+      { name: "preventOverflow", options: { boundary: "clippingParents" } },
+      { name: "flip", options: { fallbackPlacements: ["left-start", "top-start", "bottom-start"] } },
+    ],
+  },
+};
+
+// Opens another form's popup on hover; children default to the form's sound and meanings
+function FormHover({
+  word,
+  depth,
+  children,
+}: {
+  word: Word;
+  depth: number;
+  children?: React.ReactNode;
+}) {
+  const phonology = useContext(PhonologyContext);
+  const names = words_of_form(word).map((w) => w.word);
   return (
-    <div>
-      <span className="font-semibold text-xs">{label}</span>
-      <ul className="list-disc list-inside ml-1">
-        {list.map((list_word, i) => (
-          <li key={`${i}:${list_word.word}`} className="my-0.5">
-            <LazyTippy
-              content={<WordPopoverContent word={list_word} depth={depth + 1} />}
-              placement="right-start"
-              interactive={true}
-              delay={[100, 0]}
-              theme="light"
-              popperOptions={{
-                strategy: "fixed", // Better for complex layouts
-                modifiers: [
-                  { name: "preventOverflow", options: { boundary: "clippingParents" } },
-                  {
-                    name: "flip",
-                    options: {
-                      fallbackPlacements: ["left-start", "top-start", "bottom-start"],
-                    },
-                  },
-                ],
-              }}
-            >
-              <span className="cursor-pointer hover:underline text-blue-700">{list_word.word}</span>
-            </LazyTippy>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <LazyTippy content={<FormPopoverContent word={word} depth={depth + 1} />} {...NESTED_TIPPY}>
+      <span className="cursor-pointer hover:underline">
+        {children ?? (
+          <span className="whitespace-nowrap">
+            <span className="font-mono text-indigo-700">{pronounce(word, phonology)}</span>{" "}
+            <span className="text-gray-700">
+              {names.slice(0, 3).join(" / ")}
+              {names.length > 3 && " …"}
+            </span>
+          </span>
+        )}
+      </span>
+    </LazyTippy>
   );
 }
 
@@ -102,7 +137,7 @@ const AXIS_COLUMNS = [
 export function side_of(word: Word): AxisSide | undefined {
   const axis = axis_by_word.get(word);
   if (!axis) return undefined;
-  return [axis.positive, axis.negative].find((side) =>
+  return [axis.positive, axis.negative, ...Object.values(axis.steps)].find((side) =>
     Object.values(side).some((cell) => cell.word === word),
   );
 }
@@ -198,13 +233,15 @@ export function VerbsByType() {
 // required, so their gaps are just gray.
 function MatrixCell({
   cell,
-  current,
+  form,
+  depth,
   verb,
   applies = true,
   optional = false,
 }: {
   cell: AxisCell;
-  current: Word;
+  form: string;
+  depth: number;
   verb: boolean;
   applies?: boolean;
   optional?: boolean;
@@ -225,13 +262,21 @@ function MatrixCell({
       </td>
     );
   }
+  const text = cell.gloss ?? cell.word.word;
+  const here = form_key(cell.word) === form;
   return (
     <td
       className={`px-1.5 py-0.5 border border-gray-200 whitespace-nowrap
-        ${cell.word === current ? "bg-indigo-100 font-semibold" : ""}
+        ${here ? "bg-indigo-100 font-semibold" : ""}
         text-gray-800`}
     >
-      {cell.gloss ?? cell.word.word}
+      {here ? (
+        text
+      ) : (
+        <FormHover word={cell.word} depth={depth}>
+          {text}
+        </FormHover>
+      )}
     </td>
   );
 }
@@ -247,8 +292,9 @@ const STEP_TINTS: Record<string, string> = {
 };
 
 // The whole axis a word belongs to: every form at every step of the scale, from max_positive down
-// to max_negative. The bare root is the positive step.
-function AxisMatrix({ axis, current }: { axis: Axis; current: Word }) {
+// to max_negative. The bare root is the positive step. Cells of the form being shown are
+// highlighted, and the others open their own popups.
+function AxisMatrix({ axis, form, depth }: { axis: Axis; form: string; depth: number }) {
   const phonology = useContext(PhonologyContext);
   const root_sound = syllable_of(axis.id, phonology);
   const step_sound = (helper: string) => {
@@ -303,7 +349,8 @@ function AxisMatrix({ axis, current }: { axis: Axis; current: Word }) {
                   <MatrixCell
                     key={key}
                     cell={side[key]}
-                    current={current}
+                    form={form}
+                    depth={depth}
                     verb={key === "verb_i" || key === "verb_t"}
                     applies={!(key === "verb_i" && axis.verb_type === "relation")}
                     optional={optional}
@@ -319,55 +366,100 @@ function AxisMatrix({ axis, current }: { axis: Axis; current: Word }) {
   );
 }
 
-export const WordPopoverContent: React.FC<WordPopoverContentProps> = ({ word, depth }) => {
+// Everything one form means: each English word it stands for, its axis, its parts and the
+// compounds that use it. current marks the word the popup was opened from, if any.
+export function FormPopoverContent({
+  word,
+  current,
+  depth,
+}: {
+  word: Word;
+  current?: Word;
+  depth: number;
+}) {
   const phonology = useContext(PhonologyContext);
-  const is_root_word = is_root(word);
-  const { parts, uses, homonyms } = word.data;
+  const form = form_key(word);
+  const meanings = words_of_form(word);
+  const root = is_root(word);
+  const section_labels = [...new Set(meanings.map((w) => w.data.section))].map(
+    (key) => sections.find((s) => s.key === key)?.label,
+  );
+  const form_axes = [...new Set(meanings.flatMap((w) => axis_by_word.get(w) ?? []))];
+  const axis_notes = new Set(form_axes.map((a) => a.notes));
+
+  // Compounds built on this form, one entry per form
+  const uses = new Map<string, Word>();
+  for (const w of meanings) {
+    for (const use of w.data.uses) {
+      const key = form_key(use);
+      if (!uses.has(key)) uses.set(key, use);
+    }
+  }
 
   return (
     <div className="p-3 bg-white shadow-lg rounded-md border border-gray-200 text-sm">
-      <h3 className="font-bold text-lg">{word.word}</h3>
-      <p className="font-mono text-indigo-700 mb-1">{pronounce(word, phonology)}</p>
-      {word.data.gloss && <p className="text-xs italic text-gray-600 mb-1">{word.data.gloss}</p>}
-      {word.data.notes && <p className="text-xs text-gray-600 mb-1 max-w-xs">{word.data.notes}</p>}
-      <p className="text-xs text-gray-500 mb-1">
-        Section: {sections.find((s) => s.key === word.data.section)?.label}
-      </p>
-      {parts.length > 0 ? null : <p className="text-xs text-gray-500 mb-1">ID: {word.data.id}</p>}
-      <p
-        className={`text-xs font-semibold mb-1 ${
-          is_root_word ? "text-green-600" : "text-blue-600"
-        }`}
-      >
-        {is_root_word ? "ROOT" : "COMPOUND"}
-      </p>
-      {word.data.domain && (
-        <p className="text-xs mb-1">
-          <span className="font-semibold">Domain:</span> {word.data.domain}
+      <div className="flex items-baseline gap-2 flex-wrap">
+        <span className="font-mono text-lg font-bold text-indigo-700">
+          {pronounce(word, phonology)}
+        </span>
+        <span className={`text-xs font-semibold ${root ? "text-green-600" : "text-blue-600"}`}>
+          {root ? `ROOT · ID ${word.data.id}` : "COMPOUND"}
+        </span>
+        <span className="text-xs text-gray-500">{section_labels.join(", ")}</span>
+      </div>
+      {!root && (
+        <p className="text-xs mt-0.5">
+          {word.data.parts.map((part, i) => (
+            <React.Fragment key={i}>
+              {i > 0 && <span className="text-gray-400"> + </span>}
+              <FormHover word={part} depth={depth} />
+            </React.Fragment>
+          ))}
         </p>
       )}
-      {word.data.t.length > 0 && (
-        <div className="mb-2">
-          <span className="font-semibold text-xs">Tags: </span>
-          {word.data.t.map((tag) => (
-            <span
-              key={tag}
-              className="inline-block bg-gray-200 rounded-full px-2 py-0.5 text-xs font-semibold text-gray-700 mr-1 mb-1"
+
+      <table className="mt-2 text-xs border-collapse">
+        <tbody>
+          {meanings.map((w) => (
+            <tr
+              key={w.word}
+              className={`align-top ${w === current ? "bg-indigo-50" : ""}`}
             >
-              {tag}
-            </span>
+              <td className="pr-2 py-0.5 font-semibold text-gray-800 whitespace-nowrap">
+                {w.word}
+              </td>
+              <td className="pr-2 py-0.5 text-gray-500 whitespace-nowrap">{w.data.domain}</td>
+              <td className="py-0.5 text-gray-700 max-w-md">
+                {w.data.gloss && <span className="italic">{w.data.gloss}</span>}
+                {w.data.notes && !axis_notes.has(w.data.notes) && (
+                  <span className="block text-gray-600">{w.data.notes}</span>
+                )}
+                {w.data.t.length > 0 && (
+                  <span className="text-gray-400"> {w.data.t.join(", ")}</span>
+                )}
+              </td>
+            </tr>
           ))}
+        </tbody>
+      </table>
+
+      {form_axes.map((axis) => (
+        <AxisMatrix key={axis.id} axis={axis} form={form} depth={depth} />
+      ))}
+
+      {uses.size > 0 && (
+        <div className="mt-2">
+          <span className="font-semibold text-xs">Used in {uses.size}:</span>
+          <div className="mt-0.5 max-h-40 overflow-y-auto text-xs flex flex-wrap gap-x-3 gap-y-0.5">
+            {[...uses.values()].map((use) => (
+              <FormHover key={form_key(use)} word={use} depth={depth} />
+            ))}
+          </div>
         </div>
       )}
-      {axis_by_word.has(word) && <AxisMatrix axis={axis_by_word.get(word)!} current={word} />}
-      {!is_root_word && parts.length > 0 && (
-        <WordPopoverList label="Parts:" list={parts} depth={depth} />
-      )}
-      {uses.length > 0 && <WordPopoverList label="Uses:" list={uses} depth={depth} />}
-      {homonyms.length > 0 && <WordPopoverList label="Homonyms:" list={homonyms} depth={depth} />}
     </div>
   );
-};
+}
 
 // An inline reference to a word, showing its current pronunciation. Candidates (no root yet)
 // are marked in amber.
@@ -387,7 +479,7 @@ export function W(props: { w: string }) {
   }
   return (
     <LazyTippy
-      content={<WordPopoverContent word={word} depth={0} />}
+      content={<FormPopoverContent word={word} current={word} depth={0} />}
       interactive={true}
       delay={[200, 0]}
       theme="light"

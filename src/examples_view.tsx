@@ -27,7 +27,7 @@ import {
 import { swadesh, toki_pona_words } from "./comparison";
 import { ComparisonTable, TallyLine } from "./comparison_view";
 import { pronounce } from "./phonology";
-import { LazyTippy, PhonologyContext, WordPopoverContent } from "./word_ui";
+import { FormPopoverContent, LazyTippy, PhonologyContext } from "./word_ui";
 
 type WordToken = Extract<Token, { kind: "word" }>;
 
@@ -50,7 +50,7 @@ const TokenBox: React.FC<{ token: WordToken }> = ({ token }) => {
   if (!word) return box;
   return (
     <LazyTippy
-      content={<WordPopoverContent word={word} depth={0} />}
+      content={<FormPopoverContent word={word} current={word} depth={0} />}
       interactive={true}
       delay={[200, 0]}
       theme="light"

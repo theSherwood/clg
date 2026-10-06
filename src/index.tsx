@@ -23,8 +23,7 @@ import {
   SideVerbs,
   VerbTypeBadge,
   VerbsByType,
-  WordPopoverContent,
-  WordPopoverList,
+  FormPopoverContent,
   side_of,
 } from "./word_ui";
 import {
@@ -51,7 +50,7 @@ const WordPreviewItem: React.FC<WordPreviewItemProps> = ({ word }) => {
   const side = side_of(word);
   return (
     <LazyTippy
-      content={<WordPopoverContent word={word} depth={0} />}
+      content={<FormPopoverContent word={word} current={word} depth={0} />}
       placement="right-start"
       interactive={true}
       delay={[200, 50]} // delay: [show, hide]
@@ -308,14 +307,7 @@ const SlotCell: React.FC<{ slot: Slot; dimmed: boolean }> = ({ slot, dimmed }) =
 
   return (
     <LazyTippy
-      content={
-        <div className="p-3 bg-white shadow-lg rounded-md border border-gray-200 text-sm">
-          <h3 className="font-bold mb-1">
-            ID {id} · <span className="font-mono text-indigo-700">{syllable}</span>
-          </h3>
-          <WordPopoverList label="Roots:" list={slot_roots} depth={0} />
-        </div>
-      }
+      content={<FormPopoverContent word={slot_roots[0]!} depth={0} />}
       placement="right-start"
       interactive={true}
       delay={[150, 0]}
