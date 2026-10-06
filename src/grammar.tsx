@@ -307,6 +307,11 @@ export function GrammarView() {
         whose duty answers whose right; a right to speak may ask of others only that they not
         interfere, and the sentence says so.
       </p>
+      <p className="mt-2">
+        A <W w="law" /> or rule is <i>command abstract</i>, a general command: it applies to anyone
+        in a given kind of case, where a <W w="command" /> is an order to someone about something
+        particular. Whose law it is goes with <W w="of" />.
+      </p>
       <Example meaning="Everyone has the right to speak.">
         &lt;subject&gt; everyone &lt;verb&gt; be_entitled_to(vt) &lt;object&gt; &lt;gerund&gt; say(vt)
       </Example>

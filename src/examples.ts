@@ -894,6 +894,12 @@ export const more_grammar_examples: Example[] = [
     english: "Everyone has the right to speak",
     transliteration: "<subject> everyone <verb> be_entitled_to(vt) <object> <gerund> say(vt)",
   },
+  { title: "Law", english: "a general command: law, or a rule", transliteration: "command abstract" },
+  {
+    title: "Obey the law",
+    english: "Everyone obeys the law",
+    transliteration: "<subject> everyone <verb> obey(vt) <object> law",
+  },
   {
     title: "A duty",
     english: "I'm bound not to interfere",

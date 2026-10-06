@@ -3256,6 +3256,12 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("never", ["time", "none"]);
   noun("when", ["time", "<blank>"]);
 
+  noun("law", ["command", "abstract"], {
+    gloss: "law / rule",
+    notes:
+      "A general command: one that says nothing of particular people or ends, unlike a command, which is an order to someone. Whose law is said with of",
+  });
+
   // Conversation
   idiom("yes", ["true"], { notes: "That's so" });
   idiom("no", ["false"], { notes: "That's not so" });
