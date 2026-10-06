@@ -897,6 +897,10 @@ export const more_grammar_examples: Example[] = [
   { title: "Prefer", english: "I prefer water", transliteration: "<subject> I <verb> prefer(vt) <object> water" },
   { title: "Choose", english: "Choose one", transliteration: "<verb_prescriptive> choose(vt) <object> thing number 1" },
   { title: "Safe", english: "The child is safe", transliteration: "<subject> child <verb> be(vt) <complement> safe" },
+  { title: "Infer", english: "I infer that you slept", transliteration: "<subject> I <verb> infer(vt) <object> <clause_start> <subject> you <verb> sleep(vi) formerly" },
+  { title: "Assume", english: "Assume it's true", transliteration: "<verb_prescriptive> assume(vt) <object> <clause_start> <verb> be(vt) <complement> true" },
+  { title: "Reason", english: "the faculty: what you reason with", transliteration: "<tool> infer(vt)" },
+  { title: "Mind", english: "what perceives itself", transliteration: "<er> sense(vt) self" },
   { title: "Conscience", english: "what you blame yourself with", transliteration: "<tool> blame(vt) self" },
   { title: "Model", english: "what resembles something", transliteration: "<er> resemble(vt)" },
   { title: "Metaethics", english: "ethics about ethics", transliteration: "merit meta" },
@@ -988,7 +992,7 @@ export const udhr_articles: Article[] = [
       "All human beings are born free and equal in dignity and rights. They are endowed with reason and conscience and should act towards one another in a spirit of brotherhood.",
     ],
     transliteration:
-      "<subject> everyone <verb?> be(vt) <complement> free and same in value and right. <subject> it all <verb> possess(vt) <object> reason and conscience? and <verb_prescriptive> act(vi) for other and in path family. ??",
+      "<subject> everyone <verb?> be(vt) <complement> free and same in value and right. <subject> it all <verb> possess(vt) <object> reason and conscience and <verb_prescriptive> act(vi) for other and in path family. ??",
   },
   {
     title: "Article 2",

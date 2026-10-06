@@ -2314,6 +2314,26 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     {
+      noun: "logic",
+      notes:
+        "From premises to conclusions: assuming at the negative end, inferring at the positive, axioms and theorems at the ends. Reason, the faculty, is <tool> infer(vt); a reason for believing something is a premise, as a reason something happened is a cause",
+      steps: {
+        max_positive: { noun: "theorem", adj: "derived", verb: "derive(vt)", verb_i: "derive", verb_t: "derive" },
+        max_negative: { noun: "axiom", adj: "axiomatic", verb: "posit(vt)", verb_i: "posit", verb_t: "posit" },
+      },
+    },
+    {
+      noun: "premise",
+      adj: "assumed",
+      verb: "assume(vt)",
+      verb_i: "assume",
+      verb_t: "assume",
+      adverb: "hypothetically",
+    },
+    { noun: "conclusion", adj: "inferred", verb: "infer(vt)", verb_i: "reason", verb_t: "infer", adverb: "logically" },
+  ],
+  [
+    {
       noun: "selection",
       notes: "Preferring is leaning toward choosing: prefer(vt) X exceed(vt) Y is to prefer X to Y",
       steps: {
@@ -2837,7 +2857,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   candidate("original");
   candidate("un-", { notes: "?" });
   candidate("re-", { notes: "?" });
-  candidate("mind");
   candidate("machine");
   candidate("sex");
   candidate("turn");
@@ -2917,7 +2936,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "believe(vi)", "lead(vi)", "work(vi)", "search(vi)", "learn(vi)", "sow(vi)", "give(vi)",
     "make_peace(vi)", "defend(vi)", "tend(vi)", "command(vt)", "resist(vi)", "withstand(vt)",
     "participate(vi)", "recommend(vi)", "say(vt)", "write(vi)", "sense(vt)", "use(vi)",
-    "do(vt)", "touch(vi)", "count(vi)", "thank(vt)", "show(vi)", "fly(vi)", "choose(vi)",
+    "do(vt)", "touch(vi)", "count(vi)", "thank(vt)", "show(vi)", "fly(vi)", "choose(vi)", "infer(vt)",
   ],
   relation: [
     "possess(vt)", "be(vt)", "be_entitled_to(vt)", "resemble(vt)", "result_from(vt)", "love(vt)", "know(vt)", "desire(vt)", "face(vt)", "include(vt)",
@@ -3282,6 +3301,8 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("never", ["time", "none"]);
   noun("when", ["time", "<blank>"]);
 
+  noun("reason", ["<tool>", "infer(vt)"], { gloss: "reason (the faculty)", notes: "What one reasons with" });
+  noun("mind", ["<er>", "sense(vt)", "self"], { notes: "What perceives itself" });
   noun("model", ["<er>", "resemble(vt)"], { gloss: "model / likeness", notes: "What resembles something" });
   noun("conscience", ["<tool>", "blame(vt)", "self"], {
     notes: "What one blames oneself with, and by the same axis credits oneself: a clear conscience",

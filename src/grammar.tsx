@@ -344,7 +344,18 @@ export function GrammarView() {
         is resilience.
       </p>
       <p className="mt-2">
-        <W w="conscience" /> is <i>&lt;tool&gt; blame(vt) self</i>, what you blame yourself with, and by
+        Reasoning is the logic axis, from premises to conclusions: <W w="assume(vt)" /> a{" "}
+        <W w="premise" /> at the negative end and <W w="infer(vt)" /> a <W w="conclusion" /> at the
+        positive, whose no-object meaning is <W w="reason(vi)" />. At the ends,{" "}
+        <W w="posit(vt)" /> an <W w="axiom" /> and <W w="derive(vt)" /> a <W w="theorem" />.{" "}
+        <W w="reason" />, the faculty, is <i>&lt;tool&gt; infer(vt)</i>. A reason for believing
+        something is a premise, where a reason something happened is a <W w="cause" />.
+      </p>
+      <Example meaning="I infer that you slept.">
+        &lt;subject&gt; I &lt;verb&gt; infer(vt) &lt;object&gt; &lt;clause_start&gt; &lt;subject&gt; you &lt;verb&gt; sleep(vi) formerly
+      </Example>
+      <p className="mt-2">
+        <W w="mind" /> is <i>&lt;er&gt; sense(vt) self</i>, what perceives itself. <W w="conscience" /> is <i>&lt;tool&gt; blame(vt) self</i>, what you blame yourself with, and by
         the same axis credit yourself. A <W w="model" /> is <i>&lt;er&gt; resemble(vt)</i>, a thing that
         resembles another. <W w="meta" /> as a modifier makes X about X: <i>merit meta</i> is
         metaethics, the study of what good is, and <i>knowledge meta</i> knowing what you know.
