@@ -2171,7 +2171,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { noun: "inferiority", adj: "lesser", verb: "fall_short(v)", verb_t: "fall short of" },
     { noun: "superiority", adj: "greater", verb: "exceed(v)", verb_t: "exceed" },
   ],
-  [{ notes: "duplicate of come/go in the verb forms?" }, { adverb: "here" }, { adverb: "there" }],
   [
     { notes: "duplicate of behind/ahead?" },
     { noun: "stern", adj: "rear", adverb: "aft" },

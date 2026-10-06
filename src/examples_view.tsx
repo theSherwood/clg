@@ -7,6 +7,7 @@ import {
   comparison_examples,
   family_examples,
   geometry_examples,
+  pointing_examples,
   question_examples,
   role_examples,
   self_other_examples,
@@ -135,6 +136,7 @@ const all_transliterations = [
   ...comparison_examples.map((e) => e.transliteration),
   ...geometry_examples.map((e) => e.transliteration),
   ...thing_examples.map((e) => e.transliteration),
+  ...pointing_examples.map((e) => e.transliteration),
   ...udhr_articles.flatMap((a) => (a.transliteration ? [a.transliteration] : [])),
 ];
 
@@ -217,6 +219,7 @@ export function ExamplesView() {
         { title: "Colors", examples: color_examples },
         { title: "Nouns from verbs", examples: role_examples },
         { title: "Questions", examples: question_examples },
+        { title: "Here and there", examples: pointing_examples },
         { title: "Self and other", examples: self_other_examples },
         { title: "Water and fire", examples: water_fire_examples },
         { title: "Sky", examples: sky_examples },

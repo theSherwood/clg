@@ -532,6 +532,19 @@ export const thing_examples: Example[] = [
   },
 ];
 
+// Pointing words: this, that and _blank with a preposition or a general noun
+export const pointing_examples: Example[] = [
+  { title: "Here", english: "I sleep here", transliteration: "<subject> I <verb> sleep(v) <at> this" },
+  { title: "There", english: "You work there", transliteration: "<subject> you <verb> work(v) <at> that" },
+  { title: "Where", english: "Where do you sleep?", transliteration: "<subject> you <verb (interrogative)> sleep(v) <at> _blank" },
+  { title: "Come here", english: "Come here!", transliteration: "<verb (prescriptive)> come(v) <to> this" },
+  { title: "From there", english: "I came from there", transliteration: "<subject> I <verb> come(v) formerly <from> that" },
+  { title: "This place", english: "This place is big", transliteration: "<subject> place this <verb> is <object> big" },
+  { title: "That person", english: "that person", transliteration: "person that" },
+  { title: "Which person", english: "Which person left?", transliteration: "<subject> person _blank <verb (interrogative)> go(v)" },
+  { title: "This thing", english: "I want this thing", transliteration: "<subject> I <verb> desire <object> thing this" },
+];
+
 // Universal Declaration of Human Rights
 
 export const udhr_preamble: string[] = [

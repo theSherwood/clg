@@ -399,9 +399,46 @@ export function GrammarView() {
         <W w="pronoun(third_person)" />, with number made by compounds: “me” is
         first_person-singular, “we” first_person-plural (also -inclusive and -exclusive), “y'all”
         second_person-plural. The third person can optionally specify plural and gender or sex.{" "}
-        <W w="this" /> and <W w="that" /> might become “it-near” and “it-far”. <W w="_blank" /> is
-        the question word: what a question asks about.
+        <W w="this" /> and <W w="that" /> point near and far, and <W w="_blank" /> is the question
+        word: what a question asks about.
       </p>
+      <p className="mt-2">
+        Together they make a table of pointing and question words with a few general nouns, like
+        Esperanto's correlatives. There's no word for “here” or “there”: like Toki Pona's{" "}
+        <i>lon ni</i>, here is <i>&lt;at&gt; this</i> and there <i>&lt;at&gt; that</i>, with{" "}
+        <i>place this</i> when it needs to be a noun.
+      </p>
+      <table className="mt-2 text-sm border-collapse">
+        <thead>
+          <tr className="text-left text-gray-500">
+            <th className="pr-4 font-normal" />
+            <th className="pr-4 font-normal">this</th>
+            <th className="pr-4 font-normal">that</th>
+            <th className="font-normal">_blank</th>
+          </tr>
+        </thead>
+        <tbody>
+          {(
+            [
+              ["place", "here", "there", "where"],
+              ["person", "this person", "that person", "who"],
+              ["thing", "this thing", "that thing", "what"],
+            ] as const
+          ).map(([noun, near, far, question]) => (
+            <tr key={noun} className="border-t border-gray-100">
+              <td className="pr-4 py-0.5">
+                <W w={noun} />
+              </td>
+              <td className="pr-4 py-0.5">{near}</td>
+              <td className="pr-4 py-0.5">{far}</td>
+              <td className="py-0.5">{question}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <Example meaning="I sleep here.">
+        &lt;subject&gt; I &lt;verb&gt; sleep &lt;at&gt; this
+      </Example>
       <p className="mt-2">
         <W w="thing" /> is the general noun, Toki Pona's <i>ijo</i>: <i>thing all</i> is
         everything, <i>thing none</i> nothing and <i>thing _blank</i> what thing.{" "}
