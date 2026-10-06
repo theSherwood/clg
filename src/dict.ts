@@ -2544,7 +2544,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     {
-      noun: "sequence",
+      noun: "seriality",
       notes:
         "Order in a sequence, counted from a reference point: now in a main clause, the main clause's time in a subclause. time <rank_3> next is tomorrow and time <rank_3> previous yesterday. Rank counts steps, as for generations: next <rank_2> is the one after next. Bare words are one step",
     },
@@ -3374,7 +3374,19 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   // The elements: element and the digit of the atomic number, a phrase settled into a word
   elements.forEach((name, i) => noun(name, ["element", `digit_${i + 1}`], { gloss: `${name} (element ${i + 1})` }));
 
-  noun("chain", ["node", "<rank_1>"], { gloss: "chain / list (nodes in a line)" });
+  noun("sequence", ["node", "<rank_1>"], { gloss: "sequence / chain / list" });
+  // Sequences by how they're laid out, and through more dimensions
+  noun("array", ["sequence", "continuous"], { notes: "An unbroken sequence, stored contiguously" });
+  noun("linked_list", ["sequence", "discrete"], { gloss: "linked list", notes: "A sequence of separate pieces, each linked to the next" });
+  noun("grid", ["sequence", "<dimension_y>"], {
+    gloss: "table / grid / matrix (of data)",
+    notes: "A sequence through two dimensions; sequence <dimension_z> is through three. A table to sit at is <place> eat(vt)",
+  });
+  // Furniture is the place for doing something, as a bed is the place for sleeping
+  noun("bed", ["<place>", "sleep(vi)"]);
+  noun("chair", ["<place>", "sit(vi)"], { gloss: "chair / seat" });
+  noun("table", ["<place>", "eat(vt)"], { gloss: "table (furniture)", notes: "A data table is a grid" });
+  noun("desk", ["<place>", "work(vi)"], { gloss: "desk / workbench" });
   noun("tree_graph", ["node", "<rank_2>"], { gloss: "tree (graph)" });
   noun("dag", ["node", "<rank_3>"], { gloss: "directed acyclic graph" });
   noun("graph", ["node", "<rank_4>"], { gloss: "graph / network" });

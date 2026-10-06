@@ -97,7 +97,10 @@ export function GrammarView() {
         so food. <W w="<er>" /> is whoever or whatever does it, not only a person, like English
         printer or opener. Two more markers name other roles, like the prepositions{" "}
         <W w="with" /> and <W w="at" />: <W w="<tool>" /> is what it's done with (<i>&lt;tool&gt; open(vt)</i>,
-        a key) and <W w="<place>" /> where it's done (<i>&lt;place&gt; sleep(vi)</i>, a bed).{" "}
+        a key) and <W w="<place>" /> where it's done (<i>&lt;place&gt; sleep(vi)</i>, a bed). Furniture is
+        named this way: <W w="chair" /> is <i>&lt;place&gt; sit(vi)</i>, <W w="table" />{" "}
+        <i>&lt;place&gt; eat(vt)</i> and <W w="desk" /> <i>&lt;place&gt; work(vi)</i>. The same words can
+        be a room or a building, a restaurant or a workplace, by context.{" "}
         <W w="<to>" /> and <W w="<from>" /> follow <W w="to" /> and <W w="from" />: who or where it
         goes to (<i>&lt;to&gt; send(vt)</i>, the addressee; <i>&lt;to&gt; go(vi)</i>, the destination) and comes from (
         <i>&lt;from&gt; come(vi)</i>, someone's origin; <i>&lt;from&gt; receive(vt)</i>, the sender). Arabic builds
@@ -517,10 +520,17 @@ export function GrammarView() {
       </p>
       <p className="mt-2">
         <W w="node" /> takes rank for networks, each more general than the last:{" "}
-        <W w="chain" /> (<i>node &lt;rank_1&gt;</i>), <W w="tree_graph" /> (<i>&lt;rank_2&gt;</i>),{" "}
+        <W w="sequence" /> (<i>node &lt;rank_1&gt;</i>), <W w="tree_graph" /> (<i>&lt;rank_2&gt;</i>),{" "}
         <W w="dag" /> (<i>&lt;rank_3&gt;</i>), <W w="graph" /> (<i>&lt;rank_4&gt;</i>), <W w="hypergraph" />{" "}
         (<i>&lt;rank_5&gt;</i>) and <W w="higher_order_network" /> (<i>&lt;rank_6&gt;</i>). Whether a graph's
         links have a direction is a modifier.
+      </p>
+      <p className="mt-2">
+        A sequence's modifiers say how it's laid out: <W w="array" /> is <i>sequence continuous</i>,
+        unbroken, and <W w="linked_list" /> <i>sequence discrete</i>, separate pieces each linked to
+        the next. A dimension helper takes it through more dimensions, as with geometry:{" "}
+        <W w="grid" /> is <i>sequence &lt;dimension_y&gt;</i>, a table of data, and{" "}
+        <i>sequence &lt;dimension_z&gt;</i> a 3D grid.
       </p>
 
       <H2>Matter</H2>
