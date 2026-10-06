@@ -1777,11 +1777,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "trade" },
-    { noun: "sale", adj: "sold", verb: "sell(v)", verb_i: "sell", verb_t: "sell" },
-    { noun: "purchase", adj: "bought", verb: "buy(v)", verb_i: "shop", verb_t: "buy" },
-  ],
-  [
     { noun: "transmission", notes: "duplicate of come/go" },
     { noun: "receipt", adj: "received", verb: "receive(v)", verb_i: "receive", verb_t: "receive" },
     { noun: "dispatch", adj: "sent", verb: "send(v)", verb_i: "send", verb_t: "send" },
@@ -1896,7 +1891,24 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { noun: "sowing", adj: "sown", verb: "sow(v)", verb_i: "sow", verb_t: "sow" },
   ],
   [
-    { notes: "negative verb forms: take; positive verb forms: give" },
+    {
+      noun: "transfer",
+      notes:
+        "Which way things flow, and how much comes back: selling is a lesser giving (you're paid) and buying a lesser taking (you pay), exchange is the neutral, and the max steps get nothing back",
+      steps: {
+        max_positive: {
+          noun: "sacrifice",
+          adj: "sacrificed",
+          verb: "sacrifice(v)",
+          verb_i: "sacrifice",
+          verb_t: "sacrifice",
+        },
+        min_positive: { noun: "sale", adj: "sold", verb: "sell(v)", verb_i: "sell", verb_t: "sell" },
+        neutral: { noun: "trade", verb: "exchange(v)", verb_i: "trade", verb_t: "exchange" },
+        min_negative: { noun: "purchase", adj: "bought", verb: "buy(v)", verb_i: "shop", verb_t: "buy" },
+        max_negative: { noun: "seizure", adj: "seized", verb: "seize(v)", verb_i: "seize", verb_t: "seize" },
+      },
+    },
     { noun: "taking", adj: "taken", verb: "take(v)", verb_i: "take", verb_t: "take" },
     {
       noun: "gift",
@@ -2535,7 +2547,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     notes:
       "Should this be a domain specifier? up - down, forward - back, left - right, north - south, east - west, in - out, future - past",
   });
-  candidate("exchange", { notes: "Maybe possible on a buy/sell spectrum" });
   candidate("value");
 
   // Groups of related concepts
@@ -2604,7 +2615,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "necessitate(v)", "cover(v)",
   ],
   action: [
-    "analyze(v)", "win(v)", "succeed(v)", "produce(v)", "buy(v)", "send(v)", "hope(v)",
+    "analyze(v)", "win(v)", "succeed(v)", "produce(v)", "send(v)", "hope(v)",
     "believe(v)", "lead(v)", "work(v)", "search(v)", "learn(v)", "sow(v)", "give(v)",
     "make_peace(v)", "defend(v)", "steward(v)", "command(v)", "resist(v)", "withstand(v)",
     "participate(v)", "recommend(v)", "say(v)", "write(v)", "sense(v)", "use(v)",
