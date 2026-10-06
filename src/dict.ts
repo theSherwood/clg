@@ -827,7 +827,19 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   [
     {
       noun: "temperature",
-      notes: "negative intransitive verb: to get colder; positive intransitive verb: to get warmer",
+      notes:
+        "Heat at its fullest is fire, and cooling at its fullest is putting it out: burn(v) is max_positive heat(v), quench(v) max_negative",
+      steps: {
+        max_positive: {
+          noun: "fire",
+          adj: "burning",
+          verb: "burn(v)",
+          verb_i: "burn",
+          verb_t: "burn",
+          adverb: "ablaze",
+        },
+        max_negative: { adj: "frigid", verb: "quench(v)", verb_i: "go out", verb_t: "quench" },
+      },
     },
     {
       noun: "coldness",
@@ -1052,14 +1064,14 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "prevalence" },
+    { noun: "prevalence", notes: "Also frequency: rarely is how seldom, commonly how often" },
     {
-      noun: "uncommonness",
-      adj: "uncommon",
+      noun: "rarity",
+      adj: "rare",
       verb: "dwindle(v)",
       verb_i: "dwindle",
       verb_t: "suppress",
-      adverb: "uncommonly",
+      adverb: "rarely",
     },
     {
       noun: "commonness",
@@ -1703,18 +1715,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "combustion" },
-    { adj: "extinguished", verb: "extinguish(v)", verb_i: "go out", verb_t: "put out" },
-    {
-      noun: "fire",
-      adj: "burning",
-      verb: "burn(v)",
-      verb_i: "burn",
-      verb_t: "burn",
-      adverb: "ablaze",
-    },
-  ],
-  [
     { noun: "reasoning" },
     {
       noun: "instinct",
@@ -2258,11 +2258,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [{}, { noun: "femininity", adj: "female" }, { noun: "masculinity", adj: "male" }],
   [
-    { noun: "frequency", notes: "negative verb “normalize / normalize” needs a positive verb" },
-    { noun: "normality", adj: "normal", adverb: "normally" },
-    { noun: "rarity", adj: "rare", adverb: "rarely" },
-  ],
-  [
     { notes: "negative verb internalize(v) (no positive verb)" },
     { noun: "interior", adj: "inward", adverb: "inwardly" },
     { noun: "surface", adj: "superficial", adverb: "superficially" },
@@ -2599,7 +2594,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "beautify(v)", "go(v)", "heap_up(v)", "fill_up(v)", "show(v)", "educate(v)",
     "aim(v)", "group(v)", "mark_up(v)", "emphasize(v)", "mend(v)", "unify(v)", "constrain(v)",
     "sanctify(v)", "contain(v)", "regulate(v)", "disconnect(v)", "stop(v)", "obligate(v)",
-    "necessitate(v)", "burn(v)",
+    "necessitate(v)",
   ],
   action: [
     "analyze(v)", "win(v)", "succeed(v)", "produce(v)", "buy(v)", "send(v)", "hope(v)",

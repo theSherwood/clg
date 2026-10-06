@@ -449,10 +449,10 @@ export const self_other_examples: Example[] = [
   },
 ];
 
-// Water, and fire from the combustion axis: burn is a change verb
+// Water, and fire: burn and quench are the max steps of heat
 export const water_fire_examples: Example[] = [
   { title: "Water", english: "water", transliteration: "water" },
-  { title: "Fire", english: "the burning end of the combustion axis", transliteration: "fire" },
+  { title: "Fire", english: "heat at its fullest (max_positive heat)", transliteration: "fire" },
   { title: "Drink", english: "I drink water", transliteration: "<subject> I <verb> eat <object> water" },
   { title: "Burn", english: "The land is burning", transliteration: "<subject> land <verb> burn(v) continuous_tense_aspect" },
   {
@@ -463,13 +463,13 @@ export const water_fire_examples: Example[] = [
   {
     title: "Put out",
     english: "Water puts out fire",
-    transliteration: "<subject> water <verb> extinguish(v) <object> fire",
+    transliteration: "<subject> water <verb> quench(v) <object> fire",
   },
   {
     title: "Go out, but",
     english: "The fire went out, but the rock is hot",
     transliteration:
-      "<subject> fire <verb> extinguish(v) formerly but <subject> rock <verb> is <object> hot",
+      "<subject> fire <verb> quench(v) formerly but <subject> rock <verb> is <object> hot",
   },
 ];
 
@@ -662,7 +662,7 @@ export const clause_examples: Example[] = [
     title: "If",
     english: "If it burns, put it out",
     transliteration:
-      "if clause_start <subject> it <verb> burn(v) clause_end <verb (prescriptive)> extinguish(v) <object> it",
+      "if clause_start <subject> it <verb> burn(v) clause_end <verb (prescriptive)> quench(v) <object> it",
   },
   {
     title: "Who",
