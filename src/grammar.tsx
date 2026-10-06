@@ -438,7 +438,9 @@ export function GrammarView() {
         <i>&lt;tool&gt; know(vt)</i> and <W w="nose" /> <i>&lt;tool&gt; sense(vt) gas</i>. Where there's no verb for
         it, the kind-and-whole pattern does: <W w="heart" /> is <i>center body</i>. Substances take a
         phase: <W w="blood" /> is <i>liquid body</i>, <W w="sap" /> <i>liquid plant</i> and{" "}
-        <W w="flesh" /> <i>matter body</i>.
+        <W w="flesh" /> <i>matter body</i>. A substance can also be named for what it does:{" "}
+        <W w="grease" /> is <i>&lt;tool&gt; slip(vi)</i> and <W w="glue" /> <i>&lt;tool&gt; stick(vi)</i>, from
+        the ends of the texture axis.
       </p>
       <p className="mt-2">
         A body part names the like part of another whole, as many languages speak of the foot of a

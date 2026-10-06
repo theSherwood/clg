@@ -47,7 +47,7 @@ const swadesh_rows: Row[] = [
   ["flesh", "matter body", "sijelo"],
   ["blood", "liquid body", "telo loje"],
   ["bone", "rock body", "kiwen"],
-  ["grease", "", "ko"],
+  ["grease", "<tool> slip(vi)", "ko"],
   ["egg", "container child", "sike mama"],
   ["horn", "rod head", "palisa lawa"],
   ["tail", "rod back", "palisa monsi"],

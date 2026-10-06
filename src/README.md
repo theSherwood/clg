@@ -50,3 +50,5 @@ fit as its scale steps.
 - [ ] internality (internal/external) and in/out: noted on the axis as a possible duplicate
 - [ ] effort (difficult/easy, hinder/enable): may not make much sense as it stands; revisit now
   that capability (able/unable) holds ability
+- [ ] granularity's max steps, slip and stick: sticky as the fullest coarse is a stretch.
+  Tentative; a friction axis of its own may fit better

@@ -844,6 +844,8 @@ export const part_examples: Example[] = [
   { title: "Heart", english: "the body's center", transliteration: "center body" },
   { title: "Blood", english: "the body's liquid", transliteration: "liquid body" },
   { title: "Leaf", english: "a plant's finger", transliteration: "finger plant" },
+  { title: "Grease", english: "what you make things slip with", transliteration: "<tool> slip(vi)" },
+  { title: "Glue", english: "what you stick things with", transliteration: "<tool> stick(vi)" },
   { title: "Root", english: "a plant's feet", transliteration: "feet plant" },
   {
     title: "A sentence",

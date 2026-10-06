@@ -464,7 +464,18 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   [
     {
       noun: "granularity",
-      notes: "From axis.csv (as rough / smooth): positive verb to smooth (transitive)",
+      notes:
+        "Texture, and so friction: smooth at its fullest slips, coarse at its fullest sticks. Grease is <tool> slip(vi) and glue <tool> stick(vi). Tentative: sticky sits oddly with coarse",
+      steps: {
+        max_positive: {
+          noun: "slipperiness",
+          adj: "slippery",
+          verb: "slip(vi)",
+          verb_i: "slip",
+          verb_t: "lubricate",
+        },
+        max_negative: { noun: "stickiness", adj: "sticky", verb: "stick(vi)", verb_i: "stick", verb_t: "stick" },
+      },
     },
     {
       noun: "coarseness",
@@ -3184,6 +3195,8 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("flesh", ["matter", "body"]);
   noun("sap", ["liquid", "plant"]);
   noun("egg", ["container", "child"]);
+  noun("grease", ["<tool>", "slip(vi)"], { gloss: "grease / lubricant" });
+  noun("glue", ["<tool>", "stick(vi)"]);
   noun("tree", ["plant", "big"]);
   noun("root", ["feet", "plant"], { gloss: "root (of a plant)" });
   noun("trunk", ["torso", "plant"]);
