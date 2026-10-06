@@ -369,10 +369,18 @@ export function GrammarView() {
 
       <H2>Geometry</H2>
       <p>
-        <W w="geometry" /> is one root for geometric figures, and rank counts their dimensions, as{" "}
-        <W w="<dimension_0>" /> is a point: <i>geometry &lt;rank_0&gt;</i> is a point, <i>&lt;rank_1&gt;</i> a line,{" "}
-        <i>&lt;rank_2&gt;</i> a shape and <i>&lt;rank_3&gt;</i> a form, a solid. Modifiers say which:{" "}
-        <i>geometry &lt;rank_2&gt; round</i> is a circle and <i>geometry &lt;rank_3&gt; round</i> a sphere.
+        <W w="geometry" /> is one root for geometric figures. Rank gives a bounded figure with that
+        many dimensions: <W w="point" /> (<i>geometry &lt;rank_0&gt;</i>), <W w="line_segment" />{" "}
+        (<i>&lt;rank_1&gt;</i>), <W w="shape" /> (<i>&lt;rank_2&gt;</i>) and <W w="form" />, a 3D structure (
+        <i>&lt;rank_3&gt;</i>). A dimension helper gives the unbounded space up through that dimension:{" "}
+        <W w="infinite_line" /> (<i>geometry &lt;dimension_x&gt;</i>), <W w="plane" /> (<i>&lt;dimension_y&gt;</i>)
+        and <W w="space" /> (<i>&lt;dimension_z&gt;</i>); higher spaces go through the number domain, as{" "}
+        <i>geometry dimension &lt;ordinal&gt; number 4</i>.
+      </p>
+      <p className="mt-2">
+        Modifiers say which figure, at any rank: <W w="round" /> gives <W w="curve" />,{" "}
+        <W w="circle" /> and <W w="sphere" />, and <W w="angular" /> gives <W w="polyline" />,{" "}
+        <W w="polygon" /> and <W w="polyhedron" />.
       </p>
       <p className="mt-2">
         <W w="node" /> takes rank for networks, each more general than the last:{" "}

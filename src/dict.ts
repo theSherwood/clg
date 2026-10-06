@@ -1301,7 +1301,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
     {
       noun: "angularity",
-      adj: "angle",
+      adj: "angular",
       verb: "angle(vt)",
       verb_i: "bend",
       verb_t: "angle",
@@ -2469,7 +2469,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
 {
   // Higher dimensions go through the number domain: dimension <ordinal> number 4
   section("dimension");
-  cr("<dimension_0>", { gloss: "point / dimensionless" });
+  cr("<dimension_0>", { gloss: "no dimension" });
   cr("<dimension_x>", { gloss: "the first dimension (x)" });
   cr("<dimension_y>", { gloss: "the second dimension (y)" });
   cr("<dimension_z>", { gloss: "the third dimension (z)" });
@@ -2550,7 +2550,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("geometry", {
     gloss: "geometric figure",
     notes:
-      "Rank counts dimensions, as <dimension_0> is a point: <rank_0> point, <rank_1> line, <rank_2> shape, <rank_3> form (a solid). Modifiers say which: geometry <rank_2> round is a circle, geometry <rank_3> round a sphere",
+      "Rank gives a bounded figure of that many dimensions: <rank_0> point, <rank_1> line segment, <rank_2> shape, <rank_3> form (a 3D structure). A dimension helper gives the unbounded space up through that dimension: <dimension_x> a line, <dimension_y> a plane, <dimension_z> space. Modifiers say which figure: <rank_2> round is a circle, <rank_2> angular a polygon",
   });
   cr("celestial", {
     gloss: "celestial body",
@@ -2874,6 +2874,21 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
 
   // Networks, by how general the links are. Direction is a modifier, so a directed graph is a
   // graph with a word for directed (none yet)
+  // Bounded figures by rank, unbounded spaces by dimension
+  noun("point", ["geometry", "<rank_0>"]);
+  noun("line_segment", ["geometry", "<rank_1>"], { gloss: "line segment" });
+  noun("shape", ["geometry", "<rank_2>"]);
+  noun("form", ["geometry", "<rank_3>"], { gloss: "form (3D structure)" });
+  noun("curve", ["geometry", "<rank_1>", "round"]);
+  noun("polyline", ["geometry", "<rank_1>", "angular"]);
+  noun("circle", ["geometry", "<rank_2>", "round"]);
+  noun("polygon", ["geometry", "<rank_2>", "angular"]);
+  noun("sphere", ["geometry", "<rank_3>", "round"]);
+  noun("polyhedron", ["geometry", "<rank_3>", "angular"]);
+  noun("infinite_line", ["geometry", "<dimension_x>"], { gloss: "line (infinite)" });
+  noun("plane", ["geometry", "<dimension_y>"]);
+  noun("space", ["geometry", "<dimension_z>"], { gloss: "space (3D Euclidean)" });
+
   noun("chain", ["node", "<rank_1>"], { gloss: "chain / list (nodes in a line)" });
   noun("tree_graph", ["node", "<rank_2>"], { gloss: "tree (graph)" });
   noun("dag", ["node", "<rank_3>"], { gloss: "directed acyclic graph" });
