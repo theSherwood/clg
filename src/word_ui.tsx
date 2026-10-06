@@ -228,13 +228,23 @@ function MatrixCell({
   return (
     <td
       className={`px-1.5 py-0.5 border border-gray-200 whitespace-nowrap
-        ${cell.word === current ? "bg-indigo-50 font-semibold" : ""}
+        ${cell.word === current ? "bg-indigo-100 font-semibold" : ""}
         text-gray-800`}
     >
       {cell.gloss ?? cell.word.word}
     </td>
   );
 }
+
+// Opposite steps share a tint, so the scale reads as mirrored around neutral
+const STEP_TINTS: Record<string, string> = {
+  max_positive: "bg-amber-50",
+  positive: "bg-emerald-50",
+  min_positive: "bg-sky-50",
+  min_negative: "bg-sky-50",
+  negative: "bg-emerald-50",
+  max_negative: "bg-amber-50",
+};
 
 // The whole axis a word belongs to: every form at every step of the scale, from max_positive down
 // to max_negative. The bare root is the positive step.
@@ -278,7 +288,7 @@ function AxisMatrix({ axis, current }: { axis: Axis; current: Word }) {
         </thead>
         <tbody>
           {rows.map(([label, sound, side, optional]) => (
-            <tr key={label}>
+            <tr key={label} className={STEP_TINTS[label] ?? ""}>
               <th
                 className={`pr-1.5 font-normal text-left whitespace-nowrap ${
                   optional ? "text-gray-400" : "text-gray-500"
