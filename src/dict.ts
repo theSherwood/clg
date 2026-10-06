@@ -17,8 +17,8 @@ export type Tag = keyof typeof T;
 // Sections reserve fixed ranges of root IDs for kinds of words, with room to grow, so adding a
 // word to one section never shifts the IDs (and so the sounds) of words in another.
 // The first 128 IDs are core words, and domain words must be among them so they're never
-// ambiguous. The last 128 are shared by partial domains (the digits, in the number domain, and
-// the elements, in the element domain) and the axis words, which are told apart by domain.
+// ambiguous. The last 128 are shared by partial domains (the digits, in the number domain) and
+// the axis words, which are told apart by domain.
 export const sections = [
   { key: "marker", label: "Grammar markers", start: 0, end: 14 },
   { key: "number_helper", label: "Number helpers", start: 14, end: 16 },
@@ -31,7 +31,6 @@ export const sections = [
   { key: "rank", label: "Rank helpers", start: 112, end: 128 },
   { key: "axis", label: "Axis words", start: 128, end: 256 },
   { key: "digit", label: "Digits", start: 128, end: 256 },
-  { key: "element", label: "Elements", start: 128, end: 256 },
 ] as const; // end is exclusive
 
 export type Section = (typeof sections)[number];
@@ -2725,7 +2724,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     gloss: "chemical element",
     t: [T.domain_specifier],
     notes:
-      "Marks the element domain: what follows reads roots 129-246 as the elements, each on the digit of its atomic number, so element carbon sounds like element 6. Bare, it's any element. With matter it gives the phase: element gold matter <rank_0> is solid gold",
+      "Marks the element domain: the digit after it is an atomic number, so element 6 is carbon. The elements are written as one word, carbon for element 6, as phrases with a settled meaning are. Bare, it's any element. With matter it gives the phase: gold matter <rank_0> is solid gold",
   });
 
 
@@ -2769,13 +2768,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   for (let i = 0; i < 128; i++) {
     cr(`digit_${i}`, { domain: "number" });
   }
-}
-
-// elements: the element domain reuses the last 128 IDs too, each element on the root of the digit
-// for its atomic number, so element 1 (hydrogen) sounds like digit 1. Digit 0 has no element.
-{
-  section("element");
-  elements.forEach((name, i) => cr(name, { domain: "element", id: 129 + i }));
 }
 
 // axis words
@@ -3210,6 +3202,9 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("boat", ["<tool>", "swim(vi)"], { gloss: "boat / ship" });
   noun("aircraft", ["<tool>", "fly(vi)"]);
   noun("spacecraft", ["<tool>", "spacefly(vi)"]);
+
+  // The elements: element and the digit of the atomic number, a phrase settled into a word
+  elements.forEach((name, i) => noun(name, ["element", `digit_${i + 1}`], { gloss: `${name} (element ${i + 1})` }));
 
   noun("chain", ["node", "<rank_1>"], { gloss: "chain / list (nodes in a line)" });
   noun("tree_graph", ["node", "<rank_2>"], { gloss: "tree (graph)" });

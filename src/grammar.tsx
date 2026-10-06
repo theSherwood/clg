@@ -59,7 +59,7 @@ export function GrammarView() {
       <H2>The root space</H2>
       <p>
         IDs 0–127 are core words. IDs 128–255 are shared: they're read by domain, as digits in the
-        number domain, elements in the element domain, or as axis words otherwise. Domain words must be in 0–127 so they're never
+        number domain or as axis words otherwise. Domain words must be in 0–127 so they're never
         ambiguous. Each kind of word has a section with room to grow:
       </p>
       <table className="mt-2 text-sm">
@@ -498,15 +498,15 @@ export function GrammarView() {
       </Example>
       <p className="mt-2">
         <W w="element" /> marks the element domain, as <W w="number" /> marks the number domain:
-        the roots after it read as the chemical elements. Each element is on the root of the digit
-        for its atomic number, so <i>element carbon</i> sounds just like <i>element 6</i>, and
-        knowing one means knowing the other. They run from <W w="hydrogen" /> (1) to{" "}
-        <W w="oganesson" /> (118); digit 0 has no element. Bare, <W w="element" /> is any element,
-        and an element with matter's rank gives its phase: <i>element gold matter &lt;rank_0&gt;</i> is
+        the digit after it is an atomic number, so <i>element 6</i> is carbon. Each element has
+        settled into one word, written without the space: <W w="carbon" /> is <i>element 6</i>, from{" "}
+        <W w="hydrogen" /> (1) to <W w="oganesson" /> (118). That's how any phrase with a canonical
+        meaning becomes a word; its parts are still there to see. Bare, <W w="element" /> is any
+        element, and an element with matter's rank gives its phase: <i>gold matter &lt;rank_0&gt;</i> is
         solid gold.
       </p>
       <Example meaning="This rock is iron.">
-        &lt;subject&gt; rock this &lt;verb&gt; be(vt) &lt;complement&gt; element iron
+        &lt;subject&gt; rock this &lt;verb&gt; be(vt) &lt;complement&gt; iron
       </Example>
 
       <H2>Sky</H2>

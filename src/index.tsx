@@ -180,7 +180,6 @@ const SECTION_SWATCHES: Record<SectionKey, string> = {
   rank: "bg-amber-800",
   axis: "bg-blue-500",
   digit: "bg-slate-400",
-  element: "bg-teal-300",
 };
 
 // groups: sections with a root at this ID; reserved: sections whose range includes it
@@ -246,7 +245,7 @@ const SlotCell: React.FC<{ slot: Slot; dimmed: boolean }> = ({ slot, dimmed }) =
   const phonology = useContext(PhonologyContext);
   const { id, roots: slot_roots, groups, reserved } = slot;
   const syllable = syllable_of(id, phonology);
-  // Prefer an axis word as the cell's label, since digits and elements share IDs with axis words. Axis
+  // Prefer an axis word as the cell's label, since digits share IDs with axis words. Axis
   // roots list their verb first; an axis with no verb shows its first word dimmed, as a gap.
   const label_word = slot_roots.find((w) => w.data.section === "axis") ?? slot_roots[0];
   const label = label_word?.word.replace(/\(v\)$/, "");

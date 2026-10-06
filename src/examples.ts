@@ -633,17 +633,13 @@ export const thing_examples: Example[] = [
     english: "The water evaporated, explicitly",
     transliteration: "<subject> water <verb> evaporate(vi) formerly",
   },
-  { title: "Element", english: "carbon", transliteration: "element carbon" },
-  {
-    title: "Element by number",
-    english: "carbon, as element 6: the same sound",
-    transliteration: "element 6",
-  },
-  { title: "Gold metal", english: "solid gold", transliteration: "element gold matter <rank_0>" },
+  { title: "Element", english: "element 6, as a phrase", transliteration: "element 6" },
+  { title: "Carbon", english: "the same, settled into one word", transliteration: "carbon" },
+  { title: "Gold metal", english: "solid gold", transliteration: "gold matter <rank_0>" },
   {
     title: "Made of",
     english: "Water is from hydrogen and oxygen",
-    transliteration: "<subject> water <verb> be(vt) <complement> from element hydrogen and element oxygen",
+    transliteration: "<subject> water <verb> be(vt) <complement> from hydrogen and oxygen",
   },
   {
     title: "Condense",
