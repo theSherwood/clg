@@ -175,6 +175,22 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "size",
       notes:
         "From axis.csv: positive noun giant; positive verb to grow something (transitive), to grow (intransitive)",
+      steps: {
+        min_positive: {
+          noun: "inflation",
+          adj: "inflated",
+          verb: "inflate(v)",
+          verb_i: "swell",
+          verb_t: "inflate",
+        },
+        min_negative: {
+          noun: "deflation",
+          adj: "deflated",
+          verb: "deflate(v)",
+          verb_i: "collapse",
+          verb_t: "deflate",
+        },
+      },
     },
     {
       noun: "smallness",
@@ -1396,23 +1412,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    {},
-    {
-      noun: "deflation",
-      adj: "deflated",
-      verb: "deflate(v)",
-      verb_i: "collapse",
-      verb_t: "deflate",
-    },
-    {
-      noun: "inflation",
-      adj: "inflated",
-      verb: "inflate(v)",
-      verb_i: "swell",
-      verb_t: "inflate",
-    },
-  ],
-  [
     { noun: "intellect" },
     {
       noun: "stupidity",
@@ -2583,7 +2582,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "withdraw(v)", "spread(v)", "stir(v)", "persist(v)", "bottom_out(v)", "make_artificial(v)",
     "spread_out(v)", "proliferate(v)", "straighten(v)", "improve(v)", "entertain(v)",
     "materialize(v)", "enable(v)", "angle(v)", "rejuvenate(v)", "wake(v)", "create(v)",
-    "beautify(v)", "go(v)", "heap_up(v)", "fill_up(v)", "show(v)", "inflate(v)", "educate(v)",
+    "beautify(v)", "go(v)", "heap_up(v)", "fill_up(v)", "show(v)", "educate(v)",
     "aim(v)", "group(v)", "mark_up(v)", "emphasize(v)", "mend(v)", "unify(v)", "constrain(v)",
     "sanctify(v)", "contain(v)", "regulate(v)", "disconnect(v)", "stop(v)", "obligate(v)",
     "necessitate(v)", "burn(v)",
