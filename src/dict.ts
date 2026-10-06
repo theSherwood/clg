@@ -2355,6 +2355,10 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
 
 {
   section("content");
+  cr("thing", {
+    gloss: "thing / something",
+    notes: "thing all is everything, thing none nothing, and thing _blank what thing",
+  });
   cr("singular");
   cr("plural");
   cr("land");
@@ -2430,6 +2434,12 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     notes:
       "Rank gives the level in the orbital hierarchy: rank_0 debris (asteroids, comets), rank_1 moon, rank_2 planet, rank_3 star, rank_4 galaxy, rank_5 galaxy cluster. Bare, it's any celestial body. With this, it's ours: celestial rank_3 this is the Sun, celestial rank_2 this Earth, celestial rank_1 this the Moon",
   });
+  cr("animal");
+  cr("matter", {
+    gloss: "matter / substance",
+    notes:
+      "Rank gives the phase, rising in energy: rank_0 solid, rank_1 liquid, rank_2 gas, rank_3 plasma. As a modifier it gives a substance's phase: water matter rank_0 is ice, water matter rank_2 steam",
+  });
 
 
   candidate("prehensile?");
@@ -2462,9 +2472,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
 
   // Groups of related concepts
   for (const group of [
-    ["plasma", "gas", "liquid", "solid"],
     ["number", "symbol"],
-    ["thing"],
     ["width", "height", "depth"], // height and width are nouns of the low/high and narrow/wide axes
     ["sound", "taste", "touch"],
     ["animal", "plant", "fungus"],

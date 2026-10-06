@@ -502,6 +502,36 @@ export const geometry_examples: Example[] = [
   },
 ];
 
+// thing, the general noun; animal; and matter, whose rank is its phase
+export const thing_examples: Example[] = [
+  { title: "Something", english: "something", transliteration: "thing" },
+  { title: "Everything", english: "everything", transliteration: "thing all" },
+  { title: "Nothing", english: "nothing", transliteration: "thing none" },
+  {
+    title: "What thing",
+    english: "What thing do you want?",
+    transliteration: "<subject> you <verb (interrogative)> desire <object> thing _blank",
+  },
+  { title: "Animal", english: "an animal", transliteration: "animal" },
+  { title: "Young animal", english: "an animal's child", transliteration: "animal child" },
+  {
+    title: "Animals eat",
+    english: "The animal eats food",
+    transliteration: "<subject> animal <verb> eat <object> _ee eat",
+  },
+  { title: "Solid", english: "rank 0", transliteration: "matter rank_0" },
+  { title: "Liquid", english: "rank 1", transliteration: "matter rank_1" },
+  { title: "Gas", english: "rank 2", transliteration: "matter rank_2" },
+  { title: "Plasma", english: "rank 3", transliteration: "matter rank_3" },
+  { title: "Ice", english: "solid water", transliteration: "water matter rank_0" },
+  { title: "Steam", english: "water as a gas", transliteration: "water matter rank_2" },
+  {
+    title: "A sentence",
+    english: "Water is a liquid",
+    transliteration: "<subject> water <verb> is <object> matter rank_1",
+  },
+];
+
 // Universal Declaration of Human Rights
 
 export const udhr_preamble: string[] = [

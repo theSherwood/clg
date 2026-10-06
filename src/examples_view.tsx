@@ -12,6 +12,7 @@ import {
   self_other_examples,
   sky_examples,
   tense_examples,
+  thing_examples,
   tokenize,
   truth_examples,
   udhr_articles,
@@ -133,6 +134,7 @@ const all_transliterations = [
   ...sky_examples.map((e) => e.transliteration),
   ...comparison_examples.map((e) => e.transliteration),
   ...geometry_examples.map((e) => e.transliteration),
+  ...thing_examples.map((e) => e.transliteration),
   ...udhr_articles.flatMap((a) => (a.transliteration ? [a.transliteration] : [])),
 ];
 
@@ -220,6 +222,7 @@ export function ExamplesView() {
         { title: "Sky", examples: sky_examples },
         { title: "Comparison", examples: comparison_examples },
         { title: "Geometry", examples: geometry_examples },
+        { title: "Things, animals and matter", examples: thing_examples },
       ].map((group) => (
         <Section key={group.title} title={group.title}>
           <ExampleList examples={group.examples} />

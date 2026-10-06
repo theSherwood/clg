@@ -309,6 +309,14 @@ export function GrammarView() {
         <i>geometry rank_2 round</i> is a circle and <i>geometry rank_3 round</i> a sphere.
       </p>
 
+      <H2>Matter</H2>
+      <p>
+        <W w="matter" /> takes rank for its phase, rising in energy: <i>matter rank_0</i> is a
+        solid, <i>rank_1</i> a liquid, <i>rank_2</i> a gas and <i>rank_3</i> a plasma. As a
+        modifier it gives a substance's phase, so <i>water matter rank_0</i> is ice and{" "}
+        <i>water matter rank_2</i> steam.
+      </p>
+
       <H2>Sky</H2>
       <p>
         <W w="celestial" /> is one root for every body in the sky, and rank picks its level in the
@@ -395,7 +403,9 @@ export function GrammarView() {
         the question word: what a question asks about.
       </p>
       <p className="mt-2">
-        <W w="self" /> and <W w="other" /> are content roots. As an object, <W w="self" /> is
+        <W w="thing" /> is the general noun, Toki Pona's <i>ijo</i>: <i>thing all</i> is
+        everything, <i>thing none</i> nothing and <i>thing _blank</i> what thing.{" "}
+        <W w="self" /> and <W w="other" /> are content roots too. As an object, <W w="self" /> is
         reflexive (<i>I know self</i>, I know myself), and <i>family &lt;of&gt; self</i> is one's
         own family. <i>person other</i> is another person, and with a plural subject,{" "}
         <W w="other" /> is each other.
