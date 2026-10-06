@@ -20,7 +20,8 @@ export type Tag = keyof typeof T;
 // ambiguous. The last 128 are shared by partial domains (the digits, in the number domain, and
 // the elements, in the element domain) and the axis words, which are told apart by domain.
 export const sections = [
-  { key: "marker", label: "Grammar markers", start: 0, end: 16 },
+  { key: "marker", label: "Grammar markers", start: 0, end: 14 },
+  { key: "number_helper", label: "Number helpers", start: 14, end: 16 },
   { key: "grammar", label: "Grammar helpers", start: 16, end: 28 },
   { key: "dimension", label: "Dimension helpers", start: 28, end: 32 },
   { key: "preposition", label: "Prepositions", start: 32, end: 42 },
@@ -2363,6 +2364,11 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       "What follows describes the subject, so it reads as a modifier: the adjective where there is one (is <complement> hot), otherwise the noun (is <complement> matter <rank_1>)",
   });
   cr("<foreign>", { t: marker });
+}
+
+// Number helpers: ordinals, and denominators for fractions, rates and ratios
+{
+  section("number_helper");
   cr("<ordinal>", {
     t: [T.grammar_helper],
     gloss: "makes a number an ordinal: <ordinal> number 3 is third",
@@ -2948,6 +2954,24 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("yesterday", ["time", "<rank_3>", "previous"]);
   noun("daytime", ["time", "bright"]);
   noun("night", ["time", "dark"]);
+
+  // Family: lineage steps and generations, gendered by modifier; a spouse is family by union
+  noun("mother", ["parent", "female"]);
+  noun("father", ["parent", "male"]);
+  noun("daughter", ["child", "female"]);
+  noun("son", ["child", "male"]);
+  noun("sister", ["sibling", "female"]);
+  noun("brother", ["sibling", "male"]);
+  noun("aunt", ["aunt_or_uncle", "female"]);
+  noun("uncle", ["aunt_or_uncle", "male"]);
+  noun("grandparent", ["parent", "<rank_2>"]);
+  noun("grandchild", ["child", "<rank_2>"]);
+  noun("cousin", ["sibling", "<rank_2>"], { gloss: "first cousin" });
+  noun("second_cousin", ["sibling", "<rank_3>"], { gloss: "second cousin" });
+  noun("spouse", ["family", "united"], {
+    gloss: "spouse / partner",
+    notes: "Family by union rather than descent. In-laws are family of spouse",
+  });
 
   noun("chain", ["node", "<rank_1>"], { gloss: "chain / list (nodes in a line)" });
   noun("tree_graph", ["node", "<rank_2>"], { gloss: "tree (graph)" });

@@ -328,8 +328,9 @@ export function GrammarView() {
         grandchild and <i>parent &lt;rank_2&gt;</i> a grandparent. For siblings it counts the generations
         up to the shared ancestor, so <i>&lt;neutral&gt; child &lt;rank_2&gt;</i> is a first cousin (a shared
         grandparent) and <i>&lt;neutral&gt; child &lt;rank_3&gt;</i> a second cousin. Bare words are &lt;rank_1&gt;, and
-        &lt;rank_0&gt; is oneself. Marriage isn't a generation step, so in-laws are phrases: family{" "}
-        <i>of</i> spouse.
+        &lt;rank_0&gt; is oneself. Marriage isn't a generation step: a <W w="spouse" /> is <i>family united</i>, family by
+        union rather than descent, and in-laws are phrases: <i>parent of spouse</i>. Gendered words are
+        modifiers: <W w="mother" /> is <i>parent female</i>, <W w="brother" /> <i>sibling male</i>.
       </p>
       <Example meaning="My grandparent has many descendants.">
         &lt;subject&gt; parent &lt;rank_2&gt; of me &lt;verb&gt; possess(vt) &lt;object&gt; &lt;max_positive&gt;

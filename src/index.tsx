@@ -170,6 +170,7 @@ const WordListDisplay: React.FC<WordListDisplayProps> = ({ words_to_display }) =
 // alike. Axis words and digits share the upper 128 IDs, so they get the most distinct, calmest pair.
 const SECTION_SWATCHES: Record<SectionKey, string> = {
   marker: "bg-red-500",
+  number_helper: "bg-cyan-600",
   grammar: "bg-orange-400",
   preposition: "bg-yellow-300",
   pronoun: "bg-lime-500",

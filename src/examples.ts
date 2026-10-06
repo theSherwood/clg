@@ -309,6 +309,8 @@ export const family_examples: Example[] = [
   { title: "Descendants", english: "the whole line down", transliteration: "<max_positive> child" },
   { title: "Ancestors", english: "the whole line up", transliteration: "<max_negative> child" },
   { title: "Grandchild", english: "two generations down", transliteration: "child <rank_2>" },
+  { title: "Spouse", english: "family by union", transliteration: "family united" },
+  { title: "Mother-in-law", english: "a spouse's mother", transliteration: "parent female of spouse" },
   { title: "Grandparent", english: "two generations up", transliteration: "parent <rank_2>" },
   {
     title: "First cousin",
