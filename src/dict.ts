@@ -2555,7 +2555,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("celestial", {
     gloss: "celestial body",
     notes:
-      "Rank gives the level in the orbital hierarchy: <rank_0> debris (asteroids, comets), <rank_1> moon, <rank_2> planet, <rank_3> star, <rank_4> galaxy, <rank_5> galaxy cluster. Bare, it's any celestial body. With this, it's ours: celestial <rank_3> this is the Sun, celestial <rank_2> this Earth, celestial <rank_1> this the Moon",
+      "Rank gives the level in the orbital hierarchy, each orbiting the next: <rank_1> moon, <rank_2> planet, <rank_3> star, <rank_4> galaxy, <rank_5> galaxy cluster, <rank_6> supercluster. <rank_0> is a small body, too small to be round, told apart by modifiers: <rank_0> rock is an asteroid, <rank_0> ice a comet. Bare, it's any celestial body. With this, it's ours: celestial <rank_3> this is the Sun, celestial <rank_2> this Earth, celestial <rank_1> this the Moon",
   });
   cr("cardinal", {
     gloss: "cardinal direction",
@@ -2899,6 +2899,22 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("ice", ["water", "matter", "<rank_0>"]);
   noun("steam", ["water", "matter", "<rank_2>"]);
   noun("lava", ["rock", "matter", "<rank_1>"], { gloss: "lava / magma" });
+
+  // Celestial bodies by orbital level; this makes one ours
+  noun("small_body", ["celestial", "<rank_0>"], { gloss: "small body (too small to be round)" });
+  noun("asteroid", ["celestial", "<rank_0>", "rock"]);
+  noun("comet", ["celestial", "<rank_0>", "ice"]);
+  noun("moon", ["celestial", "<rank_1>"]);
+  noun("planet", ["celestial", "<rank_2>"]);
+  noun("star", ["celestial", "<rank_3>"]);
+  noun("galaxy", ["celestial", "<rank_4>"]);
+  noun("galaxy_cluster", ["celestial", "<rank_5>"], { gloss: "galaxy cluster" });
+  noun("supercluster", ["celestial", "<rank_6>"]);
+  noun("the_moon", ["celestial", "<rank_1>", "this"], { gloss: "the Moon" });
+  noun("earth", ["celestial", "<rank_2>", "this"], { gloss: "Earth / the world" });
+  noun("sun", ["celestial", "<rank_3>", "this"], { gloss: "the Sun" });
+  noun("milky_way", ["celestial", "<rank_4>", "this"], { gloss: "the Milky Way" });
+  noun("universe", ["thing", "all"], { gloss: "universe / everything" });
 
   noun("chain", ["node", "<rank_1>"], { gloss: "chain / list (nodes in a line)" });
   noun("tree_graph", ["node", "<rank_2>"], { gloss: "tree (graph)" });

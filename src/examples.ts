@@ -482,7 +482,9 @@ export const water_fire_examples: Example[] = [
 // One celestial root; rank picks the level of the orbital hierarchy, and this makes it ours
 export const sky_examples: Example[] = [
   { title: "Celestial body", english: "any body in the sky", transliteration: "celestial" },
-  { title: "Asteroid or comet", english: "rank 0: debris", transliteration: "celestial <rank_0>" },
+  { title: "Small body", english: "rank 0: too small to be round", transliteration: "celestial <rank_0>" },
+  { title: "Asteroid", english: "a rocky small body", transliteration: "celestial <rank_0> rock" },
+  { title: "Comet", english: "an icy small body", transliteration: "celestial <rank_0> ice" },
   { title: "Moon", english: "rank 1: orbits a planet", transliteration: "celestial <rank_1>" },
   { title: "Planet", english: "rank 2: orbits a star", transliteration: "celestial <rank_2>" },
   { title: "Star", english: "rank 3", transliteration: "celestial <rank_3>" },

@@ -430,10 +430,18 @@ export function GrammarView() {
       <H2>Sky</H2>
       <p>
         <W w="celestial" /> is one root for every body in the sky, and rank picks its level in the
-        orbital hierarchy, each level orbiting the next: <i>celestial &lt;rank_0&gt;</i> is debris
-        (asteroids, comets), <i>&lt;rank_1&gt;</i> a moon, <i>&lt;rank_2&gt;</i> a planet, <i>&lt;rank_3&gt;</i> a star,{" "}
-        <i>&lt;rank_4&gt;</i> a galaxy. <W w="this" /> makes it ours: <i>celestial &lt;rank_3&gt; this</i> is the
-        Sun, <i>&lt;rank_2&gt; this</i> Earth and <i>&lt;rank_1&gt; this</i> the Moon.
+        orbital hierarchy, each level orbiting the next: <W w="moon" /> (<i>celestial &lt;rank_1&gt;</i>),{" "}
+        <W w="planet" /> (<i>&lt;rank_2&gt;</i>), <W w="star" /> (<i>&lt;rank_3&gt;</i>), <W w="galaxy" />{" "}
+        (<i>&lt;rank_4&gt;</i>), <W w="galaxy_cluster" /> (<i>&lt;rank_5&gt;</i>) and <W w="supercluster" />{" "}
+        (<i>&lt;rank_6&gt;</i>). <i>&lt;rank_0&gt;</i> is a <W w="small_body" />, too small to be round, and
+        modifiers tell those apart: <W w="asteroid" /> is <i>celestial &lt;rank_0&gt; rock</i> and{" "}
+        <W w="comet" /> <i>celestial &lt;rank_0&gt; ice</i>.
+      </p>
+      <p className="mt-2">
+        <W w="this" /> makes it ours: <W w="sun" /> is <i>celestial &lt;rank_3&gt; this</i>,{" "}
+        <W w="earth" /> <i>&lt;rank_2&gt; this</i>, <W w="the_moon" /> <i>&lt;rank_1&gt; this</i> and{" "}
+        <W w="milky_way" /> <i>&lt;rank_4&gt; this</i>. The universe isn't a body in the sky:{" "}
+        <W w="universe" /> is <i>thing all</i>, everything.
       </p>
       <Example meaning="The Sun is bright.">
         &lt;subject&gt; celestial &lt;rank_3&gt; this &lt;verb&gt; be(vt) &lt;complement&gt; bright
