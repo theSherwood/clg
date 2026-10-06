@@ -2256,14 +2256,14 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     gloss: "complement / negative / not",
     notes: "Complement: use for axis words. Always a prefix, applying to the one word after it",
   });
-  cr("and", { t: [T.grammar_helper] });
   cr("or", { t: [T.grammar_helper], notes: '"xor" through "or-exclusive"' });
-  cr("if", { t: [T.grammar_helper], notes: '"iff" through "if-exclusive"' });
+  cr("and", { t: [T.grammar_helper] });
+  cr("but", { t: [T.grammar_helper], gloss: "but / however" });
   cr("clause_start", { gloss: "clause start" });
   cr("clause_end", { gloss: "clause end" });
   cr("continuous_tense_aspect");
   cr("perfect_tense_aspect");
-  cr("but", { t: [T.grammar_helper], gloss: "but / however" });
+  cr("if", { t: [T.grammar_helper], notes: '"iff" through "if-exclusive"' });
 
   candidate("possession_indicator");
   candidate("_become", {
