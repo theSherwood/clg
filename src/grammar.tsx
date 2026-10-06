@@ -650,6 +650,19 @@ export function GrammarView() {
         three people, and <i>person &lt;ordinal&gt; number 3</i> the third person.
       </p>
       <p className="mt-2">
+        <W w="<per>" /> marks a denominator. A fraction a/b is “a per b”, so one word gives
+        fractions, rates and ratios: <i>&lt;per&gt; number 3</i> is a third,{" "}
+        <i>number 2 &lt;per&gt; number 3</i> two thirds and <i>&lt;per&gt; number 1 &lt;rank_3&gt;</i> a thousandth.
+        After a noun it's a share or a rate: <i>money &lt;per&gt; number 2</i> is half the money,{" "}
+        <i>money &lt;per&gt; person</i> money per person and <i>&lt;per&gt; time &lt;rank_2&gt;</i> per hour. Between
+        two numbers it's a ratio, so <i>number 3 &lt;per&gt; number 1</i> is three to one. Denominators are
+        whole numbers, so these are exact in any base, unlike digit fractions: a third has no exact
+        digits in base 10.
+      </p>
+      <Example meaning="I work five days a week.">
+        &lt;subject&gt; I &lt;verb&gt; work(vi) time &lt;rank_3&gt; number 5 &lt;per&gt; time &lt;rank_4&gt;
+      </Example>
+      <p className="mt-2">
         Ranks don't depend on the base: <W w="<rank_3>" /> is “thousands” in base 10, but “eights” in
         base 2. By convention ranks work like commas: a base 10 number past <W w="<rank_3>" /> says{" "}
         <W w="<rank_3>" /> somewhere, one past <W w="<rank_6>" /> says <W w="<rank_6>" />, and so on up

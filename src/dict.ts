@@ -2363,6 +2363,17 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       "What follows describes the subject, so it reads as a modifier: the adjective where there is one (is <complement> hot), otherwise the noun (is <complement> matter <rank_1>)",
   });
   cr("<foreign>", { t: marker });
+  cr("<ordinal>", {
+    t: [T.grammar_helper],
+    gloss: "makes a number an ordinal: <ordinal> number 3 is third",
+    notes: "Before number: dimension <ordinal> number 4 is the fourth dimension, while person number 3 is three people",
+  });
+  cr("<per>", {
+    t: [T.grammar_helper],
+    gloss: "per / divided by: what follows is the denominator",
+    notes:
+      "a/b is a per b, so one word gives fractions, rates and ratios. <per> number 3 is a third, number 2 <per> number 3 two thirds, money <per> person money per person, <per> time <rank_2> per hour, number 3 <per> number 1 three to one. Denominators are whole numbers, so fractions are exact in any base",
+  });
 }
 
 {
@@ -2380,11 +2391,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("<continuous_tense_aspect>");
   cr("<perfect_tense_aspect>");
   cr("if", { t: [T.grammar_helper], notes: '"iff" through "if-exclusive"' });
-  cr("<ordinal>", {
-    t: [T.grammar_helper],
-    gloss: "makes a number an ordinal: <ordinal> number 3 is third",
-    notes: "Before number: dimension <ordinal> number 4 is the fourth dimension, while person number 3 is three people",
-  });
   cr("<again>", {
     t: [T.grammar_helper],
     gloss: "again, re-",

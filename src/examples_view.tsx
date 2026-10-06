@@ -234,7 +234,7 @@ export function ExamplesView() {
         { title: "Questions", examples: question_examples },
         { title: "Here and there", examples: pointing_examples },
         { title: "Clauses", examples: clause_examples },
-        { title: "Being, ability, again and ordinals", examples: more_grammar_examples },
+        { title: "Being, ability, again, ordinals and per", examples: more_grammar_examples },
         { title: "Conversation", examples: conversation_examples },
         { title: "Self and other", examples: self_other_examples },
         { title: "Water and fire", examples: water_fire_examples },

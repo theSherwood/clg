@@ -777,7 +777,7 @@ export const arithmetic_examples: Example[] = [
   },
 ];
 
-// Existence and location, ordinals, ability, again, manner and counterfactuals
+// Existence and location, ordinals and per, ability, again, manner and counterfactuals
 export const more_grammar_examples: Example[] = [
   {
     title: "Somewhere",
@@ -788,6 +788,17 @@ export const more_grammar_examples: Example[] = [
   { title: "Existence", english: "Animals exist", transliteration: "<subject> animal <verb> be(vi)" },
   { title: "Ordinal", english: "the third person", transliteration: "person <ordinal> number 3" },
   { title: "Cardinal", english: "three people", transliteration: "person number 3" },
+  { title: "A third", english: "1/3", transliteration: "<per> number 3" },
+  { title: "Two thirds", english: "2/3", transliteration: "number 2 <per> number 3" },
+  { title: "A thousandth", english: "1/1000", transliteration: "<per> number 1 <rank_3>" },
+  { title: "Half the money", english: "a share", transliteration: "money <per> number 2" },
+  { title: "Per person", english: "money per person", transliteration: "money <per> person" },
+  {
+    title: "Rate",
+    english: "I sleep eight hours a day",
+    transliteration: "<subject> I <verb> sleep(vi) time <rank_2> number 8 <per> time <rank_3>",
+  },
+  { title: "Ratio", english: "three to one", transliteration: "number 3 <per> number 1" },
   { title: "Can", english: "I can work", transliteration: "<subject> I <verb> work(vi) ably" },
   { title: "Can't", english: "I can't sleep", transliteration: "<subject> I <verb> sleep(vi) incapably" },
   { title: "Again", english: "Open it again", transliteration: "<verb_prescriptive> open(vt) <again> <object> it" },
