@@ -2,7 +2,7 @@
 
 ```bash
 bun install
-bun run dev    # http://localhost:3000
+bun run dev    # http://localhost:3005
 bun run test
 ```
 

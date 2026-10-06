@@ -8,7 +8,7 @@ const DEFAULTS_FILE = "phonology.defaults.json";
 
 const server = Bun.serve({
   hostname: "localhost",
-  port: 3000,
+  port: 3005,
   development: true,
   routes: {
     "/": index,
