@@ -545,6 +545,78 @@ export const pointing_examples: Example[] = [
   { title: "This thing", english: "I want this thing", transliteration: "<subject> I <verb> desire <object> thing this" },
 ];
 
+// Subclauses: one bracket, clause_start ... clause_end, as an object, after a preposition, or
+// after a noun with _blank marking the noun's place
+export const clause_examples: Example[] = [
+  {
+    title: "That…",
+    english: "I believe the person left",
+    transliteration: "<subject> I <verb> believe <object> clause_start <subject> person <verb> go(v)",
+  },
+  {
+    title: "To…",
+    english: "I want to sleep (the subclause takes my subject)",
+    transliteration: "<subject> I <verb> desire <object> clause_start <verb> sleep(v)",
+  },
+  {
+    title: "Because",
+    english: "I'm tired because I worked",
+    transliteration:
+      "<subject> I <verb> is <object> weak <from> clause_start <subject> I <verb> work(v) formerly",
+  },
+  {
+    title: "When",
+    english: "When you slept, I worked",
+    transliteration:
+      "<at> time clause_start <subject> you <verb> sleep(v) clause_end <subject> I <verb> work(v) formerly",
+  },
+  {
+    title: "So that",
+    english: "I work so that you can sleep",
+    transliteration:
+      "<subject> I <verb> work(v) <for> clause_start <subject> you <verb> sleep(v) not impossibly",
+  },
+  {
+    title: "Until",
+    english: "Work until the Sun rises",
+    transliteration:
+      "<verb (prescriptive)> work(v) <to> time clause_start <subject> celestial rank_3 this <verb> lift(v)",
+  },
+  {
+    title: "If",
+    english: "If it burns, put it out",
+    transliteration:
+      "if clause_start <subject> it <verb> burn(v) clause_end <verb (prescriptive)> extinguish(v) <object> it",
+  },
+  {
+    title: "Who",
+    english: "the person who defended me",
+    transliteration: "person clause_start <subject> _blank <verb> defend(v) <object> me clause_end",
+  },
+  {
+    title: "That (object)",
+    english: "the rock that I burned",
+    transliteration: "rock clause_start <subject> I <verb> burn(v) formerly <object> _blank clause_end",
+  },
+  {
+    title: "Where",
+    english: "the place where I sleep",
+    transliteration: "place clause_start <subject> I <verb> sleep(v) <at> _blank clause_end",
+  },
+  {
+    title: "To whom",
+    english: "the person I gave money to",
+    transliteration:
+      "person clause_start <subject> I <verb> give(v) formerly <object> money <to> _blank clause_end",
+  },
+  {
+    title: "In a sentence",
+    english: "The person who defended me is strong",
+    transliteration:
+      "<subject> person clause_start <subject> _blank <verb> defend(v) <object> me clause_end <verb> is <object> strong",
+  },
+];
+
 // Universal Declaration of Human Rights
 
 export const udhr_preamble: string[] = [

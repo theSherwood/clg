@@ -223,10 +223,10 @@ export function GrammarView() {
         &lt;subject&gt; person &lt;verb&gt; learn perfect_tense_aspect henceforth &lt;object&gt;
         path
       </Example>
-      <Open>
-        In a subclause, is time relative to now or to the main clause's time? Mandarin reads it
-        relative to the main clause.
-      </Open>
+      <p className="mt-2">
+        In a subclause, time is relative to the main clause's time, as in Mandarin, so “he said he
+        was sleeping” needs no time word in the subclause.
+      </p>
 
       <H2>Truth and possibility</H2>
       <p>
@@ -389,8 +389,42 @@ export function GrammarView() {
         <W w="and" />, <W w="or" />, <W w="if" /> and <W w="but" />. Exclusive forms are compounds: xor is
         “or-exclusive” and iff is “if-exclusive”. One <W w="and" /> joins both clauses and list
         items: followed by a role marker it joins clauses, and followed by a noun it joins list
-        items. <W w="clause_start" />{" "}
-        and <W w="clause_end" /> mark where a clause starts and ends.
+        items.
+      </p>
+      <p className="mt-2">
+        <W w="clause_start" /> and <W w="clause_end" /> bracket a clause inside another, and the
+        bracket is the one device for every kind of subclause. <W w="clause_end" /> can be dropped
+        at the end of a sentence, but not before more of the main clause, whose next role marker
+        would otherwise be read as part of the subclause.
+      </p>
+      <ul className="mt-2 list-disc pl-6 space-y-1">
+        <li>
+          <b>As an object</b>: <i>I believe &lt;object&gt; clause_start … clause_end</i>, I
+          believe that….
+        </li>
+        <li>
+          <b>After a preposition</b>, for because, when, so that and until:{" "}
+          <i>&lt;from&gt; clause_start …</i> is because…, <i>&lt;at&gt; time clause_start …</i>{" "}
+          when…, <i>&lt;for&gt; clause_start …</i> so that… and <i>&lt;to&gt; time clause_start …</i>{" "}
+          until…. <W w="if" /> takes one the same way.
+        </li>
+        <li>
+          <b>After a noun</b>, describing it: <W w="_blank" /> marks the noun's place in the
+          clause, in any role or after any preposition. A plain verb marker tells it from a
+          question, which has <W w="_verb(interrogative)" />, as English uses who and where for
+          both.
+        </li>
+      </ul>
+      <Example meaning="the person who defended me">
+        person clause_start &lt;subject&gt; _blank &lt;verb&gt; defend &lt;object&gt; me clause_end
+      </Example>
+      <Example meaning="the place where I sleep">
+        place clause_start &lt;subject&gt; I &lt;verb&gt; sleep &lt;at&gt; _blank clause_end
+      </Example>
+      <p className="mt-2">
+        A subclause with no subject takes the main clause's subject: <i>I desire &lt;object&gt;
+        clause_start &lt;verb&gt; sleep</i> is “I want to sleep”. A main clause with no subject
+        leaves it unspecified, “someone”.
       </p>
 
       <H2>Pronouns</H2>

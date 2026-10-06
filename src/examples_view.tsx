@@ -3,6 +3,7 @@ import {
   type Example,
   type Token,
   number_examples,
+  clause_examples,
   color_examples,
   comparison_examples,
   family_examples,
@@ -137,6 +138,7 @@ const all_transliterations = [
   ...geometry_examples.map((e) => e.transliteration),
   ...thing_examples.map((e) => e.transliteration),
   ...pointing_examples.map((e) => e.transliteration),
+  ...clause_examples.map((e) => e.transliteration),
   ...udhr_articles.flatMap((a) => (a.transliteration ? [a.transliteration] : [])),
 ];
 
@@ -220,6 +222,7 @@ export function ExamplesView() {
         { title: "Nouns from verbs", examples: role_examples },
         { title: "Questions", examples: question_examples },
         { title: "Here and there", examples: pointing_examples },
+        { title: "Clauses", examples: clause_examples },
         { title: "Self and other", examples: self_other_examples },
         { title: "Water and fire", examples: water_fire_examples },
         { title: "Sky", examples: sky_examples },
