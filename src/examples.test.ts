@@ -63,7 +63,7 @@ test("every verb marker is followed by a verb", async () => {
     .flatMap((e: any) => [e?.transliteration, ...(e?.examples ?? []).map((x: any) => x.transliteration)])
     .filter((t): t is string => typeof t === "string");
   const markers = ["<verb>", "<verb_prescriptive>", "<verb_interrogative>", "<er>", "<ee>", "<tool>", "<place>", "<to>", "<from>", "<gerund>"];
-  const skip = (t: any) => t?.word?.data.t.includes("axis_helper") || t?.text === "not" || t?.text === "<filler>";
+  const skip = (t: any) => t?.word?.data.t.includes("axis_helper") || t?.text === "not" || t?.text === "only" || t?.text === "<filler>";
   const broken = transliterations.flatMap((transliteration) => {
     const tokens = tokenize(transliteration);
     return tokens.flatMap((token, i) => {

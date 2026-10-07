@@ -614,7 +614,9 @@ export function GrammarView() {
         Lightness comes from the brightness axis: <W w="pink" /> is <i>red bright</i> and{" "}
         <W w="maroon" /> <i>red dark</i>. As modifiers, white and black are just <W w="bright" /> and{" "}
         <W w="dark" />; as nouns they're <W w="white" /> (<i>color bright</i>) and <W w="black" />{" "}
-        (<i>color dark</i>), and <W w="gray" /> is <i>color &lt;neutral&gt; bright</i>.
+        (<i>color dark</i>), and <W w="gray" /> is <i>color &lt;neutral&gt; bright</i>. On a noun, a
+        blend is grouped, since modifiers each apply to the head: <i>rock &lt;regroup&gt; red yellow</i>{" "}
+        is an orange rock, and <i>rock red yellow</i> a red and yellow one.
       </p>
       <p className="mt-2">
         <W w="brown" /> is the neutral color, <i>color &lt;neutral&gt;</i>. Since{" "}
@@ -653,12 +655,24 @@ export function GrammarView() {
         <i>number 2 3 &lt;negative&gt; &lt;rank_2&gt;</i>, the negative comes before the rank.
       </p>
 
+      <p className="mt-2">
+        <b>Scope.</b> Each modifier applies to the head: <i>rock red yellow</i> is a rock that's red
+        and yellow. <W w="<regroup>" />, like Toki Pona's <i>pi</i>, gathers the modifiers after it
+        into one group that modifies the head together, the first of them as the group's own head:{" "}
+        <i>rock &lt;regroup&gt; red yellow</i> is a rock of the color red yellow, an orange rock. The
+        group runs to the end of the noun phrase.
+      </p>
+      <Example meaning="a person of a big family">person &lt;regroup&gt; family big</Example>
+      <p className="mt-2">
+        <W w="only" /> is a prefix, like <W w="not" />, on the one word after it: <i>only you</i>,{" "}
+        <i>&lt;verb&gt; only sleep(vi)</i>.
+      </p>
+      <Example meaning="I drink only water.">
+        &lt;subject&gt; I &lt;verb&gt; eat(vt) &lt;object&gt; only water
+      </Example>
       <Open>
-        Scope, tentatively: a modifier modifies the word just before it, and modifiers that share a
-        word are joined with <W w="and" />. So <i>red yellow</i> is a yellowish red, orange, and{" "}
-        <i>rock red and yellow</i> a rock that's red and yellow. It may break down where{" "}
-        <W w="and" /> could also start a second noun (<i>person big and dog</i>), and context may
-        have to decide.
+        <W w="and" /> between modifiers lists them: <i>rock red and yellow</i>. It may be read as
+        starting a second noun instead (<i>person big and dog</i>), and context may have to decide.
       </Open>
 
       <H2>Prepositions</H2>

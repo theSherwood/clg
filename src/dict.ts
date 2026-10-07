@@ -2670,6 +2670,16 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     gloss: "a hesitation, like um or pues",
     notes: "Means nothing and goes anywhere, even mid-phrase; the grammar carries on as if it weren't there",
   });
+  cr("<regroup>", {
+    t: [T.grammar_helper],
+    gloss: "groups the modifiers after it into one, like Toki Pona's pi",
+    notes:
+      "Each modifier applies to the head by default: rock red yellow is a rock that's red and yellow. After <regroup>, the modifiers form one group that modifies the head together: rock <regroup> red yellow is an orange rock. The group runs to the end of the noun phrase",
+  });
+  cr("only", {
+    t: [T.grammar_helper],
+    notes: "A prefix, like not, applying to the one word after it: only you, <verb> only sleep(vi)",
+  });
 
   candidate("<become>", {
     gloss: "come to, begin to: <become> possess(vt) = gain",
@@ -2810,7 +2820,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("color");
   cr("red", {
     notes:
-      "Two hues together are an even blend, in either order: red yellow is orange, yellow blue green, red blue purple. Lightness comes from the brightness axis: red bright is pink, and white and black are bright and dark. Brown is the neutral color, color <neutral>",
+      "Two hues together are an even blend, in either order: red yellow is orange, yellow blue green, red blue purple. On a noun, group them: rock <regroup> red yellow is an orange rock. Lightness comes from the brightness axis: red bright is pink, and white and black are bright and dark. Brown is the neutral color, color <neutral>",
   });
   cr("yellow");
   cr("blue");

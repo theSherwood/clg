@@ -912,6 +912,9 @@ export const more_grammar_examples: Example[] = [
   { title: "Conscience", english: "what you blame yourself with", transliteration: "<tool> blame(vt) self" },
   { title: "Model", english: "what resembles something", transliteration: "<er> resemble(vt)" },
   { title: "Metaethics", english: "ethics about ethics", transliteration: "merit meta" },
+  { title: "Grouped", english: "a rock of the color red yellow: an orange rock", transliteration: "rock <regroup> red yellow" },
+  { title: "Not grouped", english: "a rock that's red and yellow", transliteration: "rock red yellow" },
+  { title: "Only", english: "Only you sleep", transliteration: "<subject> only you <verb> sleep(vi)" },
   { title: "Law", english: "a general command: law, or a rule", transliteration: "command abstract" },
   {
     title: "Obey the law",
