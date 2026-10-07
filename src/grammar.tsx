@@ -712,7 +712,8 @@ export function GrammarView() {
           <i>say(vt) identically</i>. Adding <W w="meta" /> makes it a quote, someone else's words
           repeated, with <W w="from" /> for whose: <W w="quote(vt)" /> is{" "}
           <i>say(vt) identically meta</i>. Writing works the same way: <W w="write_verbatim(vt)" /> and{" "}
-          <W w="quote_in_writing(vt)" />.
+          <W w="quote_in_writing(vt)" />. A <W w="quotation" /> is <i>&lt;ee&gt; quote(vt)</i>, what's
+          quoted.
         </li>
         <li>
           <b>After a preposition</b>, for because, when, so that and until:{" "}

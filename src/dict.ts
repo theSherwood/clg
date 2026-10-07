@@ -3326,6 +3326,8 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("never", ["time", "none"]);
   noun("when", ["time", "<blank>"]);
 
+  noun("quotation", ["<ee>", "quote(vi)"], { gloss: "quotation / quote", notes: "What's quoted" });
+  noun("quoter", ["<er>", "quote(vi)"], { notes: "Whoever quotes" });
   noun("computation", ["<gerund>", "transform(vi)", "information"], { notes: "Transforming data" });
   noun("computer", ["<tool>", "transform(vi)", "information"]);
   noun("reason", ["<tool>", "infer(vt)"], { gloss: "reason (the faculty)", notes: "What one reasons with" });

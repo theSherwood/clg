@@ -366,6 +366,7 @@ export const role_examples: Example[] = [
   { title: "Ear", english: "what you hear with", transliteration: "<tool> hear(vt)" },
   { title: "Eye", english: "what you see with", transliteration: "<tool> see(vt)" },
   { title: "Word", english: "what's said", transliteration: "<ee> say(vt)" },
+  { title: "Quotation", english: "what's quoted", transliteration: "<ee> quote(vt)" },
   { title: "Text", english: "what's written", transliteration: "<ee> write(vt)" },
   { title: "Reader", english: "whoever reads", transliteration: "<er> read(vi)" },
   { title: "Mark", english: "a lesser writing", transliteration: "<min_positive> write(vi)" },
