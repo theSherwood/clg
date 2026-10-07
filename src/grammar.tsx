@@ -359,10 +359,11 @@ export function GrammarView() {
       </Example>
       <p className="mt-2">
         <W w="mind" /> is <i>&lt;er&gt; sense(vt) self</i>, what perceives itself.{" "}
-        To <W w="compute(vi)" /> is <i>transform(vt) information</i>, transforming data;{" "}
-        <W w="computation" /> is <i>&lt;gerund&gt; transform(vt) information</i>, and a{" "}
-        <W w="computer" /> <i>&lt;tool&gt; transform(vt) information</i>; to <W w="transform(vi)" /> is
-        to change at the fullest. <W w="conscience" /> is <i>&lt;tool&gt; blame(vt) self</i>, what you blame yourself with, and by
+        To <W w="compute(vi)" /> is <i>work(vt) information</i>, to work data, as German{" "}
+        <i>Datenverarbeitung</i> is data processing; <W w="computation" /> is{" "}
+        <i>&lt;gerund&gt; work(vt) information</i> and a <W w="computer" />{" "}
+        <i>&lt;tool&gt; work(vt) information</i>. Working a material is crafting it, as German{" "}
+        <i>werken</i>: <i>work(vt) rock</i> is stonework. <W w="conscience" /> is <i>&lt;tool&gt; blame(vt) self</i>, what you blame yourself with, and by
         the same axis credit yourself. A <W w="model" /> is <i>&lt;er&gt; resemble(vt)</i>, a thing that
         resembles another. <W w="meta" /> as a modifier makes X about X: <i>merit meta</i> is
         metaethics, the study of what good is, and <i>knowledge meta</i> knowing what you know.

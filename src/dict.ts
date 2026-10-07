@@ -3190,8 +3190,8 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   phrase("pretend(vi)", ["show(vi)", "falsely"], "pretend", "disguise");
   // Saying or writing exactly: the clause is verbatim, so its pronouns are whoever first said it.
   // With meta, the words are someone else's, repeated: quoting
-  // Computing is transforming data
-  phrase("compute(vi)", ["transform(vi)", "information"], "compute", "compute");
+  // Computing is working data, as German Datenverarbeitung is data processing
+  phrase("compute(vi)", ["work(vi)", "information"], "compute", "compute");
   phrase("say_verbatim(vi)", ["say(vt)", "identically"], "say verbatim", "say verbatim");
   phrase("quote(vi)", ["say(vt)", "identically", "meta"], "quote", "quote");
   phrase("write_verbatim(vi)", ["write(vi)", "identically"], "write verbatim", "write verbatim");
@@ -3330,8 +3330,12 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
 
   noun("quotation", ["<ee>", "quote(vi)"], { gloss: "quotation / quote", notes: "What's quoted" });
   noun("quoter", ["<er>", "quote(vi)"], { notes: "Whoever quotes" });
-  noun("computation", ["<gerund>", "transform(vi)", "information"], { notes: "Transforming data" });
-  noun("computer", ["<tool>", "transform(vi)", "information"]);
+  noun("computation", ["<gerund>", "work(vi)", "information"], {
+    notes: "Working data. Working a material is crafting it, as German werken: work(vt) rock is stonework",
+  });
+  noun("computer", ["<tool>", "work(vi)", "information"], {
+    notes: "What works data. A computer was first a person who computed, and <er> work(vt) information still is",
+  });
   noun("reason", ["<tool>", "infer(vt)"], { gloss: "reason (the faculty)", notes: "What one reasons with" });
   noun("mind", ["<er>", "sense(vt)", "self"], { notes: "What perceives itself" });
   noun("model", ["<er>", "resemble(vt)"], { gloss: "model / likeness", notes: "What resembles something" });
