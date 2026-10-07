@@ -2687,14 +2687,25 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("or", { t: [T.grammar_helper], notes: '"xor" through "or-exclusive"' });
   cr("and", { t: [T.grammar_helper] });
   cr("but", { t: [T.grammar_helper], gloss: "but / however" });
-  cr("<clause_start>", {
-    gloss: "clause start",
-    notes:
-      "Needed only after a noun. After if, a preposition, <subject>, <object> or <complement>, a clause starting with <subject> or a verb marker can only be a subclause, so the bracket is left out",
+  cr("only", {
+    t: [T.grammar_helper],
+    notes: "A prefix, like not, applying to the one word after it: only you, <verb> only sleep(vi)",
   });
-  cr("<clause_end>", { gloss: "clause end" });
-  cr("<continuous_tense_aspect>");
-  cr("<perfect_tense_aspect>");
+  cr("also", {
+    t: [T.grammar_helper],
+    gloss: "also / too",
+    notes: "A prefix on the word it adds: also you is you too",
+  });
+  cr("even", {
+    t: [T.grammar_helper],
+    notes: "A prefix on the word that's surprising to include: even child, even the children",
+  });
+  cr("become", {
+    t: [T.grammar_helper],
+    gloss: "come to, begin to",
+    notes:
+      "A prefix on a verb that isn't a change verb, for coming into its state: <verb> become possess(vt) is gain, become know(vt) come to know. Like Toki Pona's kama jo, come to have. Change verbs have becoming of their own",
+  });
   cr("if", { t: [T.grammar_helper], notes: '"iff" through "if-exclusive"' });
   cr("again", {
     t: [T.grammar_helper],
@@ -2713,26 +2724,14 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     notes:
       "Each modifier applies to the head by default: rock red yellow is a rock that's red and yellow. After <regroup>, the modifiers form one group that modifies the head together: rock <regroup> red yellow is an orange rock. The group runs to the end of the noun phrase",
   });
-  cr("only", {
-    t: [T.grammar_helper],
-    notes: "A prefix, like not, applying to the one word after it: only you, <verb> only sleep(vi)",
-  });
-  cr("also", {
-    t: [T.grammar_helper],
-    gloss: "also / too",
-    notes: "A prefix on the word it adds: also you is you too",
-  });
-  cr("even", {
-    t: [T.grammar_helper],
-    notes: "A prefix on the word that's surprising to include: even child, even the children",
-  });
-
-  cr("become", {
-    t: [T.grammar_helper],
-    gloss: "come to, begin to",
+  cr("<clause_start>", {
+    gloss: "clause start",
     notes:
-      "A prefix on a verb that isn't a change verb, for coming into its state: <verb> become possess(vt) is gain, become know(vt) come to know. Like Toki Pona's kama jo, come to have. Change verbs have becoming of their own",
+      "Needed only after a noun. After if, a preposition, <subject>, <object> or <complement>, a clause starting with <subject> or a verb marker can only be a subclause, so the bracket is left out",
   });
+  cr("<clause_end>", { gloss: "clause end" });
+  cr("<continuous_tense_aspect>");
+  cr("<perfect_tense_aspect>");
 }
 
 {
