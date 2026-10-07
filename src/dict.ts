@@ -3190,6 +3190,8 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   phrase("pretend(vi)", ["show(vi)", "falsely"], "pretend", "disguise");
   // Saying or writing exactly: the clause is verbatim, so its pronouns are whoever first said it.
   // With meta, the words are someone else's, repeated: quoting
+  // Computing is transforming data
+  phrase("compute(vi)", ["transform(vi)", "information"], "compute", "compute");
   phrase("say_verbatim(vi)", ["say(vt)", "identically"], "say verbatim", "say verbatim");
   phrase("quote(vi)", ["say(vt)", "identically", "meta"], "quote", "quote");
   phrase("write_verbatim(vi)", ["write(vi)", "identically"], "write verbatim", "write verbatim");

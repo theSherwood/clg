@@ -359,7 +359,8 @@ export function GrammarView() {
       </Example>
       <p className="mt-2">
         <W w="mind" /> is <i>&lt;er&gt; sense(vt) self</i>, what perceives itself.{" "}
-        <W w="computation" /> is <i>&lt;gerund&gt; transform(vt) information</i>, transforming data, and a{" "}
+        To <W w="compute(vi)" /> is <i>transform(vt) information</i>, transforming data;{" "}
+        <W w="computation" /> is <i>&lt;gerund&gt; transform(vt) information</i>, and a{" "}
         <W w="computer" /> <i>&lt;tool&gt; transform(vt) information</i>; to <W w="transform(vi)" /> is
         to change at the fullest. <W w="conscience" /> is <i>&lt;tool&gt; blame(vt) self</i>, what you blame yourself with, and by
         the same axis credit yourself. A <W w="model" /> is <i>&lt;er&gt; resemble(vt)</i>, a thing that
