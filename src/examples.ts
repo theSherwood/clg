@@ -684,7 +684,7 @@ export const clause_examples: Example[] = [
   {
     title: "A direct quote",
     english: "She said, “I'm weak”",
-    transliteration: "<subject> it <verb> say(vt) formerly identically <object> <clause_start> <subject> I <verb> be(vt) <complement> weak",
+    transliteration: "<subject> it <verb> quote(vt) formerly <object> <clause_start> <subject> I <verb> be(vt) <complement> weak",
   },
   {
     title: "That…",

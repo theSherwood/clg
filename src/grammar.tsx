@@ -708,7 +708,8 @@ export function GrammarView() {
           <b>As an object</b>: <i>I believe(vt) &lt;object&gt; &lt;clause_start&gt; … &lt;clause_end&gt;</i>, I
           believe that…. Its pronouns are the speaker's, so after <W w="say(vt)" /> it's indirect
           speech. With <W w="identically" /> on the verb, said exactly, it's a direct quote, and its
-          pronouns, here and now are the quoted speaker's.
+          pronouns, here and now are the quoted speaker's: <W w="quote(vt)" /> is{" "}
+          <i>say(vt) identically</i> and <W w="transcribe(vt)" /> <i>write(vt) identically</i>.
         </li>
         <li>
           <b>After a preposition</b>, for because, when, so that and until:{" "}
