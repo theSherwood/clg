@@ -2821,32 +2821,32 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
 
 {
   section("content");
+  // General nouns
   cr("thing", {
     gloss: "thing / something",
     notes:
       "Bare, it's something. Everything and nothing are the completeness axis's nouns, one root and two; thing all and thing none say the same. thing <blank> is what",
   });
-  cr("singular");
-  cr("plural");
-  cr("land");
-  cr("wall");
-  cr("rod");
   cr("person");
-  cr("money");
   cr("place");
-  cr("container");
-  cr("mouth");
-  cr("rock");
-  cr("path");
-  cr("sound");
-  cr("taste", { gloss: "taste / flavor" });
-  cr("odor", { gloss: "odor / smell / scent" });
+  cr("self", {
+    gloss: "self / oneself / own",
+    notes: "As an object it's reflexive: I know self is I know myself. family of self is one's own family",
+  });
+  cr("other", {
+    gloss: "other / another",
+    notes: "person other is another person. With a plural subject, <object> other or <to> other is each other",
+  });
+  cr("plural");
+  cr("singular");
+
+  // Living things and the body
+  cr("animal");
+  cr("plant");
+  cr("family", { gloss: "family / kin / relative" });
   cr("body", { gloss: "body / organ" });
-  cr("symbol");
-  cr("information", { gloss: "information / data" });
-  cr("building", { notes: "A house is building family, a room part building" });
   cr("head");
-  cr("torso");
+  cr("mouth");
   cr("arm", {
     gloss: "arm / limb",
     notes: "Rank counts segments out from the body, as Toki Pona's luka is arm and hand: <rank_2> hand, <rank_3> finger. Bare, it's <rank_1>",
@@ -2854,12 +2854,53 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("leg", {
     notes: "Rank counts segments out from the body, as Toki Pona's noka is leg and foot: <rank_2> foot, <rank_3> toe. Bare, it's <rank_1>",
   });
-  cr("node", {
-    notes:
-      "Rank lifts it to more general networks: <rank_1> chain, <rank_2> tree, <rank_3> DAG, <rank_4> graph, <rank_5> hypergraph, <rank_6> higher-order network. Each takes 3 syllables",
-  });
-  cr("edge");
+  cr("torso");
+  cr("fungus");
 
+  // Nature and matter
+  cr("water");
+  cr("land");
+  cr("rock");
+  cr("matter", {
+    gloss: "matter / substance",
+    notes:
+      "Rank gives the phase, rising in energy: <rank_0> solid, <rank_1> liquid, <rank_2> gas, <rank_3> plasma. As a modifier it gives a substance's phase: water matter <rank_0> is ice, water matter <rank_2> steam",
+  });
+  cr("celestial", {
+    gloss: "celestial body",
+    notes:
+      "Rank gives the level in the orbital hierarchy, each orbiting the next: <rank_1> moon, <rank_2> planet, <rank_3> star, <rank_4> galaxy, <rank_5> galaxy cluster, <rank_6> supercluster. <rank_0> is a small body, too small to be round, told apart by modifiers: <rank_0> rock is an asteroid, <rank_0> ice a comet. Bare, it's any celestial body. With this, it's ours: celestial <rank_3> this is the Sun, celestial <rank_2> this Earth, celestial <rank_1> this the Moon",
+  });
+  cr("element", {
+    gloss: "chemical element",
+    t: [T.domain_specifier],
+    notes:
+      "Marks the element domain: the digit after it is an atomic number, so element 6 is carbon. The elements are written as one word, carbon for element 6, as phrases with a settled meaning are. Bare, it's any element. With matter it gives the phase: gold matter <rank_0> is solid gold",
+  });
+
+  // Senses and color
+  cr("sound");
+  cr("color");
+  cr("red", {
+    notes:
+      "Two hues together are an even blend, in either order: red yellow is orange, yellow blue green, red blue purple. On a noun, group them: rock <regroup> red yellow is an orange rock. Lightness comes from the brightness axis: red bright is pink, and white and black are bright and dark. Brown is the neutral color, color <neutral>",
+  });
+  cr("yellow");
+  cr("blue");
+  cr("taste", { gloss: "taste / flavor" });
+  cr("odor", { gloss: "odor / smell / scent" });
+
+  // Made things and society
+  cr("path");
+  cr("building", { notes: "A house is building family, a room part building" });
+  cr("money");
+  cr("container");
+  cr("wall");
+  cr("rod");
+  cr("symbol");
+  cr("information", { gloss: "information / data" });
+
+  // Abstract structure and number
   cr("number", {
     t: [T.domain_specifier],
     notes:
@@ -2873,58 +2914,26 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("dimension", {
     t: [T.domain_specifier],
   });
-  cr("family", { gloss: "family / kin / relative" });
-  cr("color");
-  cr("red", {
+  cr("geometry", {
+    gloss: "geometric figure",
     notes:
-      "Two hues together are an even blend, in either order: red yellow is orange, yellow blue green, red blue purple. On a noun, group them: rock <regroup> red yellow is an orange rock. Lightness comes from the brightness axis: red bright is pink, and white and black are bright and dark. Brown is the neutral color, color <neutral>",
+      "Rank gives a bounded figure of that many dimensions: <rank_0> point, <rank_1> line segment, <rank_2> shape, <rank_3> form (a 3D structure). A dimension helper gives the unbounded space up through that dimension: <dimension_x> a line, <dimension_y> a plane, <dimension_z> space. Modifiers say which figure: <rank_2> round is a circle, <rank_2> angular a polygon",
   });
-  cr("yellow");
-  cr("blue");
-  cr("water");
-  cr("self", {
-    gloss: "self / oneself / own",
-    notes: "As an object it's reflexive: I know self is I know myself. family <of> self is one's own family",
+  cr("node", {
+    notes:
+      "Rank lifts it to more general networks: <rank_1> sequence, <rank_2> tree, <rank_3> DAG, <rank_4> graph, <rank_5> hypergraph, <rank_6> higher-order network. Each takes 3 syllables",
+  });
+  cr("edge");
+  cr("cardinal", {
+    gloss: "cardinal direction",
+    notes:
+      "Rank counts quarter turns clockwise from north: <rank_0> north, <rank_1> east, <rank_2> south, <rank_3> west. Two ranks name the direction between them, north or south first as in English: cardinal <rank_0> <rank_1> is northeast, <rank_2> <rank_3> southwest. to cardinal <rank_0> is northward. Rank here numbers points on a circle rather than levels, unlike its other uses; kept for now",
   });
   cr("meta", {
     gloss: "meta / about itself",
     notes:
       "As a modifier, X about X: merit meta is metaethics, knowledge meta knowing what one knows. Not rank, which many nouns already use for their levels",
   });
-  cr("other", {
-    gloss: "other / another",
-    notes: "person other is another person. With a plural subject, <object> other or <to> other is each other",
-  });
-  cr("geometry", {
-    gloss: "geometric figure",
-    notes:
-      "Rank gives a bounded figure of that many dimensions: <rank_0> point, <rank_1> line segment, <rank_2> shape, <rank_3> form (a 3D structure). A dimension helper gives the unbounded space up through that dimension: <dimension_x> a line, <dimension_y> a plane, <dimension_z> space. Modifiers say which figure: <rank_2> round is a circle, <rank_2> angular a polygon",
-  });
-  cr("celestial", {
-    gloss: "celestial body",
-    notes:
-      "Rank gives the level in the orbital hierarchy, each orbiting the next: <rank_1> moon, <rank_2> planet, <rank_3> star, <rank_4> galaxy, <rank_5> galaxy cluster, <rank_6> supercluster. <rank_0> is a small body, too small to be round, told apart by modifiers: <rank_0> rock is an asteroid, <rank_0> ice a comet. Bare, it's any celestial body. With this, it's ours: celestial <rank_3> this is the Sun, celestial <rank_2> this Earth, celestial <rank_1> this the Moon",
-  });
-  cr("cardinal", {
-    gloss: "cardinal direction",
-    notes:
-      "Rank counts quarter turns clockwise from north: <rank_0> north, <rank_1> east, <rank_2> south, <rank_3> west. Two ranks name the direction between them, north or south first as in English: cardinal <rank_0> <rank_1> is northeast, <rank_2> <rank_3> southwest. to cardinal <rank_0> is northward. Rank here numbers points on a circle rather than levels, unlike its other uses; kept for now",
-  });
-  cr("animal");
-  cr("plant");
-  cr("fungus");
-  cr("matter", {
-    gloss: "matter / substance",
-    notes:
-      "Rank gives the phase, rising in energy: <rank_0> solid, <rank_1> liquid, <rank_2> gas, <rank_3> plasma. As a modifier it gives a substance's phase: water matter <rank_0> is ice, water matter <rank_2> steam",
-  });
-  cr("element", {
-    gloss: "chemical element",
-    t: [T.domain_specifier],
-    notes:
-      "Marks the element domain: the digit after it is an atomic number, so element 6 is carbon. The elements are written as one word, carbon for element 6, as phrases with a settled meaning are. Bare, it's any element. With matter it gives the phase: gold matter <rank_0> is solid gold",
-  });
-
 
   candidate("net", { gloss: "net / graph" });
   candidate("image", { gloss: "image / projection" });
