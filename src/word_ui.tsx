@@ -529,6 +529,9 @@ export function FormPopoverContent({
               <td className="pr-2 py-0.5 text-gray-500 whitespace-nowrap">{w.data.domain}</td>
               <td className="py-0.5 text-gray-700 max-w-md">
                 <Meaning word={w} />
+                {w.data.synonyms && (
+                  <span className="block text-gray-500">Also: {w.data.synonyms.join(", ")}</span>
+                )}
                 {w.data.notes && !axis_notes.has(w.data.notes) && (
                   <span className="block text-gray-600">{w.data.notes}</span>
                 )}

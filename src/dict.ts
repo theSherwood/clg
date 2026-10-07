@@ -93,6 +93,7 @@ type WordData = {
   notes?: string;
   verb_i?: string; // for a verb that isn't on an axis: its meaning without an object
   verb_t?: string; // ... and with one
+  synonyms?: string[]; // other English words for the same meaning, found by search
 
   homonyms: Word[];
   uses: Word[];
@@ -211,6 +212,7 @@ type AxisWordForms = {
   verb_t?: string; // ... and with one (transitive)
   adverb?: string;
   notes?: string;
+  synonyms?: Partial<Record<"noun" | "adj" | "verb" | "adverb", string[]>>; // other English words, by form
   steps?: Partial<Record<MinorStep, AxisWordForms>>; // on the axis entry: words for the other steps
 };
 
@@ -1880,9 +1882,27 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "transmission", notes: "duplicate of come/go" },
-    { noun: "receipt", adj: "received", verb: "receive(vi)", verb_i: "receive", verb_t: "receive" },
-    { noun: "dispatch", adj: "sent", verb: "send(vi)", verb_i: "send", verb_t: "send" },
+    {
+      noun: "transmission",
+      notes:
+        "Something going across a distance or a medium to a destination, without the sender going along: messages, packages, requests, signals, light and heat. Giving and taking, a change of hands, is transfer",
+    },
+    {
+      noun: "receipt",
+      adj: "received",
+      verb: "receive(vi)",
+      verb_i: "receive",
+      verb_t: "receive",
+      synonyms: { verb: ["absorb", "get"], noun: ["reception", "absorption"] },
+    },
+    {
+      noun: "dispatch",
+      adj: "sent",
+      verb: "send(vi)",
+      verb_i: "send",
+      verb_t: "send",
+      synonyms: { verb: ["transmit", "emit"], noun: ["transmission", "emission"] },
+    },
   ],
   [
     { noun: "expectation" },
@@ -1989,9 +2009,26 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { noun: "learning", adj: "learned", verb: "learn(vi)", verb_i: "learn", verb_t: "learn" },
   ],
   [
-    { noun: "cultivation" },
-    { noun: "harvest", adj: "reaped", verb: "reap(vi)", verb_i: "reap", verb_t: "reap" },
-    { noun: "sowing", adj: "sown", verb: "sow(vi)", verb_i: "sow", verb_t: "sow" },
+    {
+      noun: "cultivation",
+      notes: "Planting and harvesting, and the same of anything: you reap what you sow, as with doubt, effort or money",
+    },
+    {
+      noun: "harvest",
+      adj: "reaped",
+      verb: "reap(vi)",
+      verb_i: "reap",
+      verb_t: "reap",
+      synonyms: { verb: ["harvest", "gain from", "profit from"], noun: ["return", "yield", "profit"] },
+    },
+    {
+      noun: "sowing",
+      adj: "sown",
+      verb: "sow(vi)",
+      verb_i: "sow",
+      verb_t: "sow",
+      synonyms: { verb: ["plant", "invest"], noun: ["planting", "investment"] },
+    },
   ],
   [
     {
@@ -2134,23 +2171,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "endure",
       verb_t: "withstand",
       adverb: "resiliently",
-    },
-  ],
-  [
-    { noun: "involvement" },
-    {
-      noun: "abstention",
-      adj: "abstinent",
-      verb: "abstain(vi)",
-      verb_i: "abstain",
-      verb_t: "abstain from",
-    },
-    {
-      noun: "participation",
-      adj: "participating",
-      verb: "participate(vi)",
-      verb_i: "participate",
-      verb_t: "participate in",
     },
   ],
   [
@@ -2479,7 +2499,10 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { noun: "front_side", adj: "front", verb: "face(vt)", verb_t: "face", adverb: "in_front" },
   ],
   [
-    { noun: "scope(inclusion)" },
+    {
+      noun: "scope(inclusion)",
+      notes: "Participating is including oneself: <subject> I <verb> include(vt) <object> self in game. Abstaining is exclude(vt) self",
+    },
     {
       noun: "exclusion",
       adj: "exclusive",
@@ -2970,7 +2993,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "analyze(vi)", "succeed(vi)", "produce(vi)", "send(vi)", "hope(vi)",
     "believe(vi)", "lead(vi)", "work(vi)", "search(vi)", "learn(vi)", "sow(vi)", "give(vi)",
     "make_peace(vi)", "defend(vi)", "tend(vi)", "command(vt)", "withstand(vt)",
-    "participate(vi)", "recommend(vi)", "say(vt)", "write(vi)", "sense(vt)", "use(vi)",
+    "recommend(vi)", "say(vt)", "write(vi)", "sense(vt)", "use(vi)",
     "do(vt)", "touch(vi)", "count(vi)", "thank(vt)", "show(vi)", "fly(vi)", "choose(vi)", "infer(vt)",
   ],
   relation: [
@@ -3124,7 +3147,7 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
     for (const [key, domain] of AXIS_FORMS) {
       const name = positive[key];
       if (!name) continue;
-      const word = cr(name, { t: [T.axis_word], domain, id });
+      const word = cr(name, { t: [T.axis_word], domain, id, synonyms: positive.synonyms?.[key] });
       positive_words[key] = word;
       fill_cells(entry.positive, key, word, positive);
     }
@@ -3132,7 +3155,7 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
       const name = negative[key];
       if (!name) continue;
       const parts = [negative_word, positive_of(positive_words[key], name)];
-      const word = cw(name, { t: [T.axis_word], domain, parts });
+      const word = cw(name, { t: [T.axis_word], domain, parts, synonyms: negative.synonyms?.[key] });
       fill_cells(entry.negative, key, word, negative);
     }
     for (const step of MINOR_STEPS) {
@@ -3142,7 +3165,7 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
         const name = forms[key];
         if (!name) continue;
         const parts = [step_words[step], positive_of(positive_words[key], name)];
-        const word = cw(name, { t: [T.axis_word], domain, parts });
+        const word = cw(name, { t: [T.axis_word], domain, parts, synonyms: forms.synonyms?.[key] });
         fill_cells(entry.steps[step], key, word, forms);
       }
     }
@@ -3188,11 +3211,11 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
     const word = cw(name, { domain: "verb", parts: words_of(name, parts), verb_i, verb_t });
     name_verb(word, verb_i, verb_t);
   }
-  function noun(name: string, parts: string[], data: Pick<WordData, "gloss" | "notes"> = {}) {
+  function noun(name: string, parts: string[], data: Pick<WordData, "gloss" | "notes" | "synonyms"> = {}) {
     cw(name, { domain: "noun", parts: words_of(name, parts), ...data });
   }
   // Set expressions said on their own, like greetings, which have no part of speech
-  function idiom(name: string, parts: string[], data: Pick<WordData, "gloss" | "notes"> = {}) {
+  function idiom(name: string, parts: string[], data: Pick<WordData, "gloss" | "notes" | "synonyms"> = {}) {
     cw(name, { parts: words_of(name, parts), ...data });
   }
   // Phase changes, by target phase

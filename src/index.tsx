@@ -845,8 +845,8 @@ function DictionaryView() {
     });
   };
 
-  const matches_search = (text: string, gloss?: string) =>
-    [text, gloss ?? ""].some((t) => t.toLowerCase().includes(search_text.toLowerCase()));
+  const matches_search = (text: string, gloss?: string, synonyms: string[] = []) =>
+    [text, gloss ?? "", ...synonyms].some((t) => t.toLowerCase().includes(search_text.toLowerCase()));
 
   // Candidates have no tags, so a tag filter hides them
   const filtered_candidates = useMemo(
@@ -856,7 +856,7 @@ function DictionaryView() {
 
   const filtered_words = useMemo(() => {
     return all_words.filter((word) => {
-      const matches_search_text = matches_search(word.word, word.data.gloss);
+      const matches_search_text = matches_search(word.word, word.data.gloss, word.data.synonyms);
       const matches_tags =
         selected_tags.size === 0 || word.data.t.some((tag) => selected_tags.has(tag));
       return matches_search_text && matches_tags;
