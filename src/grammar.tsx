@@ -366,9 +366,9 @@ export function GrammarView() {
       </Example>
       <p className="mt-2">
         <W w="mind" /> is <i>&lt;er&gt; sense(vt) self</i>, what perceives itself. A <W w="machine" /> is{" "}
-        <i>&lt;er&gt; work(vi) artificial</i>, an artificial worker. Where something comes from is the
-        provenance axis: <W w="original" /> and <W w="derivative" />, <W w="originate(vt)" /> and{" "}
-        <W w="derive_from(vt)" />, with a <W w="copy" /> as derivation at its fullest.{" "}
+        <i>&lt;er&gt; work(vi) artificial</i>, an artificial worker. Making something new or following what exists is the
+        provenance axis: <W w="original" /> and <W w="derivative" />, <W w="invent(vt)" /> and{" "}
+        <W w="imitate(vt)" />, with a <W w="copy" /> as imitation at its fullest.{" "}
         To <W w="compute(vi)" /> is <i>work(vt) information</i>, to work data, as German{" "}
         <i>Datenverarbeitung</i> is data processing; <W w="computation" /> is{" "}
         <i>&lt;gerund&gt; work(vt) information</i> and a <W w="computer" />{" "}

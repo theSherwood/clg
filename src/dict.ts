@@ -2586,21 +2586,23 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "provenance",
       notes:
-        "Where something comes from: the original is the source, and the derivative derives from it. A copy is derivation at its fullest. Copying a text is copy(vi), on literacy",
+        "Making something new or following what exists: inventing at the positive end, imitating at the negative, and a copy is imitation at its fullest. Where a thing comes from is come(vi) from. Copying a text is copy(vi), on literacy",
       steps: { max_negative: { noun: "copy", adj: "copied" } },
     },
     {
-      noun: "derivation",
+      noun: "imitation",
       adj: "derivative",
-      verb: "derive_from(vt)",
-      verb_t: "derive from",
+      verb: "imitate(vt)",
+      verb_i: "imitate",
+      verb_t: "imitate",
       adverb: "derivatively",
     },
     {
       noun: "originality",
       adj: "original",
-      verb: "originate(vt)",
-      verb_t: "originate",
+      verb: "invent(vt)",
+      verb_i: "innovate",
+      verb_t: "invent",
       adverb: "originally",
     },
   ],
@@ -2994,10 +2996,10 @@ export const verb_types: Record<VerbType, string[]> = {
     "believe(vi)", "lead(vi)", "work(vi)", "search(vi)", "learn(vi)", "sow(vi)", "give(vi)",
     "make_peace(vi)", "defend(vi)", "tend(vi)", "command(vt)", "withstand(vt)",
     "recommend(vi)", "say(vt)", "write(vi)", "sense(vt)", "use(vi)",
-    "do(vt)", "touch(vi)", "count(vi)", "thank(vt)", "show(vi)", "fly(vi)", "choose(vi)", "infer(vt)",
+    "do(vt)", "touch(vi)", "count(vi)", "thank(vt)", "invent(vt)", "show(vi)", "fly(vi)", "choose(vi)", "infer(vt)",
   ],
   relation: [
-    "possess(vt)", "be(vt)", "be_entitled_to(vt)", "originate(vt)", "resemble(vt)", "result_from(vt)", "love(vt)", "know(vt)", "desire(vt)", "face(vt)", "include(vt)",
+    "possess(vt)", "be(vt)", "be_entitled_to(vt)", "resemble(vt)", "result_from(vt)", "love(vt)", "know(vt)", "desire(vt)", "face(vt)", "include(vt)",
     "attract(vt)", "exceed(vt)", "follow(vt)",
   ],
 };
