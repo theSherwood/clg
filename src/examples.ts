@@ -946,6 +946,12 @@ export const more_grammar_examples: Example[] = [
   { title: "Machine", english: "an artificial worker", transliteration: "<er> work(vi) artificial" },
   { title: "Invent", english: "She invented a machine", transliteration: "<subject> it <verb> invent(vt) formerly <object> machine" },
   { title: "Imitate", english: "The child imitates the mother", transliteration: "<subject> child <verb> imitate(vt) <object> mother" },
+  // "Derived from" in its senses, each with its own word
+  { title: "Derived: comes from", english: "The bird came from the south", transliteration: "<subject> bird <verb> come(vi) formerly from south" },
+  { title: "Derived: made from", english: "Glue is made from plants", transliteration: "<object> glue <verb> create(vt) from plant" },
+  { title: "Derived: results from", english: "The harvest results from the sowing", transliteration: "<subject> harvest <verb> result_from(vt) <object> sowing" },
+  { title: "Derived: deduced from", english: "The theorem is derived from the axioms", transliteration: "<object> theorem <verb> derive(vt) from axiom plural" },
+  { title: "Derived: modelled on", english: "The copy is derivative of the original", transliteration: "<subject> copy <verb> be(vt) <complement> derivative of thing original" },
   { title: "Computation", english: "working data", transliteration: "<gerund> work(vt) information" },
   { title: "Computer", english: "what works data", transliteration: "<tool> work(vt) information" },
   { title: "Craft", english: "to work stone", transliteration: "<verb_prescriptive> work(vt) <object> rock" },
