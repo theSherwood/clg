@@ -222,6 +222,13 @@ export function GrammarView() {
         &lt;subject&gt; you &lt;verb_interrogative&gt; fight(vi) for &lt;blank&gt;
       </Example>
 
+      <H2>Leaving the doer unsaid</H2>
+      <p>
+        There's no passive voice. A clause with no subject leaves the doer unsaid, which is what the
+        passive is for: <i>&lt;object&gt; rock &lt;verb&gt; eat(vt) formerly</i> is “the rock was eaten”.
+      </p>
+      <Example meaning="The rock was eaten.">&lt;object&gt; rock &lt;verb&gt; eat(vt) formerly</Example>
+
       <H2>Tense and aspect</H2>
       <p>
         Verbs aren't marked for tense. As in Mandarin, a sentence's time comes from context, and
@@ -760,6 +767,26 @@ export function GrammarView() {
         &lt;subject&gt; you &lt;verb&gt; be(vt) &lt;complement&gt; strong
       </Example>
 
+      <H2>Topics and settings</H2>
+      <p>
+        An <W w="about" /> phrase put first sets the topic, “as for…”. A setting, “in the daytime…”,
+        is <W w="if" /> with it, as Toki Pona's <i>la</i> covers both conditions and settings:{" "}
+        <i>if &lt;clause_start&gt; daytime &lt;clause_end&gt;</i>.
+      </p>
+      <Example meaning="As for the rock, I ate it.">
+        about rock &lt;subject&gt; I &lt;verb&gt; eat(vt) formerly &lt;object&gt; it
+      </Example>
+
+      <H2>Because and so</H2>
+      <p>
+        “Because” is a subclause after <W w="from" />: <i>from &lt;clause_start&gt; …</i>. “So” is the
+        adverb <W w="consequently" />, on the verb of what follows.
+      </p>
+      <Example meaning="I slept because I was weak.">
+        &lt;subject&gt; I &lt;verb&gt; sleep(vi) formerly from &lt;clause_start&gt; &lt;subject&gt; I &lt;verb&gt; be(vt)
+        &lt;complement&gt; weak
+      </Example>
+
       <H2>Pronouns</H2>
       <p>
         <W w="<pronoun_first_person>" />, <W w="<pronoun_second_person>" /> and{" "}
@@ -824,6 +851,13 @@ export function GrammarView() {
       <Example meaning="They love each other.">
         &lt;subject&gt; it plural &lt;verb&gt; love(vt) &lt;object&gt; other
       </Example>
+
+      <H2>“The” and “a”</H2>
+      <p>
+        There are no articles, as in Toki Pona and Mandarin: <i>rock</i> is “a rock” or “the rock” by
+        context. Where it matters, <W w="this" /> or <W w="that" /> makes it definite and{" "}
+        <i>number 1</i> makes it one, any one.
+      </p>
 
       <H2>Numbers</H2>
       <p>
@@ -920,6 +954,21 @@ export function GrammarView() {
         &lt;subject&gt; you &lt;verb_interrogative&gt; work(vi) &lt;blank&gt;
       </Example>
 
+      <H2>Politeness</H2>
+      <p>
+        <W w="please" /> is “if you prefer”, <i>if &lt;clause_start&gt; &lt;verb&gt; prefer(vt) &lt;clause_end&gt;</i>, as
+        French <i>s'il vous plaît</i> is “if it pleases you”. The subclause takes the request's
+        subject, you. Thanks and apologies are on the accountability axis, above.
+      </p>
+      <Example meaning="Please sit.">please &lt;verb_prescriptive&gt; sit(vi)</Example>
+
+      <H2>Addressing someone</H2>
+      <p>
+        The one addressed is the subject of a request, as Toki Pona does with <i>o</i>:{" "}
+        <i>&lt;subject&gt; mother &lt;verb_prescriptive&gt; come(vi)</i> is “Mother, come”.
+      </p>
+      <Example meaning="Mother, come.">&lt;subject&gt; mother &lt;verb_prescriptive&gt; come(vi)</Example>
+
       <H2>Other grammar words</H2>
       <p>
         <W w="<foreign>" /> marks a foreign word or name. Possession needs no word of its own: <W w="of" /> covers it, as in <i>family of me</i>.
@@ -932,36 +981,6 @@ export function GrammarView() {
         &lt;subject&gt; I &lt;verb&gt; &lt;filler&gt; sleep(vi) formerly
       </Example>
 
-      <H2>Things that need no word</H2>
-      <p>Several things other languages have words for come from the grammar already:</p>
-      <ul className="mt-2 list-disc pl-6 space-y-1">
-        <li>
-          <b>Please</b> is <W w="please" />, <i>if &lt;clause_start&gt; &lt;verb&gt; prefer(vt) &lt;clause_end&gt;</i>: if
-          you prefer, as French <i>s'il vous plaît</i> is “if it pleases you”.
-        </li>
-        <li>
-          <b>Addressing someone</b> is the subject of a request: <i>&lt;subject&gt; mother
-          &lt;verb_prescriptive&gt; come(vi)</i>, “Mother, come”, like Toki Pona's <i>o</i>.
-        </li>
-        <li>
-          <b>A topic</b>, “as for the rock…”, is an <W w="about" /> phrase put first.
-        </li>
-        <li>
-          <b>A setting</b>, “in the daytime…”, is <W w="if" /> with it, as Toki Pona's <i>la</i> covers
-          both: <i>if &lt;clause_start&gt; daytime &lt;clause_end&gt;</i>.
-        </li>
-        <li>
-          <b>The passive</b> is a clause with no subject, which leaves the doer unsaid:{" "}
-          <i>&lt;object&gt; rock &lt;verb&gt; eat(vt) formerly</i>, the rock was eaten.
-        </li>
-        <li>
-          <b>“The” and “a”</b> are left out, as in Toki Pona and Mandarin, with <W w="this" /> or{" "}
-          <i>number 1</i> when it matters.
-        </li>
-        <li>
-          <b>Because and so</b> are <i>from &lt;clause_start&gt; …</i> and <W w="consequently" />.
-        </li>
-      </ul>
     </div>
   );
 }
