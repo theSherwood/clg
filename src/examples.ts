@@ -885,7 +885,7 @@ export const part_examples: Example[] = [
   { title: "Grease", english: "what you make things slip with", transliteration: "<tool> slip(vi)" },
   { title: "Fruit", english: "food with seed in it", transliteration: "food seed" },
   { title: "Liver", english: "the body's filter", transliteration: "filter body" },
-  { title: "Breast", english: "what feeds", transliteration: "<tool> feed(vt)" },
+  { title: "Animal noise", english: "an animal's speech", transliteration: "speech animal" },
   { title: "Bug", english: "a very small animal", transliteration: "animal <max_negative> big" },
   { title: "Smoke", english: "The fire makes smoke", transliteration: "<subject> fire <verb> create(vt) <object> smoke" },
   { title: "House", english: "a family's building", transliteration: "building family" },
@@ -984,6 +984,7 @@ export const more_grammar_examples: Example[] = [
     transliteration: "<subject> I <verb> be_bound_to(vt) <object> <gerund> not touch(vi)",
   },
   { title: "Can't", english: "I can't sleep", transliteration: "<subject> I <verb> sleep(vi) incapably" },
+  { title: "Become", english: "I gained a house", transliteration: "<subject> I <verb> become possess(vt) formerly <object> house" },
   { title: "Again", english: "Open it again", transliteration: "<verb_prescriptive> open(vt) again <object> it" },
   {
     title: "Undo",

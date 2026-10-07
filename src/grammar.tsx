@@ -201,10 +201,14 @@ export function GrammarView() {
       <Example meaning="There's water here.">
         &lt;subject&gt; water &lt;verb&gt; be(vi) at this
       </Example>
-      <Open>
-        Becoming, for relation verbs: maybe a helper, <W w="become" /> (<i>become possess(vt)</i>,
-        “gain”).
-      </Open>
+      <p className="mt-2">
+        Change verbs have becoming built in, but action and relation verbs don't. For those,{" "}
+        <W w="become" /> is a prefix on the verb, coming into its state, like Toki Pona's{" "}
+        <i>kama</i>: <i>become possess(vt)</i> is gain, <i>become know(vt)</i> come to know.
+      </p>
+      <Example meaning="I gained a house.">
+        &lt;subject&gt; I &lt;verb&gt; become possess(vt) formerly &lt;object&gt; house
+      </Example>
       <p>
         <W w="<verb_prescriptive>" /> makes a verb prescriptive or imperative (should, shall), and{" "}
         <W w="<verb_interrogative>" /> makes it a question. In a question, <W w="<blank>" /> stands
@@ -355,6 +359,10 @@ export function GrammarView() {
 
       <H2>Choice, safety, conscience and meta</H2>
       <p>
+        The sex axis is <W w="female" /> and <W w="male" />. Mating is joining them:{" "}
+        <W w="mate(vi)" /> is <i>connect(vi) sex</i>.
+      </p>
+      <p className="mt-2">
         Choosing is an axis, <W w="choose(vi)" /> and <W w="reject(vt)" />, and preferring is
         leaning toward choosing, its minor positive step: <W w="prefer(vt)" />. A comparison says
         what over: <i>prefer(vt) X exceed(vt) Y</i>. Safety is its own axis too, <W w="safe" /> and{" "}
@@ -496,7 +504,8 @@ export function GrammarView() {
         <W w="boat" /> is <i>&lt;tool&gt; swim(vi)</i>, <W w="aircraft" /> <i>&lt;tool&gt; fly(vi)</i> and{" "}
         <W w="spacecraft" /> <i>&lt;tool&gt; spacefly(vi)</i>. Animals are named loosely by how they move,
         as in English: <W w="bird" /> is <i>animal flying</i> and <W w="fish" /> <i>animal swimming</i>,
-        and a <W w="feather" /> is <i>covering bird</i>. A <W w="bug" /> is a very small animal,{" "}
+        and a <W w="feather" /> is <i>covering bird</i>. An animal's call is <W w="animal_noise" />,{" "}
+        <i>speech animal</i>. A <W w="bug" /> is a very small animal,{" "}
         <i>animal &lt;max_negative&gt; big</i>, and a <W w="louse" /> <i>bug hair</i>.
       </p>
       <Example meaning="The bird flies to the tree.">
@@ -516,8 +525,7 @@ export function GrammarView() {
         Organs are named for what they do, with <W w="<tool>" />: <W w="eye" /> is{" "}
         <i>&lt;tool&gt; see(vt)</i>, <W w="ear" /> <i>&lt;tool&gt; hear(vt)</i>, <W w="brain" />{" "}
         <i>&lt;tool&gt; know(vt)</i> and <W w="nose" /> <i>&lt;tool&gt; sense(vt) gas</i>. Where there's no verb for
-        it, the kind-and-whole pattern does: <W w="heart" /> is <i>center body</i>. A{" "}
-        <W w="breast" /> is <i>&lt;tool&gt; feed(vt)</i>, where <W w="feed(vi)" /> is giving food, and the{" "}
+        it, the kind-and-whole pattern does: <W w="heart" /> is <i>center body</i>, and the{" "}
         <W w="liver" /> <i>filter body</i>, the body's <W w="filter" /> (<i>&lt;tool&gt; separate(vi)</i>). Substances take a
         phase: <W w="blood" /> is <i>liquid body</i>, <W w="sap" /> <i>liquid plant</i> and{" "}
         <W w="flesh" /> <i>matter body</i>. A substance can also be named for what it does:{" "}

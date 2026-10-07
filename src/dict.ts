@@ -2565,7 +2565,11 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       adverb: "afterwards",
     },
   ],
-  [{}, { noun: "femininity", adj: "female" }, { noun: "masculinity", adj: "male" }],
+  [
+    { noun: "sex", notes: "Female and male. Mating is joining them: mate(vi) is connect(vi) sex" },
+    { noun: "femininity", adj: "female" },
+    { noun: "masculinity", adj: "male" },
+  ],
   [
     {
       noun: "lineage",
@@ -2723,10 +2727,11 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     notes: "A prefix on the word that's surprising to include: even child, even the children",
   });
 
-  candidate("become", {
-    gloss: "come to, begin to: become possess(vt) = gain",
+  cr("become", {
+    t: [T.grammar_helper],
+    gloss: "come to, begin to",
     notes:
-      'Like Toki Pona\'s "kama jo" (come to have = get). For axis verbs that aren\'t change verbs, which have no becoming of their own',
+      "A prefix on a verb that isn't a change verb, for coming into its state: <verb> become possess(vt) is gain, become know(vt) come to know. Like Toki Pona's kama jo, come to have. Change verbs have becoming of their own",
   });
 }
 
@@ -2919,7 +2924,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
 
   candidate("net", { gloss: "net / graph" });
   candidate("image", { gloss: "image / projection" });
-  candidate("sex");
   candidate("turn");
   candidate("direction", {
     notes:
@@ -3234,6 +3238,7 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   // With meta, the words are someone else's, repeated: quoting
   phrase("reproduce(vi)", ["bear(vt)", "child"], "reproduce", "reproduce");
   phrase("feed(vi)", ["give(vi)", "<ee>", "eat(vt)"], "feed", "feed");
+  phrase("mate(vi)", ["connect(vi)", "sex"], "mate", "mate with");
 
   // Computing is working data, as German Datenverarbeitung is data processing
   phrase("compute(vi)", ["work(vi)", "information"], "compute", "compute");
@@ -3438,9 +3443,9 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("fruit", ["food", "seed"], { notes: "Food with seed in it" });
   noun("filter", ["<tool>", "separate(vi)"], { synonyms: ["sieve"] });
   noun("liver", ["filter", "body"], { notes: "The body's filter" });
-  noun("breast", ["<tool>", "feed(vt)"], { notes: "What feeds" });
   noun("bug", ["animal", "<max_negative>", "big"], { gloss: "bug / insect", notes: "A very small animal", synonyms: ["insect"] });
   noun("louse", ["bug", "hair"], { notes: "The bug of hair" });
+  noun("animal_noise", ["speech", "animal"], { gloss: "animal noise / call", notes: "An animal's speech", synonyms: ["call", "cry"] });
   noun("ash", ["result", "fire"], { notes: "What fire leaves: the result of burning" });
   noun("smoke", ["ash", "gas"], { notes: "The result of burning, as a gas" });
   noun("house", ["building", "family"], { gloss: "house / home" });
