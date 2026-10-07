@@ -707,9 +707,12 @@ export function GrammarView() {
         <li>
           <b>As an object</b>: <i>I believe(vt) &lt;object&gt; &lt;clause_start&gt; … &lt;clause_end&gt;</i>, I
           believe that…. Its pronouns are the speaker's, so after <W w="say(vt)" /> it's indirect
-          speech. With <W w="identically" /> on the verb, said exactly, it's a direct quote, and its
-          pronouns, here and now are the quoted speaker's: <W w="quote(vt)" /> is{" "}
-          <i>say(vt) identically</i> and <W w="transcribe(vt)" /> <i>write(vt) identically</i>.
+          speech. With <W w="identically" /> on the verb, it's direct speech, the very words, and its
+          pronouns, here and now are the speaker's at the time: <W w="say_verbatim(vt)" /> is{" "}
+          <i>say(vt) identically</i>. Adding <W w="meta" /> makes it a quote, someone else's words
+          repeated, with <W w="from" /> for whose: <W w="quote(vt)" /> is{" "}
+          <i>say(vt) identically meta</i>. Writing works the same way: <W w="write_verbatim(vt)" /> and{" "}
+          <W w="quote_in_writing(vt)" />.
         </li>
         <li>
           <b>After a preposition</b>, for because, when, so that and until:{" "}

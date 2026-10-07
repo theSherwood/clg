@@ -3188,9 +3188,12 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   // Saying or showing what isn't so
   phrase("tell_a_lie(vi)", ["say(vt)", "falsely"], "tell a lie", "lie about");
   phrase("pretend(vi)", ["show(vi)", "falsely"], "pretend", "disguise");
-  // Saying or writing exactly: the clause is verbatim, its pronouns the quoted speaker's
-  phrase("quote(vi)", ["say(vt)", "identically"], "quote", "quote");
-  phrase("transcribe(vi)", ["write(vi)", "identically"], "transcribe", "transcribe");
+  // Saying or writing exactly: the clause is verbatim, so its pronouns are whoever first said it.
+  // With meta, the words are someone else's, repeated: quoting
+  phrase("say_verbatim(vi)", ["say(vt)", "identically"], "say verbatim", "say verbatim");
+  phrase("quote(vi)", ["say(vt)", "identically", "meta"], "quote", "quote");
+  phrase("write_verbatim(vi)", ["write(vi)", "identically"], "write verbatim", "write verbatim");
+  phrase("quote_in_writing(vi)", ["write(vi)", "identically", "meta"], "quote in writing", "quote in writing");
 
   // Arithmetic, by rank; count_down is the inverse
   phrase("add(vi)", ["count(vi)", "<rank_1>"], "add", "add");
