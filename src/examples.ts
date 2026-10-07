@@ -677,6 +677,16 @@ export const pointing_examples: Example[] = [
 // after a noun with <blank> marking the noun's place
 export const clause_examples: Example[] = [
   {
+    title: "Indirect speech",
+    english: "She said she was weak",
+    transliteration: "<subject> it <verb> say(vt) formerly <object> <clause_start> <subject> it <verb> be(vt) <complement> weak",
+  },
+  {
+    title: "A direct quote",
+    english: "She said, “I'm weak”",
+    transliteration: "<subject> it <verb> say(vt) formerly identically <object> <clause_start> <subject> I <verb> be(vt) <complement> weak",
+  },
+  {
     title: "That…",
     english: "I believe the person left",
     transliteration: "<subject> I <verb> believe(vt) <object> <clause_start> <subject> person <verb> go(vi)",

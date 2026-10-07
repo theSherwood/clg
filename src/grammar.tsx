@@ -706,7 +706,9 @@ export function GrammarView() {
       <ul className="mt-2 list-disc pl-6 space-y-1">
         <li>
           <b>As an object</b>: <i>I believe(vt) &lt;object&gt; &lt;clause_start&gt; … &lt;clause_end&gt;</i>, I
-          believe that….
+          believe that…. Its pronouns are the speaker's, so after <W w="say(vt)" /> it's indirect
+          speech. With <W w="identically" /> on the verb, said exactly, it's a direct quote, and its
+          pronouns, here and now are the quoted speaker's.
         </li>
         <li>
           <b>After a preposition</b>, for because, when, so that and until:{" "}
