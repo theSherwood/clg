@@ -54,7 +54,14 @@ export function GrammarView() {
         syllables in a compound never change each other's sounds; a compound sounds exactly like its
         roots said in a row.
       </p>
-      <Open>Stress. There's no stress rule yet; the plan is a simple one.</Open>
+      <p className="mt-2">
+        Stress falls on a word's first syllable, as in Finnish and Czech, compounds included. Since
+        a word starts with its head, the stress marks where each word begins.
+      </p>
+      <Open>
+        Stress on the second-to-last syllable, as in Polish and Esperanto, would sound smoother,
+        but it moves as a compound grows. First-syllable stress is the rule for now.
+      </Open>
 
       <H2>The root space</H2>
       <p>
@@ -98,7 +105,8 @@ export function GrammarView() {
         printer or opener. Two more markers name other roles, like the prepositions{" "}
         <W w="with" /> and <W w="at" />: <W w="<tool>" /> is what it's done with (<i>&lt;tool&gt; open(vt)</i>,
         a key) and <W w="<place>" /> where it's done (<i>&lt;place&gt; sleep(vi)</i>, a bed). Furniture is
-        named this way: <W w="chair" /> is <i>&lt;place&gt; sit(vi)</i>, <W w="table" />{" "}
+        named this way, though buildings take their own root: <W w="house" /> is{" "}
+        <i>building family</i> and a <W w="room" /> <i>part building</i>. <W w="chair" /> is <i>&lt;place&gt; sit(vi)</i>, <W w="table" />{" "}
         <i>&lt;place&gt; eat(vt)</i> and <W w="desk" /> <i>&lt;place&gt; work(vi)</i>. The same words can
         be a room or a building, a restaurant or a workplace, by context.{" "}
         <W w="<to>" /> and <W w="<from>" /> follow <W w="to" /> and <W w="from" />: who or where it
@@ -194,7 +202,7 @@ export function GrammarView() {
         &lt;subject&gt; water &lt;verb&gt; be(vi) at this
       </Example>
       <Open>
-        Becoming, for relation verbs: maybe a helper, <W w="<become>" /> (<i>&lt;become&gt; possess(vt)</i>,
+        Becoming, for relation verbs: maybe a helper, <W w="become" /> (<i>become possess(vt)</i>,
         “gain”).
       </Open>
       <p>
@@ -488,7 +496,8 @@ export function GrammarView() {
         <W w="boat" /> is <i>&lt;tool&gt; swim(vi)</i>, <W w="aircraft" /> <i>&lt;tool&gt; fly(vi)</i> and{" "}
         <W w="spacecraft" /> <i>&lt;tool&gt; spacefly(vi)</i>. Animals are named loosely by how they move,
         as in English: <W w="bird" /> is <i>animal flying</i> and <W w="fish" /> <i>animal swimming</i>,
-        and a <W w="feather" /> is <i>covering bird</i>.
+        and a <W w="feather" /> is <i>covering bird</i>. A <W w="bug" /> is a very small animal,{" "}
+        <i>animal &lt;max_negative&gt; big</i>, and a <W w="louse" /> <i>bug hair</i>.
       </p>
       <Example meaning="The bird flies to the tree.">
         &lt;subject&gt; bird &lt;verb&gt; fly(vi) to tree
@@ -507,7 +516,9 @@ export function GrammarView() {
         Organs are named for what they do, with <W w="<tool>" />: <W w="eye" /> is{" "}
         <i>&lt;tool&gt; see(vt)</i>, <W w="ear" /> <i>&lt;tool&gt; hear(vt)</i>, <W w="brain" />{" "}
         <i>&lt;tool&gt; know(vt)</i> and <W w="nose" /> <i>&lt;tool&gt; sense(vt) gas</i>. Where there's no verb for
-        it, the kind-and-whole pattern does: <W w="heart" /> is <i>center body</i>. Substances take a
+        it, the kind-and-whole pattern does: <W w="heart" /> is <i>center body</i>. A{" "}
+        <W w="breast" /> is <i>&lt;tool&gt; feed(vt)</i>, where <W w="feed(vi)" /> is giving food, and the{" "}
+        <W w="liver" /> <i>filter body</i>, the body's <W w="filter" /> (<i>&lt;tool&gt; separate(vi)</i>). Substances take a
         phase: <W w="blood" /> is <i>liquid body</i>, <W w="sap" /> <i>liquid plant</i> and{" "}
         <W w="flesh" /> <i>matter body</i>. A substance can also be named for what it does:{" "}
         <W w="grease" /> is <i>&lt;tool&gt; slip(vi)</i> and <W w="glue" /> <i>&lt;tool&gt; stick(vi)</i>, from
@@ -517,7 +528,8 @@ export function GrammarView() {
         A body part names the like part of another whole, as many languages speak of the foot of a
         mountain. A plant's parts are its body's: <W w="root" /> is <i>feet plant</i>,{" "}
         <W w="trunk" /> <i>torso plant</i>, <W w="branch" /> <i>arm plant</i> and <W w="leaf" />{" "}
-        <i>finger plant</i>, and <i>mouth water</i> is a river's mouth.
+        <i>finger plant</i>, and <i>mouth water</i> is a river's mouth. <W w="seed" /> is{" "}
+        <i>&lt;ee&gt; sow(vt)</i> and <W w="fruit" /> <i>food seed</i>, food with seed in it.
       </p>
 
       <H2>Geometry</H2>
@@ -606,7 +618,8 @@ export function GrammarView() {
       <p className="mt-2">
         The <W w="sky" /> is <i>place high</i>, the high place, as Toki Pona's <i>sewi</i> is up, sky
         and heaven. <W w="rain" /> is <i>water sky</i> and a <W w="cloud" /> <i>covering sky</i>, the
-        sky's covering.
+        sky's covering. What fire leaves is <W w="ash" />, <i>result fire</i>, and <W w="smoke" /> is
+        that as a gas, <i>ash gas</i>.
       </p>
       <Example meaning="The Sun is bright.">
         &lt;subject&gt; sun &lt;verb&gt; be(vt) &lt;complement&gt; bright

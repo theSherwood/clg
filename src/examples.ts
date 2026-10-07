@@ -619,7 +619,7 @@ export const thing_examples: Example[] = [
   {
     title: "Animals eat",
     english: "The animal eats food",
-    transliteration: "<subject> animal <verb> eat(vt) <object> <ee> eat(vt)",
+    transliteration: "<subject> animal <verb> eat(vt) <object> food",
   },
   { title: "Solid", english: "rank 0", transliteration: "matter <rank_0>" },
   { title: "Liquid", english: "rank 1", transliteration: "matter <rank_1>" },
@@ -883,6 +883,12 @@ export const part_examples: Example[] = [
   { title: "Blood", english: "the body's liquid", transliteration: "liquid body" },
   { title: "Leaf", english: "a plant's finger", transliteration: "finger plant" },
   { title: "Grease", english: "what you make things slip with", transliteration: "<tool> slip(vi)" },
+  { title: "Fruit", english: "food with seed in it", transliteration: "food seed" },
+  { title: "Liver", english: "the body's filter", transliteration: "filter body" },
+  { title: "Breast", english: "what feeds", transliteration: "<tool> feed(vt)" },
+  { title: "Bug", english: "a very small animal", transliteration: "animal <max_negative> big" },
+  { title: "Smoke", english: "The fire makes smoke", transliteration: "<subject> fire <verb> create(vt) <object> smoke" },
+  { title: "House", english: "a family's building", transliteration: "building family" },
   { title: "Glue", english: "what you stick things with", transliteration: "<tool> stick(vi)" },
   { title: "Root", english: "a plant's feet", transliteration: "feet plant" },
   {

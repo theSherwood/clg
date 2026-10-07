@@ -8,7 +8,8 @@ import saved_defaults from "./phonology.defaults.json";
 // A sound written "a/b" (e.g. "r/l") is one phoneme whose realization varies freely by
 // speaker; the first variant is the spelling.
 // Syllables in a compound never change each other's sounds: a compound is pronounced as
-// its roots' syllables, one after another. Stress: a simple rule, TBD.
+// its roots' syllables, one after another. Stress is on a word's first syllable, which marks
+// where each word starts (the alternative was the second to last, as in Polish).
 
 export const MARKS = ["C", "M", "V", "N"] as const;
 export type Mark = (typeof MARKS)[number];

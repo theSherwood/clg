@@ -2723,10 +2723,10 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     notes: "A prefix on the word that's surprising to include: even child, even the children",
   });
 
-  candidate("<become>", {
-    gloss: "come to, begin to: <become> possess(vt) = gain",
+  candidate("become", {
+    gloss: "come to, begin to: become possess(vt) = gain",
     notes:
-      'Like Toki Pona\'s "kama jo" (come to have = get). Not sure yet whether this should be a helper',
+      'Like Toki Pona\'s "kama jo" (come to have = get). For axis verbs that aren\'t change verbs, which have no becoming of their own',
   });
 }
 
@@ -2837,6 +2837,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("body", { gloss: "body / organ" });
   cr("symbol");
   cr("information", { gloss: "information / data" });
+  cr("building", { notes: "A house is building family, a room part building" });
   cr("hand");
   cr("finger");
   cr("feet");
@@ -2918,9 +2919,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
 
   candidate("net", { gloss: "net / graph" });
   candidate("image", { gloss: "image / projection" });
-  candidate("simulation", { gloss: "simulation / model" });
-  candidate("un-", { notes: "?" });
-  candidate("re-", { notes: "?" });
   candidate("sex");
   candidate("turn");
   candidate("direction", {
@@ -3235,6 +3233,7 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   // Saying or writing exactly: the clause is verbatim, so its pronouns are whoever first said it.
   // With meta, the words are someone else's, repeated: quoting
   phrase("reproduce(vi)", ["bear(vt)", "child"], "reproduce", "reproduce");
+  phrase("feed(vi)", ["give(vi)", "<ee>", "eat(vt)"], "feed", "feed");
 
   // Computing is working data, as German Datenverarbeitung is data processing
   phrase("compute(vi)", ["work(vi)", "information"], "compute", "compute");
@@ -3385,7 +3384,11 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   });
   noun("reason", ["<tool>", "infer(vt)"], { gloss: "reason (the faculty)", notes: "What one reasons with" });
   noun("mind", ["<er>", "sense(vt)", "self"], { notes: "What perceives itself" });
-  noun("model", ["<er>", "resemble(vt)"], { gloss: "model / likeness", notes: "What resembles something" });
+  noun("model", ["<er>", "resemble(vt)"], {
+    gloss: "model / likeness",
+    notes: "What resembles something",
+    synonyms: ["simulation"],
+  });
   noun("conscience", ["<tool>", "blame(vt)", "self"], {
     notes: "What one blames oneself with, and by the same axis credits oneself: a clear conscience",
   });
@@ -3430,6 +3433,18 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("flesh", ["matter", "body"]);
   noun("sap", ["liquid", "plant"]);
   noun("egg", ["container", "child"]);
+  noun("food", ["<ee>", "eat(vt)"], { notes: "What's eaten" });
+  noun("seed", ["<ee>", "sow(vi)"], { notes: "What's sown" });
+  noun("fruit", ["food", "seed"], { notes: "Food with seed in it" });
+  noun("filter", ["<tool>", "separate(vi)"], { synonyms: ["sieve"] });
+  noun("liver", ["filter", "body"], { notes: "The body's filter" });
+  noun("breast", ["<tool>", "feed(vt)"], { notes: "What feeds" });
+  noun("bug", ["animal", "<max_negative>", "big"], { gloss: "bug / insect", notes: "A very small animal", synonyms: ["insect"] });
+  noun("louse", ["bug", "hair"], { notes: "The bug of hair" });
+  noun("ash", ["result", "fire"], { notes: "What fire leaves: the result of burning" });
+  noun("smoke", ["ash", "gas"], { notes: "The result of burning, as a gas" });
+  noun("house", ["building", "family"], { gloss: "house / home" });
+  noun("room", ["part", "building"]);
   noun("grease", ["<tool>", "slip(vi)"], { gloss: "grease / lubricant" });
   noun("glue", ["<tool>", "stick(vi)"]);
   noun("tree", ["plant", "big"]);
