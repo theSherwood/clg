@@ -666,8 +666,8 @@ export function GrammarView() {
       </p>
       <Example meaning="a person of a big family">person &lt;regroup&gt; family big</Example>
       <p className="mt-2">
-        <W w="only" /> is a prefix, like <W w="not" />, on the one word after it: <i>only you</i>,{" "}
-        <i>&lt;verb&gt; only sleep(vi)</i>.
+        <W w="only" />, <W w="also" /> and <W w="even" /> are prefixes, like <W w="not" />, on the one
+        word they focus: <i>only you</i>, <i>also you</i> (you too), <i>even child</i>.
       </p>
       <Example meaning="I drink only water.">
         &lt;subject&gt; I &lt;verb&gt; eat(vt) &lt;object&gt; only water
@@ -931,6 +931,37 @@ export function GrammarView() {
       <Example meaning="I, um, slept.">
         &lt;subject&gt; I &lt;verb&gt; &lt;filler&gt; sleep(vi) formerly
       </Example>
+
+      <H2>Things that need no word</H2>
+      <p>Several things other languages have words for come from the grammar already:</p>
+      <ul className="mt-2 list-disc pl-6 space-y-1">
+        <li>
+          <b>Please</b> is <W w="please" />, <i>if &lt;clause_start&gt; &lt;verb&gt; prefer(vt) &lt;clause_end&gt;</i>: if
+          you prefer, as French <i>s'il vous plaît</i> is “if it pleases you”.
+        </li>
+        <li>
+          <b>Addressing someone</b> is the subject of a request: <i>&lt;subject&gt; mother
+          &lt;verb_prescriptive&gt; come(vi)</i>, “Mother, come”, like Toki Pona's <i>o</i>.
+        </li>
+        <li>
+          <b>A topic</b>, “as for the rock…”, is an <W w="about" /> phrase put first.
+        </li>
+        <li>
+          <b>A setting</b>, “in the daytime…”, is <W w="if" /> with it, as Toki Pona's <i>la</i> covers
+          both: <i>if &lt;clause_start&gt; daytime &lt;clause_end&gt;</i>.
+        </li>
+        <li>
+          <b>The passive</b> is a clause with no subject, which leaves the doer unsaid:{" "}
+          <i>&lt;object&gt; rock &lt;verb&gt; eat(vt) formerly</i>, the rock was eaten.
+        </li>
+        <li>
+          <b>“The” and “a”</b> are left out, as in Toki Pona and Mandarin, with <W w="this" /> or{" "}
+          <i>number 1</i> when it matters.
+        </li>
+        <li>
+          <b>Because and so</b> are <i>from &lt;clause_start&gt; …</i> and <W w="consequently" />.
+        </li>
+      </ul>
     </div>
   );
 }

@@ -933,6 +933,8 @@ export const more_grammar_examples: Example[] = [
   { title: "Grouped", english: "a rock of the color red yellow: an orange rock", transliteration: "rock <regroup> red yellow" },
   { title: "Not grouped", english: "a rock that's red and yellow", transliteration: "rock red yellow" },
   { title: "Only", english: "Only you sleep", transliteration: "<subject> only you <verb> sleep(vi)" },
+  { title: "Also", english: "You sleep too", transliteration: "<subject> also you <verb> sleep(vi)" },
+  { title: "Even", english: "Even the child knows", transliteration: "<subject> even child <verb> know(vt)" },
   { title: "Law", english: "a general command: law, or a rule", transliteration: "command abstract" },
   {
     title: "Obey the law",
@@ -972,6 +974,11 @@ export const conversation_examples: Example[] = [
   { title: "Goodbye", english: "Goodbye", transliteration: "go(vi) well" },
   { title: "Thank you", english: "Thanks to you", transliteration: "thanks to you" },
   { title: "Sorry", english: "My fault", transliteration: "blame to me" },
+  {
+    title: "Please",
+    english: "Please sit",
+    transliteration: "please <verb_prescriptive> sit(vi)",
+  },
   {
     title: "Thank you, in full",
     english: "I thank you",

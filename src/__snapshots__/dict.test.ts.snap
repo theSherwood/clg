@@ -186,6 +186,8 @@ exports[`root IDs 1`] = `
   "42": "<filler>",
   "43": "<regroup>",
   "44": "only",
+  "45": "also",
+  "46": "even",
   "48": "<axis_of>",
   "49": "<max_negative>",
   "5": "<verb_interrogative>",

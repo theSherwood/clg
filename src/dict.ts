@@ -2680,6 +2680,15 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     t: [T.grammar_helper],
     notes: "A prefix, like not, applying to the one word after it: only you, <verb> only sleep(vi)",
   });
+  cr("also", {
+    t: [T.grammar_helper],
+    gloss: "also / too",
+    notes: "A prefix on the word it adds: also you is you too",
+  });
+  cr("even", {
+    t: [T.grammar_helper],
+    notes: "A prefix on the word that's surprising to include: even child, even the children",
+  });
 
   candidate("<become>", {
     gloss: "come to, begin to: <become> possess(vt) = gain",
@@ -3355,6 +3364,9 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   idiom("goodbye", ["go(vi)", "well"]);
   idiom("thank_you", ["thanks", "to", "<pronoun_second_person>"], { gloss: "thank you", notes: "Thanks to you: the credit goes to you" });
   idiom("sorry", ["blame", "to", "<pronoun_first_person>"], { notes: "Blame to me: my fault" });
+  idiom("please", ["if", "<clause_start>", "<verb>", "prefer(vt)", "<clause_end>"], {
+    notes: "If you prefer, as French s'il vous plaît is if it pleases you. The subclause takes the request's subject, you",
+  });
 
   // Parts of things, head first: the kind of part, then the whole. Organs are <tool> + what
   // they do, where there's a verb; a body part names the like part of another whole
