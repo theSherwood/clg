@@ -2837,12 +2837,13 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     gloss: "other / another",
     notes: "person other is another person. With a plural subject, <object> other or <to> other is each other",
   });
-  cr("plural");
   cr("singular");
+  cr("plural");
 
   // Living things and the body
   cr("animal");
   cr("plant");
+  cr("fungus");
   cr("family", { gloss: "family / kin / relative" });
   cr("body", { gloss: "body / organ" });
   cr("head");
@@ -2855,7 +2856,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     notes: "Rank counts segments out from the body, as Toki Pona's noka is leg and foot: <rank_2> foot, <rank_3> toe. Bare, it's <rank_1>",
   });
   cr("torso");
-  cr("fungus");
 
   // Nature and matter
   cr("water");
