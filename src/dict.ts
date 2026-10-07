@@ -2586,8 +2586,11 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "provenance",
       notes:
-        "Making something new or following what exists: inventing at the positive end, imitating at the negative, and a copy is imitation at its fullest. Where a thing comes from is come(vi) from. Copying a text is copy(vi), on literacy",
-      steps: { max_negative: { noun: "copy", adj: "copied" } },
+        "Making something new or following what exists: inventing at the positive end, imitating at the negative. At the ends, the source others derive from and a copy of it: source of truth, information canonical. Where a thing comes from is come(vi) from. Copying a text is copy(vi), on literacy",
+      steps: {
+        max_positive: { noun: "source", adj: "canonical", synonyms: { noun: ["origin"], adj: ["authoritative"] } },
+        max_negative: { noun: "copy", adj: "copied" },
+      },
     },
     {
       noun: "imitation",

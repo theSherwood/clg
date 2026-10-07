@@ -946,6 +946,8 @@ export const more_grammar_examples: Example[] = [
   { title: "Machine", english: "an artificial worker", transliteration: "<er> work(vi) artificial" },
   { title: "Invent", english: "She invented a machine", transliteration: "<subject> it <verb> invent(vt) formerly <object> machine" },
   { title: "Imitate", english: "The child imitates the mother", transliteration: "<subject> child <verb> imitate(vt) <object> mother" },
+  { title: "Source of truth", english: "the canonical source others derive from", transliteration: "source of truth" },
+  { title: "Canonical data", english: "the canonical information", transliteration: "information canonical" },
   // "Derived from" in its senses, each with its own word
   { title: "Derived: comes from", english: "The bird came from the south", transliteration: "<subject> bird <verb> come(vi) formerly from south" },
   { title: "Derived: made from", english: "Glue is made from plants", transliteration: "<object> glue <verb> create(vt) from plant" },

@@ -368,7 +368,8 @@ export function GrammarView() {
         <W w="mind" /> is <i>&lt;er&gt; sense(vt) self</i>, what perceives itself. A <W w="machine" /> is{" "}
         <i>&lt;er&gt; work(vi) artificial</i>, an artificial worker. Making something new or following what exists is the
         provenance axis: <W w="original" /> and <W w="derivative" />, <W w="invent(vt)" /> and{" "}
-        <W w="imitate(vt)" />, with a <W w="copy" /> as imitation at its fullest.{" "}
+        <W w="imitate(vt)" />, with a <W w="copy" /> as imitation at its fullest and a{" "}
+        <W w="source" /> (<W w="canonical" />) as originality at its fullest: <i>source of truth</i>.{" "}
         To <W w="compute(vi)" /> is <i>work(vt) information</i>, to work data, as German{" "}
         <i>Datenverarbeitung</i> is data processing; <W w="computation" /> is{" "}
         <i>&lt;gerund&gt; work(vt) information</i> and a <W w="computer" />{" "}
