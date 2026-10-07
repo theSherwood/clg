@@ -2700,18 +2700,18 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     t: [T.grammar_helper],
     notes: "A prefix on the word that's surprising to include: even child, even the children",
   });
-  cr("become", {
-    t: [T.grammar_helper],
-    gloss: "come to, begin to",
-    notes:
-      "A prefix on a verb that isn't a change verb, for coming into its state: <verb> become possess(vt) is gain, become know(vt) come to know. Like Toki Pona's kama jo, come to have. Change verbs have becoming of their own",
-  });
-  cr("if", { t: [T.grammar_helper], notes: '"iff" through "if-exclusive"' });
   cr("again", {
     t: [T.grammar_helper],
     gloss: "again, re-",
     notes:
       "Follows the verb, with the aspects: open(vt) again is reopen. With the negative end it undoes, implying the thing was done: <negative> cover(vt) again is uncover",
+  });
+  cr("if", { t: [T.grammar_helper], notes: '"iff" through "if-exclusive"' });
+  cr("become", {
+    t: [T.grammar_helper],
+    gloss: "come to, begin to",
+    notes:
+      "A prefix on a verb that isn't a change verb, for coming into its state: <verb> become possess(vt) is gain, become know(vt) come to know. Like Toki Pona's kama jo, come to have. Change verbs have becoming of their own",
   });
   cr("<filler>", {
     t: [T.grammar_helper],
