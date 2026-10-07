@@ -25,9 +25,9 @@ export type Tag = keyof typeof T;
 const core_sections = [
   { key: "marker", label: "Grammar markers", size: 16 },
   { key: "number_helper", label: "Number helpers", size: 2 },
-  { key: "grammar", label: "Grammar helpers", size: 12 },
+  { key: "grammar", label: "Grammar helpers", size: 16 },
   { key: "dimension", label: "Dimension helpers", size: 4 },
-  { key: "preposition", label: "Prepositions", size: 16 },
+  { key: "preposition", label: "Prepositions", size: 12 },
   { key: "pronoun", label: "Pronouns", size: 6 },
   { key: "axis_helper", label: "Axis helpers", size: 8 },
   { key: "content", label: "Content roots", size: 48 },
