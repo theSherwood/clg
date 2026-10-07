@@ -46,8 +46,8 @@ fit as its scale steps.
   permissibility is the five-step deontic scale (forbid … require), obligation is right/duty.
   Was: obligatory as
   max_positive recommend; might give a word for "right"
-- [ ] compliance (submit/resist) and fortitude (succumb/endure): submit ≈ succumb, both near
-  control's "give in"
+- [x] compliance (submit/resist) retired: submitting is obey(vt) or give_in(vi) on control, and
+  resisting is not obey(vt), or withstand(vt) on fortitude
 - [ ] aliveness (dead/alive) and animacy (inanimate/animate): partial overlap
 - [ ] internality (internal/external) and in/out: noted on the axis as a possible duplicate
 - [ ] effort (difficult/easy, hinder/enable): may not make much sense as it stands; revisit now

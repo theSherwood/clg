@@ -2119,27 +2119,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    {
-      noun: "compliance",
-      notes:
-        "negative verb forms: to conduct / to submit; positive verb forms: to resist / to thwart; negative adverb “submissively” needs a positive adverb",
-    },
-    {
-      noun: "submission",
-      adj: "submissive",
-      verb: "submit(vi)",
-      verb_i: "submit",
-      verb_t: "submit to",
-    },
-    {
-      noun: "resistance",
-      adj: "resistant",
-      verb: "resist(vi)",
-      verb_i: "resist",
-      verb_t: "resist",
-    },
-  ],
-  [
     { noun: "fortitude", notes: "Are these fundamental enough?" },
     {
       noun: "vulnerability",
@@ -2990,7 +2969,7 @@ export const verb_types: Record<VerbType, string[]> = {
   action: [
     "analyze(vi)", "succeed(vi)", "produce(vi)", "send(vi)", "hope(vi)",
     "believe(vi)", "lead(vi)", "work(vi)", "search(vi)", "learn(vi)", "sow(vi)", "give(vi)",
-    "make_peace(vi)", "defend(vi)", "tend(vi)", "command(vt)", "resist(vi)", "withstand(vt)",
+    "make_peace(vi)", "defend(vi)", "tend(vi)", "command(vt)", "withstand(vt)",
     "participate(vi)", "recommend(vi)", "say(vt)", "write(vi)", "sense(vt)", "use(vi)",
     "do(vt)", "touch(vi)", "count(vi)", "thank(vt)", "show(vi)", "fly(vi)", "choose(vi)", "infer(vt)",
   ],
