@@ -433,7 +433,7 @@ export const question_examples: Example[] = [
   {
     title: "How",
     english: "How do you open it?",
-    transliteration: "<subject> you <verb_interrogative> open(vt) <object> it with <blank>",
+    transliteration: "<subject> you <verb_interrogative> open(vt) <object> it by <blank>",
   },
   {
     title: "How many",
@@ -677,6 +677,21 @@ export const pointing_examples: Example[] = [
 // Subclauses: one bracket, <clause_start> ... <clause_end>, as an object, after a preposition, or
 // after a noun with <blank> marking the noun's place
 export const clause_examples: Example[] = [
+  {
+    title: "A question inside",
+    english: "I know who came",
+    transliteration: "<subject> I <verb> know(vt) <object> <subject> <blank> <verb_interrogative> come(vi) formerly",
+  },
+  {
+    title: "Between",
+    english: "The child sleeps between the mother and the father",
+    transliteration: "<subject> child <verb> sleep(vi) between mother and father",
+  },
+  {
+    title: "With and by",
+    english: "I opened it with my mother, with a key",
+    transliteration: "<subject> I <verb> open(vt) formerly <object> it with mother of me by <tool> open(vt)",
+  },
   {
     title: "Indirect speech",
     english: "She said she was weak",

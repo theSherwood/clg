@@ -2705,14 +2705,18 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   section("preposition");
   cr("with", {
     t: [T.preposition],
-    notes: 'Is it worth splitting this into "instrumentality" and "comingling"?',
+    notes: "Company: open(vt) with mother. The means is by: open(vt) by <tool> open(vt), with a key",
   });
   cr("to", { t: [T.preposition] });
   cr("from", { t: [T.preposition] });
-  cr("by", { t: [T.preposition] });
+  cr("by", {
+    t: [T.preposition],
+    gloss: "by / by means of",
+    notes: "The means: by hand, by boat, by law. In arithmetic, the amount: divide 6 by 3",
+  });
   cr("for", {
     t: [T.preposition],
-    notes: 'Is it worth splitting this into "on behalf of" and "for the purpose of"?',
+    notes: "With a noun, on behalf of: for mother. With a clause, the purpose: for <subject> you ..., so that you ...",
   });
   cr("in", { t: [T.preposition] });
   cr("of", { t: [T.preposition] });
@@ -2723,6 +2727,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     gloss: "as / like",
     notes: "In the role of, or in the manner of: <as> person is as a person, and like a person",
   });
+  cr("between", { t: [T.preposition], notes: "between X and Y: the and joins the two" });
 }
 
 {

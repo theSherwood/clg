@@ -215,8 +215,8 @@ export function GrammarView() {
         Other question words come from where <W w="<blank>" /> sits: <i>person &lt;blank&gt;</i> is who,{" "}
         <i>at &lt;blank&gt;</i> where, <i>to &lt;blank&gt;</i> where to,{" "}
         <i>from &lt;blank&gt;</i> where from, <i>at time &lt;blank&gt;</i> when,{" "}
-        <i>for &lt;blank&gt;</i> why, <i>with &lt;blank&gt;</i> how and <i>number &lt;blank&gt;</i> how
-        many.
+        <i>for &lt;blank&gt;</i> why, <i>by &lt;blank&gt;</i> how (by what means),{" "}
+        <i>with &lt;blank&gt;</i> with whom and <i>number &lt;blank&gt;</i> how many.
       </p>
       <Example meaning="Why do you fight?">
         &lt;subject&gt; you &lt;verb_interrogative&gt; fight(vi) for &lt;blank&gt;
@@ -687,16 +687,26 @@ export function GrammarView() {
       <H2>Prepositions</H2>
       <p>
         The prepositions are <W w="with" />, <W w="to" />, <W w="from" />, <W w="by" />,{" "}
-        <W w="for" />, <W w="in" />, <W w="of" />, <W w="about" />, <W w="at" /> and{" "}
-        <W w="as" /> (“as” or “like”, like Toki Pona's <i>sama</i>). A preposition
+        <W w="for" />, <W w="in" />, <W w="of" />, <W w="about" />, <W w="at" />, <W w="as" /> (“as”
+        or “like”, like Toki Pona's <i>sama</i>) and <W w="between" />, whose two ends are joined
+        with <W w="and" />. A preposition
         opens a phrase, and there's no word to close it: the phrase ends at the next grammar
         marker, preposition, clause-level conjunction or <W w="<clause_end>" />. Within a phrase,
         modifiers come before prepositional phrases, so <i>person big with rod</i> is a big
         person with a rod. Stacked prepositional phrases can be ambiguous, as in most languages;
         bracket one with <W w="<clause_start>" /> and <W w="<clause_end>" /> when it matters.
       </p>
-      <Example meaning="…equal in dignity and rights.">
-        free and equal(vt) in value and privilege
+      <Example meaning="…equal in dignity and rights.">free and same in value and right</Example>
+      <p className="mt-2">
+        <W w="with" /> is company and <W w="by" /> the means: <i>open(vt) with mother</i> is opening
+        it with your mother, and <i>open(vt) by &lt;tool&gt; open(vt)</i> opening it with a key. <W w="for" /> is who
+        something is for with a noun, <i>for mother</i>, and the purpose with a clause,{" "}
+        <i>for &lt;subject&gt; you …</i>, so that you…. Other relations of place are a noun with{" "}
+        <W w="at" /> and <W w="of" />, as in Mandarin and Toki Pona: <i>at topside of rock</i> is on
+        the rock, and <i>at underside of rock</i> under it.
+      </p>
+      <Example meaning="The child sleeps between the mother and the father.">
+        &lt;subject&gt; child &lt;verb&gt; sleep(vi) between mother and father
       </Example>
 
       <H2>Conjunctions and clauses</H2>
@@ -735,6 +745,12 @@ export function GrammarView() {
           <W w="if" /> takes one the same way. “When” and “until” are clauses describing a noun,{" "}
           <i>at time &lt;clause_start&gt; …</i> and <i>to time &lt;clause_start&gt; …</i>, so they keep the
           bracket.
+        </li>
+        <li>
+          <b>As a question inside a sentence</b>: an object clause with{" "}
+          <W w="<verb_interrogative>" />, and <W w="<blank>" /> for what it asks.{" "}
+          <i>I know(vt) &lt;object&gt; &lt;subject&gt; &lt;blank&gt; &lt;verb_interrogative&gt; come(vi)</i> is “I
+          know who came”, and without <W w="<blank>" />, whether.
         </li>
         <li>
           <b>After a noun</b>, describing it: <W w="<blank>" /> marks the noun's place in the
