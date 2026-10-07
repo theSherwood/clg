@@ -956,10 +956,10 @@ export function GrammarView() {
 
       <H2>Politeness</H2>
       <p>
-        <W w="please" /> is “if you want”, <i>if &lt;clause_start&gt; &lt;verb&gt; desire(vt)</i>, as French{" "}
-        <i>s'il vous plaît</i> is “if it pleases you”. It's a set phrase, so it needs no{" "}
-        <W w="<clause_end>" /> on either side of the request: listeners know where it stops. Its
-        subclause takes the request's subject, you. Thanks and apologies are on the accountability axis, above.
+        <W w="please" /> is “if you want”, <i>if &lt;verb&gt; desire(vt)</i>, as French{" "}
+        <i>s'il vous plaît</i> is “if it pleases you”. It's a set phrase, so it drops both clause
+        brackets on either side of the request: <W w="if" /> only ever takes a clause, and
+        listeners know where it stops. Its subclause takes the request's subject, you. Thanks and apologies are on the accountability axis, above.
       </p>
       <Example meaning="Sit, please.">&lt;verb_prescriptive&gt; sit(vi) please</Example>
       <Example meaning="Please sit.">please &lt;verb_prescriptive&gt; sit(vi)</Example>
