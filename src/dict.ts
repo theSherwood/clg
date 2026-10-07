@@ -1954,7 +1954,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       adj: "busy",
       verb: "work(vi)",
       verb_i: "work",
-      verb_t: "work on",
+      verb_t: "work",
       adverb: "busily",
     },
   ],
