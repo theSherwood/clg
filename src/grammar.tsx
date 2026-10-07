@@ -341,7 +341,7 @@ export function GrammarView() {
         &lt;subject&gt; everyone &lt;verb&gt; die(vi) necessarily
       </Example>
       <Example meaning="I believe the person probably left.">
-        &lt;subject&gt; I &lt;verb&gt; believe(vt) &lt;object&gt; &lt;clause_start&gt; &lt;subject&gt; person
+        &lt;subject&gt; I &lt;verb&gt; believe(vt) &lt;object&gt; &lt;subject&gt; person
         &lt;verb&gt; go(vi) &lt;min_positive&gt; truly &lt;clause_end&gt;
       </Example>
 
@@ -362,7 +362,7 @@ export function GrammarView() {
         something is a premise, where a reason something happened is a <W w="cause" />.
       </p>
       <Example meaning="I infer that you slept.">
-        &lt;subject&gt; I &lt;verb&gt; infer(vt) &lt;object&gt; &lt;clause_start&gt; &lt;subject&gt; you &lt;verb&gt; sleep(vi) formerly
+        &lt;subject&gt; I &lt;verb&gt; infer(vt) &lt;object&gt; &lt;subject&gt; you &lt;verb&gt; sleep(vi) formerly
       </Example>
       <p className="mt-2">
         <W w="mind" /> is <i>&lt;er&gt; sense(vt) self</i>, what perceives itself.{" "}
@@ -708,13 +708,18 @@ export function GrammarView() {
       </p>
       <p className="mt-2">
         <W w="<clause_start>" /> and <W w="<clause_end>" /> bracket a clause inside another, and the
-        bracket is the one device for every kind of subclause. <W w="<clause_end>" /> can be dropped
-        at the end of a sentence, but not before more of the main clause, whose next role marker
-        would otherwise be read as part of the subclause.
+        bracket is the one device for every kind of subclause. <W w="<clause_start>" /> is needed
+        only after a noun. After <W w="if" />, a preposition, or a role marker that needs a phrase (
+        <W w="<subject>" />, <W w="<object>" />, <W w="<complement>" />), a clause starting with{" "}
+        <W w="<subject>" /> or a verb marker can only be a subclause, so the bracket is left out.
+        After a noun, a role marker would start the next part of the main clause instead, so
+        there it stays. <W w="<clause_end>" /> can be dropped at the end of a sentence, but not
+        before more of the main clause, whose next role marker would otherwise be read as part of
+        the subclause.
       </p>
       <ul className="mt-2 list-disc pl-6 space-y-1">
         <li>
-          <b>As an object</b>: <i>I believe(vt) &lt;object&gt; &lt;clause_start&gt; … &lt;clause_end&gt;</i>, I
+          <b>As an object</b>: <i>I believe(vt) &lt;object&gt; &lt;subject&gt; … &lt;clause_end&gt;</i>, I
           believe that…. Its pronouns are the speaker's, so after <W w="say(vt)" /> it's indirect
           speech. With <W w="identically" /> on the verb, it's direct speech, the very words, and its
           pronouns, here and now are the speaker's at the time: <W w="say_verbatim(vt)" /> is{" "}
@@ -726,9 +731,10 @@ export function GrammarView() {
         </li>
         <li>
           <b>After a preposition</b>, for because, when, so that and until:{" "}
-          <i>from &lt;clause_start&gt; …</i> is because…, <i>at time &lt;clause_start&gt; …</i>{" "}
-          when…, <i>for &lt;clause_start&gt; …</i> so that… and <i>to time &lt;clause_start&gt; …</i>{" "}
-          until…. <W w="if" /> takes one the same way.
+          <i>from &lt;subject&gt; …</i> is because…, <i>for &lt;subject&gt; …</i> so that…, and{" "}
+          <W w="if" /> takes one the same way. “When” and “until” are clauses describing a noun,{" "}
+          <i>at time &lt;clause_start&gt; …</i> and <i>to time &lt;clause_start&gt; …</i>, so they keep the
+          bracket.
         </li>
         <li>
           <b>After a noun</b>, describing it: <W w="<blank>" /> marks the noun's place in the
@@ -745,13 +751,13 @@ export function GrammarView() {
       </Example>
       <p className="mt-2">
         A subclause with no subject takes the main clause's subject: <i>I desire(vt) &lt;object&gt;
-        &lt;clause_start&gt; &lt;verb&gt; sleep(vi)</i> is “I want to sleep”. A main clause with no subject
+        &lt;verb&gt; sleep(vi)</i> is “I want to sleep”. A main clause with no subject
         leaves it unspecified, “someone”.
       </p>
       <p className="mt-2">
         Cause and effect is the causality axis, a relation: <W w="result_from(vt)" /> has the
         effect as its subject and <W w="cause(vt)" /> the cause. A plain “because” is{" "}
-        <i>from &lt;clause_start&gt; …</i>; for a cause that's a thing or an event, the verbs say it outright.
+        <i>from &lt;subject&gt; …</i>; for a cause that's a thing or an event, the verbs say it outright.
         Change verbs with an object already mean making something happen directly, so{" "}
         <W w="cause(vt)" /> is for the looser kind: the storm caused the flood.
       </p>
@@ -763,7 +769,7 @@ export function GrammarView() {
         condition is real, and to be explicit the if-clause can say it's false with the truth axis.
       </p>
       <Example meaning="If you had slept, you would be strong.">
-        if &lt;clause_start&gt; &lt;subject&gt; you &lt;verb&gt; sleep(vi) formerly falsely &lt;clause_end&gt;
+        if &lt;subject&gt; you &lt;verb&gt; sleep(vi) formerly falsely &lt;clause_end&gt;
         &lt;subject&gt; you &lt;verb&gt; be(vt) &lt;complement&gt; strong
       </Example>
 
@@ -779,11 +785,11 @@ export function GrammarView() {
 
       <H2>Because and so</H2>
       <p>
-        “Because” is a subclause after <W w="from" />: <i>from &lt;clause_start&gt; …</i>. “So” is the
+        “Because” is a subclause after <W w="from" />: <i>from &lt;subject&gt; …</i>. “So” is the
         adverb <W w="consequently" />, on the verb of what follows.
       </p>
       <Example meaning="I slept because I was weak.">
-        &lt;subject&gt; I &lt;verb&gt; sleep(vi) formerly from &lt;clause_start&gt; &lt;subject&gt; I &lt;verb&gt; be(vt)
+        &lt;subject&gt; I &lt;verb&gt; sleep(vi) formerly from &lt;subject&gt; I &lt;verb&gt; be(vt)
         &lt;complement&gt; weak
       </Example>
 

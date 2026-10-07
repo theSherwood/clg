@@ -222,7 +222,7 @@ export const time_examples: Example[] = [
     title: "Relative",
     english: "She said she would come the next day",
     transliteration:
-      "<subject> it <verb> say(vt) formerly <object> <clause_start> <verb> come(vi) at tomorrow",
+      "<subject> it <verb> say(vt) formerly <object> <verb> come(vi) at tomorrow",
   },
   {
     title: "Precede",
@@ -276,7 +276,7 @@ export const truth_examples: Example[] = [
     title: "Belief and likelihood",
     english: "I believe the person probably left",
     transliteration:
-      "<subject> I <verb> believe(vt) <object> <clause_start> <subject> person <verb> go(vi) <min_positive> truly <clause_end>",
+      "<subject> I <verb> believe(vt) <object> <subject> person <verb> go(vi) <min_positive> truly <clause_end>",
   },
   {
     title: "Necessary",
@@ -680,33 +680,33 @@ export const clause_examples: Example[] = [
   {
     title: "Indirect speech",
     english: "She said she was weak",
-    transliteration: "<subject> it <verb> say(vt) formerly <object> <clause_start> <subject> it <verb> be(vt) <complement> weak",
+    transliteration: "<subject> it <verb> say(vt) formerly <object> <subject> it <verb> be(vt) <complement> weak",
   },
   {
     title: "A quote",
     english: "She quoted her mother: “I'm weak”",
-    transliteration: "<subject> it <verb> quote(vt) formerly from mother of it <object> <clause_start> <subject> I <verb> be(vt) <complement> weak",
+    transliteration: "<subject> it <verb> quote(vt) formerly from mother of it <object> <subject> I <verb> be(vt) <complement> weak",
   },
   {
     title: "Direct speech",
     english: "She said, “I'm weak”",
-    transliteration: "<subject> it <verb> say_verbatim(vt) formerly <object> <clause_start> <subject> I <verb> be(vt) <complement> weak",
+    transliteration: "<subject> it <verb> say_verbatim(vt) formerly <object> <subject> I <verb> be(vt) <complement> weak",
   },
   {
     title: "That…",
     english: "I believe the person left",
-    transliteration: "<subject> I <verb> believe(vt) <object> <clause_start> <subject> person <verb> go(vi)",
+    transliteration: "<subject> I <verb> believe(vt) <object> <subject> person <verb> go(vi)",
   },
   {
     title: "To…",
     english: "I want to sleep (the subclause takes my subject)",
-    transliteration: "<subject> I <verb> desire(vt) <object> <clause_start> <verb> sleep(vi)",
+    transliteration: "<subject> I <verb> desire(vt) <object> <verb> sleep(vi)",
   },
   {
     title: "Because",
     english: "I'm tired because I worked",
     transliteration:
-      "<subject> I <verb> be(vt) <complement> weak from <clause_start> <subject> I <verb> work(vi) formerly",
+      "<subject> I <verb> be(vt) <complement> weak from <subject> I <verb> work(vi) formerly",
   },
   {
     title: "When",
@@ -718,7 +718,7 @@ export const clause_examples: Example[] = [
     title: "So that",
     english: "I work so that you can sleep",
     transliteration:
-      "<subject> I <verb> work(vi) for <clause_start> <subject> you <verb> sleep(vi) not impossibly",
+      "<subject> I <verb> work(vi) for <subject> you <verb> sleep(vi) not impossibly",
   },
   {
     title: "Until",
@@ -730,7 +730,7 @@ export const clause_examples: Example[] = [
     title: "If",
     english: "If it burns, put it out",
     transliteration:
-      "if <clause_start> <subject> it <verb> burn(vi) <clause_end> <verb_prescriptive> quench(vt) <object> it",
+      "if <subject> it <verb> burn(vi) <clause_end> <verb_prescriptive> quench(vt) <object> it",
   },
   {
     title: "Who",
@@ -819,7 +819,7 @@ export const arithmetic_examples: Example[] = [
     title: "A sentence",
     english: "If you add 2 to 3, you get 5",
     transliteration:
-      "if <clause_start> <subject> you <verb> add(vt) <object> number 3 by number 2 <clause_end> <subject> you <verb> possess(vt) <object> number 5",
+      "if <subject> you <verb> add(vt) <object> number 3 by number 2 <clause_end> <subject> you <verb> possess(vt) <object> number 5",
   },
 ];
 
@@ -919,8 +919,8 @@ export const more_grammar_examples: Example[] = [
   { title: "Prefer", english: "I prefer water", transliteration: "<subject> I <verb> prefer(vt) <object> water" },
   { title: "Choose", english: "Choose one", transliteration: "<verb_prescriptive> choose(vt) <object> thing number 1" },
   { title: "Safe", english: "The child is safe", transliteration: "<subject> child <verb> be(vt) <complement> safe" },
-  { title: "Infer", english: "I infer that you slept", transliteration: "<subject> I <verb> infer(vt) <object> <clause_start> <subject> you <verb> sleep(vi) formerly" },
-  { title: "Assume", english: "Assume it's true", transliteration: "<verb_prescriptive> assume(vt) <object> <clause_start> <verb> be(vt) <complement> true" },
+  { title: "Infer", english: "I infer that you slept", transliteration: "<subject> I <verb> infer(vt) <object> <subject> you <verb> sleep(vi) formerly" },
+  { title: "Assume", english: "Assume it's true", transliteration: "<verb_prescriptive> assume(vt) <object> <verb> be(vt) <complement> true" },
   { title: "Reason", english: "the faculty: what you reason with", transliteration: "<tool> infer(vt)" },
   { title: "Compute", english: "The computer computes", transliteration: "<subject> computer <verb> compute(vi)" },
   { title: "Computation", english: "working data", transliteration: "<gerund> work(vt) information" },
@@ -962,7 +962,7 @@ export const more_grammar_examples: Example[] = [
     title: "Counterfactual",
     english: "If you had slept, you would be strong",
     transliteration:
-      "if <clause_start> <subject> you <verb> sleep(vi) formerly falsely <clause_end> <subject> you <verb> be(vt) <complement> strong",
+      "if <subject> you <verb> sleep(vi) formerly falsely <clause_end> <subject> you <verb> be(vt) <complement> strong",
   },
 ];
 

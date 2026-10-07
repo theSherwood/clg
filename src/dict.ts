@@ -2654,7 +2654,11 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("or", { t: [T.grammar_helper], notes: '"xor" through "or-exclusive"' });
   cr("and", { t: [T.grammar_helper] });
   cr("but", { t: [T.grammar_helper], gloss: "but / however" });
-  cr("<clause_start>", { gloss: "clause start" });
+  cr("<clause_start>", {
+    gloss: "clause start",
+    notes:
+      "Needed only after a noun. After if, a preposition, <subject>, <object> or <complement>, a clause starting with <subject> or a verb marker can only be a subclause, so the bracket is left out",
+  });
   cr("<clause_end>", { gloss: "clause end" });
   cr("<continuous_tense_aspect>");
   cr("<perfect_tense_aspect>");
