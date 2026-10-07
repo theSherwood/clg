@@ -514,6 +514,13 @@ export function GrammarView() {
 
       <H2>Parts of things</H2>
       <p>
+        Limbs count their segments out from the body with rank, as Toki Pona's <i>luka</i> is
+        arm and hand: <W w="hand" /> is <i>arm &lt;rank_2&gt;</i> and <W w="finger" />{" "}
+        <i>arm &lt;rank_3&gt;</i>, <W w="foot" /> <i>leg &lt;rank_2&gt;</i> and <W w="toe" />{" "}
+        <i>leg &lt;rank_3&gt;</i>. Joints are nodes: <W w="elbow" /> is <i>node arm</i>,{" "}
+        <W w="wrist" /> <i>node hand</i> and <W w="ankle" /> <i>node foot</i>.
+      </p>
+      <p className="mt-2">
         A part is named head first, like any noun and modifier: the kind of part, then the whole
         it belongs to. <W w="tail" /> is <i>rod back</i> and <W w="knee" /> <i>node leg</i>. A few
         kinds go a long way: a <W w="covering" /> is <W w="skin" /> (<i>covering body</i>),{" "}
@@ -534,7 +541,7 @@ export function GrammarView() {
       </p>
       <p className="mt-2">
         A body part names the like part of another whole, as many languages speak of the foot of a
-        mountain. A plant's parts are its body's: <W w="root" /> is <i>feet plant</i>,{" "}
+        mountain. A plant's parts are its body's: <W w="root" /> is <i>foot plant</i>,{" "}
         <W w="trunk" /> <i>torso plant</i>, <W w="branch" /> <i>arm plant</i> and <W w="leaf" />{" "}
         <i>finger plant</i>, and <i>mouth water</i> is a river's mouth. <W w="seed" /> is{" "}
         <i>&lt;ee&gt; sow(vt)</i> and <W w="fruit" /> <i>food seed</i>, food with seed in it.

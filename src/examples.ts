@@ -875,6 +875,9 @@ export const moving_examples: Example[] = [
 
 // Parts of things: the kind of part, then the whole
 export const part_examples: Example[] = [
+  { title: "Hand", english: "the arm's second segment", transliteration: "arm <rank_2>" },
+  { title: "Toe", english: "the leg's third segment", transliteration: "leg <rank_3>" },
+  { title: "Wrist", english: "the hand's joint", transliteration: "node hand" },
   { title: "Skin", english: "the body's covering", transliteration: "covering body" },
   { title: "Bark", english: "the plant's covering", transliteration: "covering plant" },
   { title: "Tooth", english: "the mouth's rock", transliteration: "rock mouth" },
@@ -890,7 +893,7 @@ export const part_examples: Example[] = [
   { title: "Smoke", english: "The fire makes smoke", transliteration: "<subject> fire <verb> create(vt) <object> smoke" },
   { title: "House", english: "a family's building", transliteration: "building family" },
   { title: "Glue", english: "what you stick things with", transliteration: "<tool> stick(vi)" },
-  { title: "Root", english: "a plant's feet", transliteration: "feet plant" },
+  { title: "Root", english: "a plant's foot", transliteration: "foot plant" },
   {
     title: "A sentence",
     english: "The tree's leaves are red",

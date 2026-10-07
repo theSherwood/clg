@@ -2843,13 +2843,15 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("symbol");
   cr("information", { gloss: "information / data" });
   cr("building", { notes: "A house is building family, a room part building" });
-  cr("hand");
-  cr("finger");
-  cr("feet");
   cr("head");
   cr("torso");
-  cr("arm");
-  cr("leg");
+  cr("arm", {
+    gloss: "arm / limb",
+    notes: "Rank counts segments out from the body, as Toki Pona's luka is arm and hand: <rank_2> hand, <rank_3> finger. Bare, it's <rank_1>",
+  });
+  cr("leg", {
+    notes: "Rank counts segments out from the body, as Toki Pona's noka is leg and foot: <rank_2> foot, <rank_3> toe. Bare, it's <rank_1>",
+  });
   cr("node", {
     notes:
       "Rank lifts it to more general networks: <rank_1> chain, <rank_2> tree, <rank_3> DAG, <rank_4> graph, <rank_5> hypergraph, <rank_6> higher-order network. Each takes 3 syllables",
@@ -3415,6 +3417,15 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
       "If you want, as French s'il vous plaît is if it pleases you. A set phrase, so it needs neither clause bracket, before or after the request: if only takes a clause, and listeners know where it stops. Its subclause takes the request's subject, you",
   });
 
+  // Limbs by segment, counting out from the body, and their joints
+  noun("hand", ["arm", "<rank_2>"]);
+  noun("finger", ["arm", "<rank_3>"]);
+  noun("foot", ["leg", "<rank_2>"]);
+  noun("toe", ["leg", "<rank_3>"]);
+  noun("elbow", ["node", "arm"]);
+  noun("wrist", ["node", "hand"]);
+  noun("ankle", ["node", "foot"]);
+
   // Parts of things, head first: the kind of part, then the whole. Organs are <tool> + what
   // they do, where there's a verb; a body part names the like part of another whole
   noun("skin", ["covering", "body"]);
@@ -3456,7 +3467,7 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("sky", ["place", "high"], { notes: "The high place, as Toki Pona's sewi is up, sky and heaven" });
   noun("rain", ["water", "sky"]);
   noun("cloud", ["covering", "sky"], { notes: "The sky's covering" });
-  noun("root", ["feet", "plant"], { gloss: "root (of a plant)" });
+  noun("root", ["foot", "plant"], { gloss: "root (of a plant)" });
   noun("trunk", ["torso", "plant"]);
   noun("branch", ["arm", "plant"]);
   noun("leaf", ["finger", "plant"]);
