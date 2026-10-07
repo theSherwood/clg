@@ -2687,14 +2687,14 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("or", { t: [T.grammar_helper], notes: '"xor" through "or-exclusive"' });
   cr("and", { t: [T.grammar_helper] });
   cr("but", { t: [T.grammar_helper], gloss: "but / however" });
-  cr("only", {
-    t: [T.grammar_helper],
-    notes: "A prefix, like not, applying to the one word after it: only you, <verb> only sleep(vi)",
-  });
   cr("also", {
     t: [T.grammar_helper],
     gloss: "also / too",
     notes: "A prefix on the word it adds: also you is you too",
+  });
+  cr("only", {
+    t: [T.grammar_helper],
+    notes: "A prefix, like not, applying to the one word after it: only you, <verb> only sleep(vi)",
   });
   cr("even", {
     t: [T.grammar_helper],
