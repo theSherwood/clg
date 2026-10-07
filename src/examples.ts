@@ -979,6 +979,7 @@ export const conversation_examples: Example[] = [
     english: "Sit, please",
     transliteration: "<verb_prescriptive> sit(vi) please",
   },
+  { title: "Please, first", english: "Please sit", transliteration: "please <verb_prescriptive> sit(vi)" },
   {
     title: "Thank you, in full",
     english: "I thank you",

@@ -3366,7 +3366,7 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   idiom("sorry", ["blame", "to", "<pronoun_first_person>"], { notes: "Blame to me: my fault" });
   idiom("please", ["if", "<clause_start>", "<verb>", "desire(vt)"], {
     notes:
-      "If you want, as French s'il vous plaît is if it pleases you. Said after the request, so its subclause ends the sentence and needs no <clause_end>; it takes the request's subject, you",
+      "If you want, as French s'il vous plaît is if it pleases you. A set phrase, so it needs no <clause_end> before or after the request: listeners know where it stops. Its subclause takes the request's subject, you",
   });
 
   // Parts of things, head first: the kind of part, then the whole. Organs are <tool> + what
