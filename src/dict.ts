@@ -2663,11 +2663,11 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("<continuous_tense_aspect>");
   cr("<perfect_tense_aspect>");
   cr("if", { t: [T.grammar_helper], notes: '"iff" through "if-exclusive"' });
-  cr("<again>", {
+  cr("again", {
     t: [T.grammar_helper],
     gloss: "again, re-",
     notes:
-      "Follows the verb, with the aspects: open(vt) <again> is reopen. With the negative end it undoes, implying the thing was done: <negative> cover(vt) <again> is uncover",
+      "Follows the verb, with the aspects: open(vt) again is reopen. With the negative end it undoes, implying the thing was done: <negative> cover(vt) again is uncover",
   });
   cr("<filler>", {
     t: [T.grammar_helper],

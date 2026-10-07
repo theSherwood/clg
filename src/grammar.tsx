@@ -246,9 +246,9 @@ export function GrammarView() {
         &lt;continuous_tense_aspect&gt; &lt;perfect_tense_aspect&gt;</i> is “have been working”.
       </p>
       <p className="mt-2">
-        <W w="<again>" /> goes with the aspects, after the verb: <i>open(vt) &lt;again&gt;</i> is
+        <W w="again" /> goes with the aspects, after the verb: <i>open(vt) again</i> is
         “reopen”. On a verb's negative end it undoes, and says the thing had been done:{" "}
-        <i>&lt;negative&gt; cover(vt) &lt;again&gt;</i> is “uncover”, made exposed again.
+        <i>&lt;negative&gt; cover(vt) again</i> is “uncover”, made exposed again.
       </p>
       <Example meaning="I was sleeping.">
         &lt;subject&gt; I &lt;verb&gt; sleep(vi) &lt;continuous_tense_aspect&gt; formerly

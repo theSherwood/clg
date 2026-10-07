@@ -962,11 +962,11 @@ export const more_grammar_examples: Example[] = [
     transliteration: "<subject> I <verb> be_bound_to(vt) <object> <gerund> not touch(vi)",
   },
   { title: "Can't", english: "I can't sleep", transliteration: "<subject> I <verb> sleep(vi) incapably" },
-  { title: "Again", english: "Open it again", transliteration: "<verb_prescriptive> open(vt) <again> <object> it" },
+  { title: "Again", english: "Open it again", transliteration: "<verb_prescriptive> open(vt) again <object> it" },
   {
     title: "Undo",
     english: "The ice froze again (it had melted)",
-    transliteration: "<subject> water <verb> freeze(vi) <again> formerly",
+    transliteration: "<subject> water <verb> freeze(vi) again formerly",
   },
   {
     title: "How",
