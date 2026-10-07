@@ -431,8 +431,8 @@ export function GrammarView() {
       <H2>Speech, writing and the senses</H2>
       <p>
         These are action axes, each with its counterpart at the other end:{" "}
-        <W w="say(vt)" /> and <W w="hear(vt)" />, <W w="write(vi)" /> and <W w="read(vi)" />,{" "}
-        <W w="show(vi)" /> and <W w="see(vt)" /> (<W w="look(vi)" /> without an object),{" "}
+        <W w="say(vt)" /> and <W w="listen(vi)" />, <W w="write(vi)" /> and <W w="read(vi)" />,{" "}
+        <W w="show(vi)" /> and <W w="watch(vt)" /> (<W w="look(vi)" /> without an object),{" "}
         <W w="sense(vt)" /> and <W w="overlook(vt)" />, <W w="use(vi)" /> and <W w="discard(vi)" />,{" "}
         <W w="do(vt)" /> and <W w="undo(vi)" />, and <W w="touch(vi)" /> and <W w="avoid(vt)" />. The
         scale grades them: <i>&lt;min_positive&gt; write(vi)</i>, a lesser writing, is a mark, and{" "}
@@ -440,6 +440,24 @@ export function GrammarView() {
         <i>&lt;ee&gt; say(vt)</i>, a text <i>&lt;ee&gt; write(vt)</i> and an ear <i>&lt;tool&gt; hear(vt)</i>. Attaching is{" "}
         <W w="connect(vi)" />.
       </p>
+      <p className="mt-2">
+        The senses are all one pattern: <W w="sense(vt)" /> and the medium each one takes in.{" "}
+        <W w="see(vt)" /> is <i>sense(vt) light</i>, <W w="hear(vt)" /> <i>sense(vt) sound</i>,{" "}
+        <W w="feel(vt)" /> <i>sense(vt) contact</i>, <W w="taste(vt)" /> <i>sense(vt) taste</i> and{" "}
+        <W w="smell(vt)" /> <i>sense(vt) odor</i>. Seeing and hearing just happen; watching and
+        listening are attending to what's shown or said, so they're the far ends of{" "}
+        <W w="show(vi)" /> and <W w="say(vt)" />. Feelings are perceived the same way, with{" "}
+        <W w="sense(vt)" /> and the feeling: <i>sense(vt) pain</i> is to feel pain, so{" "}
+        <W w="feel(vt)" /> stays touch.
+      </p>
+      <p className="mt-2">
+        Tastes and smells are qualities, built like colors: <i>taste fun</i> is sweet,{" "}
+        <i>taste painful</i> bitter, <i>taste sharp</i> sour, <i>taste rock</i> salty and{" "}
+        <i>taste flesh</i> savory. <i>taste good</i> is delicious and <i>odor good</i> fragrant.
+      </p>
+      <Example meaning="The water tastes salty.">
+        &lt;subject&gt; water &lt;verb&gt; be(vt) &lt;complement&gt; taste rock
+      </Example>
       <p className="mt-2">
         Untruth is the truth axis's adverb: <W w="tell_a_lie(vi)" /> is <i>say(vt) falsely</i>, and{" "}
         <W w="pretend(vi)" /> is <i>show(vi) falsely</i>, which with an object is to disguise it.
@@ -531,7 +549,7 @@ export function GrammarView() {
       <p className="mt-2">
         Organs are named for what they do, with <W w="<tool>" />: <W w="eye" /> is{" "}
         <i>&lt;tool&gt; see(vt)</i>, <W w="ear" /> <i>&lt;tool&gt; hear(vt)</i>, <W w="brain" />{" "}
-        <i>&lt;tool&gt; know(vt)</i> and <W w="nose" /> <i>&lt;tool&gt; sense(vt) gas</i>. Where there's no verb for
+        <i>&lt;tool&gt; know(vt)</i> and <W w="nose" /> <i>&lt;tool&gt; smell(vt)</i>. Where there's no verb for
         it, the kind-and-whole pattern does: <W w="heart" /> is <i>center body</i>, and the{" "}
         <W w="liver" /> <i>filter body</i>, the body's <W w="filter" /> (<i>&lt;tool&gt; separate(vi)</i>). Substances take a
         phase: <W w="blood" /> is <i>liquid body</i>, <W w="sap" /> <i>liquid plant</i> and{" "}

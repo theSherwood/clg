@@ -2226,13 +2226,13 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "visibility",
       notes:
-        "Showing and seeing, as saying and hearing. Appearing is emerge(vi) and disappearing vanish(vi); disguising is show(vt) falsely",
+        "Showing and watching, as saying and listening: attending to what's shown. Seeing, which just happens, is sense(vt) light. Appearing is emerge(vi) and disappearing vanish(vi); disguising is show(vt) falsely",
       steps: {
         max_positive: { noun: "display", verb: "display(vi)", verb_i: "display", verb_t: "display" },
         min_negative: { noun: "glimpse", verb: "glimpse(vt)", verb_i: "glance", verb_t: "glimpse" },
       },
     },
-    { noun: "sight", adj: "seen", verb: "see(vt)", verb_i: "look", verb_t: "see", adverb: "visually" },
+    { noun: "observation", adj: "watched", verb: "watch(vt)", verb_i: "look", verb_t: "watch", adverb: "observantly" },
     {
       noun: "demonstration",
       adj: "visible",
@@ -2244,7 +2244,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     { noun: "conversation" },
-    { noun: "hearing", adj: "heard", verb: "hear(vt)", verb_i: "listen", verb_t: "hear" },
+    { noun: "listening", adj: "heeded", verb: "listen(vi)", verb_i: "listen", verb_t: "listen to" },
     { noun: "speech", adj: "spoken", verb: "say(vt)", verb_i: "speak", verb_t: "say", adverb: "aloud" },
   ],
   [
@@ -2265,7 +2265,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   [
     { noun: "attention" },
     { noun: "oversight", adj: "unnoticed", verb: "overlook(vt)", verb_i: "miss", verb_t: "overlook" },
-    { noun: "perception", adj: "perceptive", verb: "sense(vt)", verb_i: "feel", verb_t: "sense" },
+    { noun: "perception", adj: "perceptive", verb: "sense(vt)", verb_i: "perceive", verb_t: "sense" },
   ],
   [
     { noun: "utility" },
@@ -2839,6 +2839,8 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("rock");
   cr("path");
   cr("sound");
+  cr("taste", { gloss: "taste / flavor" });
+  cr("odor", { gloss: "odor / smell / scent" });
   cr("body", { gloss: "body / organ" });
   cr("symbol");
   cr("information", { gloss: "information / data" });
@@ -3242,6 +3244,13 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   phrase("feed(vi)", ["give(vi)", "<ee>", "eat(vt)"], "feed", "feed");
   phrase("mate(vi)", ["connect(vi)", "sex"], "mate", "mate with");
 
+  // The senses: perceiving each one's medium. Feelings are perceived too: sense(vt) pain
+  phrase("see(vi)", ["sense(vt)", "light"], "see", "see");
+  phrase("hear(vi)", ["sense(vt)", "sound"], "hear", "hear");
+  phrase("feel(vi)", ["sense(vt)", "contact"], "feel", "feel");
+  phrase("taste(vi)", ["sense(vt)", "taste"], "taste", "taste");
+  phrase("smell(vi)", ["sense(vt)", "odor"], "smell", "smell");
+
   // Computing is working data, as German Datenverarbeitung is data processing
   phrase("compute(vi)", ["work(vi)", "information"], "compute", "compute");
   phrase("say_verbatim(vi)", ["say(vt)", "identically"], "say verbatim", "say verbatim");
@@ -3442,7 +3451,7 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("claw", ["finger", "sharp"]);
   noun("eye", ["<tool>", "see(vt)"]);
   noun("ear", ["<tool>", "hear(vt)"]);
-  noun("nose", ["<tool>", "sense(vt)", "gas"]);
+  noun("nose", ["<tool>", "smell(vt)"]);
   noun("brain", ["<tool>", "know(vt)"]);
   noun("heart", ["center", "body"]);
   noun("blood", ["liquid", "body"]);
