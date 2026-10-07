@@ -2578,7 +2578,29 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       },
     },
     { noun: "parent", adj: "parental" },
-    { noun: "child", adj: "filial" },
+    { noun: "child", adj: "filial", verb: "bear(vt)", verb_i: "be born", verb_t: "bear" },
+  ],
+  [
+    {
+      noun: "provenance",
+      notes:
+        "Where something comes from: the original is the source, and the derivative derives from it. A copy is derivation at its fullest. Copying a text is copy(vi), on literacy",
+      steps: { max_negative: { noun: "copy", adj: "copied" } },
+    },
+    {
+      noun: "derivation",
+      adj: "derivative",
+      verb: "derive_from(vt)",
+      verb_t: "derive from",
+      adverb: "derivatively",
+    },
+    {
+      noun: "originality",
+      adj: "original",
+      verb: "originate(vt)",
+      verb_t: "originate",
+      adverb: "originally",
+    },
   ],
 ];
 
@@ -2887,14 +2909,11 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   });
 
 
-  candidate("prehensile?");
   candidate("net", { gloss: "net / graph" });
   candidate("image", { gloss: "image / projection" });
   candidate("simulation", { gloss: "simulation / model" });
-  candidate("original");
   candidate("un-", { notes: "?" });
   candidate("re-", { notes: "?" });
-  candidate("machine");
   candidate("sex");
   candidate("turn");
   candidate("direction", {
@@ -2958,7 +2977,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "abstract(vt)", "absolutize(vt)", "melt(vi)", "make_explicit(vt)", "externalize(vt)",
     "perpetuate(vt)", "become_essential(vi)", "idealize(vt)", "nest(vi)",
     "enumerate(vt)", "curl(vt)", "emerge(vi)", "distance(vt)", "quiet(vt)", "sharpen(vt)", "wet(vt)",
-    "thicken(vi)", "lift(vt)", "stand(vi)", "heat(vt)", "brighten(vi)", "harden(vi)", "get_heavier(vi)", "prove(vt)",
+    "thicken(vi)", "lift(vt)", "stand(vi)", "bear(vt)", "heat(vt)", "brighten(vi)", "harden(vi)", "get_heavier(vi)", "prove(vt)",
     "postpone(vt)", "come_to_life(vi)", "eat(vt)", "sink(vi)", "veer_right(vi)",
     "withdraw(vt)", "spread(vi)", "stir(vi)", "persist(vi)", "make_artificial(vt)",
     "spread_out(vi)", "straighten(vi)", "improve(vi)", "entertain(vt)",
@@ -2976,7 +2995,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "do(vt)", "touch(vi)", "count(vi)", "thank(vt)", "show(vi)", "fly(vi)", "choose(vi)", "infer(vt)",
   ],
   relation: [
-    "possess(vt)", "be(vt)", "be_entitled_to(vt)", "resemble(vt)", "result_from(vt)", "love(vt)", "know(vt)", "desire(vt)", "face(vt)", "include(vt)",
+    "possess(vt)", "be(vt)", "be_entitled_to(vt)", "originate(vt)", "resemble(vt)", "result_from(vt)", "love(vt)", "know(vt)", "desire(vt)", "face(vt)", "include(vt)",
     "attract(vt)", "exceed(vt)", "follow(vt)",
   ],
 };
@@ -3208,6 +3227,8 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   phrase("pretend(vi)", ["show(vi)", "falsely"], "pretend", "disguise");
   // Saying or writing exactly: the clause is verbatim, so its pronouns are whoever first said it.
   // With meta, the words are someone else's, repeated: quoting
+  phrase("reproduce(vi)", ["bear(vt)", "child"], "reproduce", "reproduce");
+
   // Computing is working data, as German Datenverarbeitung is data processing
   phrase("compute(vi)", ["work(vi)", "information"], "compute", "compute");
   phrase("say_verbatim(vi)", ["say(vt)", "identically"], "say verbatim", "say verbatim");
@@ -3348,6 +3369,7 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
 
   noun("quotation", ["<ee>", "quote(vi)"], { gloss: "quotation / quote", notes: "What's quoted" });
   noun("quoter", ["<er>", "quote(vi)"], { notes: "Whoever quotes" });
+  noun("machine", ["<er>", "work(vi)", "artificial"], { gloss: "machine / robot", notes: "An artificial worker" });
   noun("computation", ["<gerund>", "work(vi)", "information"], {
     notes: "Working data. Working a material is crafting it, as German werken: work(vt) rock is stonework",
   });
@@ -3404,6 +3426,9 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("grease", ["<tool>", "slip(vi)"], { gloss: "grease / lubricant" });
   noun("glue", ["<tool>", "stick(vi)"]);
   noun("tree", ["plant", "big"]);
+  noun("sky", ["place", "high"], { notes: "The high place, as Toki Pona's sewi is up, sky and heaven" });
+  noun("rain", ["water", "sky"]);
+  noun("cloud", ["covering", "sky"], { notes: "The sky's covering" });
   noun("root", ["feet", "plant"], { gloss: "root (of a plant)" });
   noun("trunk", ["torso", "plant"]);
   noun("branch", ["arm", "plant"]);

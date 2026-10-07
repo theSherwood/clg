@@ -365,7 +365,10 @@ export function GrammarView() {
         &lt;subject&gt; I &lt;verb&gt; infer(vt) &lt;object&gt; &lt;subject&gt; you &lt;verb&gt; sleep(vi) formerly
       </Example>
       <p className="mt-2">
-        <W w="mind" /> is <i>&lt;er&gt; sense(vt) self</i>, what perceives itself.{" "}
+        <W w="mind" /> is <i>&lt;er&gt; sense(vt) self</i>, what perceives itself. A <W w="machine" /> is{" "}
+        <i>&lt;er&gt; work(vi) artificial</i>, an artificial worker. Where something comes from is the
+        provenance axis: <W w="original" /> and <W w="derivative" />, <W w="originate(vt)" /> and{" "}
+        <W w="derive_from(vt)" />, with a <W w="copy" /> as derivation at its fullest.{" "}
         To <W w="compute(vi)" /> is <i>work(vt) information</i>, to work data, as German{" "}
         <i>Datenverarbeitung</i> is data processing; <W w="computation" /> is{" "}
         <i>&lt;gerund&gt; work(vt) information</i> and a <W w="computer" />{" "}
@@ -395,6 +398,10 @@ export function GrammarView() {
         &lt;rank_0&gt; is oneself. Marriage isn't a generation step: a <W w="spouse" /> is <i>family united</i>, family by
         union rather than descent, and in-laws are phrases: <i>parent of spouse</i>. Gendered words are
         modifiers: <W w="mother" /> is <i>parent female</i>, <W w="brother" /> <i>sibling male</i>.
+      </p>
+      <p className="mt-2">
+        Birth is the child end's verb: without an object, <W w="be_born(vi)" />; with one, to
+        bear a child, <W w="bear(vt)" />. To <W w="reproduce(vi)" /> is <i>bear(vt) child</i>.
       </p>
       <Example meaning="My grandparent has many descendants.">
         &lt;subject&gt; grandparent of me &lt;verb&gt; possess(vt) &lt;object&gt; &lt;max_positive&gt; child many
@@ -593,7 +600,12 @@ export function GrammarView() {
         <W w="this" /> makes it ours: <W w="sun" /> is <i>celestial &lt;rank_3&gt; this</i>,{" "}
         <W w="earth" /> <i>&lt;rank_2&gt; this</i>, <W w="the_moon" /> <i>&lt;rank_1&gt; this</i> and{" "}
         <W w="milky_way" /> <i>&lt;rank_4&gt; this</i>. The universe isn't a body in the sky:{" "}
-        <W w="universe" /> is <i>thing all</i>, everything.
+        <W w="universe" /> is just <W w="everything" />.
+      </p>
+      <p className="mt-2">
+        The <W w="sky" /> is <i>place high</i>, the high place, as Toki Pona's <i>sewi</i> is up, sky
+        and heaven. <W w="rain" /> is <i>water sky</i> and a <W w="cloud" /> <i>covering sky</i>, the
+        sky's covering.
       </p>
       <Example meaning="The Sun is bright.">
         &lt;subject&gt; sun &lt;verb&gt; be(vt) &lt;complement&gt; bright
