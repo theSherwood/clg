@@ -193,6 +193,65 @@ function Line({ marks, size }: { marks: number[][]; size: number }) {
   );
 }
 
+// A word in cursive stems, as one stroke. Each rung is a loop out to its side and back to the
+// stem, and a rung across is a figure eight lying through it. The pen writes one stem down and the
+// next up, joining them with a small arch at the foot or the top, so the word meanders without
+// crossing itself; the rows still read top to bottom.
+function cursive_stem_points(states: number[], x: number, top: number, row_height: number, reach: number): Point[] {
+  const points: Point[] = [[x, top]];
+  states.forEach((state, r) => {
+    const y = top + (r + 0.5) * row_height;
+    const lobe = (dir: number): Point[] => [
+      [x + dir * reach * 0.55, y - row_height * 0.24],
+      [x + dir * reach, y],
+      [x + dir * reach * 0.55, y + row_height * 0.24],
+    ];
+    if (state === 0) return;
+    // Pin the stem straight on the way in and out, so only the loops curve
+    points.push([x, y - row_height * 0.42], [x, y - row_height * 0.2]);
+    if (state === 3) points.push(...lobe(-1), [x, y], ...lobe(1));
+    else points.push(...lobe(state & 1 ? -1 : 1));
+    points.push([x, y + row_height * 0.2], [x, y + row_height * 0.42]);
+  });
+  points.push([x, top + 4 * row_height]);
+  return points;
+}
+
+function CursiveStems({ rows, size }: { rows: number[][]; size: number }) {
+  const column = size * 0.8; // wider than plain stems, so facing loops keep apart
+  const height = size * 1.2;
+  const pad = size * 0.14; // room for the arches between stems
+  const row_height = (height - 2 * pad) / 4;
+  const reach = column * 0.32;
+  const stroke = Math.max(1.5, size / 16);
+  const points: Point[] = [];
+  rows.forEach((states, i) => {
+    const x = i * column + column / 2;
+    const stem = cursive_stem_points(states, x, pad, row_height, reach);
+    if (i > 0) {
+      // An arch from the last stem's end: at the foot after a stem written down, else at the top
+      const y = i % 2 === 1 ? height - pad * 0.35 : pad * 0.35;
+      points.push([x - column / 2, y]);
+    }
+    points.push(...(i % 2 === 0 ? stem : stem.reverse()));
+  });
+  return (
+    <svg
+      width={rows.length * column}
+      height={height}
+      viewBox={`0 0 ${rows.length * column} ${height}`}
+      className="inline-block align-middle"
+      stroke="currentColor"
+      strokeWidth={stroke}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    >
+      <path d={spline(points)} />
+    </svg>
+  );
+}
+
 function Written({
   tokens,
   render,
@@ -418,6 +477,7 @@ function AllSyllables({
                   <td key={col} className="border border-gray-200 px-1 text-center align-top">
                     <div className="text-[10px] font-mono text-indigo-700">{syllable_of(id, phonology)}</div>
                     <Stems rows={[layout_values(id, phonology, stems)]} size={size * 0.7} />
+                    <CursiveStems rows={[layout_values(id, phonology, stems)]} size={size * 0.7} />
                     <div>
                       <Line marks={[layout_values(id, phonology, line)]} size={size * 0.6} />
                     </div>
@@ -449,6 +509,11 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
       name: "Stems",
       note: "A stem per syllable, with a rung for each mark",
       render: (ids) => <Stems rows={ids.map((id) => layout_values(id, phonology, stems))} size={size} />,
+    },
+    {
+      name: "Cursive stems",
+      note: "The same stems written in one stroke: each rung a loop out to its side, each stem joined to the next",
+      render: (ids) => <CursiveStems rows={ids.map((id) => layout_values(id, phonology, stems))} size={size} />,
     },
     {
       name: "Line",
