@@ -232,7 +232,8 @@ export function GrammarView() {
           &lt;subject&gt; I &lt;verb&gt; become possess(vt) formerly &lt;object&gt; house
         </Example>
         <p>
-          <W w="<verb_prescriptive>" /> makes a verb prescriptive or imperative (should, shall), and{" "}
+          <W w="<verb_prescriptive>" /> makes a verb prescriptive: what should be rather than what is,
+          as a command, an obligation (should, shall) or a wish (may…, let…), much like a subjunctive.{" "}
           <W w="<verb_interrogative>" /> makes it a question. In a question, <W w="<blank>" /> stands
           for what's being asked about; without it, the question is yes or no. With <W w="we" /> as
           its subject, <W w="<verb_prescriptive>" /> is “let's”.
@@ -1084,9 +1085,11 @@ export function GrammarView() {
           <b>Missing subjects.</b> A clause that opens with its verb marker borrows the subject of
           the clause it's attached to: a subclause the main clause's, and a clause joined by{" "}
           <W w="and" />, <W w="or" /> or <W w="but" /> the previous clause's. Only a sentence that
-          opens with a verb marker has nothing to borrow from: with <W w="<verb_prescriptive>" /> it's
-          a command to the listener, and otherwise the subject is unspecified, “someone”. A topic or
-          a <W w="<vocative>" /> before it doesn't count, since both stand outside the clause. A clause
+          opens with a verb marker has nothing to borrow from, so its subject is unspecified,
+          “someone”. With <W w="<verb_prescriptive>" />, who should do it comes from context: often the
+          listener, which makes it a command (“behold”), but it can as well be a general should or a
+          wish (“let every day be a feast”). A topic or a <W w="<vocative>" /> before it doesn't
+          count, since both stand outside the clause. A clause
           that opens with <W w="<object>" /> leaves the doer unsaid wherever it is.
         </p>
         <Example meaning="I want to sleep.">
@@ -1329,8 +1332,8 @@ export function GrammarView() {
           comma and a pause do in English: <T>&lt;vocative&gt; father</T> is “Father, …”. Like any role
           marker it comes before its phrase, which runs to the next marker. It never fills a role in
           the clause after it, even one whose doer is unsaid, and from then on the one addressed is{" "}
-          <W w="<pronoun_second_person>" />, as English vocatives are “you”. So a command after it
-          needs no subject, since a command is to “you” anyway, but a clause opening with{" "}
+          <W w="<pronoun_second_person>" />, as English vocatives are “you”. So a request after it
+          needs no subject when it's plainly theirs to do, but a clause opening with{" "}
           <W w="<object>" /> keeps its doer unsaid: “hallowed be thy name”, not “hallow thy name”. On its own it's calling
           someone: <T>&lt;vocative&gt; mother</T>, “Mother!”
         </p>
