@@ -1186,6 +1186,8 @@ export const udhr_articles: Article[] = [
       "Everyone has the right to own property alone as well as in association with others.",
       "No one shall be arbitrarily deprived of his property.",
     ],
+    transliteration:
+      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> possess(vt) <object> thing with no_one or with person other. <object> thing <verb_prescriptive> take(vt) from no_one for nothing.",
   },
   {
     title: "Article 18",
@@ -1198,6 +1200,8 @@ export const udhr_articles: Article[] = [
     english: [
       "Everyone has the right to freedom of opinion and expression; this right includes freedom to hold opinions without interference and to seek, receive and impart information and ideas through any media and regardless of frontiers.",
     ],
+    transliteration:
+      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> believe(vi) freely and <verb> speak(vi) freely. <subject> everyone <verb> be_entitled_to(vt) <object> <verb> seek(vt) and receive(vt) and send(vt) <object> information by everything at everywhere.",
   },
   {
     title: "Article 20",
@@ -1205,6 +1209,8 @@ export const udhr_articles: Article[] = [
       "Everyone has the right to freedom of peaceful assembly and association.",
       "No one may be compelled to belong to an association.",
     ],
+    transliteration:
+      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> gather(vi) peacefully and <verb> be(vi) in group. <subject> no_one <verb_prescriptive> be(vi) in group by coercion.",
   },
   {
     title: "Article 21",
@@ -1276,6 +1282,8 @@ export const udhr_articles: Article[] = [
     english: [
       "Nothing in this Declaration may be interpreted as implying for any State, group or person any right to engage in any activity or to perform any act aimed at the destruction of any of the rights and freedoms set forth herein.",
     ],
+    transliteration:
+      "<subject> group none and no_one <verb> be_entitled_to(vt) by this <object> <verb> break(vt) <object> right and freedom of this.",
   },
 ];
 
