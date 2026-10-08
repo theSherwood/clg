@@ -75,10 +75,14 @@ Texts other conlangs are compared on, translated to test the grammar and vocabul
 
 - [x] UDHR, all 30 articles and the preamble
 - [x] The Tower of Babel (Genesis 11:1-9, King James Version)
-- [ ] The North Wind and the Sun (the IPA's sample passage)
+- [x] The North Wind and the Sun (the IPA's sample passage)
 - [ ] Schleicher's fable, The Sheep and the Horses
 - [ ] The Lord's Prayer
 - [ ] Syntax test cases (graded sentences from the CONLANG list; source to find)
 
 Open from Babel: understand is know(vt) for now. A quote's own bracket and an inner bracket
 each need a <clause_end>, so verse 4 ends with two; no better system yet.
+
+Open from the North Wind: "the more …, the more …" is increase(vi) with, as in the closure of
+the cloak increased with the blowing. A dedicated construction (Esperanto ju pli … des pli,
+Mandarin 越…越) can wait until it comes up again.

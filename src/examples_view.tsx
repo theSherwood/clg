@@ -31,6 +31,7 @@ import {
   water_fire_examples,
   udhr_preamble,
   babel_verses,
+  north_wind_sentences,
 } from "./examples";
 import { swadesh, toki_pona_words } from "./comparison";
 import { ComparisonTable, TallyLine } from "./comparison_view";
@@ -199,7 +200,7 @@ const all_transliterations = [
   ...arithmetic_examples.map((e) => e.transliteration),
   ...more_grammar_examples.map((e) => e.transliteration),
   ...conversation_examples.map((e) => e.transliteration),
-  ...[...udhr_preamble, ...udhr_articles, ...babel_verses].flatMap((a) =>
+  ...[...udhr_preamble, ...udhr_articles, ...babel_verses, ...north_wind_sentences].flatMap((a) =>
     a.transliteration ? [a.transliteration] : [],
   ),
 ];
@@ -311,6 +312,14 @@ export function ExamplesView() {
           Genesis 11:1–9 in the King James Version, the text conlangs are traditionally compared on.
         </p>
         <ArticleList articles={babel_verses} />
+      </Section>
+
+      <Section title="The North Wind and the Sun">
+        <p className="text-sm text-gray-600 mb-3">
+          Aesop's fable as the Handbook of the International Phonetic Association tells it, the
+          passage used to illustrate every language.
+        </p>
+        <ArticleList articles={north_wind_sentences} />
       </Section>
 
       <Section title="Universal Declaration of Human Rights">

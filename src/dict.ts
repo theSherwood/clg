@@ -1001,6 +1001,8 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
           verb_t: "burn",
           adverb: "ablaze",
         },
+        min_positive: { noun: "warmth", adj: "warm", verb: "warm(vt)", verb_i: "warm up", verb_t: "warm", adverb: "warmly" },
+        min_negative: { noun: "coolness", adj: "cool", verb: "cool(vt)", verb_i: "cool off", verb_t: "cool", adverb: "coolly" },
         max_negative: { adj: "frigid", verb: "quench(vt)", verb_i: "go out", verb_t: "quench" },
       },
     },
@@ -2498,7 +2500,10 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
           verb: "acknowledge(vt)",
           verb_i: "acknowledge",
           verb_t: "acknowledge",
-          synonyms: { noun: ["recognition", "respect", "tolerance"], verb: ["recognize", "respect", "tolerate"] },
+          synonyms: {
+            noun: ["recognition", "respect", "tolerance", "admission"],
+            verb: ["recognize", "respect", "tolerate", "admit", "confess", "concede"],
+          },
         },
         max_negative: { noun: "condemnation", verb: "condemn(vt)", verb_i: "condemn", verb_t: "condemn" },
       },
@@ -3780,6 +3785,15 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("city", ["land", "building"], { synonyms: ["town"], notes: "Built-up land, as a country is a society's land" });
   noun("tower", ["building", "high"]);
   noun("brick", ["rock", "artificial"], { notes: "Artificial stone" });
+  // Sending out a medium: blowing sends air and shining light
+  phrase("blow(vi)", ["send(vt)", "air"], "blow", "blow on");
+  phrase("shine(vi)", ["send(vt)", "light"], "shine", "shine on");
+  noun("wind", ["air", "travel"], { notes: "Air in motion. The north wind is wind north, as in English" });
+  noun("traveler", ["<er>", "go(vi)"], { synonyms: ["passer-by", "wayfarer"] });
+  noun("cloak", ["clothing", "outside"], { synonyms: ["coat"], notes: "Outerwear" });
+  phrase("argue(vi)", ["compete(vi)", "by", "speech"], "argue", "dispute");
+  noun("argument", ["<gerund>", "argue(vi)"], { synonyms: ["debate", "dispute"] });
+  phrase("agree(vi)", ["believe(vi)", "identically"], "agree", "agree on");
   noun("room", ["part", "building"]);
   noun("grease", ["<tool>", "slip(vi)"], { gloss: "grease / lubricant" });
   noun("glue", ["<tool>", "stick(vi)"]);

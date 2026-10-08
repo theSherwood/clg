@@ -531,7 +531,9 @@ export function GrammarView() {
         <i>money work</i>, and a <W w="union" /> <i>group worker</i>. Whose side one acts on is
         the support axis: <W w="help(vt)" /> and <W w="oppose(vt)" />, with{" "}
         <W w="cooperate(vi)" /> a lesser helping and <W w="compete(vi)" /> a lesser opposing,
-        against someone toward the same goal; a <W w="rival" /> is <i>&lt;ee&gt; compete(vi)</i>.
+        against someone toward the same goal; a <W w="rival" /> is <i>&lt;ee&gt; compete(vi)</i>. To{" "}
+        <W w="argue(vi)" /> is <i>compete(vi) by speech</i>, and an <W w="argument" />{" "}
+        <i>&lt;gerund&gt; argue(vi)</i>.
         Making something easier or harder, whatever the intent, is <W w="enable(vt)" /> and{" "}
         <W w="hinder(vt)" />. Enough is the middle of the quantity axis:{" "}
         <W w="enough" />, between few and many.
@@ -543,7 +545,8 @@ export function GrammarView() {
         breaking, <i>&lt;min_negative&gt; intact</i>. Mending bodies gives <W w="medicine" /> (
         <i>&lt;gerund&gt; mend(vt) body</i>), a <W w="doctor" />, a <W w="drug" /> and a{" "}
         <W w="hospital" />, by the role markers. <W w="clothing" /> is <i>covering person</i>, a
-        person's covering, as skin is a body's.
+        person's covering, as skin is a body's, and a <W w="cloak" /> or coat{" "}
+        <i>clothing outside</i>.
       </p>
       <Example meaning="The doctor healed the sick child.">
         &lt;subject&gt; doctor &lt;verb&gt; mend(vt) formerly &lt;object&gt; child sick
@@ -616,7 +619,9 @@ export function GrammarView() {
         Thinking is inner speech: <W w="think(vi)" /> is <i>say(vt) within</i>, so like{" "}
         <W w="say(vt)" /> it takes a clause, “think that…”. <W w="thought" /> is{" "}
         <i>&lt;gerund&gt; think(vi)</i> and an <W w="idea" /> <i>&lt;ee&gt; think(vt)</i>, what's
-        thought. An opinion is a <W w="belief" />. A <W w="god" /> is <i>&lt;ee&gt; worship(vt)</i>,
+        thought. An opinion is a <W w="belief" />, and to <W w="agree(vi)" /> is{" "}
+        <i>believe(vi) identically</i>, to believe the same; <W w="agree_on(vt)" /> takes what's
+        agreed, and <W w="with" /> whom. A <W w="god" /> is <i>&lt;ee&gt; worship(vt)</i>,
         what's worshipped, and a <W w="religion" /> <i>belief worship</i>, a belief with worship.
         An <W w="emotion" /> is <i>&lt;gerund&gt; sense(vt) value</i>, sensing what matters: fear
         senses danger and joy good.
@@ -638,6 +643,9 @@ export function GrammarView() {
         <i>exceed(vt) &lt;object&gt; all</i> is “the biggest”, and the scale grades it, so{" "}
         <i>&lt;max_positive&gt; exceed(vt)</i> is “much bigger” and <i>&lt;min_positive&gt; exceed(vt)</i> “slightly
         bigger”. Many languages compare this way, like Nigerian Pidgin's “e big pass you”.
+        “The more…, the more…” is <W w="increase(vi)" /> with <W w="with" />, along with: the
+        tighter he held the harder it blew is <i>closure of cloak increase(vi) with &lt;gerund&gt;
+        blow(vi) of wind</i>.
       </p>
       <Example meaning="The rock is bigger than the person.">
         &lt;subject&gt; rock &lt;verb&gt; exceed(vt) &lt;object&gt; person in big
@@ -783,8 +791,18 @@ export function GrammarView() {
         <W w="steam" /> is <i>water matter &lt;rank_2&gt;</i> and <W w="lava" /> is{" "}
         <i>rock matter &lt;rank_1&gt;</i>. Bare <W w="water" /> is the liquid. <W w="gas" /> usually does
         for air; <W w="air" />, <i>gas this</i> (our gas), says it outright, as <i>celestial &lt;rank_2&gt;
-        this</i> is Earth.
+        this</i> is Earth. <W w="wind" /> is <i>air travel</i>, air in motion, and the north wind{" "}
+        <i>wind north</i>, as in English. Sending out a medium makes verbs of emitting:{" "}
+        <W w="blow(vi)" /> is <i>send(vt) air</i> and <W w="shine(vi)" /> <i>send(vt) light</i>,
+        and with an object, to blow or shine on it.
       </p>
+      <p className="mt-2">
+        Temperature runs <W w="frigid" />, <W w="cold" />, <W w="cool" />, <W w="warm" />,{" "}
+        <W w="hot" /> and <W w="burning" />, its lesser steps the milder ones.
+      </p>
+      <Example meaning="The Sun shone warmly.">
+        &lt;subject&gt; sun &lt;verb&gt; shine(vi) formerly warmly
+      </Example>
       <p className="mt-2">
         The phase axis (<W w="rigid" />, <W w="fluid" />) is separate: it's how something behaves,
         not its phase. Glass is rigid, and sand pours like a fluid without being a liquid.
@@ -1014,7 +1032,9 @@ export function GrammarView() {
           both. The clause describes the noun just before it, so it goes right after its noun,
           before that noun's phrases: <i>child &lt;clause_start&gt; … &lt;clause_end&gt; of friend</i> is
           the friend's child who…, and <i>child of friend &lt;clause_start&gt; … &lt;clause_end&gt;</i> the
-          child of the friend who….
+          child of the friend who…. A count or ordinal is part of its noun, so the clause follows
+          it and describes the whole: <i>thing &lt;ordinal&gt; number 1 &lt;clause_start&gt; …</i> is
+          the first one who….
         </li>
       </ul>
       <Example meaning="the person who defended me">

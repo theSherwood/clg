@@ -1402,6 +1402,46 @@ export const babel_verses: Article[] = [
   },
 ];
 
+// The North Wind and the Sun, the passage the IPA's Handbook uses to illustrate every language
+export const north_wind_sentences: Article[] = [
+  {
+    title: "Sentence 1",
+    english: [
+      "The North Wind and the Sun were disputing which was the stronger, when a traveler came along wrapped in a warm cloak.",
+    ],
+    transliteration:
+      "at time <clause_start> <subject> traveler <verb> come(vi) formerly <complement> covered by cloak warm <clause_end> <subject> wind north and sun <verb> argue(vi) <continuous_tense_aspect> formerly about <subject> <blank> <verb_interrogative> exceed(vt) <object> other in strong.",
+  },
+  {
+    title: "Sentence 2",
+    english: [
+      "They agreed that the one who first succeeded in making the traveler take his cloak off should be considered stronger than the other.",
+    ],
+    transliteration:
+      "<subject> they <verb> agree_on(vt) formerly <object> <subject> they <verb_prescriptive> believe(vt) <object> <subject> thing <ordinal> number 1 <clause_start> <subject> <blank> <verb> cause(vt) <object> <subject> traveler <verb> take_away(vt) <object> cloak of self <clause_end> <verb> exceed(vt) <object> other in strong.",
+  },
+  {
+    title: "Sentence 3",
+    english: [
+      "Then the North Wind blew as hard as he could, but the more he blew the more closely did the traveler fold his cloak around him; and at last the North Wind gave up the attempt.",
+    ],
+    transliteration:
+      "<subject> wind north <verb> blow(vi) formerly afterwards <max_positive> strongly but <subject> traveler <verb> enclose(vt) formerly tightly by cloak <object> self and <subject> closure of cloak <verb> increase(vi) formerly with <gerund> blow(vi) of wind. <subject> wind north <verb> stop(vt) formerly afterwards <object> attempt of self.",
+  },
+  {
+    title: "Sentence 4",
+    english: ["Then the Sun shone out warmly, and immediately the traveler took off his cloak."],
+    transliteration:
+      "<subject> sun <verb> shine(vi) formerly afterwards warmly and <subject> traveler <verb> take_away(vt) formerly quickly <object> cloak of self.",
+  },
+  {
+    title: "Sentence 5",
+    english: ["And so the North Wind was obliged to confess that the Sun was the stronger of the two."],
+    transliteration:
+      "<subject> wind north <verb> be_bound_to(vt) formerly consequently <object> <verb> acknowledge(vt) <object> <subject> sun <verb> exceed(vt) <object> other in strong.",
+  },
+];
+
 export type Token =
   | { kind: "punctuation"; text: string }
   | { kind: "foreign"; text: string } // the word after <foreign>: a name or borrowing, said as written
