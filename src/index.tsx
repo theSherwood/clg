@@ -2,8 +2,6 @@ import React, { useState, useMemo, useEffect, useContext } from "react";
 import { createRoot } from "react-dom/client";
 import {
   axis_by_word,
-  dictionary,
-  words as all_words, // Renamed to avoid conflict
   data_errors,
   roots,
   sections,
@@ -11,24 +9,19 @@ import {
   layout_units,
   RECEIVERS,
   candidates,
-  type Candidate,
   type UnitKey,
   type SectionKey,
   Word,
-  T, // Importing T for tag names
-  is_root,
 } from "./dict";
 
 import { ExamplesView } from "./examples_view";
 import { GrammarView } from "./grammar";
+import { WordsView } from "./words_view";
 import {
   LazyTippy,
   PhonologyContext,
-  SideVerbs,
   VerbTypeBadge,
-  VerbsByType,
   FormPopoverContent,
-  side_of,
 } from "./word_ui";
 import {
   type Mark,
@@ -43,119 +36,6 @@ import {
   syllable_of,
   phonology_to_json,
 } from "./phonology";
-
-interface WordPreviewItemProps {
-  word: Word;
-}
-
-const WordPreviewItem: React.FC<WordPreviewItemProps> = ({ word }) => {
-  const phonology = useContext(PhonologyContext);
-  const is_root_word = is_root(word);
-  const side = side_of(word);
-  return (
-    <LazyTippy
-      content={<FormPopoverContent word={word} current={word} depth={0} />}
-      placement="right-start"
-      interactive={true}
-      delay={[200, 50]} // delay: [show, hide]
-      theme="light"
-    >
-      <div
-        className={`border-2 p-2 m-1 rounded cursor-default
-                    ${
-                      is_root_word ? "bg-green-50 border-green-200" : "bg-blue-50 border-blue-200"
-                    }`}
-      >
-        <div className="font-semibold">{word.word}</div>
-        <div className="font-mono text-xs text-indigo-700">{pronounce(word, phonology)}</div>
-        <div className="text-xs">{is_root_word ? "ROOT" : "COMPOUND"}</div>
-        {side && <SideVerbs side={side} type={axis_by_word.get(word)?.verb_type} />}
-        {word.data.t.length > 0 && (
-          <div className="text-xs mt-1">
-            {word.data.t.slice(0, 2).map(
-              (
-                tag, // Show first 2 tags for brevity
-              ) => (
-                <span
-                  key={tag}
-                  className="inline-block bg-gray-100 rounded-full px-1.5 py-0.5 text-xs text-gray-600 mr-1"
-                >
-                  {tag}
-                </span>
-              ),
-            )}
-            {word.data.t.length > 2 && <span className="text-xs text-gray-500">...</span>}
-          </div>
-        )}
-      </div>
-    </LazyTippy>
-  );
-};
-
-interface FilterControlsProps {
-  search_text: string;
-  on_search_text_change: (text: string) => void;
-  available_tags: string[];
-  selected_tags: Set<string>;
-  on_tag_toggle: (tag: string) => void;
-}
-
-const FilterControls: React.FC<FilterControlsProps> = React.memo(
-  ({ search_text, on_search_text_change, available_tags, selected_tags, on_tag_toggle }) => {
-    return (
-      <div className="p-4 bg-gray-50 border-b border-gray-200">
-        <input
-          type="text"
-          placeholder="Search words..."
-          value={search_text}
-          onChange={(e) => on_search_text_change(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded-md mb-3"
-        />
-        <div className="flex flex-wrap gap-2">
-          {available_tags.map((tag) => (
-            <button
-              key={tag}
-              onClick={() => on_tag_toggle(tag)}
-              className={`px-3 py-1 text-sm rounded-full border
-                                ${
-                                  selected_tags.has(tag)
-                                    ? "bg-indigo-500 text-white border-indigo-500"
-                                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-                                }`}
-            >
-              {tag}
-            </button>
-          ))}
-        </div>
-      </div>
-    );
-  },
-);
-
-interface WordListDisplayProps {
-  words_to_display: Word[];
-}
-
-const CandidateCard: React.FC<{ candidate: Candidate }> = ({ candidate }) => (
-  <div className="border-2 border-dashed border-amber-300 bg-amber-50 p-2 m-1 rounded">
-    <div className="font-semibold">{candidate.word}</div>
-    <div className="text-xs text-amber-700">
-      CANDIDATE · {sections.find((s) => s.key === candidate.section)?.label}
-    </div>
-    {candidate.gloss && <div className="text-xs italic text-gray-600">{candidate.gloss}</div>}
-    {candidate.notes && <div className="text-xs text-gray-600 mt-1">{candidate.notes}</div>}
-  </div>
-);
-
-const WordListDisplay: React.FC<WordListDisplayProps> = ({ words_to_display }) => {
-  return (
-    <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-      {words_to_display.map((word) => (
-        <WordPreviewItem key={word.word + word.data.id} word={word} />
-      ))}
-    </div>
-  );
-};
 
 // Roots view: 256 root IDs = 4^4 glyphs, shown as a 16x16 grid (row = high nibble, column = low nibble)
 
@@ -816,44 +696,6 @@ function DictionaryView() {
   const [phonology, set_phonology] = useState<Phonology>(load_phonology);
   useEffect(() => save_phonology(phonology), [phonology]);
 
-  const [search_text, set_search_text] = useState("");
-  const [selected_tags, set_selected_tags] = useState<Set<string>>(new Set());
-
-  const available_tags = useMemo(() => {
-    // Extracting keys from the T object, assuming T is like `export const T = { tagA: "tagA", ... }`
-    return Object.keys(T);
-  }, []);
-
-  const handle_tag_toggle = (tag: string) => {
-    set_selected_tags((prev_tags) => {
-      const new_tags = new Set(prev_tags);
-      if (new_tags.has(tag)) {
-        new_tags.delete(tag);
-      } else {
-        new_tags.add(tag);
-      }
-      return new_tags;
-    });
-  };
-
-  const matches_search = (text: string, gloss?: string, synonyms: string[] = []) =>
-    [text, gloss ?? "", ...synonyms].some((t) => t.toLowerCase().includes(search_text.toLowerCase()));
-
-  // Candidates have no tags, so a tag filter hides them
-  const filtered_candidates = useMemo(
-    () => (selected_tags.size > 0 ? [] : candidates.filter((c) => matches_search(c.word, c.gloss))),
-    [search_text, selected_tags],
-  );
-
-  const filtered_words = useMemo(() => {
-    return all_words.filter((word) => {
-      const matches_search_text = matches_search(word.word, word.data.gloss, word.data.synonyms);
-      const matches_tags =
-        selected_tags.size === 0 || word.data.t.some((tag) => selected_tags.has(tag));
-      return matches_search_text && matches_tags;
-    });
-  }, [search_text, selected_tags]);
-
   return (
     <PhonologyContext.Provider value={phonology}>
       <div className="font-sans">
@@ -887,33 +729,7 @@ function DictionaryView() {
         ) : view === "examples" ? (
           <ExamplesView />
         ) : (
-          <>
-            <FilterControls
-              search_text={search_text}
-              on_search_text_change={set_search_text}
-              available_tags={available_tags}
-              selected_tags={selected_tags}
-              on_tag_toggle={handle_tag_toggle}
-            />
-            <VerbsByType />
-            {filtered_words.length > 0 ? (
-              <WordListDisplay words_to_display={filtered_words} />
-            ) : (
-              <p className="p-4 text-center text-gray-500">No words match your criteria.</p>
-            )}
-            {filtered_candidates.length > 0 && (
-              <div className="px-4 pb-4">
-                <h2 className="font-semibold text-gray-700 mb-1">
-                  Candidates, no root yet ({filtered_candidates.length})
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-                  {filtered_candidates.map((c) => (
-                    <CandidateCard key={c.word} candidate={c} />
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
+          <WordsView />
         )}
       </div>
     </PhonologyContext.Provider>

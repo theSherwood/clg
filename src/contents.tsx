@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 
 // A long page with its contents in a sticky column on the left. Headings marked data-toc (h2,
-// and h3 indented under them) are listed, and the one being read is highlighted. The section
-// being read goes in the address as #view/section, so a link or a reload lands back on it.
+// and h3 indented under them) are listed, and the one being read is highlighted. data-toc can
+// give the entry's title, and data-count a number shown beside it. The section being read goes in
+// the address as #view/section, so a link or a reload lands back on it. A page whose sections
+// change (the Words page, as it's filtered) passes refresh, and the contents are collected again
+// whenever it changes. sidebar goes above the contents, for controls that should stay in reach.
 
-type Entry = { id: string; title: string; level: number };
+type Entry = { id: string; title: string; level: number; count?: string };
 
 const slug = (text: string) =>
   text
@@ -16,11 +19,22 @@ const slug = (text: string) =>
 // How far below the top of the window a heading counts as the one being read
 const READING_LINE = 80;
 
-export function WithContents({ view, children }: { view: string; children: React.ReactNode }) {
+export function WithContents({
+  view,
+  refresh,
+  sidebar,
+  children,
+}: {
+  view: string;
+  refresh?: unknown;
+  sidebar?: React.ReactNode;
+  children: React.ReactNode;
+}) {
   const main = useRef<HTMLElement>(null);
-  const aside = useRef<HTMLElement>(null);
+  const list_ref = useRef<HTMLElement>(null);
   const [entries, set_entries] = useState<Entry[]>([]);
   const [current, set_current] = useState<string>();
+  const first = useRef(true);
 
   // Collect the headings, give each an id from its text, and go to the section in the address
   useEffect(() => {
@@ -28,17 +42,22 @@ export function WithContents({ view, children }: { view: string; children: React
     const seen = new Set<string>();
     set_entries(
       headings.map((h) => {
-        let id = slug(h.textContent ?? "");
+        // A bare data-toc comes through React as "true"
+        const given = h.dataset.toc;
+        const title = (given && given !== "true" ? given : h.textContent) ?? "";
+        let id = slug(title);
         while (seen.has(id)) id += "-";
         seen.add(id);
         h.id = id;
-        return { id, title: h.textContent ?? "", level: h.tagName === "H3" ? 3 : 2 };
+        return { id, title, level: h.tagName === "H3" ? 3 : 2, count: h.dataset.count };
       }),
     );
+    if (!first.current) return;
+    first.current = false;
     const section = decodeURIComponent(window.location.hash.split("/")[1] ?? "");
     if (section) document.getElementById(section)?.scrollIntoView();
     else window.scrollTo(0, 0);
-  }, []);
+  }, [refresh]);
 
   // The current section is the last heading above the reading line
   useEffect(() => {
@@ -68,7 +87,7 @@ export function WithContents({ view, children }: { view: string; children: React
 
   // Keep the highlighted entry in view in the contents column, without moving the page
   useEffect(() => {
-    const list = aside.current;
+    const list = list_ref.current;
     const item = list?.querySelector<HTMLElement>(`[data-entry="${current}"]`);
     if (!list || !item) return;
     if (item.offsetTop < list.scrollTop || item.offsetTop + item.offsetHeight > list.scrollTop + list.clientHeight) {
@@ -78,11 +97,9 @@ export function WithContents({ view, children }: { view: string; children: React
 
   return (
     <div className="flex max-w-7xl mx-auto">
-      <aside
-        ref={aside}
-        className="hidden lg:block w-60 shrink-0 sticky top-0 h-screen overflow-y-auto py-4 pl-4 pr-2 text-sm border-r border-gray-100"
-      >
-        <nav>
+      <aside className="hidden lg:flex flex-col w-60 shrink-0 sticky top-0 h-screen py-4 pl-4 pr-2 text-sm border-r border-gray-100">
+        {sidebar && <div className="shrink-0">{sidebar}</div>}
+        <nav ref={list_ref} className="relative flex-1 min-h-0 overflow-y-auto">
           {entries.map((e) => (
             <a
               key={e.id}
@@ -92,13 +109,14 @@ export function WithContents({ view, children }: { view: string; children: React
                 event.preventDefault();
                 document.getElementById(e.id)?.scrollIntoView();
               }}
-              className={`block py-0.5 pr-1 rounded leading-snug ${e.level === 3 ? "pl-4" : "pl-1"} ${
+              className={`flex justify-between gap-2 py-0.5 pr-1 rounded leading-snug ${e.level === 3 ? "pl-4" : "pl-1"} ${
                 e.id === current
                   ? "bg-indigo-50 text-indigo-700 font-medium"
                   : "text-gray-600 hover:text-gray-900"
               }`}
             >
-              {e.title}
+              <span>{e.title}</span>
+              {e.count !== undefined && <span className="text-xs text-gray-400 tabular-nums">{e.count}</span>}
             </a>
           ))}
         </nav>

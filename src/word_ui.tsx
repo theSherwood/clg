@@ -480,6 +480,21 @@ function AxisMatrix({ axis, form, depth }: { axis: Axis; form: string; depth: nu
   );
 }
 
+// A word's meaning on one line: a verb's meanings without and with an object, or the gloss
+export function meaning_line(word: Word): string {
+  const side = word.data.domain === "verb" ? side_of(word) : undefined;
+  const on_axis = side?.verb_i.word === word;
+  const verb_i = on_axis ? side!.verb_i.gloss : word.data.verb_i;
+  const verb_t = on_axis ? side!.verb_t.gloss : word.data.verb_t;
+  if (verb_i || verb_t) return [verb_i && `vi ${verb_i}`, verb_t && `vt ${verb_t}`].filter(Boolean).join(" · ");
+  return word.data.gloss ?? "";
+}
+
+// How many syllables, so roots, a word is
+export function syllable_count(word: Word): number {
+  return root_ids(word).length;
+}
+
 // A verb's meanings without and with an object, each marked; other words show their gloss
 function Meaning({ word }: { word: Word }) {
   const side = word.data.domain === "verb" ? side_of(word) : undefined;
@@ -612,10 +627,19 @@ export function FormPopoverContent({
 }
 
 // Opens a word's popup on hover, from anywhere outside a popup
-export function WordHover({ word, children }: { word: Word; children: React.ReactElement }) {
+export function WordHover({
+  word,
+  placement,
+  children,
+}: {
+  word: Word;
+  placement?: TippyProps["placement"];
+  children: React.ReactElement;
+}) {
   return (
     <LazyTippy
       content={<FormPopoverContent word={word} current={word} depth={0} />}
+      {...(placement && { placement })}
       interactive={true}
       delay={[200, 0]}
       theme="light"
