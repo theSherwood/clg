@@ -3705,8 +3705,8 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("crime", ["deed", "forbidden"], { synonyms: ["offence"] });
   noun("wrong", ["deed", "bad"], { synonyms: ["sin", "trespass", "wrongdoing"], notes: "A bad deed, as a crime is a forbidden one" });
   phrase("forgive(vi)", ["release(vt)", "from", "blame"], "forgive", "forgive");
-  phrase("tempt(vi)", ["persuade(vt)", "to", "wrong"], "tempt", "tempt");
-  noun("temptation", ["<gerund>", "tempt(vi)"]);
+  phrase("tempt(vi)", ["persuade(vt)", "<max_negative>", "well"], "tempt", "tempt");
+  noun("temptation", ["persuasion", "<max_negative>", "good"], { notes: "Evil persuasion: persuasion toward evil" });
   noun("constitution", ["law", "source"], { notes: "The law other laws come from" });
 
   // Society, people first: a country is a society's land and a government its authority

@@ -518,7 +518,8 @@ export function GrammarView() {
         <i>judge(vt) as culpable</i>, with <W w="as" /> saying what the object is judged to be, and
         acquitting <i>judge(vt) as not culpable</i>. A <W w="wrong" /> or sin is <i>deed bad</i>,
         and to <W w="forgive(vt)" /> is <i>release(vt) from blame</i>. To <W w="tempt(vt)" /> is{" "}
-        <i>persuade(vt) to wrong</i>, and <W w="temptation" /> <i>&lt;gerund&gt; tempt(vt)</i>. <W w="impartial" />, fair, is the middle of the
+        <i>persuade(vt) &lt;max_negative&gt; well</i>, to persuade evilly, and{" "}
+        <W w="temptation" /> <i>persuasion &lt;max_negative&gt; good</i>, evil persuasion. <W w="impartial" />, fair, is the middle of the
         value axis, neither choosing nor rejecting.
       </p>
       <Example meaning="The law shall presume the accused not guilty.">
