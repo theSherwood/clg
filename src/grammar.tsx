@@ -1324,17 +1324,25 @@ export function GrammarView() {
         </p>
         <Example meaning="Mother, come.">&lt;subject&gt; mother &lt;verb_prescriptive&gt; come(vi)</Example>
         <p className="mt-2">
-          When the one addressed isn't the next clause's subject, the address stands apart, as a
-          bracketed subject opening the sentence. The bracket does what a comma and a pause do in
-          English: <T>&lt;clause_start&gt; &lt;subject&gt; father &lt;clause_end&gt;</T> is “Father, …”. It
-          never fills a role in the clause after it, even one whose doer is unsaid, and from then on
-          the one addressed is <W w="<pronoun_second_person>" />, as English vocatives are “you”.
-          It comes first, since a bracket after a noun describes that noun, and on its own it's
-          calling someone, with <W w="<clause_end>" /> dropped at the sentence's end.
+          When the one addressed isn't the next clause's subject, <W w="<vocative>" /> marks them, as a
+          comma and a pause do in English: <T>&lt;vocative&gt; father</T> is “Father, …”. Like any role
+          marker it comes before its phrase, which runs to the next marker. It never fills a role in
+          the clause after it, even one whose doer is unsaid, and from then on the one addressed is{" "}
+          <W w="<pronoun_second_person>" />, as English vocatives are “you”. On its own it's calling
+          someone: <T>&lt;vocative&gt; mother</T>, “Mother!”
         </p>
         <Example meaning="Our Father in heaven, hallowed be thy name.">
-          &lt;clause_start&gt; &lt;subject&gt; father of we at heaven &lt;clause_end&gt; &lt;object&gt; symbol of
-          you &lt;verb_prescriptive&gt; sanctify(vt)
+          &lt;vocative&gt; father of we at heaven &lt;object&gt; symbol of you &lt;verb_prescriptive&gt;
+          sanctify(vt)
+        </Example>
+        <p className="mt-2">
+          The address opens the sentence, though a topic goes before it, since a phrase right after
+          a noun describes that noun: after <T>&lt;vocative&gt; person &lt;foreign&gt; gilgamesh</T>, an{" "}
+          <W w="about" /> phrase would be about Gilgamesh, not the sentence's topic.
+        </p>
+        <Example meaning="As for you, Gilgamesh, fill your belly.">
+          about you &lt;vocative&gt; person &lt;foreign&gt; gilgamesh &lt;verb_prescriptive&gt; fill(vt)
+          &lt;object&gt; belly of you
         </Example>
 
         <H2>Other grammar words</H2>

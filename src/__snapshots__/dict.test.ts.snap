@@ -45,6 +45,7 @@ exports[`root IDs 1`] = `
   "137": "face(vt), front_side, front, in_front",
   "138": "include(vt), inclusion, inclusive, inclusively",
   "139": "attract(vt), attraction, attractive, attractively",
+  "14": "<vocative>",
   "140": "exceed(vt), superiority, greater",
   "141": "follow(vt), succession, next, afterwards",
   "142": "masculinity, male",

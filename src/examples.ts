@@ -1448,7 +1448,7 @@ export const lords_prayer: Article[] = [
     title: "Address",
     english: ["Our Father, which art in heaven, hallowed be thy Name."],
     transliteration:
-      "<clause_start> <subject> father of we at heaven <clause_end> <object> symbol of you <verb_prescriptive> sanctify(vt).",
+      "<vocative> father of we at heaven <object> symbol of you <verb_prescriptive> sanctify(vt).",
   },
   {
     title: "Kingdom",
@@ -1495,7 +1495,7 @@ export const siduri_advice: Article[] = [
     title: "Where are you hurrying?",
     english: ["Gilgamesh, where are you hurrying?"],
     transliteration:
-      "<clause_start> <subject> person <foreign> gilgamesh <clause_end> <subject> you <verb_interrogative> go(vi) <continuous_tense_aspect> quickly to <blank>.",
+      "<vocative> person <foreign> gilgamesh <subject> you <verb_interrogative> go(vi) <continuous_tense_aspect> quickly to <blank>.",
   },
   {
     title: "The life you seek",
@@ -1515,7 +1515,7 @@ export const siduri_advice: Article[] = [
     title: "Eat and be merry",
     english: ["As for you, Gilgamesh, fill your belly with good things; day and night, make merry."],
     transliteration:
-      "<clause_start> <subject> person <foreign> gilgamesh <clause_end> about you <verb_prescriptive> fill(vt) <object> belly of you with thing plural good. <verb_prescriptive> enjoy_oneself(vi) at daytime and night.",
+      "about you <vocative> person <foreign> gilgamesh <verb_prescriptive> fill(vt) <object> belly of you with thing plural good. <verb_prescriptive> enjoy_oneself(vi) at daytime and night.",
   },
   {
     title: "Feast and dance",

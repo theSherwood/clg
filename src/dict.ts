@@ -2914,6 +2914,12 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       "What follows describes the subject, so it reads as a modifier: the adjective where there is one (is <complement> hot), otherwise the noun (is <complement> matter <rank_1>)",
   });
   cr("<foreign>", { t: marker });
+  cr("<vocative>", {
+    t: marker,
+    gloss: "marks who is being addressed: <vocative> mother = mother!",
+    notes:
+      "Opens the sentence, after any topic, and runs to the next marker. Not needed for the subject of a request, which is already the one addressed",
+  });
 }
 
 // Number helpers: ordinals, and denominators for fractions, rates and ratios
