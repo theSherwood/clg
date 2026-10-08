@@ -644,7 +644,7 @@ export function GrammarView() {
         <i>&lt;max_positive&gt; exceed(vt)</i> is “much bigger” and <i>&lt;min_positive&gt; exceed(vt)</i> “slightly
         bigger”. Many languages compare this way, like Nigerian Pidgin's “e big pass you”.
         “The more…, the more…” is <W w="increase(vi)" /> with <W w="with" />, along with: the
-        tighter he held the harder it blew is <i>closure of cloak increase(vi) with &lt;gerund&gt;
+        harder the wind blew, the tighter the cloak is <i>closure of cloak increase(vi) with &lt;gerund&gt;
         blow(vi) of wind</i>.
       </p>
       <Example meaning="The rock is bigger than the person.">
