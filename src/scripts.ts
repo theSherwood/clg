@@ -34,17 +34,24 @@ export function clashes(assignment: Assignment, mark: Mark, phonology: Phonology
   return [...by_choice.values()].filter((l) => l.length > 1).map((l) => l.join(" and "));
 }
 
-// Stems: one stem per syllable with a rung for each mark, top to bottom, that is none, a stub
-// to the left, a stub to the right or a bar across. A syllable with no rungs is still its stem,
-// so every syllable can be seen (unlike braille, whose empty cell can't).
+// Stems and the line script both lay a syllable's four marks out in an order, each value
+// drawn one of four ways, so they share their settings.
+export type MarkLayout = { order: Mark[]; values: Record<Mark, Assignment> };
 
+// Each mark's drawing, in the layout's order
+export function layout_values(id: number, phonology: Phonology, layout: MarkLayout): number[] {
+  const marks = marks_of(id, phonology);
+  return layout.order.map((mark) => choice(layout.values[mark], mark, marks[mark], phonology));
+}
+
+// Stems: one stem per syllable with a rung for each mark, top to bottom, that is none, a stub
+// to the left, a stub to the right or a bar across (bit 1 left, bit 2 right). A syllable with no
+// rungs is still its stem, so every syllable can be seen (unlike braille, whose empty cell can't).
 export const RUNGS = ["none", "left", "right", "across"] as const;
 
-export type StemSettings = { rows: Mark[]; rungs: Record<Mark, Assignment> };
-
-export const default_stems: StemSettings = {
-  rows: ["C", "M", "V", "N"],
-  rungs: {
+export const default_stems: MarkLayout = {
+  order: ["C", "M", "V", "N"],
+  values: {
     C: { velar: 2, coronal: 3, labial: 1, sibilant: 0 },
     M: { unvoiced: 0, voiced: 1, fricative: 2, "voiced fricative": 3 },
     V: { a: 3, e: 1, o: 2, u: 0 },
@@ -52,11 +59,23 @@ export const default_stems: StemSettings = {
   },
 };
 
-// Each row's rung, top to bottom: bit 1 is the left stub and bit 2 the right
-export function stem_rungs(id: number, phonology: Phonology, settings: StemSettings): number[] {
-  const marks = marks_of(id, phonology);
-  return settings.rows.map((mark) => choice(settings.rungs[mark], mark, marks[mark], phonology));
-}
+// The line script: a word is a horizontal line, and each syllable four marks along it, left to
+// right, each a dash or a small circle, above or below the line (bit 1 below, bit 2 circle).
+// Every position has a mark, so a syllable is always four marks long.
+export const LINE_MARKS = ["dash above", "dash below", "circle above", "circle below"] as const;
+
+export const default_line: MarkLayout = {
+  order: ["C", "M", "V", "N"],
+  values: {
+    // Lips round, so labial is a circle; the tongue tip goes up and the back of it down
+    C: { coronal: 0, velar: 1, labial: 2, sibilant: 3 },
+    // Below is voiced and a circle fricative
+    M: { unvoiced: 0, voiced: 1, fricative: 2, "voiced fricative": 3 },
+    // Rounded vowels are circles; above is high
+    V: { e: 0, a: 1, u: 2, o: 3 },
+    N: { none: 0, n: 1, r: 2, i: 3 },
+  },
+};
 
 // Syllabics: two glyphs per syllable, each one of four shapes turned one of four ways. The onset
 // glyph's shape is the manner and its turn the place; the rime glyph's shape is the final and its

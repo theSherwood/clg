@@ -3,6 +3,8 @@ import { babel_verses, lords_prayer, north_wind_sentences, siduri_advice, udhr_a
 import { MARKS, type Mark, type Phonology, syllable_of } from "./phonology";
 import {
   type Assignment,
+  LINE_MARKS,
+  type MarkLayout,
   RUNGS,
   MARK_NAMES,
   SHAPES,
@@ -12,17 +14,17 @@ import {
   type SyllabicsSettings,
   TURNS,
   clashes,
+  default_line,
   default_stems,
   default_syllabics,
   script_tokens,
-  stem_rungs,
+  layout_values,
   syllabics_glyphs,
-  type StemSettings,
   value_labels,
 } from "./scripts";
 
-// Tries out candidate scripts on real text: stems with a rung per mark, and syllabics shapes
-// turned four ways. Settings are kept in this browser only.
+// Tries out candidate scripts on real text: stems with a rung per mark, a line with a mark per
+// mark, and syllabics shapes turned four ways. Settings are kept in this browser only.
 
 const SYLLABICS_FONT = "'Euphemia UCAS', 'Noto Sans Canadian Aboriginal', sans-serif";
 
@@ -103,6 +105,43 @@ function Stems({ rows, size }: { rows: number[][]; size: number }) {
   );
 }
 
+// A word in the line script: one line along the word, and four marks per syllable along it, each
+// a dash or a circle above or below. Syllables are a little further apart than their marks.
+function Line({ marks, size }: { marks: number[][]; size: number }) {
+  const slot = size * 0.3;
+  const gap = size * 0.4;
+  const height = size * 0.9;
+  const middle = height / 2;
+  const offset = size * 0.2;
+  const width = marks.length * 4 * slot + (marks.length - 1) * gap;
+  const stroke = Math.max(1.5, size / 16);
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      className="inline-block align-middle"
+      stroke="currentColor"
+      strokeWidth={stroke}
+      strokeLinecap="round"
+      fill="none"
+    >
+      <line x1={stroke} y1={middle} x2={width - stroke} y2={middle} />
+      {marks.flatMap((syllable, i) =>
+        syllable.map((mark, j) => {
+          const x = i * (4 * slot + gap) + (j + 0.5) * slot;
+          const y = mark & 1 ? middle + offset : middle - offset;
+          return mark & 2 ? (
+            <circle key={`${i}-${j}`} cx={x} cy={y} r={slot * 0.2} />
+          ) : (
+            <line key={`${i}-${j}`} x1={x - slot * 0.22} y1={y} x2={x + slot * 0.22} y2={y} />
+          );
+        }),
+      )}
+    </svg>
+  );
+}
+
 function Written({
   tokens,
   render,
@@ -175,29 +214,34 @@ function AssignmentRow({
   );
 }
 
-function StemControls({
+// The order a layout puts the marks in, and how each value is drawn
+function LayoutControls({
   phonology,
-  settings,
-  set_settings,
+  layout,
+  set_layout,
+  positions,
+  options,
 }: {
   phonology: Phonology;
-  settings: StemSettings;
-  set_settings: (s: StemSettings) => void;
+  layout: MarkLayout;
+  set_layout: (l: MarkLayout) => void;
+  positions: string;
+  options: string[];
 }) {
-  const missing = MARKS.filter((m) => !settings.rows.includes(m));
+  const missing = MARKS.filter((m) => !layout.order.includes(m));
   return (
     <div>
       <div className="flex flex-wrap items-center gap-2 mb-1.5 text-xs">
-        <span className="w-14 font-semibold text-gray-500">rows</span>
-        {settings.rows.map((mark, row) => (
-          <label key={row} className="flex items-center gap-1">
-            {row + 1}
+        <span className="w-14 font-semibold text-gray-500">{positions}</span>
+        {layout.order.map((mark, i) => (
+          <label key={i} className="flex items-center gap-1">
+            {i + 1}
             <select
               value={mark}
               onChange={(e) => {
-                const rows = [...settings.rows];
-                rows[row] = e.target.value as Mark;
-                set_settings({ ...settings, rows });
+                const order = [...layout.order];
+                order[i] = e.target.value as Mark;
+                set_layout({ ...layout, order });
               }}
               className="px-0.5 border border-gray-300 rounded bg-white"
             >
@@ -218,9 +262,9 @@ function StemControls({
           key={mark}
           mark={mark}
           phonology={phonology}
-          assignment={settings.rungs[mark]}
-          options={RUNGS.map((r, i) => `${["│", "┤", "├", "┼"][i]} ${r}`)}
-          on_change={(rungs) => set_settings({ ...settings, rungs: { ...settings.rungs, [mark]: rungs } })}
+          assignment={layout.values[mark]}
+          options={options}
+          on_change={(values) => set_layout({ ...layout, values: { ...layout.values, [mark]: values } })}
         />
       ))}
     </div>
@@ -301,11 +345,13 @@ function SyllabicsControls({
 function AllSyllables({
   phonology,
   stems,
+  line,
   syllabics,
   size,
 }: {
   phonology: Phonology;
-  stems: StemSettings;
+  stems: MarkLayout;
+  line: MarkLayout;
   syllabics: SyllabicsSettings;
   size: number;
 }) {
@@ -320,7 +366,10 @@ function AllSyllables({
                 return (
                   <td key={col} className="border border-gray-200 px-1 text-center align-top">
                     <div className="text-[10px] font-mono text-indigo-700">{syllable_of(id, phonology)}</div>
-                    <Stems rows={[stem_rungs(id, phonology, stems)]} size={size * 0.7} />
+                    <Stems rows={[layout_values(id, phonology, stems)]} size={size * 0.7} />
+                    <div>
+                      <Line marks={[layout_values(id, phonology, line)]} size={size * 0.6} />
+                    </div>
                     <div style={{ fontSize: size * 0.55, fontFamily: SYLLABICS_FONT }} className="leading-tight">
                       {syllabics_glyphs(id, phonology, syllabics)}
                     </div>
@@ -336,7 +385,8 @@ function AllSyllables({
 }
 
 export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
-  const [stems, set_stems] = useStored<StemSettings>("script_stems", default_stems);
+  const [stems, set_stems] = useStored<MarkLayout>("script_stems", default_stems);
+  const [line, set_line] = useStored<MarkLayout>("script_line", default_line);
   const [syllabics, set_syllabics] = useStored<SyllabicsSettings>("script_syllabics", default_syllabics);
   const [size, set_size] = useStored("script_size", 32);
   const [text, set_text] = useStored("script_text", PRESETS[0]!.text);
@@ -347,7 +397,12 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
     {
       name: "Stems",
       note: "A stem per syllable, with a rung for each mark",
-      render: (ids) => <Stems rows={ids.map((id) => stem_rungs(id, phonology, stems))} size={size} />,
+      render: (ids) => <Stems rows={ids.map((id) => layout_values(id, phonology, stems))} size={size} />,
+    },
+    {
+      name: "Line",
+      note: "A line along each word, with four marks per syllable: a dash or a circle, above or below",
+      render: (ids) => <Line marks={ids.map((id) => layout_values(id, phonology, line))} size={size} />,
     },
     {
       name: "Syllabics",
@@ -369,6 +424,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
           <button
             onClick={() => {
               set_stems(default_stems);
+              set_line(default_line);
               set_syllabics(default_syllabics);
             }}
             className="px-2 py-0.5 rounded border border-gray-300 bg-white hover:bg-gray-100"
@@ -418,7 +474,21 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
       <div className="grid gap-4 md:grid-cols-2 mt-2">
         <div>
           <h3 className="text-xs font-semibold text-gray-600 mb-1">Stems: a rung per row</h3>
-          <StemControls phonology={phonology} settings={stems} set_settings={set_stems} />
+          <LayoutControls
+            phonology={phonology}
+            layout={stems}
+            set_layout={set_stems}
+            positions="rows"
+            options={RUNGS.map((r, i) => `${["│", "┤", "├", "┼"][i]} ${r}`)}
+          />
+          <h3 className="text-xs font-semibold text-gray-600 mt-3 mb-1">Line: a mark per position</h3>
+          <LayoutControls
+            phonology={phonology}
+            layout={line}
+            set_layout={set_line}
+            positions="left to right"
+            options={LINE_MARKS.map((m, i) => `${["⁻", "₋", "°", "ₒ"][i]} ${m}`)}
+          />
         </div>
         <div>
           <h3 className="text-xs font-semibold text-gray-600 mb-1">Syllabics: shapes and turns</h3>
@@ -428,7 +498,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
 
       <details className="mt-2">
         <summary className="cursor-pointer text-xs font-semibold text-gray-600">All 256 syllables</summary>
-        <AllSyllables phonology={phonology} stems={stems} syllabics={syllabics} size={size} />
+        <AllSyllables phonology={phonology} stems={stems} line={line} syllabics={syllabics} size={size} />
       </details>
     </div>
   );

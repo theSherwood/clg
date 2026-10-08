@@ -2,20 +2,23 @@ import { expect, test } from "bun:test";
 import { default_phonology } from "./phonology";
 import {
   clashes,
+  default_line,
   default_stems,
   default_syllabics,
+  layout_values,
   script_tokens,
-  stem_rungs,
   syllabics_glyphs,
 } from "./scripts";
 
 const ids = Array.from({ length: 256 }, (_, id) => id);
 
-test("the default stems give every syllable its own rungs", () => {
-  const stems = ids.map((id) => stem_rungs(id, default_phonology, default_stems).join(""));
-  expect(new Set(stems).size).toBe(256);
-  for (const mark of default_stems.rows) {
-    expect(clashes(default_stems.rungs[mark], mark, default_phonology)).toEqual([]);
+test("the default stems and line marks give every syllable its own drawing", () => {
+  for (const layout of [default_stems, default_line]) {
+    const drawings = ids.map((id) => layout_values(id, default_phonology, layout).join(""));
+    expect(new Set(drawings).size).toBe(256);
+    for (const mark of layout.order) {
+      expect(clashes(layout.values[mark], mark, default_phonology)).toEqual([]);
+    }
   }
 });
 
