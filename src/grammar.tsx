@@ -451,6 +451,9 @@ export function GrammarView() {
         and a <W w="marriage" /> <i>&lt;gerund&gt; marry(vi)</i>. Growing up is the age axis:{" "}
         <W w="juvenile" /> leans new and <W w="mature" /> leans old, so an <W w="adult" /> is{" "}
         <i>person mature</i>. <W w="child" /> is the lineage word, someone's child, at any age.
+        A <W w="friend" /> is <i>&lt;ee&gt; like(vt)</i>, an <W w="enemy" />{" "}
+        <i>&lt;ee&gt; hate(vt)</i> and a <W w="beloved" /> <i>&lt;ee&gt; love(vt)</i>, so{" "}
+        <i>friend of me</i> is the one I like, and <i>friend mutual</i> says it goes both ways.
       </p>
       <Open>
         Gendered words are long: “mother” is <i>parent female</i>, which is <i>&lt;negative&gt; child
@@ -461,7 +464,11 @@ export function GrammarView() {
       <p>
         People come first. A <W w="society" /> is <i>group person</i>, a group of people: a
         community, or a people. A <W w="country" /> is <i>land society</i>, a society's land, and a{" "}
-        <W w="government" /> <i>authority society</i>, its authority. A <W w="member" /> is{" "}
+        <W w="government" /> <i>&lt;gerund&gt; govern(vi)</i>, governing, where to{" "}
+        <W w="govern(vi)" /> is <i>lead(vt) society</i>; a <W w="governor" /> is{" "}
+        <i>&lt;er&gt; govern(vi)</i>. <W w="politics" />, <i>&lt;gerund&gt; seek(vt) authority</i>, is
+        the contest over who governs, and as a modifier it's “political”: a non-political crime is{" "}
+        <i>crime not politics</i>. A <W w="member" /> is{" "}
         <i>&lt;ee&gt; include(vt)</i>, who's included, and a <W w="citizen" /> <i>member country</i>;
         one's nationality is <i>country of self</i>. A <W w="border" /> is <i>edge country</i>.
         “Nation” and “state” are whichever of these is meant, “international” is{" "}
@@ -518,6 +525,23 @@ export function GrammarView() {
       </p>
       <Example meaning="The doctor healed the sick child.">
         &lt;subject&gt; doctor &lt;verb&gt; mend(vt) formerly &lt;object&gt; child sick
+      </Example>
+
+      <H2>Education, culture and science</H2>
+      <p>
+        Educating gives the role-marker family: <W w="education" /> is{" "}
+        <i>&lt;gerund&gt; educate(vt)</i>, a <W w="teacher" /> <i>&lt;er&gt; educate(vt)</i>, a{" "}
+        <W w="student" /> <i>&lt;ee&gt; educate(vt)</i> and a <W w="school" />{" "}
+        <i>&lt;place&gt; educate(vt)</i>. Elementary education is <i>education juvenile</i> and
+        higher education <i>education mature</i>. <W w="culture" /> is <i>life society</i>, a
+        society's way of life, <W w="art" /> <i>beauty artificial</i>, made beauty, and{" "}
+        <W w="science" /> <i>knowledge organized</i>. Costing nothing is the far cheap end of price,{" "}
+        <W w="gratis" />; <W w="free" /> is liberty. Respect and tolerance are{" "}
+        <W w="acknowledge(vt)" />.
+      </p>
+      <Example meaning="Elementary education shall be free and compulsory.">
+        &lt;subject&gt; education juvenile &lt;verb_prescriptive&gt; be(vt) &lt;complement&gt; gratis and
+        obligatory
       </Example>
 
       <H2>Speech, writing and the senses</H2>

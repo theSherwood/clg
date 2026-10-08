@@ -1178,6 +1178,8 @@ export const udhr_articles: Article[] = [
       "Everyone has the right to seek and to enjoy in other countries asylum from persecution.",
       "This right may not be invoked in the case of prosecutions genuinely arising from non-political crimes or from acts contrary to the purposes and principles of the United Nations.",
     ],
+    transliteration:
+      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> seek(vt) <object> safety in country other from <gerund> hurt(vt). <subject> right this <verb> not include(vt) <object> person <clause_start> <object> <blank> <verb> judge(vt) about crime not politics or about deed <clause_start> <subject> <blank> <verb> contrast_with(vt) <object> purpose of group of country all <clause_end> <clause_end>.",
   },
   {
     title: "Article 15",
@@ -1213,7 +1215,7 @@ export const udhr_articles: Article[] = [
       "Everyone has the right to freedom of thought, conscience and religion; this right includes freedom to change his religion or belief, and freedom, either alone or in community with others and in public or private, to manifest his religion or belief in teaching, practice, worship and observance.",
     ],
     transliteration:
-      "<subject> everyone <verb> be_entitled_to(vt) <object> freedom in thought and conscience and religion. <subject> everyone <verb> be_entitled_to(vt) <object> <verb> alter(vt) <object> religion or belief of self. <subject> everyone <verb> be_entitled_to(vt) <object> <verb> show(vt) visibly or secretly <object> it with no_one or with society by <gerund> educate(vt) and <gerund> do(vt) and worship and <gerund> obey(vt).",
+      "<subject> everyone <verb> be_entitled_to(vt) <object> freedom in thought and conscience and religion. <subject> everyone <verb> be_entitled_to(vt) <object> <verb> alter(vt) <object> religion or belief of self. <subject> everyone <verb> be_entitled_to(vt) <object> <verb> show(vt) visibly or secretly <object> it with no_one or with society by education and <gerund> do(vt) and worship and <gerund> obey(vt).",
   },
   {
     title: "Article 19",
@@ -1247,6 +1249,8 @@ export const udhr_articles: Article[] = [
     english: [
       "Everyone, as a member of society, has the right to social security and is entitled to realization, through national effort and international co-operation and in accordance with the organization and resources of each State, of the economic, social and cultural rights indispensable for his dignity and the free development of his personality.",
     ],
+    transliteration:
+      "<subject> everyone <verb> be(vt) <complement> member of society and <verb> be_entitled_to(vt) <object> safety by society. <subject> everyone <verb> be_entitled_to(vt) <object> right about money and society and culture <clause_start> <subject> <blank> <verb> be(vt) <complement> necessary for dignity of it and <gerund> grow(vi) freely of it <clause_end> by effort of country and <gerund> cooperate(vi) between country plural if <subject> possession of country <verb> allow(vt) <object> it.",
   },
   {
     title: "Article 23",
@@ -1283,6 +1287,8 @@ export const udhr_articles: Article[] = [
       "Education shall be directed to the full development of the human personality and to the strengthening of respect for human rights and fundamental freedoms. It shall promote understanding, tolerance and friendship among all nations, racial or religious groups, and shall further the activities of the United Nations for the maintenance of peace.",
       "Parents have a prior right to choose the kind of education that shall be given to their children.",
     ],
+    transliteration:
+      "<subject> everyone <verb> be_entitled_to(vt) <object> education. <subject> education juvenile <verb_prescriptive> be(vt) <complement> gratis and obligatory. <object> education about work <verb_prescriptive> open(vt) to everyone and <object> education mature <verb_prescriptive> open(vt) impartially to everyone by merit. <subject> education <verb_prescriptive> bring_to_maturity(vt) fully <object> person and <verb_prescriptive> strengthen(vt) <object> acknowledgment of right and freedom. <subject> it <verb_prescriptive> increase(vt) <object> knowledge and acknowledgment and <gerund> like(vt) between country all and lineage all and religion all and <verb_prescriptive> enable(vt) <object> work of group of country all for peace. <subject> parent plural <verb> be_entitled_to(vt) <object> <verb> choose(vt) <object> type of education of child of it. <subject> right this <verb> exceed(vt) <object> right of other.",
   },
   {
     title: "Article 27",
@@ -1290,6 +1296,8 @@ export const udhr_articles: Article[] = [
       "Everyone has the right freely to participate in the cultural life of the community, to enjoy the arts and to share in scientific advancement and its benefits.",
       "Everyone has the right to the protection of the moral and material interests resulting from any scientific, literary or artistic production of which he is the author.",
     ],
+    transliteration:
+      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> act(vi) freely in culture of society and <verb> enjoy_oneself(vi) by art and <verb> possess(vt) <object> part of <gerund> improve(vi) of science and of good of it. <subject> everyone <verb> be_entitled_to(vt) <object> defense of thanks and money from science and <ee> write(vt) and art <clause_start> <subject> it <verb> be(vt) <complement> source of <blank> <clause_end>.",
   },
   {
     title: "Article 28",

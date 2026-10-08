@@ -1653,7 +1653,16 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "price" },
+    {
+      noun: "price",
+      steps: {
+        max_negative: {
+          adj: "gratis",
+          adverb: "at_no_cost",
+          synonyms: { adj: ["free of charge", "costless"], adverb: ["for free"] },
+        },
+      },
+    },
     {
       noun: "cheapness",
       adj: "cheap",
@@ -2456,6 +2465,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
           verb: "acknowledge(vt)",
           verb_i: "acknowledge",
           verb_t: "acknowledge",
+          synonyms: { noun: ["recognition", "respect", "tolerance"], verb: ["recognize", "respect", "tolerate"] },
         },
         max_negative: { noun: "condemnation", verb: "condemn(vt)", verb_i: "condemn", verb_t: "condemn" },
       },
@@ -3527,6 +3537,10 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("dignity", ["value", "intrinsic"], {
     notes: "Worth that belongs to a thing itself. Hard to define; a placeholder for now",
   });
+  // Affection's objects: who is liked, hated, loved. friend mutual says it goes both ways
+  noun("friend", ["<ee>", "like(vt)"]);
+  noun("enemy", ["<ee>", "hate(vt)"], { synonyms: ["foe"] });
+  noun("beloved", ["<ee>", "love(vt)"], { synonyms: ["sweetheart"] });
   noun("each_other", ["other", "mutual"], {
     gloss: "each other / one another",
     notes: "The mutual other: mutual is trade's adjective, giving and taking alike",
@@ -3576,10 +3590,24 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
     notes: "A group of people. A crowd is one too; context tells them apart",
   });
   noun("country", ["land", "society"], { synonyms: ["nation", "state"], notes: "A society's land" });
-  noun("government", ["authority", "society"], {
-    synonyms: ["state", "the authorities"],
-    notes: "A society's authority",
+  phrase("govern(vi)", ["lead(vi)", "society"], "govern", "govern");
+  noun("government", ["<gerund>", "govern(vi)"], {
+    synonyms: ["state", "the authorities", "governance"],
+    notes: "Governing, and the body that governs",
   });
+  noun("governor", ["<er>", "govern(vi)"], { synonyms: ["official"] });
+  noun("politics", ["<gerund>", "search(vi)", "authority"], {
+    notes: "Seeking authority, the contest over who governs. As a modifier, political",
+  });
+  // Education, culture and science
+  noun("education", ["<gerund>", "educate(vt)"]);
+  noun("teacher", ["<er>", "educate(vt)"]);
+  noun("student", ["<ee>", "educate(vt)"], { synonyms: ["pupil"] });
+  noun("school", ["<place>", "educate(vt)"]);
+  noun("culture", ["life", "society"], { notes: "A society's life, its way of life" });
+  noun("art", ["beauty", "artificial"], { synonyms: ["the arts"], notes: "Made beauty" });
+  noun("science", ["knowledge", "organized"], { notes: "Organized knowledge, as German Wissenschaft" });
+  noun("political_science", ["science", "politics"], { gloss: "political science" });
   noun("member", ["<ee>", "include(vt)"], { notes: "Who or what is included" });
   noun("citizen", ["member", "country"], {
     synonyms: ["national"],
