@@ -16,6 +16,7 @@ import {
 
 import { ExamplesView } from "./examples_view";
 import { GrammarView } from "./grammar";
+import { ScriptPlayground } from "./scripts_view";
 import { WordsView } from "./words_view";
 import {
   LazyTippy,
@@ -512,6 +513,7 @@ function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) 
   return (
     <div className="p-4">
       <PhonologyPanel {...props} />
+      <ScriptPlayground phonology={phonology} />
       <div className="mb-3 text-sm text-gray-700">
         <span className="font-semibold">{filled}</span> of 256 root IDs filled,{" "}
         <span className="font-semibold">{256 - filled}</span> empty (

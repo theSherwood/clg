@@ -1,0 +1,448 @@
+import React, { useEffect, useMemo, useState } from "react";
+import { roots } from "./dict";
+import { babel_verses, lords_prayer, north_wind_sentences, siduri_advice, udhr_articles } from "./examples";
+import { MARKS, type Mark, type Phonology, syllable_of } from "./phonology";
+import {
+  type Assignment,
+  type BrailleSettings,
+  DOT_STATES,
+  MARK_NAMES,
+  SHAPES,
+  SHAPE_KEYS,
+  type ScriptToken,
+  type ShapeKey,
+  type SyllabicsSettings,
+  TURNS,
+  braille_cell,
+  braille_rows,
+  clashes,
+  default_braille,
+  default_syllabics,
+  script_tokens,
+  syllabics_glyphs,
+  value_labels,
+} from "./scripts";
+
+// Tries out candidate scripts on real text: braille cells, the same cells drawn as stems, and
+// syllabics shapes turned four ways. Settings are kept in this browser only.
+
+const SYLLABICS_FONT = "'Euphemia UCAS', 'Noto Sans Canadian Aboriginal', sans-serif";
+
+function load<T>(key: string, fallback: T): T {
+  try {
+    const saved = localStorage.getItem(key);
+    return saved ? { ...fallback, ...JSON.parse(saved) } : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function useStored<T>(key: string, fallback: T): [T, (value: T) => void] {
+  const [value, set_value] = useState<T>(() => load(key, fallback));
+  useEffect(() => {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch {}
+  }, [key, value]);
+  return [value, set_value];
+}
+
+const PRESETS: { label: string; text: string }[] = [
+  { label: "The Lord's Prayer", articles: lords_prayer },
+  { label: "Siduri's advice", articles: siduri_advice },
+  { label: "The Tower of Babel, 11:1–4", articles: babel_verses.slice(0, 4) },
+  { label: "The North Wind and the Sun", articles: north_wind_sentences },
+  { label: "UDHR, Article 1", articles: udhr_articles.slice(0, 1) },
+].map(({ label, articles }) => ({
+  label,
+  text: articles.flatMap((a) => (a.transliteration ? [a.transliteration] : [])).join(" "),
+}));
+
+// A word in the stem script: one stem per syllable, a rung per row (none, left, right, across)
+function Stems({ rows, size }: { rows: number[][]; size: number }) {
+  const column = size * 0.62;
+  const height = size * 1.1;
+  const pad = size * 0.08;
+  const row_height = (height - 2 * pad) / 4;
+  const rung = column * 0.38;
+  return (
+    <svg
+      width={rows.length * column}
+      height={height}
+      viewBox={`0 0 ${rows.length * column} ${height}`}
+      className="inline-block align-middle"
+      stroke="currentColor"
+      strokeWidth={Math.max(1.5, size / 16)}
+      strokeLinecap="round"
+    >
+      {rows.map((states, i) => {
+        const x = i * column + column / 2;
+        return (
+          <g key={i}>
+            <line x1={x} y1={pad} x2={x} y2={height - pad} />
+            {states.map((state, r) => {
+              const y = pad + (r + 0.5) * row_height;
+              return (
+                <React.Fragment key={r}>
+                  {state & 1 ? <line x1={x - rung} y1={y} x2={x} y2={y} /> : null}
+                  {state & 2 ? <line x1={x} y1={y} x2={x + rung} y2={y} /> : null}
+                </React.Fragment>
+              );
+            })}
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+function Written({
+  tokens,
+  render,
+}: {
+  tokens: ScriptToken[];
+  render: (ids: number[]) => React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-x-[0.5em] gap-y-1">
+      {tokens.map((t, i) =>
+        "punctuation" in t ? (
+          <span key={i} className="-ml-[0.4em] text-gray-500">
+            {t.punctuation}
+          </span>
+        ) : t.ids ? (
+          <span key={i} title={t.text}>
+            {render(t.ids)}
+          </span>
+        ) : (
+          <span key={i} className="text-red-500 text-sm" title="No root yet">
+            {t.text}?
+          </span>
+        ),
+      )}
+    </div>
+  );
+}
+
+// A select for each of a mark's values; choices are labelled by what they look like
+function AssignmentRow({
+  mark,
+  phonology,
+  assignment,
+  options,
+  on_change,
+}: {
+  mark: Mark;
+  phonology: Phonology;
+  assignment: Assignment;
+  options: React.ReactNode[];
+  on_change: (assignment: Assignment) => void;
+}) {
+  const labels = value_labels(mark, phonology);
+  const clash = clashes(assignment, mark, phonology);
+  return (
+    <div className="mb-1.5">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="w-14 text-xs font-semibold text-gray-500">{MARK_NAMES[mark]}</span>
+        {labels.map((label, v) => (
+          <label key={label} className="flex items-center gap-1 text-xs">
+            {label}
+            <select
+              value={assignment[label] ?? v}
+              onChange={(e) => on_change({ ...assignment, [label]: Number(e.target.value) })}
+              className="px-0.5 py-0 border border-gray-300 rounded bg-white"
+            >
+              {options.map((option, i) => (
+                <option key={i} value={i}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </label>
+        ))}
+      </div>
+      {clash.length > 0 && (
+        <div className="ml-16 text-xs text-red-600">Look alike: {clash.join("; ")}</div>
+      )}
+    </div>
+  );
+}
+
+function BrailleControls({
+  phonology,
+  settings,
+  set_settings,
+}: {
+  phonology: Phonology;
+  settings: BrailleSettings;
+  set_settings: (s: BrailleSettings) => void;
+}) {
+  const repeated = MARKS.filter((m) => !settings.rows.includes(m));
+  // The empty cell is invisible, so whichever syllable gets it shouldn't be in use
+  const blank = Array.from({ length: 256 }, (_, id) => id).find(
+    (id) => braille_cell(id, phonology, settings) === "⠀",
+  );
+  const blank_used = blank !== undefined && (roots[blank]?.length ?? 0) > 0;
+  return (
+    <div>
+      <div className="flex flex-wrap items-center gap-2 mb-1.5 text-xs">
+        <span className="w-14 font-semibold text-gray-500">rows</span>
+        {settings.rows.map((mark, row) => (
+          <label key={row} className="flex items-center gap-1">
+            {row + 1}
+            <select
+              value={mark}
+              onChange={(e) => {
+                const rows = [...settings.rows];
+                rows[row] = e.target.value as Mark;
+                set_settings({ ...settings, rows });
+              }}
+              className="px-0.5 border border-gray-300 rounded bg-white"
+            >
+              {MARKS.map((m) => (
+                <option key={m} value={m}>
+                  {MARK_NAMES[m]}
+                </option>
+              ))}
+            </select>
+          </label>
+        ))}
+        {repeated.length > 0 && (
+          <span className="text-red-600">Missing: {repeated.map((m) => MARK_NAMES[m]).join(", ")}</span>
+        )}
+      </div>
+      {MARKS.map((mark) => (
+        <AssignmentRow
+          key={mark}
+          mark={mark}
+          phonology={phonology}
+          assignment={settings.states[mark]}
+          options={DOT_STATES.map((s) => `${["  ", "• ", " •", "••"][DOT_STATES.indexOf(s)]} ${s}`)}
+          on_change={(states) => set_settings({ ...settings, states: { ...settings.states, [mark]: states } })}
+        />
+      ))}
+      {blank !== undefined && (
+        <p className={`text-xs ${blank_used ? "text-red-600" : "text-gray-500"}`}>
+          The empty cell, which can't be seen, is {syllable_of(blank, phonology)} (ID {blank}),{" "}
+          {blank_used ? `which is in use: ${roots[blank]!.map((w) => w.word).join(", ")}` : "which is unused"}.
+        </p>
+      )}
+    </div>
+  );
+}
+
+function SyllabicsControls({
+  phonology,
+  settings,
+  set_settings,
+}: {
+  phonology: Phonology;
+  settings: SyllabicsSettings;
+  set_settings: (s: SyllabicsSettings) => void;
+}) {
+  const shape_options = settings.shapes.map((s) => `${SHAPES[s].join("")} ${s}`);
+  const turn_options = TURNS.map((t, i) => `${SHAPES[settings.shapes[0]!][i]} ${t}`);
+  return (
+    <div>
+      <div className="flex flex-wrap items-center gap-2 mb-1.5 text-xs">
+        <span className="w-14 font-semibold text-gray-500">shapes</span>
+        {settings.shapes.map((shape, i) => (
+          <select
+            key={i}
+            value={shape}
+            onChange={(e) => {
+              const shapes = [...settings.shapes];
+              shapes[i] = e.target.value as ShapeKey;
+              set_settings({ ...settings, shapes });
+            }}
+            className="px-0.5 border border-gray-300 rounded bg-white"
+            style={{ fontFamily: SYLLABICS_FONT }}
+          >
+            {SHAPE_KEYS.map((k) => (
+              <option key={k} value={k}>
+                {SHAPES[k].join("")} {k}
+              </option>
+            ))}
+          </select>
+        ))}
+        {new Set(settings.shapes).size < 4 && <span className="text-red-600">A shape is used twice</span>}
+      </div>
+      <p className="text-xs text-gray-500 mb-1">Onset glyph: shape is the manner, turn the place</p>
+      <AssignmentRow
+        mark="M"
+        phonology={phonology}
+        assignment={settings.onset_shapes}
+        options={shape_options}
+        on_change={(onset_shapes) => set_settings({ ...settings, onset_shapes })}
+      />
+      <AssignmentRow
+        mark="C"
+        phonology={phonology}
+        assignment={settings.place_turns}
+        options={turn_options}
+        on_change={(place_turns) => set_settings({ ...settings, place_turns })}
+      />
+      <p className="text-xs text-gray-500 mb-1">Rime glyph: shape is the final, turn the vowel</p>
+      <AssignmentRow
+        mark="N"
+        phonology={phonology}
+        assignment={settings.rime_shapes}
+        options={shape_options}
+        on_change={(rime_shapes) => set_settings({ ...settings, rime_shapes })}
+      />
+      <AssignmentRow
+        mark="V"
+        phonology={phonology}
+        assignment={settings.vowel_turns}
+        options={turn_options}
+        on_change={(vowel_turns) => set_settings({ ...settings, vowel_turns })}
+      />
+    </div>
+  );
+}
+
+// Every syllable in each script, laid out like the Roots grid: 16 IDs to a row
+function AllSyllables({
+  phonology,
+  braille,
+  syllabics,
+  size,
+}: {
+  phonology: Phonology;
+  braille: BrailleSettings;
+  syllabics: SyllabicsSettings;
+  size: number;
+}) {
+  return (
+    <div className="overflow-x-auto">
+      <table className="border-collapse">
+        <tbody>
+          {Array.from({ length: 16 }, (_, row) => (
+            <tr key={row}>
+              {Array.from({ length: 16 }, (_, col) => {
+                const id = row * 16 + col;
+                return (
+                  <td key={col} className="border border-gray-200 px-1 text-center align-top">
+                    <div className="text-[10px] font-mono text-indigo-700">{syllable_of(id, phonology)}</div>
+                    <div style={{ fontSize: size * 0.7 }} className="leading-none">
+                      {braille_cell(id, phonology, braille)}
+                    </div>
+                    <Stems rows={[braille_rows(id, phonology, braille)]} size={size * 0.7} />
+                    <div style={{ fontSize: size * 0.55, fontFamily: SYLLABICS_FONT }} className="leading-tight">
+                      {syllabics_glyphs(id, phonology, syllabics)}
+                    </div>
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
+  const [braille, set_braille] = useStored<BrailleSettings>("script_braille", default_braille);
+  const [syllabics, set_syllabics] = useStored<SyllabicsSettings>("script_syllabics", default_syllabics);
+  const [size, set_size] = useStored("script_size", 32);
+  const [text, set_text] = useStored("script_text", PRESETS[0]!.text);
+  const tokens = useMemo(() => script_tokens(text, phonology), [text, phonology]);
+  const sounds = (ids: number[]) => ids.map((id) => syllable_of(id, phonology)).join("");
+
+  const scripts: { name: string; note: string; render: (ids: number[]) => React.ReactNode; style?: React.CSSProperties }[] = [
+    {
+      name: "Braille",
+      note: "One 8-dot cell per syllable, a mark to each row",
+      render: (ids) => ids.map((id) => braille_cell(id, phonology, braille)).join(""),
+      style: { fontSize: size },
+    },
+    {
+      name: "Stems",
+      note: "The braille cell drawn as strokes, for handwriting: a rung per row",
+      render: (ids) => <Stems rows={ids.map((id) => braille_rows(id, phonology, braille))} size={size} />,
+    },
+    {
+      name: "Syllabics",
+      note: "Two glyphs per syllable, each a shape turned one of four ways",
+      render: (ids) => ids.map((id) => syllabics_glyphs(id, phonology, syllabics)).join(""),
+      style: { fontSize: size * 0.8, fontFamily: SYLLABICS_FONT },
+    },
+  ];
+
+  return (
+    <div className="mb-4 p-3 rounded border border-gray-200 bg-gray-50 text-sm">
+      <div className="flex flex-wrap justify-between items-center gap-2 mb-2">
+        <h2 className="font-semibold">Script playground</h2>
+        <div className="flex items-center gap-3 text-xs">
+          <label className="flex items-center gap-1">
+            Size
+            <input type="range" min={16} max={72} value={size} onChange={(e) => set_size(Number(e.target.value))} />
+          </label>
+          <button
+            onClick={() => {
+              set_braille(default_braille);
+              set_syllabics(default_syllabics);
+            }}
+            className="px-2 py-0.5 rounded border border-gray-300 bg-white hover:bg-gray-100"
+          >
+            Reset mappings
+          </button>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2 mb-1 text-xs">
+        <span className="text-gray-600">Text</span>
+        <select
+          value={PRESETS.find((p) => p.text === text)?.label ?? ""}
+          onChange={(e) => {
+            const preset = PRESETS.find((p) => p.label === e.target.value);
+            if (preset) set_text(preset.text);
+          }}
+          className="px-1 border border-gray-300 rounded bg-white"
+        >
+          <option value="">Your own</option>
+          {PRESETS.map((p) => (
+            <option key={p.label}>{p.label}</option>
+          ))}
+        </select>
+      </div>
+      <textarea
+        value={text}
+        onChange={(e) => set_text(e.target.value)}
+        rows={2}
+        className="w-full p-1.5 mb-2 border border-gray-300 rounded font-mono text-xs bg-white"
+      />
+      <div className="mb-3 font-mono text-xs text-indigo-800">
+        <Written tokens={tokens} render={sounds} />
+      </div>
+
+      {scripts.map((s) => (
+        <div key={s.name} className="mb-3">
+          <h3 className="text-xs font-semibold text-gray-600">
+            {s.name} <span className="font-normal text-gray-400">{s.note}</span>
+          </h3>
+          <div style={s.style} className="text-gray-900">
+            <Written tokens={tokens} render={s.render} />
+          </div>
+        </div>
+      ))}
+
+      <div className="grid gap-4 md:grid-cols-2 mt-2">
+        <div>
+          <h3 className="text-xs font-semibold text-gray-600 mb-1">Braille and stems: dots per row</h3>
+          <BrailleControls phonology={phonology} settings={braille} set_settings={set_braille} />
+        </div>
+        <div>
+          <h3 className="text-xs font-semibold text-gray-600 mb-1">Syllabics: shapes and turns</h3>
+          <SyllabicsControls phonology={phonology} settings={syllabics} set_settings={set_syllabics} />
+        </div>
+      </div>
+
+      <details className="mt-2">
+        <summary className="cursor-pointer text-xs font-semibold text-gray-600">All 256 syllables</summary>
+        <AllSyllables phonology={phonology} braille={braille} syllabics={syllabics} size={size} />
+      </details>
+    </div>
+  );
+}
