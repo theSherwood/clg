@@ -195,30 +195,38 @@ function Line({ marks, size }: { marks: number[][]; size: number }) {
 
 // A word in cursive stems. The stems are one stroke for the whole word: the pen writes one stem
 // down and the next up, joining them with a small arch at the foot or the top. Rungs are written
-// left to right, top to bottom, in strokes of their own: a rung that finishes out on the right
-// curves round into the next rung, but one that comes in from the left ends at the stem, and so
-// does its stroke. The joins are curves, never horizontal, so a join can't be taken for a rung.
-function rung_strokes(states: number[], x: number, top: number, row_height: number, reach: number): Point[][] {
-  const turn = reach * 0.3; // how far a join swings out past the right end
-  const strokes: Point[][] = [];
-  let current: Point[] = [];
+// left to right, top to bottom, in strokes of their own, and cross or touch the stem only where a
+// rung is. So a stroke goes on from a rung that finishes out on the right only into a right rung,
+// which starts at the stem: the join swings out past the end and comes in from above, staying on
+// the right. A rung that ends at the stem, or a next rung that starts on the left, ends the stroke.
+function rung_strokes(states: number[], x: number, top: number, row_height: number, reach: number): string[] {
+  const turn = reach * 0.35; // how far a join swings out past the right end
+  const strokes: string[] = [];
+  let current = "";
   let previous_y = 0;
   states.forEach((state, r) => {
     if (state === 0) return;
     const y = top + (r + 0.5) * row_height;
     const from = state & 1 ? x - reach : x;
     const to = state & 2 ? x + reach : x;
-    // Coming on from a rung that finished on the right: swing out and round into this one
-    if (current.length > 0) current.push([x + reach + turn, (previous_y + y) / 2]);
-    const step = (to - from) * 0.2;
-    current.push([from, y], [from + step, y], [to - step, y], [to, y]);
+    if (current && from === x) {
+      // Every control point is right of the stem, so the curve can't cross it
+      current +=
+        ` C ${x + reach + turn} ${previous_y} ${x + reach + turn} ${y - row_height * 0.6}` +
+        ` ${x + reach * 0.5} ${y - row_height * 0.45}` +
+        ` C ${x + reach * 0.2} ${y - row_height * 0.35} ${x} ${y - row_height * 0.2} ${x} ${y}`;
+    } else {
+      if (current) strokes.push(current);
+      current = `M ${from} ${y}`;
+    }
+    current += ` L ${to} ${y}`;
     previous_y = y;
-    if (!(state & 2)) {
+    if (to === x) {
       strokes.push(current);
-      current = [];
+      current = "";
     }
   });
-  if (current.length > 0) strokes.push(current);
+  if (current) strokes.push(current);
   return strokes;
 }
 
@@ -251,8 +259,8 @@ function CursiveStems({ rows, size }: { rows: number[][]; size: number }) {
     >
       <path d={spline(stems)} />
       {rows.flatMap((states, i) =>
-        rung_strokes(states, i * column + column / 2, pad, row_height, reach).map((points, j) => (
-          <path key={`${i}-${j}`} d={spline(points)} />
+        rung_strokes(states, i * column + column / 2, pad, row_height, reach).map((d, j) => (
+          <path key={`${i}-${j}`} d={d} />
         )),
       )}
     </svg>
@@ -519,7 +527,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
     },
     {
       name: "Cursive stems",
-      note: "The same stems joined into one stroke per word; rungs written left to right, joined until one ends at the stem",
+      note: "The same stems joined into one stroke per word; rungs written left to right, joined only on the right of the stem",
       render: (ids) => <CursiveStems rows={ids.map((id) => layout_values(id, phonology, stems))} size={size} />,
     },
     {
