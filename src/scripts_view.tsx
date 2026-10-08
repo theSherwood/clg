@@ -108,47 +108,73 @@ function Stems({ rows, size }: { rows: number[][]; size: number }) {
 // A word in the line script, as one smooth stroke. The pen never returns to the line itself: it
 // travels above or below it, at the level of the mark it's on. A dash is the pen running along
 // that level, so neighbouring dashes on one side join into a longer line, and a loop is a small
-// curl outward from it. Where the side changes, the pen crosses over in an S-curve that leaves and
-// arrives level. Every position is the same width, and syllables follow on without a gap (a gap
-// would read as a longer dash), so a word is counted off four positions at a time.
+// curl outward from it. Every position is the same width, and syllables follow on without a gap
+// (a gap would read as a longer dash), so a word is counted off four positions at a time.
+//
+// The stroke is a list of points the pen passes through, joined by one smooth spline, so changes
+// of side and the joins into and out of loops have no corners. A loop next to the other side
+// leaves out its level start or end, so the pen sweeps straight between the loop and the crossing.
 const LINE_SLOT = 0.32;
+
+type Point = [number, number];
+
+// A centripetal Catmull-Rom spline through the points, as cubic Béziers
+function spline(points: Point[]): string {
+  const p = [points[0]!, ...points, points.at(-1)!];
+  const dist = (a: Point, b: Point) => Math.max(1e-6, Math.hypot(b[0] - a[0], b[1] - a[1]) ** 0.5);
+  let path = `M ${points[0]![0]} ${points[0]![1]}`;
+  for (let i = 1; i < p.length - 2; i++) {
+    const [p0, p1, p2, p3] = [p[i - 1]!, p[i]!, p[i + 1]!, p[i + 2]!];
+    const d1 = dist(p0, p1);
+    const d2 = dist(p1, p2);
+    const d3 = dist(p2, p3);
+    const c1 = [0, 1].map(
+      (k) => (d1 * d1 * p2[k]! - d2 * d2 * p0[k]! + (2 * d1 * d1 + 3 * d1 * d2 + d2 * d2) * p1[k]!) / (3 * d1 * (d1 + d2)),
+    );
+    const c2 = [0, 1].map(
+      (k) => (d3 * d3 * p1[k]! - d2 * d2 * p3[k]! + (2 * d3 * d3 + 3 * d3 * d2 + d2 * d2) * p2[k]!) / (3 * d3 * (d3 + d2)),
+    );
+    path += ` C ${c1[0]} ${c1[1]} ${c2[0]} ${c2[1]} ${p2[0]} ${p2[1]}`;
+  }
+  return path;
+}
 
 function line_path(marks: number[][], size: number, middle: number, start: number): string {
   const slot = size * LINE_SLOT;
-  const ramp = slot * 0.45; // how far the pen travels while crossing over
   const level = size * 0.16; // how far above or below the line the marks run
   const loop_height = size * 0.17;
   const loop_width = slot * 0.5;
   const flat = marks.flat();
-  const y = flat.map((mark) => middle + (mark & 1 ? 1 : -1) * level);
-  let path = `M ${start} ${y[0]}`;
+  const side = flat.map((mark) => (mark & 1 ? 1 : -1));
+  const points: Point[] = [[start, middle + side[0]! * level]];
   flat.forEach((mark, k) => {
     const left = start + k * slot;
     const right = left + slot;
-    const yk = y[k]!;
+    const s = side[k]!;
+    const y = middle + s * level;
     if (mark & 2) {
-      const s = mark & 1 ? 1 : -1;
       const a = left + (slot - loop_width) / 2;
       const w = loop_width;
-      path +=
-        ` L ${a} ${yk}` +
-        ` C ${a + w * 1.05} ${yk + s * loop_height * 0.1} ${a + w} ${yk + s * loop_height * 1.3} ${a + w * 0.5} ${yk + s * loop_height * 1.3}` +
-        ` C ${a} ${yk + s * loop_height * 1.3} ${a - w * 0.05} ${yk + s * loop_height * 0.1} ${a + w} ${yk}`;
-    }
-    const next = y[k + 1];
-    if (next === undefined) {
-      path += ` L ${right} ${yk}`;
-    } else if (next !== yk) {
-      // An S-curve across the boundary, level where it leaves and where it arrives
-      path += ` L ${right - ramp / 2} ${yk} C ${right} ${yk} ${right} ${next} ${right + ramp / 2} ${next}`;
+      const same_before = k === 0 || side[k - 1] === s;
+      const same_after = k === flat.length - 1 || side[k + 1] === s;
+      if (same_before) points.push([a, y]);
+      points.push(
+        [a + w, y + s * loop_height * 0.5],
+        [a + w * 0.5, y + s * loop_height * 1.15],
+        [a, y + s * loop_height * 0.5],
+      );
+      if (same_after) points.push([a + w, y]);
+    } else {
+      points.push([left + slot * 0.2, y], [right - slot * 0.2, y]);
     }
   });
-  return path;
+  points.push([start + flat.length * slot, middle + side.at(-1)! * level]);
+  return spline(points);
 }
 
 function Line({ marks, size }: { marks: number[][]; size: number }) {
   const stroke = Math.max(1.5, size / 16);
-  const height = size * 0.85;
+  const height = size * 0.9;
   const width = marks.length * 4 * size * LINE_SLOT + 2 * stroke;
   return (
     <svg
