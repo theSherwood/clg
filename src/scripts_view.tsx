@@ -1,11 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { roots } from "./dict";
 import { babel_verses, lords_prayer, north_wind_sentences, siduri_advice, udhr_articles } from "./examples";
 import { MARKS, type Mark, type Phonology, syllable_of } from "./phonology";
 import {
   type Assignment,
-  type BrailleSettings,
-  DOT_STATES,
+  RUNGS,
   MARK_NAMES,
   SHAPES,
   SHAPE_KEYS,
@@ -13,18 +11,18 @@ import {
   type ShapeKey,
   type SyllabicsSettings,
   TURNS,
-  braille_cell,
-  braille_rows,
   clashes,
-  default_braille,
+  default_stems,
   default_syllabics,
   script_tokens,
+  stem_rungs,
   syllabics_glyphs,
+  type StemSettings,
   value_labels,
 } from "./scripts";
 
-// Tries out candidate scripts on real text: braille cells, the same cells drawn as stems, and
-// syllabics shapes turned four ways. Settings are kept in this browser only.
+// Tries out candidate scripts on real text: stems with a rung per mark, and syllabics shapes
+// turned four ways. Settings are kept in this browser only.
 
 const SYLLABICS_FONT = "'Euphemia UCAS', 'Noto Sans Canadian Aboriginal', sans-serif";
 
@@ -177,21 +175,16 @@ function AssignmentRow({
   );
 }
 
-function BrailleControls({
+function StemControls({
   phonology,
   settings,
   set_settings,
 }: {
   phonology: Phonology;
-  settings: BrailleSettings;
-  set_settings: (s: BrailleSettings) => void;
+  settings: StemSettings;
+  set_settings: (s: StemSettings) => void;
 }) {
-  const repeated = MARKS.filter((m) => !settings.rows.includes(m));
-  // The empty cell is invisible, so whichever syllable gets it shouldn't be in use
-  const blank = Array.from({ length: 256 }, (_, id) => id).find(
-    (id) => braille_cell(id, phonology, settings) === "⠀",
-  );
-  const blank_used = blank !== undefined && (roots[blank]?.length ?? 0) > 0;
+  const missing = MARKS.filter((m) => !settings.rows.includes(m));
   return (
     <div>
       <div className="flex flex-wrap items-center gap-2 mb-1.5 text-xs">
@@ -216,8 +209,8 @@ function BrailleControls({
             </select>
           </label>
         ))}
-        {repeated.length > 0 && (
-          <span className="text-red-600">Missing: {repeated.map((m) => MARK_NAMES[m]).join(", ")}</span>
+        {missing.length > 0 && (
+          <span className="text-red-600">Missing: {missing.map((m) => MARK_NAMES[m]).join(", ")}</span>
         )}
       </div>
       {MARKS.map((mark) => (
@@ -225,17 +218,11 @@ function BrailleControls({
           key={mark}
           mark={mark}
           phonology={phonology}
-          assignment={settings.states[mark]}
-          options={DOT_STATES.map((s) => `${["  ", "• ", " •", "••"][DOT_STATES.indexOf(s)]} ${s}`)}
-          on_change={(states) => set_settings({ ...settings, states: { ...settings.states, [mark]: states } })}
+          assignment={settings.rungs[mark]}
+          options={RUNGS.map((r, i) => `${["│", "┤", "├", "┼"][i]} ${r}`)}
+          on_change={(rungs) => set_settings({ ...settings, rungs: { ...settings.rungs, [mark]: rungs } })}
         />
       ))}
-      {blank !== undefined && (
-        <p className={`text-xs ${blank_used ? "text-red-600" : "text-gray-500"}`}>
-          The empty cell, which can't be seen, is {syllable_of(blank, phonology)} (ID {blank}),{" "}
-          {blank_used ? `which is in use: ${roots[blank]!.map((w) => w.word).join(", ")}` : "which is unused"}.
-        </p>
-      )}
     </div>
   );
 }
@@ -313,12 +300,12 @@ function SyllabicsControls({
 // Every syllable in each script, laid out like the Roots grid: 16 IDs to a row
 function AllSyllables({
   phonology,
-  braille,
+  stems,
   syllabics,
   size,
 }: {
   phonology: Phonology;
-  braille: BrailleSettings;
+  stems: StemSettings;
   syllabics: SyllabicsSettings;
   size: number;
 }) {
@@ -333,10 +320,7 @@ function AllSyllables({
                 return (
                   <td key={col} className="border border-gray-200 px-1 text-center align-top">
                     <div className="text-[10px] font-mono text-indigo-700">{syllable_of(id, phonology)}</div>
-                    <div style={{ fontSize: size * 0.7 }} className="leading-none">
-                      {braille_cell(id, phonology, braille)}
-                    </div>
-                    <Stems rows={[braille_rows(id, phonology, braille)]} size={size * 0.7} />
+                    <Stems rows={[stem_rungs(id, phonology, stems)]} size={size * 0.7} />
                     <div style={{ fontSize: size * 0.55, fontFamily: SYLLABICS_FONT }} className="leading-tight">
                       {syllabics_glyphs(id, phonology, syllabics)}
                     </div>
@@ -352,7 +336,7 @@ function AllSyllables({
 }
 
 export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
-  const [braille, set_braille] = useStored<BrailleSettings>("script_braille", default_braille);
+  const [stems, set_stems] = useStored<StemSettings>("script_stems", default_stems);
   const [syllabics, set_syllabics] = useStored<SyllabicsSettings>("script_syllabics", default_syllabics);
   const [size, set_size] = useStored("script_size", 32);
   const [text, set_text] = useStored("script_text", PRESETS[0]!.text);
@@ -361,15 +345,9 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
 
   const scripts: { name: string; note: string; render: (ids: number[]) => React.ReactNode; style?: React.CSSProperties }[] = [
     {
-      name: "Braille",
-      note: "One 8-dot cell per syllable, a mark to each row",
-      render: (ids) => ids.map((id) => braille_cell(id, phonology, braille)).join(""),
-      style: { fontSize: size },
-    },
-    {
       name: "Stems",
-      note: "The braille cell drawn as strokes, for handwriting: a rung per row",
-      render: (ids) => <Stems rows={ids.map((id) => braille_rows(id, phonology, braille))} size={size} />,
+      note: "A stem per syllable, with a rung for each mark",
+      render: (ids) => <Stems rows={ids.map((id) => stem_rungs(id, phonology, stems))} size={size} />,
     },
     {
       name: "Syllabics",
@@ -390,7 +368,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
           </label>
           <button
             onClick={() => {
-              set_braille(default_braille);
+              set_stems(default_stems);
               set_syllabics(default_syllabics);
             }}
             className="px-2 py-0.5 rounded border border-gray-300 bg-white hover:bg-gray-100"
@@ -439,8 +417,8 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
 
       <div className="grid gap-4 md:grid-cols-2 mt-2">
         <div>
-          <h3 className="text-xs font-semibold text-gray-600 mb-1">Braille and stems: dots per row</h3>
-          <BrailleControls phonology={phonology} settings={braille} set_settings={set_braille} />
+          <h3 className="text-xs font-semibold text-gray-600 mb-1">Stems: a rung per row</h3>
+          <StemControls phonology={phonology} settings={stems} set_settings={set_stems} />
         </div>
         <div>
           <h3 className="text-xs font-semibold text-gray-600 mb-1">Syllabics: shapes and turns</h3>
@@ -450,7 +428,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
 
       <details className="mt-2">
         <summary className="cursor-pointer text-xs font-semibold text-gray-600">All 256 syllables</summary>
-        <AllSyllables phonology={phonology} braille={braille} syllabics={syllabics} size={size} />
+        <AllSyllables phonology={phonology} stems={stems} syllabics={syllabics} size={size} />
       </details>
     </div>
   );

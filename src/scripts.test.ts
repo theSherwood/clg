@@ -1,22 +1,21 @@
 import { expect, test } from "bun:test";
 import { default_phonology } from "./phonology";
 import {
-  braille_cell,
   clashes,
-  default_braille,
+  default_stems,
   default_syllabics,
   script_tokens,
+  stem_rungs,
   syllabics_glyphs,
 } from "./scripts";
 
 const ids = Array.from({ length: 256 }, (_, id) => id);
 
-test("the default braille gives every syllable its own cell, leaving the blank one to unused su", () => {
-  const cells = ids.map((id) => braille_cell(id, default_phonology, default_braille));
-  expect(new Set(cells).size).toBe(256);
-  expect(cells.indexOf("⠀")).toBe(15);
-  for (const mark of default_braille.rows) {
-    expect(clashes(default_braille.states[mark], mark, default_phonology)).toEqual([]);
+test("the default stems give every syllable its own rungs", () => {
+  const stems = ids.map((id) => stem_rungs(id, default_phonology, default_stems).join(""));
+  expect(new Set(stems).size).toBe(256);
+  for (const mark of default_stems.rows) {
+    expect(clashes(default_stems.rungs[mark], mark, default_phonology)).toEqual([]);
   }
 });
 

@@ -34,16 +34,17 @@ export function clashes(assignment: Assignment, mark: Mark, phonology: Phonology
   return [...by_choice.values()].filter((l) => l.length > 1).map((l) => l.join(" and "));
 }
 
-// Braille: one 8-dot cell per syllable, one mark per row (2 dots, so 4 states). The stem script
-// is the same cell drawn as strokes: a stem with a rung per row, none, left, right or across.
+// Stems: one stem per syllable with a rung for each mark, top to bottom, that is none, a stub
+// to the left, a stub to the right or a bar across. A syllable with no rungs is still its stem,
+// so every syllable can be seen (unlike braille, whose empty cell can't).
 
-export const DOT_STATES = ["none", "left", "right", "both"] as const;
+export const RUNGS = ["none", "left", "right", "across"] as const;
 
-export type BrailleSettings = { rows: Mark[]; states: Record<Mark, Assignment> };
+export type StemSettings = { rows: Mark[]; rungs: Record<Mark, Assignment> };
 
-export const default_braille: BrailleSettings = {
+export const default_stems: StemSettings = {
   rows: ["C", "M", "V", "N"],
-  states: {
+  rungs: {
     C: { velar: 2, coronal: 3, labial: 1, sibilant: 0 },
     M: { unvoiced: 0, voiced: 1, fricative: 2, "voiced fricative": 3 },
     V: { a: 3, e: 1, o: 2, u: 0 },
@@ -51,27 +52,10 @@ export const default_braille: BrailleSettings = {
   },
 };
 
-// Each row's state, top to bottom
-export function braille_rows(id: number, phonology: Phonology, settings: BrailleSettings): number[] {
+// Each row's rung, top to bottom: bit 1 is the left stub and bit 2 the right
+export function stem_rungs(id: number, phonology: Phonology, settings: StemSettings): number[] {
   const marks = marks_of(id, phonology);
-  return settings.rows.map((mark) => choice(settings.states[mark], mark, marks[mark], phonology));
-}
-
-// Unicode numbers the dots down the left column (1, 2, 3, 7) and then the right (4, 5, 6, 8)
-const ROW_BITS = [
-  [0x01, 0x08],
-  [0x02, 0x10],
-  [0x04, 0x20],
-  [0x40, 0x80],
-];
-
-export function braille_cell(id: number, phonology: Phonology, settings: BrailleSettings): string {
-  let bits = 0;
-  braille_rows(id, phonology, settings).forEach((state, row) => {
-    if (state & 1) bits |= ROW_BITS[row]![0]!;
-    if (state & 2) bits |= ROW_BITS[row]![1]!;
-  });
-  return String.fromCodePoint(0x2800 + bits);
+  return settings.rows.map((mark) => choice(settings.rungs[mark], mark, marks[mark], phonology));
 }
 
 // Syllabics: two glyphs per syllable, each one of four shapes turned one of four ways. The onset
