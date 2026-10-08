@@ -602,6 +602,11 @@ export function GrammarView() {
         <W w="vanish(vi)" />.
       </p>
       <p className="mt-2">
+        To <W w="promise(vt)" /> is <i>say(vt) dutifully</i>, saying so as to bind oneself, and a{" "}
+        <W w="promise" /> is what's promised. Trying is the middle of success: <W w="try(vi)" />,
+        an <W w="attempt" />, with the outcome still open.
+      </p>
+      <p className="mt-2">
         Thinking is inner speech: <W w="think(vi)" /> is <i>say(vt) within</i>, so like{" "}
         <W w="say(vt)" /> it takes a clause, “think that…”. <W w="thought" /> is{" "}
         <i>&lt;gerund&gt; think(vi)</i> and an <W w="idea" /> <i>&lt;ee&gt; think(vt)</i>, what's
@@ -919,8 +924,12 @@ export function GrammarView() {
         opens a phrase, and there's no word to close it: the phrase ends at the next grammar
         marker, preposition, clause-level conjunction or <W w="<clause_end>" />. Within a phrase,
         modifiers come before prepositional phrases, so <i>person big with rod</i> is a big
-        person with a rod. Stacked prepositional phrases can be ambiguous, as in most languages;
-        bracket one with <W w="<clause_start>" /> and <W w="<clause_end>" /> when it matters.
+        person with a rod. Phrases that modify the verb go right after it, before{" "}
+        <W w="<object>" />, and a phrase after a noun modifies that noun: in{" "}
+        <i>secure(vt) at everywhere &lt;object&gt; acknowledgment of right</i>, everywhere is where
+        the securing happens and of right says what's acknowledged. Phrases stacked on one side can
+        still be ambiguous, as in most languages; bracket one with <W w="<clause_start>" /> and{" "}
+        <W w="<clause_end>" /> when it matters, or split the sentence.
       </p>
       <Example meaning="…equal in dignity and rights.">free and same in dignity and right</Example>
       <p className="mt-2">
@@ -986,7 +995,10 @@ export function GrammarView() {
           <b>After a noun</b>, describing it: <W w="<blank>" /> marks the noun's place in the
           clause, in any role or after any preposition. A plain verb marker tells it from a
           question, which has <W w="<verb_interrogative>" />, as English uses who and where for
-          both.
+          both. The clause describes the noun just before it, so it goes right after its noun,
+          before that noun's phrases: <i>child &lt;clause_start&gt; … &lt;clause_end&gt; of friend</i> is
+          the friend's child who…, and <i>child of friend &lt;clause_start&gt; … &lt;clause_end&gt;</i> the
+          child of the friend who….
         </li>
       </ul>
       <Example meaning="the person who defended me">
@@ -1056,9 +1068,9 @@ export function GrammarView() {
       <H2>Pronouns</H2>
       <p>
         <W w="<pronoun_first_person>" />, <W w="<pronoun_second_person>" /> and{" "}
-        <W w="<pronoun_third_person>" />, with number made by compounds: “me” is
-        first_person-singular, “we” first_person-plural (also -inclusive and -exclusive), “y'all”
-        second_person-plural. The third person can optionally specify plural and gender or sex.{" "}
+        <W w="<pronoun_third_person>" />, with number made by compounds: <W w="we" /> is{" "}
+        <i>&lt;pronoun_first_person&gt; plural</i>, <W w="you_all" /> the second person plural and{" "}
+        <W w="they" /> the third. The third person can optionally specify plural and gender or sex.{" "}
         <W w="this" /> and <W w="that" /> point near and far, and <W w="<blank>" /> is the question
         word: what a question asks about.
       </p>
@@ -1117,7 +1129,7 @@ export function GrammarView() {
         <W w="trade" />, giving and taking alike, the middle of the giving axis.
       </p>
       <Example meaning="They love each other.">
-        &lt;subject&gt; it plural &lt;verb&gt; love(vt) &lt;object&gt; each_other
+        &lt;subject&gt; they &lt;verb&gt; love(vt) &lt;object&gt; each_other
       </Example>
 
       <H2>“The” and “a”</H2>

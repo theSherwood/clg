@@ -1804,6 +1804,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb: "be_bound_to(vt)",
       verb_t: "be bound to",
       adverb: "dutifully",
+      synonyms: { adverb: ["bindingly"] },
     },
     {
       noun: "right",
@@ -1926,6 +1927,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
           adverb: "victoriously",
         },
         min_positive: { noun: "progress", verb: "make_progress(vi)", verb_i: "make progress", verb_t: "further" },
+        neutral: { noun: "attempt", verb: "try(vi)", verb_i: "try", verb_t: "attempt", synonyms: { verb: ["strive"] } },
         min_negative: { noun: "setback", verb: "set_back(vt)", verb_i: "slip back", verb_t: "set back" },
         max_negative: { noun: "defeat", adj: "defeated", verb: "lose(vi)", verb_i: "lose", verb_t: "lose" },
       },
@@ -3432,6 +3434,8 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   phrase("tell_a_lie(vi)", ["say(vt)", "falsely"], "tell a lie", "lie about");
   // Thinking is inner speech, so think(vt) takes a clause as say(vt) does: think that…
   phrase("think(vi)", ["say(vt)", "within"], "think", "think");
+  phrase("promise(vt)", ["say(vt)", "dutifully"], "promise", "promise");
+  noun("promise", ["<ee>", "promise(vt)"], { synonyms: ["pledge"], notes: "What's promised" });
   noun("thought", ["<gerund>", "think(vi)"], { notes: "Thinking" });
   noun("idea", ["<ee>", "think(vt)"], { synonyms: ["notion"], notes: "What's thought" });
   noun("god", ["<ee>", "worship(vt)"], { synonyms: ["deity"], notes: "What's worshipped" });
@@ -3619,6 +3623,10 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("friend", ["<ee>", "like(vt)"]);
   noun("enemy", ["<ee>", "hate(vt)"], { synonyms: ["foe"] });
   noun("beloved", ["<ee>", "love(vt)"], { synonyms: ["sweetheart"] });
+  // Number on pronouns
+  noun("we", ["<pronoun_first_person>", "plural"]);
+  noun("you_all", ["<pronoun_second_person>", "plural"], { gloss: "you (plural) / y'all" });
+  noun("they", ["<pronoun_third_person>", "plural"]);
   noun("each_other", ["other", "mutual"], {
     gloss: "each other / one another",
     notes: "The mutual other: mutual is trade's adjective, giving and taking alike",

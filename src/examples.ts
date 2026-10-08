@@ -450,7 +450,7 @@ export const self_other_examples: Example[] = [
   {
     title: "Each other",
     english: "They love each other",
-    transliteration: "<subject> it plural <verb> love(vt) <object> each_other",
+    transliteration: "<subject> they <verb> love(vt) <object> each_other",
   },
   {
     title: "One another",
@@ -868,7 +868,7 @@ export const moving_examples: Example[] = [
   { title: "Walk", english: "I walk to the water", transliteration: "<subject> I <verb> walk(vi) to water" },
   { title: "Wade", english: "Wade across the water", transliteration: "<verb_prescriptive> wade_through(vt) <object> water" },
   { title: "Sail", english: "The boat sails north", transliteration: "<subject> boat <verb> swim(vi) to north" },
-  { title: "Fly", english: "We flew", transliteration: "<subject> I plural <verb> fly(vi) formerly" },
+  { title: "Fly", english: "We flew", transliteration: "<subject> we <verb> fly(vi) formerly" },
   { title: "Space", english: "The spacecraft travels to the Moon", transliteration: "<subject> spacecraft <verb> spacefly(vi) to the_moon" },
   { title: "Burrow", english: "The animal burrows", transliteration: "<subject> animal <verb> burrow(vi)" },
 ];
@@ -1047,7 +1047,7 @@ export const conversation_examples: Example[] = [
   {
     title: "Praise",
     english: "They praised the person",
-    transliteration: "<subject> it plural <verb> praise(vt) formerly <object> person",
+    transliteration: "<subject> they <verb> praise(vt) formerly <object> person",
   },
   {
     title: "A question",
@@ -1076,7 +1076,7 @@ export const udhr_preamble: Article[] = [
     "Proclaims this Universal Declaration of Human Rights as a common standard of achievement for all peoples and all nations, to the end that every individual and every organ of society, keeping this Declaration constantly in mind, shall strive by teaching and education to promote respect for these rights and freedoms and by progressive measures, national and international, to secure their universal and effective recognition and observance, both among the peoples of Member States themselves and among the peoples of territories under their jurisdiction.",
     ],
     transliteration:
-      "<subject> everyone <verb> possess(vt) <object> dignity and right same. <subject> no_one <verb> take(vt) ably <object> it. <subject> <gerund> acknowledge(vt) it <verb> be(vt) <complement> source of freedom and impartiality and peace at earth. <subject> <gerund> ignore(vt) and hate(vt) right of person <verb> cause(vt) <perfect_tense_aspect> <object> deed <max_negative> good <clause_start> <subject> conscience of everyone <verb> condemn(vt) <object> <blank> <clause_end>. <subject> everyone <verb> desire(vt) <max_positive> eagerly <object> earth <clause_start> <subject> everyone <verb> speak(vi) and believe(vi) freely and <verb> be(vt) <complement> free from fear and lack in <blank> <clause_end>. <object> right of person <verb_prescriptive> defend(vt) necessarily by law for <subject> person <verb> not oppose(vt) by coercion <object> <gerund> rule_over(vt) cruelly if <subject> nothing other <verb> help_out(vi). <subject> <gerund> increase(vt) liking between country plural <verb> be(vt) <complement> necessary. <subject> society plural of group of country all <verb> again say(vt) <perfect_tense_aspect> in constitution of it <object> <subject> it <verb> believe(vt) <object> right of person and dignity and value of person and right same of person male and person female. <subject> it <verb> choose(vt) <perfect_tense_aspect> <object> <verb> improve(vt) <object> society and life in freedom many. <subject> country member <verb> become be_bound_to(vt) <perfect_tense_aspect> <object> <verb> increase(vt) <object> acknowledgment and <gerund> obey(vt) of right and freedom of person at everywhere by <gerund> cooperate(vi) with group of country all. <subject> knowledge mutual of right and freedom this <verb> be(vt) <complement> <max_positive> important for <gerund> do(vt) duty this fully. <subject> group of country all <verb> say(vt) consequently <object> this as purpose of society all and country all. <subject> everyone and group all of society <verb_prescriptive> think(vt) always <object> this and <verb_prescriptive> increase(vt) <object> acknowledgment of right and freedom this by education. <subject> it <verb_prescriptive> secure(vt) <object> acknowledgment and <gerund> obey(vt) of it at everywhere by deed in country and between country plural in society of country member and of land <clause_start> <subject> country member <verb> govern(vt) <object> <blank> <clause_end>.",
+      "<subject> everyone <verb> possess(vt) <object> dignity and right same <clause_start> <subject> no_one <verb> take(vt) ably <object> <blank> <clause_end>. <subject> <gerund> acknowledge(vt) this <verb> be(vt) <complement> source of freedom and impartiality and peace at earth. <subject> <gerund> ignore(vt) and hate(vt) right of person <verb> cause(vt) <perfect_tense_aspect> <object> deed <max_negative> good <clause_start> <subject> conscience of everyone <verb> condemn(vt) <object> <blank> <clause_end>. <subject> everyone <verb> desire(vt) <max_positive> eagerly <object> earth <clause_start> <subject> everyone <verb> speak(vi) and believe(vi) freely and <verb> be(vt) <complement> free from fear and lack in <blank> <clause_end>. <object> right of person <verb_prescriptive> defend(vt) necessarily by law for <subject> person <verb> not oppose(vt) by coercion <object> <gerund> rule_over(vt) cruelly if <subject> nothing other <verb> help_out(vi). <subject> <gerund> increase(vt) liking between country plural <verb> be(vt) <complement> necessary. <subject> society plural of group of country all <verb> again say(vt) <perfect_tense_aspect> in constitution of it <object> <subject> they <verb> believe(vt) <object> right of person and dignity and value of person and right same of person. <subject> they <verb> choose(vt) <perfect_tense_aspect> <object> <verb> improve(vt) <object> society and life in freedom many. <subject> country member <verb> promise(vt) <perfect_tense_aspect> by <gerund> cooperate(vi) with group of country all <object> <verb> increase(vt) at everywhere <object> acknowledgment and <gerund> obey(vt) of right and freedom of person. <subject> knowledge mutual of right and freedom this <verb> be(vt) <complement> <max_positive> important for <gerund> do(vt) promise this fully. <subject> group of country all <verb> say(vt) consequently <object> this as purpose of society all and country all. <subject> everyone and group all of society <verb_prescriptive> think(vt) always <object> this and <verb_prescriptive> attempt(vt) <object> <verb> increase(vt) by education <object> acknowledgment of right and freedom this. <subject> they <verb_prescriptive> secure(vt) at everywhere by deed in country and between country plural <object> acknowledgment and <gerund> obey(vt) of it in society of country member and of land <clause_start> <subject> country member <verb> govern(vt) <object> <blank> <clause_end>.",
   },
 ];
 
