@@ -2613,6 +2613,27 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     {
+      noun: "signification",
+      notes:
+        "A sign and what it stands for, as cause and result are two ends of one link. A name is the commonest symbol: symbol of you is your name, and a word is symbol speech. The subject of mean(vt) is the symbol; of be_called(vt), what it names: city be_called(vt) <object> <foreign> babel",
+    },
+    {
+      noun: "meaning",
+      verb: "be_called(vt)",
+      verb_t: "be called",
+      synonyms: { noun: ["referent", "sense"], verb: ["be named", "go by"] },
+    },
+    {
+      noun: "symbol",
+      adj: "symbolic",
+      verb: "mean(vt)",
+      verb_t: "mean",
+      adverb: "symbolically",
+      synonyms: { noun: ["name", "sign", "signifier"], verb: ["signify", "denote", "stand for"] },
+    },
+  ],
+  [
+    {
       noun: "affection",
       steps: {
         max_positive: { noun: "worship", adj: "devoted", verb: "worship(vt)", verb_t: "worship", adverb: "devotedly" },
@@ -3097,7 +3118,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("container");
   cr("wall");
   cr("rod");
-  cr("symbol");
   cr("information", { gloss: "information / data" });
 
   // Abstract structure and number
@@ -3145,7 +3165,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
 
   // Groups of related concepts
   for (const group of [
-    ["number", "symbol"],
     ["width", "height", "depth"], // all nouns of axes, which are built after this
     ["sound", "taste"],
     ["animal", "plant", "fungus"],
@@ -3218,7 +3237,7 @@ export const verb_types: Record<VerbType, string[]> = {
   ],
   relation: [
     "possess(vt)", "be(vt)", "be_entitled_to(vt)", "resemble(vt)", "result_from(vt)", "love(vt)", "know(vt)", "desire(vt)", "face(vt)", "include(vt)",
-    "attract(vt)", "exceed(vt)", "follow(vt)",
+    "attract(vt)", "exceed(vt)", "follow(vt)", "mean(vt)",
   ],
 };
 
@@ -3464,7 +3483,6 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("message", ["<ee>", "send(vt)", "information"], { synonyms: ["letter", "mail", "correspondence"] });
   noun("reputation", ["belief", "of", "other"], { synonyms: ["honour"], notes: "What others believe of one: making a name for oneself" });
   noun("word", ["symbol", "speech"], { notes: "A spoken symbol" });
-  noun("name", ["word", "particular"], { notes: "A word for a particular one, as a proper noun is; a word for a type is word generic" });
   phrase("discriminate(vi)", ["reject(vt)", "by", "type"], "discriminate", "discriminate against");
   noun("discrimination", ["<gerund>", "discriminate(vi)"], { synonyms: ["distinction"] });
   phrase("marry(vi)", ["connect(vi)", "family"], "marry", "marry");

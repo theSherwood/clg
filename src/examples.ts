@@ -1398,7 +1398,7 @@ export const babel_verses: Article[] = [
       "Therefore is the name of it called Babel; because the LORD did there confound the language of all the earth: and from thence did the LORD scatter them abroad upon the face of all the earth.",
     ],
     transliteration:
-      "<subject> name of city <verb> be(vt) consequently <complement> <foreign> babel from <subject> god <verb> disorganize(vt) formerly at that <object> language of everyone and <verb> disperse(vt) formerly from that to everywhere at earth <object> they.",
+      "<subject> city <verb> be_called(vt) consequently <object> <foreign> babel from <subject> god <verb> disorganize(vt) formerly at that <object> language of everyone and <verb> disperse(vt) formerly from that to everywhere at earth <object> they.",
   },
 ];
 
@@ -1448,7 +1448,7 @@ export const lords_prayer: Article[] = [
     title: "Address",
     english: ["Our Father, which art in heaven, hallowed be thy Name."],
     transliteration:
-      "<clause_start> <subject> father of we at heaven <clause_end> <object> name of you <verb_prescriptive> sanctify(vt).",
+      "<clause_start> <subject> father of we at heaven <clause_end> <object> symbol of you <verb_prescriptive> sanctify(vt).",
   },
   {
     title: "Kingdom",

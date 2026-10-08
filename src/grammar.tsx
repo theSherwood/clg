@@ -629,10 +629,22 @@ export function GrammarView() {
         senses danger and joy good.
         A <W w="language" /> is <i>&lt;tool&gt; say(vt)</i>, what one speaks with, a{" "}
         <W w="message" /> <i>&lt;ee&gt; send(vt) information</i> and a <W w="reputation" />{" "}
-        <i>belief of other</i>, what others believe of one. A <W w="word" /> is{" "}
-        <i>symbol speech</i>, a spoken symbol, and a <W w="name" /> <i>word particular</i>, a word for
-        a particular one, as a proper noun is.
+        <i>belief of other</i>, what others believe of one.
       </p>
+      <p className="mt-2">
+        Signs are the signification axis, a relation whose two ends are a sign and what it stands
+        for, as cause and result are two ends of one link: a <W w="symbol" /> or sign, and its{" "}
+        <W w="meaning" />. The symbol is the subject of <W w="mean(vt)" />, and the meaning of{" "}
+        <W w="be_called(vt)" />. A name is the commonest symbol, so <i>symbol of you</i>{" "}
+        is your name, and a <W w="word" /> is <i>symbol speech</i>, a spoken one. When a symbol
+        could be a name or a picture, as a country's, <i>word of country</i> is the name.
+      </p>
+      <Example meaning="What does this mean?">
+        &lt;subject&gt; this &lt;verb_interrogative&gt; mean(vt) &lt;object&gt; &lt;blank&gt;
+      </Example>
+      <Example meaning="The city is called Babel.">
+        &lt;subject&gt; city &lt;verb&gt; be_called(vt) &lt;object&gt; &lt;foreign&gt; babel
+      </Example>
       <Example meaning="I think that you slept.">
         &lt;subject&gt; I &lt;verb&gt; think(vt) &lt;object&gt; &lt;subject&gt; you &lt;verb&gt; sleep(vi) formerly
       </Example>
@@ -1299,7 +1311,7 @@ export function GrammarView() {
         calling someone, with <W w="<clause_end>" /> dropped at the sentence's end.
       </p>
       <Example meaning="Our Father in heaven, hallowed be thy name.">
-        &lt;clause_start&gt; &lt;subject&gt; father of we at heaven &lt;clause_end&gt; &lt;object&gt; name of
+        &lt;clause_start&gt; &lt;subject&gt; father of we at heaven &lt;clause_end&gt; &lt;object&gt; symbol of
         you &lt;verb_prescriptive&gt; sanctify(vt)
       </Example>
 

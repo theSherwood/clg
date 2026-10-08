@@ -44,11 +44,11 @@ test("digits, two-word names and unknown words", () => {
 });
 
 test("the word after <foreign> is a name, not a dictionary word", () => {
-  expect(resolved("name <verb> be(vt) <complement> <foreign> babel. babel")).toEqual([
-    "name",
+  expect(resolved("city <verb> be_called(vt) <object> <foreign> babel. babel")).toEqual([
+    "city",
     "<verb>",
-    "be(vt)",
-    "<complement>",
+    "be_called(vt)",
+    "<object>",
     "<foreign>",
     "foreign:babel",
     ".",

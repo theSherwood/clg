@@ -115,7 +115,7 @@ const swadesh_rows: Row[] = [
   ["good", "good", "pona"],
   ["round", "round", "sike"],
   ["dry", "dry", "telo ala"],
-  ["name", "symbol", "nimi", "loose"],
+  ["name", "symbol", "nimi"],
 ];
 
 // Toki Pona word → our equivalent, for every word in toki_pona_reference except pu (the book)
@@ -146,7 +146,7 @@ export const toki_pona_equivalents: Record<string, [ours: string, loose?: "loose
   sinpin: ["wall"],
   ante: ["different"],
   lawa: ["head"],
-  nimi: ["symbol", "loose"],
+  nimi: ["symbol"],
   sitelen: ["write(vi)"],
   anu: ["or"],
   len: ["covering"],
