@@ -106,7 +106,9 @@ export function GrammarView() {
         <W w="with" /> and <W w="at" />: <W w="<tool>" /> is what it's done with (<i>&lt;tool&gt; open(vt)</i>,
         a key) and <W w="<place>" /> where it's done (<i>&lt;place&gt; sleep(vi)</i>, a bed). Furniture is
         named this way, though buildings take their own root: <W w="house" /> is{" "}
-        <i>building family</i> and a <W w="room" /> <i>part building</i>. <W w="chair" /> is <i>&lt;place&gt; sit(vi)</i>, <W w="table" />{" "}
+        <i>building family</i>, a <W w="room" /> <i>part building</i>, a <W w="tower" />{" "}
+        <i>building high</i> and a <W w="city" /> <i>land building</i>, built-up land. A{" "}
+        <W w="brick" /> is <i>rock artificial</i>. <W w="chair" /> is <i>&lt;place&gt; sit(vi)</i>, <W w="table" />{" "}
         <i>&lt;place&gt; eat(vt)</i> and <W w="desk" /> <i>&lt;place&gt; work(vi)</i>. The same words can
         be a room or a building, a restaurant or a workplace, by context.{" "}
         <W w="<to>" /> and <W w="<from>" /> follow <W w="to" /> and <W w="from" />: who or where it
@@ -224,8 +226,12 @@ export function GrammarView() {
       <p>
         <W w="<verb_prescriptive>" /> makes a verb prescriptive or imperative (should, shall), and{" "}
         <W w="<verb_interrogative>" /> makes it a question. In a question, <W w="<blank>" /> stands
-        for what's being asked about; without it, the question is yes or no.
+        for what's being asked about; without it, the question is yes or no. With <W w="we" /> as
+        its subject, <W w="<verb_prescriptive>" /> is “let's”.
       </p>
+      <Example meaning="Let us make brick.">
+        &lt;subject&gt; we &lt;verb_prescriptive&gt; create(vt) &lt;object&gt; brick
+      </Example>
       <Example meaning="No one shall be held in slavery or servitude.">
         &lt;subject&gt; no_one &lt;verb_prescriptive&gt; be(vt) &lt;complement&gt; owned or forced.
       </Example>
@@ -616,7 +622,9 @@ export function GrammarView() {
         senses danger and joy good.
         A <W w="language" /> is <i>&lt;tool&gt; say(vt)</i>, what one speaks with, a{" "}
         <W w="message" /> <i>&lt;ee&gt; send(vt) information</i> and a <W w="reputation" />{" "}
-        <i>belief of other</i>, what others believe of one.
+        <i>belief of other</i>, what others believe of one. A <W w="word" /> is{" "}
+        <i>symbol speech</i>, a spoken symbol, and a <W w="name" /> <i>word particular</i>, a word for
+        a particular one, as a proper noun is.
       </p>
       <Example meaning="I think that you slept.">
         &lt;subject&gt; I &lt;verb&gt; think(vt) &lt;object&gt; &lt;subject&gt; you &lt;verb&gt; sleep(vi) formerly
@@ -671,7 +679,9 @@ export function GrammarView() {
         densest: <W w="spacefly(vi)" /> through space, <W w="fly(vi)" /> through air,{" "}
         <W w="leap(vi)" /> (a brief flight), <W w="walk(vi)" /> on the ground, <W w="wade(vi)" />{" "}
         through shallow water, <W w="swim(vi)" /> through water and <W w="burrow(vi)" /> through
-        solid ground. <W w="go(vi)" /> is moving in general.
+        solid ground. <W w="go(vi)" /> is moving in general, between <W w="come(vi)" /> and{" "}
+        <W w="stay(vi)" /> on the travel axis. Staying somewhere is living there: <i>stay(vi) at
+        that</i>, they dwelt there.
       </p>
       <p className="mt-2">
         The verb names the medium, not who or what moves, so a boat swims and a plane flies; as
@@ -972,7 +982,11 @@ export function GrammarView() {
           believe that…. Its pronouns are the speaker's, so after <W w="say(vt)" /> it's indirect
           speech. With <W w="identically" /> on the verb, it's direct speech, the very words, and its
           pronouns, here and now are the speaker's at the time: <W w="say_verbatim(vt)" /> is{" "}
-          <i>say(vt) identically</i>. Adding <W w="meta" /> makes it a quote, someone else's words
+          <i>say(vt) identically</i>. Direct speech is a sentence of its own, so a quote that opens
+          with <W w="<verb_prescriptive>" /> is a command: <i>say_verbatim(vt) &lt;object&gt;
+          &lt;verb_prescriptive&gt; see(vi)</i>, they said, “Behold”. A quote longer than one sentence
+          keeps its brackets and has periods inside them:{" "}
+          <i>&lt;object&gt; &lt;clause_start&gt; … . … &lt;clause_end&gt;</i>. Adding <W w="meta" /> makes it a quote, someone else's words
           repeated, with <W w="from" /> for whose: <W w="quote(vt)" /> is{" "}
           <i>say(vt) identically meta</i>. Writing works the same way: <W w="write_verbatim(vt)" /> and{" "}
           <W w="quote_in_writing(vt)" />. A <W w="quotation" /> is <i>&lt;ee&gt; quote(vt)</i>, what's
@@ -1253,7 +1267,8 @@ export function GrammarView() {
 
       <H2>Other grammar words</H2>
       <p>
-        <W w="<foreign>" /> marks a foreign word or name. Possession needs no word of its own: <W w="of" /> covers it, as in <i>family of me</i>.
+        <W w="<foreign>" /> marks the next word as a foreign word or name, said as it's spelled:{" "}
+        <i>&lt;foreign&gt; babel</i>. Possession needs no word of its own: <W w="of" /> covers it, as in <i>family of me</i>.
       </p>
       <p className="mt-2">
         <W w="<filler>" /> is a hesitation, like “um” or Spanish “pues”. It means nothing and can go

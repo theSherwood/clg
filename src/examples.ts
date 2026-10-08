@@ -1336,8 +1336,75 @@ export const udhr_articles: Article[] = [
   },
 ];
 
+// The Tower of Babel (Genesis 11:1-9, King James Version), the conlang community's standard text.
+// Verses 6 and 7 are one quote, so they're translated together
+export const babel_verses: Article[] = [
+  {
+    title: "Genesis 11:1",
+    english: ["And the whole earth was of one language, and of one speech."],
+    transliteration:
+      "<subject> everyone at earth <verb> possess(vt) formerly <object> language number 1 and word plural same.",
+  },
+  {
+    title: "Genesis 11:2",
+    english: [
+      "And it came to pass, as they journeyed from the east, that they found a plain in the land of Shinar; and they dwelt there.",
+    ],
+    transliteration:
+      "at time <clause_start> <subject> they <verb> go(vi) <continuous_tense_aspect> from east <clause_end> <subject> they <verb> find(vt) formerly <object> land flat at <foreign> shinar. <subject> they <verb> stay(vi) formerly at that.",
+  },
+  {
+    title: "Genesis 11:3",
+    english: [
+      "And they said one to another, Go to, let us make brick, and burn them thoroughly. And they had brick for stone, and slime had they for morter.",
+    ],
+    transliteration:
+      "<subject> they <verb> say_verbatim(vt) formerly to each_other <object> <subject> we <verb_prescriptive> create(vt) <object> brick and <verb_prescriptive> burn(vt) completely <object> it. <subject> they <verb> use(vt) formerly <object> brick as rock and <verb> use(vt) <object> liquid dark as glue.",
+  },
+  {
+    title: "Genesis 11:4",
+    english: [
+      "And they said, Go to, let us build us a city and a tower, whose top may reach unto heaven; and let us make us a name, lest we be scattered abroad upon the face of the whole earth.",
+    ],
+    transliteration:
+      "<subject> they <verb> say_verbatim(vt) formerly <object> <subject> we <verb_prescriptive> create(vt) <object> city and tower <clause_start> <subject> top of <blank> <verb> touch(vt) <object> sky <clause_end> and <verb_prescriptive> create(vt) <object> reputation of self for <clause_start> <object> we <verb> not disperse(vt) to everywhere at earth.",
+  },
+  {
+    title: "Genesis 11:5",
+    english: ["And the LORD came down to see the city and the tower, which the children of men builded."],
+    transliteration:
+      "<subject> god <verb> descend(vi) formerly for <verb> see(vt) <object> city and tower <clause_start> <subject> person plural <verb> create(vt) formerly <object> <blank> <clause_end>.",
+  },
+  {
+    title: "Genesis 11:6–7",
+    english: [
+      "And the LORD said, Behold, the people is one, and they have all one language; and this they begin to do: and now nothing will be restrained from them, which they have imagined to do.",
+      "Go to, let us go down, and there confound their language, that they may not understand one another's speech.",
+    ],
+    transliteration:
+      "<subject> god <verb> say_verbatim(vt) formerly <object> <clause_start> <verb_prescriptive> see(vi). if <subject> they <verb> be(vt) <complement> society united and <verb> possess(vt) <object> language number 1 and <verb> start(vt) <perfect_tense_aspect> <object> <gerund> do(vt) this <clause_end> <subject> they <verb> do(vt) ably henceforth <object> everything <clause_start> <subject> they <verb> aim(vt) <object> <blank> <clause_end>. <subject> we <verb_prescriptive> descend(vi) and <verb_prescriptive> disorganize(vt) at that <object> language of they for <subject> they <verb> not know(vt) <object> language of each_other <clause_end>.",
+  },
+  {
+    title: "Genesis 11:8",
+    english: [
+      "So the LORD scattered them abroad from thence upon the face of all the earth: and they left off to build the city.",
+    ],
+    transliteration:
+      "<subject> god <verb> disperse(vt) consequently formerly from that to everywhere at earth <object> they. <subject> they <verb> stop(vt) formerly <object> <gerund> create(vt) city.",
+  },
+  {
+    title: "Genesis 11:9",
+    english: [
+      "Therefore is the name of it called Babel; because the LORD did there confound the language of all the earth: and from thence did the LORD scatter them abroad upon the face of all the earth.",
+    ],
+    transliteration:
+      "<subject> name of city <verb> be(vt) consequently <complement> <foreign> babel from <subject> god <verb> disorganize(vt) formerly at that <object> language of everyone and <verb> disperse(vt) formerly from that to everywhere at earth <object> they.",
+  },
+];
+
 export type Token =
   | { kind: "punctuation"; text: string }
+  | { kind: "foreign"; text: string } // the word after <foreign>: a name or borrowing, said as written
   | {
       kind: "word";
       text: string; // as written in the transliteration
@@ -1385,6 +1452,10 @@ export function tokenize(transliteration: string): Token[] {
     const text = raw[i]!;
     if (/^[.,;]$/.test(text) || text === "??") {
       tokens.push({ kind: "punctuation", text });
+      continue;
+    }
+    if (/^<foreign>$/i.test(raw[i - 1] ?? "") && /^[\w'-]+$/.test(text)) {
+      tokens.push({ kind: "foreign", text });
       continue;
     }
     const uncertain = /\?>?$/.test(text);

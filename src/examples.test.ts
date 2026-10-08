@@ -4,7 +4,11 @@ import { tokenize } from "./examples";
 
 const resolved = (transliteration: string) =>
   tokenize(transliteration).map((t) =>
-    t.kind === "punctuation" ? t.text : (t.word?.word ?? t.candidate?.word ?? `?${t.text}`),
+    t.kind === "punctuation"
+      ? t.text
+      : t.kind === "foreign"
+        ? `foreign:${t.text}`
+        : (t.word?.word ?? t.candidate?.word ?? `?${t.text}`),
   );
 
 test("bracketed names resolve to grammar markers, bare ones to ordinary words", () => {
@@ -36,6 +40,19 @@ test("digits, two-word names and unknown words", () => {
     "digit_15",
     "<clause_start>",
     "?blorp",
+  ]);
+});
+
+test("the word after <foreign> is a name, not a dictionary word", () => {
+  expect(resolved("name <verb> be(vt) <complement> <foreign> babel. babel")).toEqual([
+    "name",
+    "<verb>",
+    "be(vt)",
+    "<complement>",
+    "<foreign>",
+    "foreign:babel",
+    ".",
+    "?babel",
   ]);
 });
 

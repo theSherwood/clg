@@ -1532,7 +1532,10 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "travel",
       notes:
-        "come - stay - go; negative verb forms: to bring; to come; positive verb forms: to send; to go",
+        "come - stay - go; negative verb forms: to bring; to come; positive verb forms: to send; to go. Staying somewhere is living there: stay(vi) at that, they dwelt there",
+      steps: {
+        neutral: { noun: "stay", verb: "stay(vi)", verb_i: "stay", verb_t: "keep", synonyms: { verb: ["remain", "dwell", "live"] } },
+      },
     },
     {
       noun: "arrival",
@@ -3447,7 +3450,9 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("rival", ["<ee>", "compete(vi)"], { notes: "Who one competes against" });
   noun("language", ["<tool>", "say(vt)"], { synonyms: ["tongue", "speech"], notes: "What one speaks with" });
   noun("message", ["<ee>", "send(vt)", "information"], { synonyms: ["letter", "mail", "correspondence"] });
-  noun("reputation", ["belief", "of", "other"], { synonyms: ["honour", "name"], notes: "What others believe of one" });
+  noun("reputation", ["belief", "of", "other"], { synonyms: ["honour"], notes: "What others believe of one: making a name for oneself" });
+  noun("word", ["symbol", "speech"], { notes: "A spoken symbol" });
+  noun("name", ["word", "particular"], { notes: "A word for a particular one, as a proper noun is; a word for a type is word generic" });
   phrase("discriminate(vi)", ["reject(vt)", "by", "type"], "discriminate", "discriminate against");
   noun("discrimination", ["<gerund>", "discriminate(vi)"], { synonyms: ["distinction"] });
   phrase("marry(vi)", ["connect(vi)", "family"], "marry", "marry");
@@ -3772,6 +3777,9 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("ash", ["result", "fire"], { notes: "What fire leaves: the result of burning" });
   noun("smoke", ["ash", "gas"], { notes: "The result of burning, as a gas" });
   noun("house", ["building", "family"], { gloss: "house / home" });
+  noun("city", ["land", "building"], { synonyms: ["town"], notes: "Built-up land, as a country is a society's land" });
+  noun("tower", ["building", "high"]);
+  noun("brick", ["rock", "artificial"], { notes: "Artificial stone" });
   noun("room", ["part", "building"]);
   noun("grease", ["<tool>", "slip(vi)"], { gloss: "grease / lubricant" });
   noun("glue", ["<tool>", "stick(vi)"]);

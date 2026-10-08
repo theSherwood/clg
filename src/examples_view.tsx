@@ -1,5 +1,6 @@
 import React, { useContext, useMemo } from "react";
 import {
+  type Article,
   type Example,
   type Token,
   number_examples,
@@ -29,6 +30,7 @@ import {
   udhr_articles,
   water_fire_examples,
   udhr_preamble,
+  babel_verses,
 } from "./examples";
 import { swadesh, toki_pona_words } from "./comparison";
 import { ComparisonTable, TallyLine } from "./comparison_view";
@@ -66,13 +68,23 @@ const TokenBox: React.FC<{ token: WordToken }> = ({ token }) => {
   );
 };
 
+// A foreign name or borrowing is said as written, so its sound is its spelling
+const ForeignBox: React.FC<{ text: string }> = ({ text }) => (
+  <span className="inline-flex flex-col items-center px-1 rounded border border-gray-200 text-xs leading-tight">
+    <span className="text-gray-700 italic">{text}</span>
+    <span className="font-mono text-gray-500">{text}</span>
+  </span>
+);
+
 // Each word over its sound, then the whole thing as it would be spoken, with gaps for words that
 // don't have roots yet
 function Interlinear({ transliteration }: { transliteration: string }) {
   const phonology = useContext(PhonologyContext);
   const tokens = useMemo(() => tokenize(transliteration), [transliteration]);
   const spoken = tokens
-    .map((t) => (t.kind === "punctuation" ? t.text : t.word ? pronounce(t.word, phonology) : "___"))
+    .map((t) =>
+      t.kind === "punctuation" || t.kind === "foreign" ? t.text : t.word ? pronounce(t.word, phonology) : "___",
+    )
     .join(" ")
     .replace(/ ([.,;])/g, "$1");
   return (
@@ -83,6 +95,8 @@ function Interlinear({ transliteration }: { transliteration: string }) {
             <span key={i} className="text-gray-500 px-0.5">
               {t.text}
             </span>
+          ) : t.kind === "foreign" ? (
+            <ForeignBox key={i} text={t.text} />
           ) : (
             <TokenBox key={i} token={t} />
           ),
@@ -132,6 +146,25 @@ function ExampleList({ examples }: { examples: Example[] }) {
   );
 }
 
+// Passages of a longer text, each in English over its translation
+function ArticleList({ articles }: { articles: Article[] }) {
+  return (
+    <div className="space-y-5">
+      {articles.map((a) => (
+        <div key={a.title}>
+          <h3 className="font-semibold text-sm">{a.title}</h3>
+          {a.english.map((p) => (
+            <p key={p} className="text-sm text-gray-600 mb-1">
+              {p}
+            </p>
+          ))}
+          {a.transliteration && <Interlinear transliteration={a.transliteration} />}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 const all_transliterations = [
   ...number_examples.flatMap((b) => b.examples.map((e) => e.transliteration)),
   ...tense_examples.map((e) => e.transliteration),
@@ -157,7 +190,9 @@ const all_transliterations = [
   ...arithmetic_examples.map((e) => e.transliteration),
   ...more_grammar_examples.map((e) => e.transliteration),
   ...conversation_examples.map((e) => e.transliteration),
-  ...[...udhr_preamble, ...udhr_articles].flatMap((a) => (a.transliteration ? [a.transliteration] : [])),
+  ...[...udhr_preamble, ...udhr_articles, ...babel_verses].flatMap((a) =>
+    a.transliteration ? [a.transliteration] : [],
+  ),
 ];
 
 // Words the examples need that have no root, most used first
@@ -262,20 +297,15 @@ export function ExamplesView() {
         </Section>
       ))}
 
+      <Section title="The Tower of Babel">
+        <p className="text-sm text-gray-600 mb-3">
+          Genesis 11:1–9 in the King James Version, the text conlangs are traditionally compared on.
+        </p>
+        <ArticleList articles={babel_verses} />
+      </Section>
+
       <Section title="Universal Declaration of Human Rights">
-        <div className="space-y-5">
-          {translated.map((a) => (
-            <div key={a.title}>
-              <h3 className="font-semibold text-sm">{a.title}</h3>
-              {a.english.map((p) => (
-                <p key={p} className="text-sm text-gray-600 mb-1">
-                  {p}
-                </p>
-              ))}
-              <Interlinear transliteration={a.transliteration!} />
-            </div>
-          ))}
-        </div>
+        <ArticleList articles={translated} />
         {untranslated.length > 0 && (
           <details className="mt-6 text-sm">
             <summary className="cursor-pointer font-semibold">
