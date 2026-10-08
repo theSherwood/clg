@@ -56,6 +56,20 @@ test("the word after <foreign> is a name, not a dictionary word", () => {
   ]);
 });
 
+test("a name can end a sentence or come before a marker, and <foreign> before either takes nothing", () => {
+  expect(resolved("land <foreign> shinar. <foreign> adam <verb> come(vi)")).toEqual([
+    "land",
+    "<foreign>",
+    "foreign:shinar",
+    ".",
+    "<foreign>",
+    "foreign:adam",
+    "<verb>",
+    "come(vi)",
+  ]);
+  expect(resolved("<foreign> . <foreign> <verb>")).toEqual(["<foreign>", ".", "<foreign>", "<verb>"]);
+});
+
 test("a trailing ? marks a word as uncertain", () => {
   const [verb, blorp] = tokenize("<verb?> blorp?");
   expect(verb).toMatchObject({ kind: "word", uncertain: true, word: dictionary.get("<verb>") });

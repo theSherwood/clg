@@ -13,8 +13,8 @@ phonology playground's **Save as defaults** write `phonology.defaults.json`.
 - `dict.ts`: every word, in sections of root IDs, plus candidates (planned words without a root
   yet), the axis backlog and a Toki Pona reference list
 - `phonology.ts`: how a root ID becomes a syllable, and the checks the playground runs
-- `examples.ts`: worked examples (number examples, the UDHR) and the tokenizer that looks up
-  their words
+- `examples.ts`: worked examples (number examples, the UDHR, the Tower of Babel) and the
+  tokenizer that looks up their words
 - `grammar.tsx`: the grammar and syntax page
 
 The tests snapshot which words hold which root IDs. If one fails after you add or move a word,
@@ -68,3 +68,17 @@ fit as its scale steps.
   after and is a list item
 - [x] each other: each_other, other mutual, with mutual on the trade step
 - [x] born free: <complement> follows any verb, saying what the subject is meanwhile
+
+## Standard texts
+
+Texts other conlangs are compared on, translated to test the grammar and vocabulary.
+
+- [x] UDHR, all 30 articles and the preamble
+- [x] The Tower of Babel (Genesis 11:1-9, King James Version)
+- [ ] The North Wind and the Sun (the IPA's sample passage)
+- [ ] Schleicher's fable, The Sheep and the Horses
+- [ ] The Lord's Prayer
+- [ ] Syntax test cases (graded sentences from the CONLANG list; source to find)
+
+Open from Babel: understand is know(vt) for now. A quote's own bracket and an inner bracket
+each need a <clause_end>, so verse 4 ends with two; no better system yet.
