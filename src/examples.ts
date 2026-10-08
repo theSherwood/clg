@@ -1125,6 +1125,8 @@ export const udhr_articles: Article[] = [
     english: [
       "Everyone has the right to an effective remedy by the competent national tribunals for acts violating the fundamental rights granted him by the constitution or by law.",
     ],
+    transliteration:
+      "<subject> everyone <verb> be_entitled_to(vt) <object> <subject> court of country of it <verb> mend(vt) well <object> deed <clause_start> <subject> <blank> <verb> break(vt) <object> right of it from constitution or law <clause_end>.",
   },
   {
     title: "Article 9",
@@ -1137,6 +1139,8 @@ export const udhr_articles: Article[] = [
     english: [
       "Everyone is entitled in full equality to a fair and public hearing by an independent and impartial tribunal, in the determination of his rights and obligations and of any criminal charge against him.",
     ],
+    transliteration:
+      "<subject> everyone <verb> be_entitled_to(vt) <object> <subject> court free impartial <verb> judge(vt) visibly <object> it as everyone about right and duty of it and about <gerund> blame(vt) it.",
   },
   {
     title: "Article 11",
@@ -1144,6 +1148,8 @@ export const udhr_articles: Article[] = [
       "Everyone charged with a penal offence has the right to be presumed innocent until proved guilty according to law in a public trial at which he has had all the guarantees necessary for his defence.",
       "No one shall be held guilty of any penal offence on account of any act or omission which did not constitute a penal offence, under national or international law, at the time when it was committed. Nor shall a heavier penalty be imposed than the one that was applicable at the time the penal offence was committed.",
     ],
+    transliteration:
+      "<subject> law <verb_prescriptive> assume(vt) <object> <ee> blame(vt) as not culpable. <subject> only trial visible <verb_prescriptive> prove(vt) <object> it as culpable by law. <subject> it <verb_prescriptive> defend(vt) <object> self ably in trial. <object> no_one <verb_prescriptive> judge(vt) as culpable about deed <clause_start> <subject> law <verb> not forbid(vt) <object> <blank> at time of it <clause_end>. <subject> <gerund> punish(vt) <verb_prescriptive> not exceed(vt) <object> <gerund> punish(vt) of law at time of crime.",
   },
   {
     title: "Article 12",

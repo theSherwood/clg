@@ -2386,10 +2386,16 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       synonyms: { noun: ["worth", "selection"] },
       steps: {
         min_positive: { noun: "preference", adj: "preferred", verb: "prefer(vt)", verb_i: "prefer", verb_t: "prefer" },
+        neutral: {
+          noun: "impartiality",
+          adj: "impartial",
+          adverb: "impartially",
+          synonyms: { noun: ["fairness"], adj: ["fair", "neutral"], adverb: ["fairly"] },
+        },
       },
     },
     { noun: "rejection", adj: "rejected", verb: "reject(vt)", verb_i: "refuse", verb_t: "reject" },
-    { noun: "choice", adj: "chosen", verb: "choose(vi)", verb_i: "choose", verb_t: "choose" },
+    { noun: "choice", adj: "chosen", verb: "choose(vi)", verb_i: "choose", verb_t: "choose", adverb: "selectively" },
   ],
   [
     {
@@ -2414,6 +2420,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "lay blame",
       verb_t: "blame",
       adverb: "reproachfully",
+      synonyms: { adj: ["guilty"], verb: ["accuse", "charge"] },
     },
     {
       noun: "thanks",
@@ -3480,6 +3487,14 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
       "A general command: one that says nothing of particular people or ends, unlike a command, which is an order to someone. Whose law is said with of",
   });
   phrase("punish(vt)", ["hurt(vt)", "for", "law"], "be punished", "punish");
+
+  // Law and justice. Convicting is judge(vt) as culpable, acquitting judge(vt) as not culpable
+  phrase("judge(vt)", ["infer(vt)", "accountability"], "judge", "judge");
+  noun("judge", ["<er>", "judge(vt)"]);
+  noun("court", ["<place>", "judge(vt)"], { synonyms: ["tribunal"] });
+  noun("trial", ["<gerund>", "judge(vt)"], { synonyms: ["hearing"] });
+  noun("crime", ["deed", "forbidden"], { synonyms: ["offence"] });
+  noun("constitution", ["law", "source"], { notes: "The law other laws come from" });
 
   // Society, people first: a country is a society's land and a government its authority
   noun("society", ["group", "person"], {

@@ -476,6 +476,23 @@ export function GrammarView() {
         all and &lt;verb&gt; come(vi) to country of self
       </Example>
 
+      <H2>Law and justice</H2>
+      <p>
+        To <W w="judge(vt)" /> is <i>infer(vt) accountability</i>, to reason out who's accountable.
+        A <W w="judge" /> is <i>&lt;er&gt; judge(vt)</i>, a <W w="court" />{" "}
+        <i>&lt;place&gt; judge(vt)</i> and a <W w="trial" /> <i>&lt;gerund&gt; judge(vt)</i>. A{" "}
+        <W w="crime" /> is <i>deed forbidden</i> and the <W w="constitution" /> <i>law source</i>.
+        Accusing is <W w="blame(vt)" /> and the accused <i>&lt;ee&gt; blame(vt)</i>; guilty is{" "}
+        <W w="culpable" /> and innocent <i>not culpable</i>. Convicting is{" "}
+        <i>judge(vt) as culpable</i>, with <W w="as" /> saying what the object is judged to be, and
+        acquitting <i>judge(vt) as not culpable</i>. <W w="impartial" />, fair, is the middle of the
+        value axis, neither choosing nor rejecting.
+      </p>
+      <Example meaning="The law shall presume the accused not guilty.">
+        &lt;subject&gt; law &lt;verb_prescriptive&gt; assume(vt) &lt;object&gt; &lt;ee&gt; blame(vt) as not
+        culpable
+      </Example>
+
       <H2>Speech, writing and the senses</H2>
       <p>
         These are action axes, each with its counterpart at the other end:{" "}
@@ -1003,7 +1020,8 @@ export function GrammarView() {
         just <W w="everything" />.{" "}
         <W w="self" /> and <W w="other" /> are content roots too. As an object, <W w="self" /> is
         reflexive (<i>I know(vt) self</i>, I know myself), and <i>family of self</i> is one's
-        own family. <i>person other</i> is another person, and <W w="each_other" /> is{" "}
+        own family. It means its own clause's subject, borrowed or not, so in a subclause with a
+        subject of its own, the main clause's subject is <W w="<pronoun_third_person>" />. <i>person other</i> is another person, and <W w="each_other" /> is{" "}
         <i>other mutual</i>, the mutual other. <W w="mutual" /> is the adjective of{" "}
         <W w="trade" />, giving and taking alike, the middle of the giving axis.
       </p>
