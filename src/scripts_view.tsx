@@ -194,36 +194,46 @@ function Line({ marks, size }: { marks: number[][]; size: number }) {
 }
 
 // A word in cursive stems. The stems are one stroke for the whole word: the pen writes one stem
-// down and the next up, joining them with a small arch at the foot or the top. Rungs are written
-// left to right, top to bottom, in strokes of their own, and cross or touch the stem only where a
-// rung is. So a stroke goes on from a rung that finishes out on the right only into a right rung,
-// which starts at the stem: the join swings out past the end and comes in from above, staying on
-// the right. A rung that ends at the stem, or a next rung that starts on the left, ends the stroke.
+// down and the next up, joining them with a small arch at the foot or the top. Rungs are strokes
+// of their own, written top to bottom, and only a rung meets the stem. A join is a U-turn from one
+// rung's outer end to the next one's, on the same side, so it never comes near the stem. A rung
+// that starts a stroke is written out from the stem, ready to join on; one that's joined into is
+// written in to the stem, where the stroke ends; a rung across carries the stroke to its other side.
 function rung_strokes(states: number[], x: number, top: number, row_height: number, reach: number): string[] {
-  const turn = reach * 0.35; // how far a join swings out past the right end
+  const turn = reach * 0.35; // how far a U-turn bulges past the ends
+  const rungs = states.flatMap((state, r) =>
+    state === 0 ? [] : [{ y: top + (r + 0.5) * row_height, left: (state & 1) > 0, right: (state & 2) > 0 }],
+  );
+  const reaches = (rung: (typeof rungs)[number], side: number) => (side < 0 ? rung.left : rung.right);
   const strokes: string[] = [];
   let current = "";
-  let previous_y = 0;
-  states.forEach((state, r) => {
-    if (state === 0) return;
-    const y = top + (r + 0.5) * row_height;
-    const from = state & 1 ? x - reach : x;
-    const to = state & 2 ? x + reach : x;
-    if (current && from === x) {
-      // Every control point is right of the stem, so the curve can't cross it
-      current +=
-        ` C ${x + reach + turn} ${previous_y} ${x + reach + turn} ${y - row_height * 0.6}` +
-        ` ${x + reach * 0.5} ${y - row_height * 0.45}` +
-        ` C ${x + reach * 0.2} ${y - row_height * 0.35} ${x} ${y - row_height * 0.2} ${x} ${y}`;
-    } else {
-      if (current) strokes.push(current);
-      current = `M ${from} ${y}`;
+  let pen = 0; // the side the pen is on, -1 left or 1 right, or 0 when the stroke has ended
+  rungs.forEach((rung, k) => {
+    const { y, left, right } = rung;
+    if (pen !== 0 && reaches(rung, pen)) {
+      const end = x + pen * reach;
+      const previous_y = rungs[k - 1]!.y;
+      current += ` C ${end + pen * turn} ${previous_y} ${end + pen * turn} ${y} ${end} ${y}`;
+      if (left && right) {
+        current += ` L ${x - pen * reach} ${y}`;
+        pen = -pen;
+      } else {
+        current += ` L ${x} ${y}`;
+        strokes.push(current);
+        current = "";
+        pen = 0;
+      }
+      return;
     }
-    current += ` L ${to} ${y}`;
-    previous_y = y;
-    if (to === x) {
-      strokes.push(current);
-      current = "";
+    if (current) strokes.push(current);
+    if (left && right) {
+      // Write it toward the side the next rung can be joined from
+      const next = rungs[k + 1];
+      pen = next && !next.right && next.left ? -1 : 1;
+      current = `M ${x - pen * reach} ${y} L ${x + pen * reach} ${y}`;
+    } else {
+      pen = left ? -1 : 1;
+      current = `M ${x} ${y} L ${x + pen * reach} ${y}`;
     }
   });
   if (current) strokes.push(current);
@@ -527,7 +537,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
     },
     {
       name: "Cursive stems",
-      note: "The same stems joined into one stroke per word; rungs written left to right, joined only on the right of the stem",
+      note: "The same stems joined into one stroke per word; rungs joined by U-turns between their outer ends",
       render: (ids) => <CursiveStems rows={ids.map((id) => layout_values(id, phonology, stems))} size={size} />,
     },
     {
