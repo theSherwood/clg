@@ -7,7 +7,7 @@ import {
 } from "./comparison";
 import { tokenize } from "./examples";
 import { pronounce } from "./phonology";
-import { PhonologyContext } from "./word_ui";
+import { Phrase, PhonologyContext, WordHover } from "./word_ui";
 
 export function TallyLine({ rows }: { rows: Comparison[] }) {
   const t = useMemo(() => tally(rows), [rows]);
@@ -43,10 +43,19 @@ export function ComparisonTable({ rows }: { rows: Comparison[] }) {
           const theirs = toki_pona_syllables(row.toki_pona);
           const sound =
             ours === undefined
-              ? ""
-              : tokenize(row.ours)
-                  .flatMap((t) => (t.kind === "word" && t.word ? [pronounce(t.word, phonology)] : []))
-                  .join(" ");
+              ? []
+              : tokenize(row.ours).flatMap((t, i) =>
+                  t.kind === "word" && t.word
+                    ? [
+                        i > 0 ? " " : "",
+                        <WordHover key={i} word={t.word}>
+                          <span className="cursor-default hover:underline decoration-dotted">
+                            {pronounce(t.word, phonology)}
+                          </span>
+                        </WordHover>,
+                      ]
+                    : [],
+                );
           const compare =
             ours === undefined || theirs === undefined
               ? ""
@@ -59,7 +68,7 @@ export function ComparisonTable({ rows }: { rows: Comparison[] }) {
             <tr key={`${row.english}-${row.toki_pona}`} className="border-t border-gray-100">
               <td className="pr-3 py-0.5">{row.english}</td>
               <td className={`pr-3 py-0.5 ${ours === undefined ? "bg-red-50 text-red-600" : ""}`}>
-                {ours === undefined ? "—" : row.ours}
+                {ours === undefined ? "—" : <Phrase text={row.ours} />}
                 {row.loose && (
                   <span className="ml-1 text-xs text-amber-700" title="A near miss">
                     loose

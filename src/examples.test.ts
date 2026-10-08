@@ -85,6 +85,26 @@ test("every word the Grammar page refers to exists", async () => {
   expect(unknown).toEqual([]);
 });
 
+// Inline phrases (<T>) and examples are tokenized for hovering, so a typo would silently lose its popup
+test("every word in the Grammar page's phrases and examples exists", async () => {
+  const source = await Bun.file(`${import.meta.dir}/grammar.tsx`).text();
+  const unescape = (s: string) => s.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+  const phrases = [...source.matchAll(/<T>([^<]*)<\/T>|<Example[^>]*>([^<]*)<\/Example>/g)].map((m) =>
+    unescape(m[1] ?? m[2]!),
+  );
+  expect(phrases.length).toBeGreaterThan(0);
+  const placeholders = ["X", "Y"];
+  const known_gaps = ["soldier", "dog"];
+  const unknown = phrases.flatMap((p) =>
+    tokenize(p).flatMap((t) =>
+      t.kind === "word" && !t.word && !t.candidate && ![...placeholders, ...known_gaps].includes(t.text)
+        ? [`${t.text}: ${p}`]
+        : [],
+    ),
+  );
+  expect(unknown).toEqual([]);
+});
+
 // A noun that shares a verb's name (sleep, desire) would otherwise slip in where the verb belongs
 test("every verb marker is followed by a verb", async () => {
   const examples = await import("./examples");

@@ -14,6 +14,7 @@ import {
   is_root,
   sections,
 } from "./dict";
+import { tokenize } from "./examples";
 import { type Phonology, default_phonology, pronounce, syllable_of } from "./phonology";
 import Tippy, { type TippyProps } from "@tippyjs/react";
 import "tippy.js/dist/tippy.css"; // Default tippy styling
@@ -366,7 +367,18 @@ function AxisMatrix({ axis, form, depth }: { axis: Axis; form: string; depth: nu
     <div className="mt-2 mb-2">
       <div className="text-xs mb-1">
         <span className="font-semibold">Axis</span>
-        {axis.name.word && <span> {axis.name.word.word}</span>}
+        {axis.name.word && (
+          <span>
+            {" "}
+            {form_key(axis.name.word) === form ? (
+              axis.name.word.word
+            ) : (
+              <FormHover word={axis.name.word} depth={depth}>
+                {axis.name.word.word}
+              </FormHover>
+            )}
+          </span>
+        )}
         {axis.verb_type && (
           <span className="ml-1.5">
             <VerbTypeBadge type={axis.verb_type} />
@@ -562,6 +574,20 @@ export function FormPopoverContent({
   );
 }
 
+// Opens a word's popup on hover, from anywhere outside a popup
+export function WordHover({ word, children }: { word: Word; children: React.ReactElement }) {
+  return (
+    <LazyTippy
+      content={<FormPopoverContent word={word} current={word} depth={0} />}
+      interactive={true}
+      delay={[200, 0]}
+      theme="light"
+    >
+      {children}
+    </LazyTippy>
+  );
+}
+
 // An inline reference to a word, showing its current pronunciation. Candidates (no root yet)
 // are marked in amber.
 export function W(props: { w: string }) {
@@ -579,15 +605,49 @@ export function W(props: { w: string }) {
     );
   }
   return (
-    <LazyTippy
-      content={<FormPopoverContent word={word} current={word} depth={0} />}
-      interactive={true}
-      delay={[200, 0]}
-      theme="light"
-    >
+    <WordHover word={word}>
       <span className="font-mono text-sm whitespace-nowrap cursor-default">
         {word.word} <span className="text-indigo-700">{pronounce(word, phonology)}</span>
       </span>
-    </LazyTippy>
+    </WordHover>
+  );
+}
+
+// A transliteration as written, with each word opening its popup. Candidates are amber; anything
+// else (placeholders like X or …) is left as plain text.
+export function Phrase({ text }: { text: string }) {
+  const parts: React.ReactNode[] = [];
+  let at = 0;
+  tokenize(text).forEach((token, i) => {
+    const start = text.indexOf(token.text, at);
+    if (start < 0) return;
+    if (start > at) parts.push(text.slice(at, start));
+    at = start + token.text.length;
+    if (token.kind === "word" && token.word) {
+      parts.push(
+        <WordHover key={i} word={token.word}>
+          <span className="cursor-default hover:underline decoration-dotted">{token.text}</span>
+        </WordHover>,
+      );
+    } else if (token.kind === "word" && token.candidate) {
+      parts.push(
+        <span key={i} className="text-amber-700" title="Candidate: no root yet">
+          {token.text}
+        </span>,
+      );
+    } else {
+      parts.push(token.text);
+    }
+  });
+  parts.push(text.slice(at));
+  return <>{parts}</>;
+}
+
+// An inline transliteration in running text
+export function T({ children }: { children: React.ReactNode }) {
+  return (
+    <i>
+      <Phrase text={React.Children.toArray(children).join("")} />
+    </i>
   );
 }

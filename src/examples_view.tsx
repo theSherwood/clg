@@ -37,7 +37,7 @@ import {
 import { swadesh, toki_pona_words } from "./comparison";
 import { ComparisonTable, TallyLine } from "./comparison_view";
 import { adapt_foreign, pronounce } from "./phonology";
-import { FormPopoverContent, LazyTippy, PhonologyContext } from "./word_ui";
+import { PhonologyContext, WordHover } from "./word_ui";
 
 type WordToken = Extract<Token, { kind: "word" }>;
 
@@ -58,16 +58,7 @@ const TokenBox: React.FC<{ token: WordToken }> = ({ token }) => {
     </span>
   );
   if (!word) return box;
-  return (
-    <LazyTippy
-      content={<FormPopoverContent word={word} current={word} depth={0} />}
-      interactive={true}
-      delay={[200, 0]}
-      theme="light"
-    >
-      {box}
-    </LazyTippy>
-  );
+  return <WordHover word={word}>{box}</WordHover>;
 };
 
 // A foreign name or borrowing, respelled in our syllables
@@ -86,18 +77,21 @@ const ForeignBox: React.FC<{ text: string }> = ({ text }) => {
 function Interlinear({ transliteration }: { transliteration: string }) {
   const phonology = useContext(PhonologyContext);
   const tokens = useMemo(() => tokenize(transliteration), [transliteration]);
-  const spoken = tokens
-    .map((t) =>
-      t.kind === "punctuation"
-        ? t.text
-        : t.kind === "foreign"
-          ? adapt_foreign(t.text, phonology).join("")
-          : t.word
-            ? pronounce(t.word, phonology)
-            : "___",
-    )
-    .join(" ")
-    .replace(/ ([.,;])/g, "$1");
+  // As spoken, each word opens its popup; punctuation hugs the word before it
+  const spoken = tokens.map((t, i) => {
+    const space = i > 0 && t.kind !== "punctuation" ? " " : "";
+    if (t.kind === "punctuation") return <React.Fragment key={i}>{t.text}</React.Fragment>;
+    if (t.kind === "foreign") return <React.Fragment key={i}>{space}{adapt_foreign(t.text, phonology).join("")}</React.Fragment>;
+    if (!t.word) return <React.Fragment key={i}>{space}___</React.Fragment>;
+    return (
+      <React.Fragment key={i}>
+        {space}
+        <WordHover word={t.word}>
+          <span className="cursor-default hover:underline decoration-dotted">{pronounce(t.word, phonology)}</span>
+        </WordHover>
+      </React.Fragment>
+    );
+  });
   return (
     <div>
       <div className="flex flex-wrap gap-1 items-end">
