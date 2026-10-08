@@ -1256,12 +1256,16 @@ export const udhr_articles: Article[] = [
       "Everyone who works has the right to just and favourable remuneration ensuring for himself and his family an existence worthy of human dignity, and supplemented, if necessary, by other means of social protection.",
       "Everyone has the right to form and to join trade unions for the protection of his interests.",
     ],
+    transliteration:
+      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> work(vi) and <verb> choose(vt) freely <object> work of self. <subject> everyone <verb> be_entitled_to(vt) <object> work good impartial and defense from <gerund> lack(vt) work. <subject> everyone <verb> be_entitled_to(vt) impartially <object> wage same for work same. <subject> worker all <verb> be_entitled_to(vt) <object> wage good impartial. <subject> it <verb_prescriptive> be(vt) <complement> enough for life of dignity of worker and family of worker. if <subject> it <verb> be(vt) <complement> not enough <clause_end> <subject> society <verb_prescriptive> defend(vt) <object> worker by thing other. <subject> everyone <verb> be_entitled_to(vt) <object> <verb> start(vt) <object> union and <verb> enter(vi) in union for defense of self.",
   },
   {
     title: "Article 24",
     english: [
       "Everyone has the right to rest and leisure, including reasonable limitation of working hours and periodic holidays with pay.",
     ],
+    transliteration:
+      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> rest(vi) and <verb> enjoy_oneself(vi). <object> hour of work <verb_prescriptive> limit(vt). <subject> everyone <verb_prescriptive> rest(vi) cyclically and <verb_prescriptive> receive(vt) <object> wage in <gerund> rest(vi).",
   },
   {
     title: "Article 25",
@@ -1269,6 +1273,8 @@ export const udhr_articles: Article[] = [
       "Everyone has the right to a standard of living adequate for the health and well-being of himself and of his family, including food, clothing, housing and medical care and necessary social services, and the right to security in the event of unemployment, sickness, disability, widowhood, old age or other lack of livelihood in circumstances beyond his control.",
       "Motherhood and childhood are entitled to special care and assistance. All children, whether born in or out of wedlock, shall enjoy the same social protection.",
     ],
+    transliteration:
+      "<subject> everyone <verb> be_entitled_to(vt) <object> life enough for health and goodness of self and of family of self. <subject> it <verb> include(vt) <object> food and clothing and house and medicine and service necessary of society. <subject> everyone <verb> be_entitled_to(vt) <object> safety if <subject> it <verb> lack(vt) <object> work or ability or spouse or money from not self or <verb> be(vt) <complement> sick or old. <subject> mother and youth <verb> be_entitled_to(vt) <object> care particular. <subject> child of marriage and child of not marriage <verb_prescriptive> possess(vt) <object> defense same by society.",
   },
   {
     title: "Article 26",

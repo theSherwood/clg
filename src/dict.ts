@@ -359,7 +359,15 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "quantity",
       notes:
-        "Amounts and counts alike: water many is much water, person many many people. More and less are the comparison axis's greater and lesser",
+        "Amounts and counts alike: water many is much water, person many many people. More and less are the comparison axis's greater and lesser. The middle is enough",
+      steps: {
+        neutral: {
+          noun: "sufficiency",
+          adj: "enough",
+          adverb: "sufficiently",
+          synonyms: { adj: ["sufficient", "adequate"] },
+        },
+      },
     },
     {
       noun: "scarcity",
@@ -1686,10 +1694,28 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "integrity",
       notes:
-        "There's some relationship between break - mend, part - whole, and divide - group. I'm not yet sure what it is.",
+        "There's some relationship between break - mend, part - whole, and divide - group. I'm not yet sure what it is. For a body, integrity is health, as heal, whole and hale share a root: sick is a lesser breaking, and healing is mend(vi)",
+      synonyms: { noun: ["wholeness"] },
+      steps: {
+        min_negative: {
+          noun: "illness",
+          adj: "sick",
+          verb: "sicken(vt)",
+          verb_i: "fall ill",
+          verb_t: "sicken",
+          synonyms: { noun: ["sickness", "disease"], adj: ["ill", "unwell"] },
+        },
+      },
     },
     { noun: "breakage", adj: "broken", verb: "break(vi)", verb_i: "break", verb_t: "break" },
-    { noun: "repair", adj: "intact", verb: "mend(vt)", verb_i: "heal", verb_t: "mend" },
+    {
+      noun: "repair",
+      adj: "intact",
+      verb: "mend(vt)",
+      verb_i: "heal",
+      verb_t: "mend",
+      synonyms: { adj: ["healthy", "whole", "well"] },
+    },
   ],
   [
     { noun: "holiness" },
@@ -3334,6 +3360,19 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   phrase("marry(vi)", ["connect(vi)", "family"], "marry", "marry");
   noun("marriage", ["<gerund>", "marry(vi)"]);
   noun("adult", ["person", "mature"]);
+
+  // Work, money and health
+  noun("worker", ["<er>", "work(vi)"]);
+  phrase("pay(vi)", ["give(vi)", "money"], "pay", "pay for");
+  noun("wage", ["money", "work"], { synonyms: ["pay", "salary", "remuneration"] });
+  noun("union", ["group", "worker"], { synonyms: ["trade union", "labor union"] });
+  phrase("cooperate(vi)", ["work(vi)", "together"], "cooperate", "cooperate with");
+  noun("health", ["integrity", "body"], { notes: "A body's integrity" });
+  noun("medicine", ["<gerund>", "mend(vt)", "body"], { synonyms: ["medical care", "healthcare"] });
+  noun("doctor", ["<er>", "mend(vt)", "body"], { synonyms: ["physician", "healer"] });
+  noun("drug", ["<tool>", "mend(vt)", "body"], { synonyms: ["medication", "remedy"] });
+  noun("hospital", ["<place>", "mend(vt)", "body"]);
+  noun("clothing", ["covering", "person"], { synonyms: ["clothes"], notes: "A person's covering, as skin is a body's" });
   phrase("pretend(vi)", ["show(vi)", "falsely"], "pretend", "disguise");
   // Saying or writing exactly: the clause is verbatim, so its pronouns are whoever first said it.
   // With meta, the words are someone else's, repeated: quoting
@@ -3495,7 +3534,7 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
 
   noun("quotation", ["<ee>", "quote(vi)"], { gloss: "quotation / quote", notes: "What's quoted" });
   noun("quoter", ["<er>", "quote(vi)"], { notes: "Whoever quotes" });
-  noun("machine", ["<er>", "work(vi)", "artificial"], { gloss: "machine / robot", notes: "An artificial worker" });
+  noun("machine", ["worker", "artificial"], { gloss: "machine / robot", notes: "An artificial worker" });
   noun("computation", ["<gerund>", "work(vi)", "information"], {
     notes: "Working data. Working a material is crafting it, as German werken: work(vt) rock is stonework",
   });

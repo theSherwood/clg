@@ -405,7 +405,7 @@ export function GrammarView() {
       </Example>
       <p className="mt-2">
         <W w="mind" /> is <i>&lt;er&gt; sense(vt) self</i>, what perceives itself. A <W w="machine" /> is{" "}
-        <i>&lt;er&gt; work(vi) artificial</i>, an artificial worker. Making something new or following what exists is the
+        <i>worker artificial</i>, an artificial <W w="worker" />. Making something new or following what exists is the
         provenance axis: <W w="original" /> and <W w="derivative" />, <W w="invent(vt)" /> and{" "}
         <W w="imitate(vt)" />, with a <W w="copy" /> as imitation at its fullest and a{" "}
         <W w="source" /> (<W w="canonical" />) as originality at its fullest: <i>source of truth</i>.{" "}
@@ -497,6 +497,27 @@ export function GrammarView() {
       <Example meaning="The law shall presume the accused not guilty.">
         &lt;subject&gt; law &lt;verb_prescriptive&gt; assume(vt) &lt;object&gt; &lt;ee&gt; blame(vt) as not
         culpable
+      </Example>
+
+      <H2>Work, money and health</H2>
+      <p>
+        A <W w="worker" /> is <i>&lt;er&gt; work(vi)</i>, to <W w="pay(vi)" /> is{" "}
+        <i>give(vt) money</i>, with <W w="to" /> for whom, and a <W w="wage" /> is{" "}
+        <i>money work</i>. A <W w="union" /> is <i>group worker</i>, and to{" "}
+        <W w="cooperate(vi)" /> <i>work(vi) together</i>. Enough is the middle of the quantity axis:{" "}
+        <W w="enough" />, between few and many.
+      </p>
+      <p className="mt-2">
+        Health is the integrity axis, as heal, whole and hale share a root: <W w="health" /> is{" "}
+        <i>integrity body</i>, healthy is{" "}
+        <W w="intact" />, healing <W w="mend(vt)" /> without an object, and <W w="sick" /> a lesser
+        breaking, <i>&lt;min_negative&gt; intact</i>. Mending bodies gives <W w="medicine" /> (
+        <i>&lt;gerund&gt; mend(vt) body</i>), a <W w="doctor" />, a <W w="drug" /> and a{" "}
+        <W w="hospital" />, by the role markers. <W w="clothing" /> is <i>covering person</i>, a
+        person's covering, as skin is a body's.
+      </p>
+      <Example meaning="The doctor healed the sick child.">
+        &lt;subject&gt; doctor &lt;verb&gt; mend(vt) formerly &lt;object&gt; child sick
       </Example>
 
       <H2>Speech, writing and the senses</H2>
