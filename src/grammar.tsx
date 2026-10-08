@@ -266,6 +266,15 @@ export function GrammarView() {
         <i>&lt;min_positive&gt; henceforth</i> soon and <i>&lt;max_positive&gt; henceforth</i> the far future.
       </p>
       <p className="mt-2">
+        A noun about time right after a verb says when, not what: <i>sleep(vi) always</i>,{" "}
+        <i>use(vt) never</i>, <i>sleep(vi) hour many</i>. Any other bare noun there is a built-in
+        object, as in <i>work(vt) information</i>, to compute.
+      </p>
+      <Example meaning="These rights shall never be used against their purpose.">
+        &lt;object&gt; right this &lt;verb_prescriptive&gt; use(vt) never for &lt;gerund&gt; contrast_with(vt)
+        purpose of it
+      </Example>
+      <p className="mt-2">
         <W w="<continuous_tense_aspect>" /> marks something as ongoing and{" "}
         <W w="<perfect_tense_aspect>" /> as done, with a result that still holds. They also follow the
         verb, before any time adverb, so the two combine like English's tenses. With both,
@@ -417,6 +426,8 @@ export function GrammarView() {
         the same axis credit yourself. A <W w="model" /> is <i>&lt;er&gt; resemble(vt)</i>, a thing that
         resembles another. <W w="meta" /> as a modifier makes X about X: <i>merit meta</i> is
         metaethics, the study of what good is, and <i>knowledge meta</i> knowing what you know.
+        <W w="merit" />, the goodness axis, is also morality or ethics, and a principle is an{" "}
+        <W w="axiom" />, a posited starting point.
       </p>
       <Example meaning="I prefer water.">&lt;subject&gt; I &lt;verb&gt; prefer(vt) &lt;object&gt; water</Example>
 
@@ -468,7 +479,8 @@ export function GrammarView() {
         <W w="govern(vi)" /> is <i>lead(vt) society</i>; a <W w="governor" /> is{" "}
         <i>&lt;er&gt; govern(vi)</i>. <W w="politics" />, <i>&lt;gerund&gt; seek(vt) authority</i>, is
         the contest over who governs, and as a modifier it's “political”: a non-political crime is{" "}
-        <i>crime not politics</i>. A <W w="member" /> is{" "}
+        <i>crime not politics</i>. <W w="democracy" /> is <i>government everyone</i>, everyone's
+        government, and a democratic society <i>society democracy</i>. A <W w="member" /> is{" "}
         <i>&lt;ee&gt; include(vt)</i>, who's included, and a <W w="citizen" /> <i>member country</i>;
         one's nationality is <i>country of self</i>. A <W w="border" /> is <i>edge country</i>.
         “Nation” and “state” are whichever of these is meant, “international” is{" "}
@@ -880,7 +892,9 @@ export function GrammarView() {
       <Example meaning="a person of a big family">person &lt;regroup&gt; family big</Example>
       <p className="mt-2">
         <W w="only" />, <W w="also" /> and <W w="even" /> are prefixes, like <W w="not" />, on the one
-        word they focus: <i>only you</i>, <i>also you</i> (you too), <i>even child</i>.
+        word they focus: <i>only you</i>, <i>also you</i> (you too), <i>even child</i>. On a
+        preposition or <W w="if" />, that word opens a phrase, and the phrase is what's focused:{" "}
+        <i>only by law</i>, <i>only if …</i>.
       </p>
       <Example meaning="I drink only water.">
         &lt;subject&gt; I &lt;verb&gt; eat(vt) &lt;object&gt; only water

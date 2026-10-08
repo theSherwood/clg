@@ -1304,6 +1304,8 @@ export const udhr_articles: Article[] = [
     english: [
       "Everyone is entitled to a social and international order in which the rights and freedoms set forth in this Declaration can be fully realized.",
     ],
+    transliteration:
+      "<subject> everyone <verb> be_entitled_to(vt) <object> order <clause_start> <subject> right and freedom of this <verb> come_true(vi) fully ably in <blank> <clause_end> in society and between country plural.",
   },
   {
     title: "Article 29",
@@ -1312,6 +1314,8 @@ export const udhr_articles: Article[] = [
       "In the exercise of his rights and freedoms, everyone shall be subject only to such limitations as are determined by law solely for the purpose of securing due recognition and respect for the rights and freedoms of others and of meeting the just requirements of morality, public order and the general welfare in a democratic society.",
       "These rights and freedoms may in no case be exercised contrary to the purposes and principles of the United Nations.",
     ],
+    transliteration:
+      "<subject> everyone <verb> possess(vt) <object> duty to society <clause_start> <subject> it <verb> mature(vi) freely fully ably only in <blank> <clause_end>. <object> right and freedom of everyone <verb_prescriptive> limit(vt) only by law and only for acknowledgment of right and freedom of other and for merit and order of society and goodness of everyone in society democracy. <object> right and freedom this <verb_prescriptive> use(vt) never for <gerund> contrast_with(vt) purpose and axiom of group of country all.",
   },
   {
     title: "Article 30",

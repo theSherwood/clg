@@ -1340,7 +1340,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "merit" },
+    { noun: "merit", synonyms: { noun: ["morality", "ethics"] } },
     {
       noun: "badness",
       adj: "bad",
@@ -2442,7 +2442,14 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
         "From premises to conclusions: assuming at the negative end, inferring at the positive, axioms and theorems at the ends. Reason, the faculty, is <tool> infer(vt); a reason for believing something is a premise, as a reason something happened is a cause",
       steps: {
         max_positive: { noun: "theorem", adj: "derived", verb: "derive(vt)", verb_i: "derive", verb_t: "derive" },
-        max_negative: { noun: "axiom", adj: "axiomatic", verb: "posit(vt)", verb_i: "posit", verb_t: "posit" },
+        max_negative: {
+          noun: "axiom",
+          adj: "axiomatic",
+          verb: "posit(vt)",
+          verb_i: "posit",
+          verb_t: "posit",
+          synonyms: { noun: ["principle", "postulate"] },
+        },
       },
     },
     {
@@ -3620,6 +3627,7 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("politics", ["<gerund>", "search(vi)", "authority"], {
     notes: "Seeking authority, the contest over who governs. As a modifier, political",
   });
+  noun("democracy", ["government", "everyone"], { notes: "Everyone's government. As a modifier, democratic" });
   // Education, culture and science
   noun("education", ["<gerund>", "educate(vt)"]);
   noun("teacher", ["<er>", "educate(vt)"]);
