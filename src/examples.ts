@@ -164,28 +164,28 @@ export const tense_examples: Example[] = [
   {
     title: "Remote past",
     english: "The person died long ago",
-    transliteration: "<subject> person <verb> die(vi) <max_negative> henceforth",
+    transliteration: "<subject> person <verb> die(vi) <max_positive> formerly",
   },
   {
     title: "Recent past",
     english: "The person just left",
-    transliteration: "<subject> person <verb> go(vi) <min_negative> henceforth",
+    transliteration: "<subject> person <verb> go(vi) <min_positive> formerly",
   },
   {
     title: "Near future",
     english: "I'll give you money soon",
-    transliteration: "<subject> I <verb> give(vt) <min_positive> henceforth <object> money to you",
+    transliteration: "<subject> I <verb> give(vt) <min_negative> formerly <object> money to you",
   },
   {
     title: "Now",
     english: "Right now, I'm sleeping",
-    transliteration: "<subject> I <verb> sleep(vi) <continuous_tense_aspect> <neutral> henceforth",
+    transliteration: "<subject> I <verb> sleep(vi) <continuous_tense_aspect> <neutral> formerly",
   },
   {
     title: "Time carries over",
     english: "Long ago, a person gave money. They left. (both past)",
     transliteration:
-      "<subject> person <verb> give(vt) <max_negative> henceforth <object> money. <subject> it <verb> go(vi).",
+      "<subject> person <verb> give(vt) <max_positive> formerly <object> money. <subject> it <verb> go(vi).",
   },
 ];
 

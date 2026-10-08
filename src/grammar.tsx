@@ -276,9 +276,10 @@ export function GrammarView() {
           Verbs aren't marked for tense. As in Mandarin, a sentence's time comes from context, and
           once a time is set it carries over to the sentences after it. To be explicit, a time adverb
           follows the verb: <W w="henceforth" /> for the future and <W w="formerly" /> for the past.
-          The axis scale grades them: <T>&lt;max_negative&gt; henceforth</T> is long ago,{" "}
-          <T>&lt;min_negative&gt; henceforth</T> recently, <T>&lt;neutral&gt; henceforth</T> now,{" "}
-          <T>&lt;min_positive&gt; henceforth</T> soon and <T>&lt;max_positive&gt; henceforth</T> the far future.
+          The past is the bare root, since it's said most. The axis scale grades them:{" "}
+          <T>&lt;max_positive&gt; formerly</T> is long ago, <T>&lt;min_positive&gt; formerly</T> recently,{" "}
+          <T>&lt;neutral&gt; formerly</T> now, <T>&lt;min_negative&gt; formerly</T> soon and{" "}
+          <T>&lt;max_negative&gt; formerly</T> the far future.
         </p>
         <p className="mt-2">
           A noun about time right after a verb says when, not what: <T>sleep(vi) always</T>,{" "}

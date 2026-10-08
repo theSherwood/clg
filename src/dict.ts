@@ -704,20 +704,20 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   [
     { noun: "finiteness(axis)" },
     {
-      noun: "finitude(state)",
-      adj: "finite",
-      verb: "end(vi)",
-      verb_i: "end",
-      verb_t: "limit",
-      adverb: "finitely",
-    },
-    {
       noun: "infinity",
       adj: "infinite",
       verb: "perpetuate(vt)",
       verb_i: "become endless",
       verb_t: "perpetuate",
       adverb: "infinitely",
+    },
+    {
+      noun: "finitude(state)",
+      adj: "finite",
+      verb: "end(vi)",
+      verb_i: "end",
+      verb_t: "limit",
+      adverb: "finitely",
     },
   ],
   [
@@ -759,15 +759,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "hierarchy", notes: "negative verb flatten(vi) (no positive verb)" },
-    {
-      noun: "flatness",
-      adj: "flat",
-      verb: "flatten(vi)",
-      verb_i: "flatten",
-      verb_t: "flatten",
-      adverb: "flatly",
-    },
+    { noun: "hierarchy", notes: "Flat is the bare root, as the commoner end" },
     {
       noun: "nestedness",
       adj: "nested",
@@ -775,6 +767,14 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "nest",
       verb_t: "embed",
       adverb: "recursively",
+    },
+    {
+      noun: "flatness",
+      adj: "flat",
+      verb: "flatten(vi)",
+      verb_i: "flatten",
+      verb_t: "flatten",
+      adverb: "flatly",
     },
   ],
   [
@@ -1136,20 +1136,12 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       notes:
         "Rank gives the unit, a step up a ladder rather than a power of ten: <rank_0> second, <rank_1> minute, <rank_2> hour, <rank_3> day, <rank_4> week, <rank_5> month, <rank_6> year, <rank_7> decade, <rank_8> century, <rank_9> millennium. time <rank_3> number 3 is three days and time <rank_3> this today. A day of 24 hours is time <rank_3>; daytime is time bright and night time dark",
       steps: {
-        max_negative: { adj: "ancient", adverb: "long_ago" },
-        min_negative: { adj: "recent", adverb: "recently" },
+        max_positive: { adj: "ancient", adverb: "long_ago" },
+        min_positive: { adj: "recent", adverb: "recently" },
         neutral: { adj: "current", adverb: "now" },
-        min_positive: { adj: "upcoming", adverb: "soon" },
-        max_positive: { adj: "far_future", adverb: "in_the_far_future" },
+        min_negative: { adj: "upcoming", adverb: "soon" },
+        max_negative: { adj: "far_future", adverb: "in_the_far_future" },
       },
-    },
-    {
-      noun: "history",
-      adj: "past",
-      verb: "pass(vi)",
-      verb_i: "pass",
-      verb_t: "bring forward",
-      adverb: "formerly",
     },
     {
       noun: "futurity",
@@ -1158,6 +1150,14 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "get delayed",
       verb_t: "postpone",
       adverb: "henceforth",
+    },
+    {
+      noun: "history",
+      adj: "past",
+      verb: "pass(vi)",
+      verb_i: "pass",
+      verb_t: "bring forward",
+      adverb: "formerly",
     },
   ],
   [
@@ -1456,15 +1456,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "curvature", notes: "negative verb round(vt) (no positive verb)" },
-    {
-      noun: "roundness",
-      adj: "round",
-      verb: "round(vt)",
-      verb_i: "round out",
-      verb_t: "round",
-      adverb: "roundly",
-    },
+    { noun: "curvature", notes: "Round is the bare root, as the commoner end" },
     {
       noun: "angularity",
       adj: "angular",
@@ -1472,6 +1464,14 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "bend",
       verb_t: "angle",
       adverb: "angularly",
+    },
+    {
+      noun: "roundness",
+      adj: "round",
+      verb: "round(vt)",
+      verb_i: "round out",
+      verb_t: "round",
+      adverb: "roundly",
     },
   ],
   [
@@ -1509,10 +1509,10 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   [
     {
       noun: "consciousness",
-      notes: "negative verb forms: sleep; negative adverb “sleepily” needs a positive adverb",
+      notes: "Sleep is the bare root, as the commoner end; positive adverb “sleepily” needs a negative adverb",
     },
-    { noun: "sleep", adj: "asleep", verb: "sleep(vi)", verb_i: "sleep", verb_t: "put to sleep" },
     { noun: "wakefulness", adj: "awake", verb: "wake(vi)", verb_i: "wake", verb_t: "wake" },
+    { noun: "sleep", adj: "asleep", verb: "sleep(vi)", verb_i: "sleep", verb_t: "put to sleep" },
   ],
   [
     { notes: "positive verb forms: to create; to self-actualize? / to become" },
@@ -1808,14 +1808,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "connectivity",
       notes:
-        'nouns: cyclic graph - dag - tree - list - node / alternatively, maybe it is better to have a "node" and use magnitude to raise it to list, tree, dag, cyclic graph; negative verb forms: to connect; positive verb forms: to disconnect',
-    },
-    {
-      noun: "connection",
-      adj: "connected",
-      verb: "connect(vi)",
-      verb_i: "connect",
-      verb_t: "attach",
+        'nouns: cyclic graph - dag - tree - list - node / alternatively, maybe it is better to have a "node" and use magnitude to raise it to list, tree, dag, cyclic graph; positive verb forms: to connect; negative verb forms: to disconnect',
     },
     {
       noun: "disconnection",
@@ -1824,11 +1817,18 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "come apart",
       verb_t: "disconnect",
     },
+    {
+      noun: "connection",
+      adj: "connected",
+      verb: "connect(vi)",
+      verb_i: "connect",
+      verb_t: "attach",
+    },
   ],
   [
     {},
-    { noun: "start", adj: "started", verb: "start(vi)", verb_i: "start", verb_t: "start" },
     { noun: "stop", adj: "stopped", verb: "stop(vi)", verb_i: "stop", verb_t: "stop" },
+    { noun: "start", adj: "started", verb: "start(vi)", verb_i: "start", verb_t: "start" },
   ],
   [
     {
@@ -3254,16 +3254,16 @@ export const verb_types: Record<VerbType, string[]> = {
     "grow(vi)", "accelerate(vt)", "change(vi)", "simplify(vt)", "strengthen(vi)", "increase(vi)",
     "organize(vt)", "activate(vt)", "demarcate(vt)", "complete(vt)", "open(vi)", "smooth(vt)", "free(vt)",
     "abstract(vt)", "absolutize(vt)", "melt(vi)", "make_explicit(vt)", "externalize(vt)",
-    "perpetuate(vt)", "become_essential(vi)", "idealize(vt)", "nest(vi)",
+    "end(vi)", "become_essential(vi)", "idealize(vt)", "flatten(vi)",
     "enumerate(vt)", "curl(vt)", "emerge(vi)", "distance(vt)", "quiet(vt)", "sharpen(vt)", "wet(vt)", "clean(vt)",
     "thicken(vi)", "lift(vt)", "stand(vi)", "bear(vt)", "heat(vt)", "brighten(vi)", "harden(vi)", "get_heavier(vi)", "prove(vt)",
-    "postpone(vt)", "come_to_life(vi)", "eat(vt)", "sink(vi)", "veer_right(vi)",
+    "pass(vi)", "come_to_life(vi)", "eat(vt)", "sink(vi)", "veer_right(vi)",
     "withdraw(vt)", "spread(vi)", "stir(vi)", "persist(vi)", "make_artificial(vt)",
     "spread_out(vi)", "straighten(vi)", "improve(vi)", "entertain(vt)",
-    "materialize(vi)", "enable(vt)", "angle(vt)", "rejuvenate(vt)", "wake(vi)", "create(vt)",
+    "materialize(vi)", "enable(vt)", "round(vt)", "rejuvenate(vt)", "sleep(vi)", "create(vt)",
     "beautify(vt)", "go(vi)", "heap_up(vt)", "fill_up(vi)", "educate(vt)",
     "aim(vt)", "group(vt)", "mark_up(vt)", "emphasize(vt)", "mend(vt)",
-    "sanctify(vt)", "close_in(vi)", "disconnect(vt)", "stop(vi)",
+    "sanctify(vt)", "close_in(vi)", "connect(vi)", "start(vi)",
     "necessitate(vt)", "cover(vt)", "empower(vt)", "secure(vt)",
   ],
   action: [
