@@ -1098,7 +1098,7 @@ export const udhr_articles: Article[] = [
       "No one shall be held in slavery or servitude; slavery and the slave trade shall be prohibited in all their forms.",
     ],
     transliteration:
-      "<subject> no_one <verb_prescriptive> be(vt) <complement> owned or forced. <object> <gerund> use_force(vi) and trade <ee> force(vt) in shape all <verb_prescriptive> forbid(vt).",
+      "<subject> no_one <verb_prescriptive> be(vt) <complement> owned or forced. <object> <gerund> possess(vt) person and <gerund> exchange(vt) person <verb_prescriptive> forbid(vt) in type all.",
   },
   {
     title: "Article 5",

@@ -61,9 +61,9 @@ fit as its scale steps.
 ## Open from the UDHR
 
 - [ ] value / dignity: not importance; something like preferredness, near the selection axis
-- [ ] kind / type / form that isn't geometric (shape and form are geometry ranks)
+- [x] kind / type / form that isn't geometric: type and instance, the ends of abstraction
 - [ ] arbitrary, as in arbitrary arrest: not random, but without lawful basis
-- [ ] and before <gerund>: and before a role marker joins clauses, which breaks lists of gerunds
-  ("slavery and the slave trade", Article 4)
+- [x] and before <gerund>: only <subject>, <object> and verb markers start a clause, so a gerund
+  after and is a list item
 - [ ] each other: other alone reads as another person
 - [ ] born free: <complement> only follows be(vt), so a depictive after another verb has no form

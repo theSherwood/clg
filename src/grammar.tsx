@@ -567,6 +567,17 @@ export function GrammarView() {
         <i>&lt;ee&gt; sow(vt)</i> and <W w="fruit" /> <i>food seed</i>, food with seed in it.
       </p>
 
+      <H2>Kinds</H2>
+      <p>
+        Kinds are the ends of the abstraction axis, which runs from <W w="concrete" /> to{" "}
+        <W w="abstract" />. A <W w="type" /> (<W w="generic" />) is generalizing as far as it goes,
+        and an <W w="instance" /> (<W w="particular" />) is the fully particular case. “What kind?”
+        is <i>type &lt;blank&gt;</i>, and “in all its forms” is <i>in type all</i>.
+      </p>
+      <Example meaning="What kind of animal is it?">
+        &lt;subject&gt; it &lt;verb_interrogative&gt; be(vt) &lt;complement&gt; animal &lt;regroup&gt; type &lt;blank&gt;
+      </Example>
+
       <H2>Geometry</H2>
       <p>
         <W w="geometry" /> is one root for geometric figures. Rank gives a bounded figure with that
@@ -774,8 +785,11 @@ export function GrammarView() {
       <p>
         <W w="and" />, <W w="or" />, <W w="if" /> and <W w="but" />. Exclusive forms are compounds: xor is
         “or-exclusive” and iff is “if-exclusive”. One <W w="and" /> joins both clauses and list
-        items: followed by a role marker it joins clauses, and followed by a noun it joins list
-        items.
+        items: followed by <W w="<subject>" />, <W w="<object>" /> or a verb marker it joins
+        clauses, and otherwise list items. <W w="<gerund>" />, like <W w="<er>" /> and{" "}
+        <W w="<ee>" />, makes a noun, so after <W w="and" /> it starts a list item: <i>&lt;gerund&gt;
+        possess(vt) person and &lt;gerund&gt; exchange(vt) person</i> is “owning people and trading
+        people”.
       </p>
       <p className="mt-2">
         <W w="<clause_start>" /> and <W w="<clause_end>" /> bracket a clause inside another, and the

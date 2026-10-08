@@ -578,7 +578,19 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "abstraction(axis)",
       notes:
-        "From axis.csv: positive noun abstraction, positive verb generalize (transitive), positive adjective general",
+        "From axis.csv: positive noun abstraction, positive verb generalize (transitive), positive adjective general. At the ends, a type is generalizing as far as it goes and an instance the fully particular case: type <blank> is what kind, in type all in all its forms",
+      steps: {
+        max_positive: {
+          noun: "type",
+          adj: "generic",
+          synonyms: { noun: ["kind", "class", "category"] },
+        },
+        max_negative: {
+          noun: "instance",
+          adj: "particular",
+          synonyms: { noun: ["example", "specimen", "individual"], adj: ["specific"] },
+        },
+      },
     },
     {
       noun: "concreteness",
