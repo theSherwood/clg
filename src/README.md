@@ -66,4 +66,4 @@ fit as its scale steps.
 - [x] and before <gerund>: only <subject>, <object> and verb markers start a clause, so a gerund
   after and is a list item
 - [x] each other: each_other, other mutual, with mutual on the trade step
-- [ ] born free: <complement> only follows be(vt), so a depictive after another verb has no form
+- [x] born free: <complement> follows any verb, saying what the subject is meanwhile

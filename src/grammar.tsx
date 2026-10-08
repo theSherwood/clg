@@ -202,6 +202,18 @@ export function GrammarView() {
         &lt;subject&gt; water &lt;verb&gt; be(vi) at this
       </Example>
       <p className="mt-2">
+        <W w="<complement>" /> can follow any verb, saying what the subject is while the verb
+        happens: born free, came home wet. It always describes the subject; what the object is
+        goes on the object as a modifier, <i>&lt;object&gt; water hot</i>. With <W w="be(vt)" />,
+        there's nothing else happening, so it's just what the subject is.
+      </p>
+      <Example meaning="Everyone is born free.">
+        &lt;subject&gt; everyone &lt;verb&gt; be_born(vi) &lt;complement&gt; free
+      </Example>
+      <Example meaning="The child came home wet.">
+        &lt;subject&gt; child &lt;verb&gt; come(vi) formerly to house &lt;complement&gt; wet
+      </Example>
+      <p className="mt-2">
         Change verbs have becoming built in, but action and relation verbs don't. For those,{" "}
         <W w="become" /> is a prefix on the verb, coming into its state, like Toki Pona's{" "}
         <i>kama</i>: <i>become possess(vt)</i> is gain, <i>become know(vt)</i> come to know.

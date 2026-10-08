@@ -2674,7 +2674,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   });
   cr("<complement>", {
     t: [T.grammar_helper, T.part_of_speech_specifier],
-    gloss: "a subject complement, after is: what the subject is",
+    gloss: "a subject complement: what the subject is, after is, or while any other verb happens",
     notes:
       "What follows describes the subject, so it reads as a modifier: the adjective where there is one (is <complement> hot), otherwise the noun (is <complement> matter <rank_1>)",
   });
