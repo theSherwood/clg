@@ -1157,6 +1157,8 @@ export const udhr_articles: Article[] = [
       "Everyone has the right to freedom of movement and residence within the borders of each state.",
       "Everyone has the right to leave any country, including his own, and to return to his country.",
     ],
+    transliteration:
+      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> go(vi) and <verb> be(vi) at everywhere in country of self. <subject> everyone <verb> be_entitled_to(vt) <object> <verb> exit(vi) from country all and <verb> come(vi) to country of self.",
   },
   {
     title: "Article 14",
@@ -1171,6 +1173,8 @@ export const udhr_articles: Article[] = [
       "Everyone has the right to a nationality.",
       "No one shall be arbitrarily deprived of his nationality nor denied the right to change his nationality.",
     ],
+    transliteration:
+      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> be(vt) <complement> citizen. <object> country of self <verb_prescriptive> take(vt) from no_one for nothing and <subject> everyone <verb> be_entitled_to(vt) <object> <verb> alter(vt) <object> country of self.",
   },
   {
     title: "Article 16",

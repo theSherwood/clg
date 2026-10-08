@@ -3479,6 +3479,23 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   });
   phrase("punish(vt)", ["hurt(vt)", "for", "law"], "be punished", "punish");
 
+  // Society, people first: a country is a society's land and a government its authority
+  noun("society", ["group", "person"], {
+    synonyms: ["community", "a people", "nation"],
+    notes: "A group of people. A crowd is one too; context tells them apart",
+  });
+  noun("country", ["land", "society"], { synonyms: ["nation", "state"], notes: "A society's land" });
+  noun("government", ["authority", "society"], {
+    synonyms: ["state", "the authorities"],
+    notes: "A society's authority",
+  });
+  noun("member", ["<ee>", "include(vt)"], { notes: "Who or what is included" });
+  noun("citizen", ["member", "country"], {
+    synonyms: ["national"],
+    notes: "A member of a country. Nationality is country of self",
+  });
+  noun("border", ["edge", "country"], { synonyms: ["frontier"] });
+
   // Conversation
   idiom("yes", ["true"], { notes: "That's so" });
   idiom("no", ["false"], { notes: "That's not so" });

@@ -451,6 +451,21 @@ export function GrammarView() {
         &lt;negative&gt; male</i>, four syllables for a very common word.
       </Open>
 
+      <H2>Society and country</H2>
+      <p>
+        People come first. A <W w="society" /> is <i>group person</i>, a group of people: a
+        community, or a people. A <W w="country" /> is <i>land society</i>, a society's land, and a{" "}
+        <W w="government" /> <i>authority society</i>, its authority. A <W w="member" /> is{" "}
+        <i>&lt;ee&gt; include(vt)</i>, who's included, and a <W w="citizen" /> <i>member country</i>;
+        one's nationality is <i>country of self</i>. A <W w="border" /> is <i>edge country</i>.
+        “Nation” and “state” are whichever of these is meant, “international” is{" "}
+        <i>between country plural</i> and humanity is <W w="everyone" />.
+      </p>
+      <Example meaning="Everyone may leave any country and come back to their own.">
+        &lt;subject&gt; everyone &lt;verb&gt; be_entitled_to(vt) &lt;object&gt; &lt;verb&gt; exit(vi) from country
+        all and &lt;verb&gt; come(vi) to country of self
+      </Example>
+
       <H2>Speech, writing and the senses</H2>
       <p>
         These are action axes, each with its counterpart at the other end:{" "}
