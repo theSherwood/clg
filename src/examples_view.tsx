@@ -33,6 +33,7 @@ import {
   babel_verses,
   north_wind_sentences,
   lords_prayer,
+  siduri_advice,
 } from "./examples";
 import { swadesh, toki_pona_words } from "./comparison";
 import { ComparisonTable, TallyLine } from "./comparison_view";
@@ -186,7 +187,7 @@ const all_transliterations = [
   ...arithmetic_examples.map((e) => e.transliteration),
   ...more_grammar_examples.map((e) => e.transliteration),
   ...conversation_examples.map((e) => e.transliteration),
-  ...[...udhr_preamble, ...udhr_articles, ...babel_verses, ...north_wind_sentences, ...lords_prayer].flatMap(
+  ...[...udhr_preamble, ...udhr_articles, ...babel_verses, ...north_wind_sentences, ...lords_prayer, ...siduri_advice].flatMap(
     (a) => (a.transliteration ? [a.transliteration] : []),
   ),
 ];
@@ -290,6 +291,14 @@ export function ExamplesView() {
               In the Book of Common Prayer's words, the traditional text for comparing languages.
             </p>
             <ArticleList articles={lords_prayer} />
+          </Section>
+
+          <Section title="Siduri's advice" level={3}>
+            <p className="text-sm text-gray-600 mb-3">
+              Siduri the alewife's advice to Gilgamesh, from the Old Babylonian Epic of Gilgamesh:
+              the oldest surviving “eat, drink and be merry”.
+            </p>
+            <ArticleList articles={siduri_advice} />
           </Section>
 
           <Section title="Universal Declaration of Human Rights" level={3}>

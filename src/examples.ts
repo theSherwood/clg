@@ -1489,6 +1489,56 @@ export const lords_prayer: Article[] = [
   },
 ];
 
+// Siduri the alewife's advice to Gilgamesh, from the Old Babylonian Epic of Gilgamesh
+export const siduri_advice: Article[] = [
+  {
+    title: "Where are you hurrying?",
+    english: ["Gilgamesh, where are you hurrying?"],
+    transliteration:
+      "<clause_start> <subject> person <foreign> gilgamesh <clause_end> <subject> you <verb_interrogative> go(vi) <continuous_tense_aspect> quickly to <blank>.",
+  },
+  {
+    title: "The life you seek",
+    english: ["You will never find the life that you seek."],
+    transliteration:
+      "<subject> you <verb> find(vt) never henceforth <object> life <clause_start> <subject> you <verb> seek(vt) <object> <blank> <clause_end>.",
+  },
+  {
+    title: "Life and death",
+    english: [
+      "When the gods created mankind, they allotted death to mankind, but life they retained in their own hands.",
+    ],
+    transliteration:
+      "at time <clause_start> <subject> god plural <verb> create(vt) formerly <object> everyone <clause_end> <subject> they <verb> give(vt) formerly to everyone <object> death but <subject> they <verb> keep(vt) formerly <object> life in hand plural of self.",
+  },
+  {
+    title: "Eat and be merry",
+    english: ["As for you, Gilgamesh, fill your belly with good things; day and night, make merry."],
+    transliteration:
+      "<clause_start> <subject> person <foreign> gilgamesh <clause_end> about you <verb_prescriptive> fill(vt) <object> belly of you with thing plural good. <verb_prescriptive> enjoy_oneself(vi) at daytime and night.",
+  },
+  {
+    title: "Feast and dance",
+    english: ["Let every day be a feast of rejoicing; dance and play day and night."],
+    transliteration:
+      "<subject> day all <verb_prescriptive> be(vt) <complement> feast fun. <verb_prescriptive> dance(vi) and enjoy_oneself(vi) at daytime and night.",
+  },
+  {
+    title: "Wash",
+    english: ["Let your clothes be clean, wash your head and bathe in water."],
+    transliteration:
+      "<subject> clothing of you <verb_prescriptive> be(vt) <complement> clean. <verb_prescriptive> wash(vt) <object> head of you and <verb_prescriptive> bathe(vi) in water.",
+  },
+  {
+    title: "The lot of everyone",
+    english: [
+      "Cherish the little child who holds your hand, and let your wife delight in your embrace — for this too is the lot of man.",
+    ],
+    transliteration:
+      "<verb_prescriptive> love(vt) <object> child small <clause_start> <subject> <blank> <verb> hold(vt) <object> hand of you <clause_end> and <subject> spouse of you <verb_prescriptive> enjoy_oneself(vi) in arm plural of you, from <subject> this also <verb> be(vt) <complement> <ee> give(vt) to everyone.",
+  },
+];
+
 export type Token =
   | { kind: "punctuation"; text: string }
   | { kind: "foreign"; text: string } // the word after <foreign>: a name or borrowing, said as written

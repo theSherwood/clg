@@ -184,7 +184,7 @@ export const toki_pona_equivalents: Record<string, [ours: string, loose?: "loose
   luka: ["arm"],
   pan: [""],
   tawa: ["go(vi)"],
-  jaki: ["abhorrent", "loose"],
+  jaki: ["dirty"],
   lukin: ["look(vi)"],
   pana: ["give(vi)"],
   telo: ["water"],

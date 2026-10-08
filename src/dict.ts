@@ -901,6 +901,27 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { noun: "wetness", adj: "wet", verb: "wet(vt)", verb_i: "get wet", verb_t: "wet" },
   ],
   [
+    { noun: "cleanliness(axis)" },
+    {
+      noun: "dirt",
+      adj: "dirty",
+      verb: "soil(vt)",
+      verb_i: "get dirty",
+      verb_t: "soil",
+      adverb: "dirtily",
+      synonyms: { noun: ["filth"], adj: ["filthy", "unclean"] },
+    },
+    {
+      noun: "cleanliness",
+      adj: "clean",
+      verb: "clean(vt)",
+      verb_i: "become clean",
+      verb_t: "clean",
+      adverb: "cleanly",
+      synonyms: { adj: ["pure"] },
+    },
+  ],
+  [
     { noun: "thickness" },
     {
       noun: "thinness",
@@ -1393,6 +1414,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "enjoy oneself",
       verb_t: "entertain",
       adverb: "pleasantly",
+      synonyms: { verb: ["play", "make merry"], noun: ["joy", "enjoyment"] },
     },
   ],
   [
@@ -3216,7 +3238,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "organize(vt)", "activate(vt)", "demarcate(vt)", "complete(vt)", "open(vi)", "smooth(vt)", "free(vt)",
     "abstract(vt)", "absolutize(vt)", "melt(vi)", "make_explicit(vt)", "externalize(vt)",
     "perpetuate(vt)", "become_essential(vi)", "idealize(vt)", "nest(vi)",
-    "enumerate(vt)", "curl(vt)", "emerge(vi)", "distance(vt)", "quiet(vt)", "sharpen(vt)", "wet(vt)",
+    "enumerate(vt)", "curl(vt)", "emerge(vi)", "distance(vt)", "quiet(vt)", "sharpen(vt)", "wet(vt)", "clean(vt)",
     "thicken(vi)", "lift(vt)", "stand(vi)", "bear(vt)", "heat(vt)", "brighten(vi)", "harden(vi)", "get_heavier(vi)", "prove(vt)",
     "postpone(vt)", "come_to_life(vi)", "eat(vt)", "sink(vi)", "veer_right(vi)",
     "withdraw(vt)", "spread(vi)", "stir(vi)", "persist(vi)", "make_artificial(vt)",
@@ -3447,8 +3469,14 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
       if (!word) throw new Error(`Missing ${part} for ${name}`);
       return word;
     });
-  function phrase(name: string, parts: string[], verb_i: string, verb_t: string) {
-    const word = cw(name, { domain: "verb", parts: words_of(name, parts), verb_i, verb_t });
+  function phrase(
+    name: string,
+    parts: string[],
+    verb_i: string,
+    verb_t: string,
+    data: Pick<WordData, "notes" | "synonyms"> = {},
+  ) {
+    const word = cw(name, { domain: "verb", parts: words_of(name, parts), verb_i, verb_t, ...data });
     name_verb(word, verb_i, verb_t);
   }
   function noun(name: string, parts: string[], data: Pick<WordData, "gloss" | "notes" | "synonyms"> = {}) {
@@ -3820,6 +3848,14 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("wind", ["air", "travel"], { notes: "Air in motion. The north wind is wind north, as in English" });
   noun("traveler", ["<er>", "go(vi)"], { synonyms: ["passer-by", "wayfarer"] });
   noun("cloak", ["clothing", "outside"], { synonyms: ["coat"], notes: "Outerwear" });
+  // Washing cleans with water, as seeing senses light; washing yourself is bathing
+  phrase("wash(vt)", ["clean(vt)", "water"], "bathe", "wash");
+  phrase("hold(vt)", ["touch(vt)", "strongly"], "hold on", "hold", { synonyms: ["grasp", "grip"], notes: "Touching strongly" });
+  noun("belly", ["torso", "front"], { synonyms: ["abdomen", "stomach"], notes: "The front of the torso" });
+  noun("feast", ["food", "many"], { synonyms: ["banquet"], notes: "Abundant food" });
+  noun("music", ["sound", "beautiful"]);
+  // go(vi) is moving in general, so dancing is moving to music
+  phrase("dance(vi)", ["go(vi)", "music"], "dance", "dance");
   phrase("argue(vi)", ["compete(vi)", "by", "speech"], "argue", "dispute");
   noun("argument", ["<gerund>", "argue(vi)"], { synonyms: ["debate", "dispute"] });
   phrase("agree(vi)", ["believe(vi)", "identically"], "agree", "agree on");

@@ -78,6 +78,7 @@ Texts other conlangs are compared on, translated to test the grammar and vocabul
 - [x] The North Wind and the Sun (the IPA's sample passage)
 - [ ] Schleicher's fable, The Sheep and the Horses
 - [x] The Lord's Prayer
+- [x] Siduri's advice to Gilgamesh (Old Babylonian Epic of Gilgamesh)
 - [ ] Syntax test cases (graded sentences from the CONLANG list; source to find)
 
 Open from Babel: understand is know(vt) for now. A quote's own bracket and an inner bracket

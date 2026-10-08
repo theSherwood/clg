@@ -605,7 +605,15 @@ export function GrammarView() {
           listening are attending to what's shown or said, so they're the far ends of{" "}
           <W w="show(vi)" /> and <W w="say(vt)" />. Feelings are perceived the same way, with{" "}
           <W w="sense(vt)" /> and the feeling: <T>sense(vt) pain</T> is to feel pain, so{" "}
-          <W w="feel(vt)" /> stays touch.
+          <W w="feel(vt)" /> stays touch. Holding is touching strongly: <W w="hold(vt)" /> is{" "}
+          <T>touch(vt) strongly</T>, to grasp or grip.
+        </p>
+        <p className="mt-2">
+          Washing is built like the senses, from <W w="clean(vt)" /> and the medium: <W w="wash(vt)" />{" "}
+          is <T>clean(vt) water</T>. Like any change verb, without an object it's what happens to the
+          subject, so washing without an object is bathing: <W w="bathe(vi)" />. The pleasure verb
+          covers play: <W w="enjoy_oneself(vi)" /> is to enjoy oneself, play or make merry, and{" "}
+          <W w="entertain(vt)" /> to entertain.
         </p>
         <p className="mt-2">
           Tastes and smells are qualities, built like colors: <T>taste fun</T> is sweet,{" "}
@@ -712,7 +720,8 @@ export function GrammarView() {
           through shallow water, <W w="swim(vi)" /> through water and <W w="burrow(vi)" /> through
           solid ground. <W w="go(vi)" /> is moving in general, between <W w="come(vi)" /> and{" "}
           <W w="stay(vi)" /> on the travel axis. Staying somewhere is living there: <T>stay(vi) at
-          that</T>, they dwelt there.
+          that</T>, they dwelt there. Dancing is moving to music: <W w="dance(vi)" /> is{" "}
+          <T>go(vi) music</T>, and <W w="music" /> is <T>sound beautiful</T>.
         </p>
         <p className="mt-2">
           The verb names the medium, not who or what moves, so a boat swims and a plane flies; as
@@ -742,7 +751,8 @@ export function GrammarView() {
           kinds go a long way: a <W w="covering" /> is <W w="skin" /> (<T>covering body</T>),{" "}
           <W w="hair" /> (<T>covering head</T>), <W w="fur" /> or <W w="bark" />; a <W w="rod" /> is a{" "}
           <W w="horn" />, <W w="tail" /> or <W w="tongue" />; a <W w="rock" /> is a <W w="tooth" /> (
-          <T>rock mouth</T>) or <W w="bone" /> (<T>rock body</T>).
+          <T>rock mouth</T>) or <W w="bone" /> (<T>rock body</T>). A part can also be named by where it
+          is on the whole: the <W w="belly" /> is <T>torso front</T>.
         </p>
         <p className="mt-2">
           Organs are named for what they do, with <W w="<tool>" />: <W w="eye" /> is{" "}
@@ -760,7 +770,8 @@ export function GrammarView() {
           mountain. A plant's parts are its body's: <W w="root" /> is <T>foot plant</T>,{" "}
           <W w="trunk" /> <T>torso plant</T>, <W w="branch" /> <T>arm plant</T> and <W w="leaf" />{" "}
           <T>finger plant</T>, and <T>mouth water</T> is a river's mouth. <W w="seed" /> is{" "}
-          <T>&lt;ee&gt; sow(vt)</T> and <W w="fruit" /> <T>food seed</T>, food with seed in it.
+          <T>&lt;ee&gt; sow(vt)</T> and <W w="fruit" /> <T>food seed</T>, food with seed in it. A{" "}
+          <W w="feast" /> is <T>food many</T>, abundant food.
         </p>
 
         <H2>Kinds</H2>
