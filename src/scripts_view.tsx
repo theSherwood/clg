@@ -105,16 +105,39 @@ function Stems({ rows, size }: { rows: number[][]; size: number }) {
   );
 }
 
-// A word in the line script: one line along the word, and four marks per syllable along it, each
-// a dash or a circle above or below. Syllables are a little further apart than their marks.
-function Line({ marks, size }: { marks: number[][]; size: number }) {
-  const slot = size * 0.3;
+// A word in the line script, as one stroke: the pen runs along the line, and each mark is an
+// excursion from it, above or below, a flat-topped bump for a dash or a small loop for a circle.
+// Syllables are a little further apart than their marks.
+function line_path(marks: number[][], size: number, middle: number, start: number): string {
+  const slot = size * 0.32;
   const gap = size * 0.4;
-  const height = size * 0.9;
-  const middle = height / 2;
-  const offset = size * 0.2;
-  const width = marks.length * 4 * slot + (marks.length - 1) * gap;
+  const w = slot * 0.72; // a mark's width; the rest of the slot is line
+  const h = size * 0.2; // how far a mark rises or falls
+  let path = `M ${start} ${middle}`;
+  marks.forEach((syllable, i) =>
+    syllable.forEach((mark, j) => {
+      const x = start + i * (4 * slot + gap) + j * slot + (slot - w) / 2;
+      const s = mark & 1 ? 1 : -1; // below or above
+      path += ` L ${x} ${middle}`;
+      if (mark & 2) {
+        // Out and up the far side, over the top, then back down across itself
+        path +=
+          ` C ${x + w * 1.05} ${middle + s * h * 0.1} ${x + w * 1.0} ${middle + s * h * 1.3} ${x + w * 0.5} ${middle + s * h * 1.3}` +
+          ` C ${x} ${middle + s * h * 1.3} ${x - w * 0.05} ${middle + s * h * 0.1} ${x + w} ${middle}`;
+      } else {
+        const ramp = w * 0.25;
+        path += ` L ${x + ramp} ${middle + s * h} L ${x + w - ramp} ${middle + s * h} L ${x + w} ${middle}`;
+      }
+    }),
+  );
+  const end = start + marks.length * 4 * slot + (marks.length - 1) * gap;
+  return path + ` L ${end} ${middle}`;
+}
+
+function Line({ marks, size }: { marks: number[][]; size: number }) {
   const stroke = Math.max(1.5, size / 16);
+  const height = size * 0.75;
+  const width = marks.length * 4 * size * 0.32 + (marks.length - 1) * size * 0.4 + 2 * stroke;
   return (
     <svg
       width={width}
@@ -124,20 +147,10 @@ function Line({ marks, size }: { marks: number[][]; size: number }) {
       stroke="currentColor"
       strokeWidth={stroke}
       strokeLinecap="round"
+      strokeLinejoin="round"
       fill="none"
     >
-      <line x1={stroke} y1={middle} x2={width - stroke} y2={middle} />
-      {marks.flatMap((syllable, i) =>
-        syllable.map((mark, j) => {
-          const x = i * (4 * slot + gap) + (j + 0.5) * slot;
-          const y = mark & 1 ? middle + offset : middle - offset;
-          return mark & 2 ? (
-            <circle key={`${i}-${j}`} cx={x} cy={y} r={slot * 0.2} />
-          ) : (
-            <line key={`${i}-${j}`} x1={x - slot * 0.22} y1={y} x2={x + slot * 0.22} y2={y} />
-          );
-        }),
-      )}
+      <path d={line_path(marks, size, height / 2, stroke)} />
     </svg>
   );
 }
@@ -401,7 +414,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
     },
     {
       name: "Line",
-      note: "A line along each word, with four marks per syllable: a dash or a circle, above or below",
+      note: "Each word one stroke along a line, with four marks per syllable: a dash or a loop, above or below",
       render: (ids) => <Line marks={ids.map((id) => layout_values(id, phonology, line))} size={size} />,
     },
     {
@@ -487,7 +500,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
             layout={line}
             set_layout={set_line}
             positions="left to right"
-            options={LINE_MARKS.map((m, i) => `${["⁻", "₋", "°", "ₒ"][i]} ${m}`)}
+            options={LINE_MARKS.map((m, i) => `${["⁻", "₋", "ᵒ", "ₒ"][i]} ${m}`)}
           />
         </div>
         <div>

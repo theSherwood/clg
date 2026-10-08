@@ -59,19 +59,19 @@ export const default_stems: MarkLayout = {
   },
 };
 
-// The line script: a word is a horizontal line, and each syllable four marks along it, left to
-// right, each a dash or a small circle, above or below the line (bit 1 below, bit 2 circle).
-// Every position has a mark, so a syllable is always four marks long.
-export const LINE_MARKS = ["dash above", "dash below", "circle above", "circle below"] as const;
+// The line script: a word is a horizontal line written in one stroke, and each syllable four
+// marks along it, left to right, each a flat-topped bump or a small loop, above or below the line
+// (bit 1 below, bit 2 loop). Every position has a mark, so a syllable is always four marks long.
+export const LINE_MARKS = ["dash above", "dash below", "loop above", "loop below"] as const;
 
 export const default_line: MarkLayout = {
   order: ["C", "M", "V", "N"],
   values: {
-    // Lips round, so labial is a circle; the tongue tip goes up and the back of it down
+    // Lips round, so labial is a loop; the tongue tip goes up and the back of it down
     C: { coronal: 0, velar: 1, labial: 2, sibilant: 3 },
-    // Below is voiced and a circle fricative
+    // Below is voiced and a loop fricative
     M: { unvoiced: 0, voiced: 1, fricative: 2, "voiced fricative": 3 },
-    // Rounded vowels are circles; above is high
+    // Rounded vowels are loops; above is high
     V: { e: 0, a: 1, u: 2, o: 3 },
     N: { none: 0, n: 1, r: 2, i: 3 },
   },
