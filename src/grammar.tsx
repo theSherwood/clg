@@ -379,7 +379,9 @@ export function GrammarView() {
       <p className="mt-2">
         Choosing is an axis, <W w="choose(vi)" /> and <W w="reject(vt)" />, and preferring is
         leaning toward choosing, its minor positive step: <W w="prefer(vt)" />. A comparison says
-        what over: <i>prefer(vt) X exceed(vt) Y</i>. Safety is its own axis too, <W w="safe" /> and{" "}
+        what over: <i>prefer(vt) X exceed(vt) Y</i>. The axis's measure, how worth choosing
+        something is, is <W w="value" />, and <W w="dignity" /> is <i>value intrinsic</i>, worth
+        that belongs to a thing itself. Value in money is <W w="price" />. Safety is its own axis too, <W w="safe" /> and{" "}
         <W w="dangerous" />, with <W w="secure(vt)" /> and <W w="endanger(vt)" />; withstanding harm
         is resilience.
       </p>
@@ -780,7 +782,7 @@ export function GrammarView() {
         person with a rod. Stacked prepositional phrases can be ambiguous, as in most languages;
         bracket one with <W w="<clause_start>" /> and <W w="<clause_end>" /> when it matters.
       </p>
-      <Example meaning="…equal in dignity and rights.">free and same in value and right</Example>
+      <Example meaning="…equal in dignity and rights.">free and same in dignity and right</Example>
       <p className="mt-2">
         <W w="with" /> is company and <W w="by" /> the means: <i>open(vt) with mother</i> is opening
         it with your mother, and <i>open(vt) by &lt;tool&gt; open(vt)</i> opening it with a key. <W w="for" /> is who

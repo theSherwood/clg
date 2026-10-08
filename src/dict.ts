@@ -2362,8 +2362,10 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   ],
   [
     {
-      noun: "selection",
-      notes: "Preferring is leaning toward choosing: prefer(vt) X exceed(vt) Y is to prefer X to Y",
+      noun: "value",
+      notes:
+        "How worth choosing something is, from rejected to chosen. Preferring is leaning toward choosing: prefer(vt) X exceed(vt) Y is to prefer X to Y. Value in money is price",
+      synonyms: { noun: ["worth", "selection"] },
       steps: {
         min_positive: { noun: "preference", adj: "preferred", verb: "prefer(vt)", verb_i: "prefer", verb_t: "prefer" },
       },
@@ -2961,7 +2963,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     notes:
       "Should this be a domain specifier? up - down, forward - back, left - right, north - south, east - west, in - out, future - past",
   });
-  candidate("value");
 
   // Groups of related concepts
   for (const group of [
@@ -3217,6 +3218,7 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
         domain: "noun",
         notes: axis.notes,
         parts,
+        synonyms: axis.synonyms?.noun,
       });
       entry.name = { word };
     } else if (axis.notes) {
@@ -3416,6 +3418,9 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("always", ["time", "all"]);
   noun("never", ["time", "none"]);
   noun("when", ["time", "<blank>"]);
+  noun("dignity", ["value", "intrinsic"], {
+    notes: "Worth that belongs to a thing itself. Hard to define; a placeholder for now",
+  });
   noun("each_other", ["other", "mutual"], {
     gloss: "each other / one another",
     notes: "The mutual other: mutual is trade's adjective, giving and taking alike",

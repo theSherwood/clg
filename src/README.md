@@ -60,7 +60,7 @@ fit as its scale steps.
 
 ## Open from the UDHR
 
-- [ ] value / dignity: not importance; something like preferredness, near the selection axis
+- [x] value / dignity: value is the selection axis's noun, dignity value intrinsic (provisional)
 - [x] kind / type / form that isn't geometric: type and instance, the ends of abstraction
 - [ ] arbitrary, as in arbitrary arrest: not random, but without lawful basis
 - [x] and before <gerund>: only <subject>, <object> and verb markers start a clause, so a gerund
