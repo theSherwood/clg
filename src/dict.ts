@@ -2015,6 +2015,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "hide",
       verb_t: "conceal",
       adverb: "secretly",
+      synonyms: { adj: ["private", "secret"], adverb: ["privately", "in private"] },
     },
     {
       noun: "search",
@@ -2276,6 +2277,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "show",
       verb_t: "show",
       adverb: "visibly",
+      synonyms: { adj: ["public"], adverb: ["publicly", "in public"] },
     },
   ],
   [
@@ -3495,6 +3497,14 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
     notes: "A member of a country. Nationality is country of self",
   });
   noun("border", ["edge", "country"], { synonyms: ["frontier"] });
+  noun("leader", ["<er>", "lead(vi)"], { notes: "A ruler is <er> rule(vi)" });
+  phrase("vote(vi)", ["choose(vi)", "together"], "vote", "vote for");
+  noun("vote", ["<gerund>", "vote(vi)"], { synonyms: ["voting", "election", "ballot"] });
+  noun("representative", ["<er>", "act(vi)", "for", "other"], {
+    synonyms: ["agent", "delegate", "proxy"],
+    notes: "Who acts for others: for with a noun is on whose behalf",
+  });
+  noun("privacy", ["hiding", "self"]);
 
   // Conversation
   idiom("yes", ["true"], { notes: "That's so" });

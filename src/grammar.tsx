@@ -461,6 +461,16 @@ export function GrammarView() {
         “Nation” and “state” are whichever of these is meant, “international” is{" "}
         <i>between country plural</i> and humanity is <W w="everyone" />.
       </p>
+      <p className="mt-2">
+        A <W w="leader" /> is <i>&lt;er&gt; lead(vt)</i>. To <W w="vote(vi)" /> is{" "}
+        <i>choose(vi) together</i>, and with an object to vote for; a <W w="vote" /> or election is{" "}
+        <i>&lt;gerund&gt; vote(vi)</i>. A <W w="representative" /> is <i>&lt;er&gt; act(vi) for
+        other</i>, who acts on others' behalf, and taking part is <i>act(vi) in</i>. Public and
+        private have no words of their own. Seen, they're <W w="visible" /> and <W w="hidden" />,
+        so a secret ballot is <i>vote(vi) secretly</i>; owned, they're <i>of society</i> and{" "}
+        <i>of self</i>, so public service is <i>serve(vt) society</i>. <W w="privacy" /> is{" "}
+        <i>hiding self</i>.
+      </p>
       <Example meaning="Everyone may leave any country and come back to their own.">
         &lt;subject&gt; everyone &lt;verb&gt; be_entitled_to(vt) &lt;object&gt; &lt;verb&gt; exit(vi) from country
         all and &lt;verb&gt; come(vi) to country of self

@@ -1223,6 +1223,8 @@ export const udhr_articles: Article[] = [
       "Everyone has the right of equal access to public service in his country.",
       "The will of the people shall be the basis of the authority of government; this will shall be expressed in periodic and genuine elections which shall be by universal and equal suffrage and shall be held by secret vote or by equivalent free voting procedures.",
     ],
+    transliteration:
+      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> act(vi) in government of country of self by self or by representative <clause_start> <object> <blank> <verb> vote_for(vt) freely <clause_end>. <subject> everyone <verb> be_entitled_to(vt) <object> <verb> serve(vt) <object> country of self as everyone. <subject> desire of society <verb_prescriptive> be(vt) <complement> source of government. <subject> society <verb_prescriptive> show(vt) <object> it by vote cyclical true. <subject> everyone <verb_prescriptive> vote(vi) secretly and <subject> vote of everyone <verb_prescriptive> be(vt) <complement> same.",
   },
   {
     title: "Article 22",
