@@ -2056,7 +2056,15 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
           verb_t: "sacrifice",
         },
         min_positive: { noun: "sale", adj: "sold", verb: "sell(vi)", verb_i: "sell", verb_t: "sell" },
-        neutral: { noun: "trade", verb: "exchange(vt)", verb_i: "trade", verb_t: "exchange" },
+        neutral: {
+          noun: "trade",
+          adj: "mutual",
+          verb: "exchange(vt)",
+          verb_i: "trade",
+          verb_t: "exchange",
+          adverb: "mutually",
+          synonyms: { adj: ["reciprocal"], adverb: ["reciprocally"] },
+        },
         min_negative: { noun: "purchase", adj: "bought", verb: "buy(vt)", verb_i: "shop", verb_t: "buy" },
         max_negative: { noun: "seizure", adj: "seized", verb: "seize(vi)", verb_i: "seize", verb_t: "seize" },
       },
@@ -3408,6 +3416,10 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("always", ["time", "all"]);
   noun("never", ["time", "none"]);
   noun("when", ["time", "<blank>"]);
+  noun("each_other", ["other", "mutual"], {
+    gloss: "each other / one another",
+    notes: "The mutual other: mutual is trade's adjective, giving and taking alike",
+  });
 
   noun("quotation", ["<ee>", "quote(vi)"], { gloss: "quotation / quote", notes: "What's quoted" });
   noun("quoter", ["<er>", "quote(vi)"], { notes: "Whoever quotes" });

@@ -65,5 +65,5 @@ fit as its scale steps.
 - [ ] arbitrary, as in arbitrary arrest: not random, but without lawful basis
 - [x] and before <gerund>: only <subject>, <object> and verb markers start a clause, so a gerund
   after and is a list item
-- [ ] each other: other alone reads as another person
+- [x] each other: each_other, other mutual, with mutual on the trade step
 - [ ] born free: <complement> only follows be(vt), so a depictive after another verb has no form

@@ -957,11 +957,12 @@ export function GrammarView() {
         just <W w="everything" />.{" "}
         <W w="self" /> and <W w="other" /> are content roots too. As an object, <W w="self" /> is
         reflexive (<i>I know(vt) self</i>, I know myself), and <i>family of self</i> is one's
-        own family. <i>person other</i> is another person, and with a plural subject,{" "}
-        <W w="other" /> is each other.
+        own family. <i>person other</i> is another person, and <W w="each_other" /> is{" "}
+        <i>other mutual</i>, the mutual other. <W w="mutual" /> is the adjective of{" "}
+        <W w="trade" />, giving and taking alike, the middle of the giving axis.
       </p>
       <Example meaning="They love each other.">
-        &lt;subject&gt; it plural &lt;verb&gt; love(vt) &lt;object&gt; other
+        &lt;subject&gt; it plural &lt;verb&gt; love(vt) &lt;object&gt; each_other
       </Example>
 
       <H2>“The” and “a”</H2>
