@@ -32,6 +32,7 @@ import {
   udhr_preamble,
   babel_verses,
   north_wind_sentences,
+  lords_prayer,
 } from "./examples";
 import { swadesh, toki_pona_words } from "./comparison";
 import { ComparisonTable, TallyLine } from "./comparison_view";
@@ -200,8 +201,8 @@ const all_transliterations = [
   ...arithmetic_examples.map((e) => e.transliteration),
   ...more_grammar_examples.map((e) => e.transliteration),
   ...conversation_examples.map((e) => e.transliteration),
-  ...[...udhr_preamble, ...udhr_articles, ...babel_verses, ...north_wind_sentences].flatMap((a) =>
-    a.transliteration ? [a.transliteration] : [],
+  ...[...udhr_preamble, ...udhr_articles, ...babel_verses, ...north_wind_sentences, ...lords_prayer].flatMap(
+    (a) => (a.transliteration ? [a.transliteration] : []),
   ),
 ];
 
@@ -320,6 +321,13 @@ export function ExamplesView() {
           passage used to illustrate every language.
         </p>
         <ArticleList articles={north_wind_sentences} />
+      </Section>
+
+      <Section title="The Lord's Prayer">
+        <p className="text-sm text-gray-600 mb-3">
+          In the Book of Common Prayer's words, the traditional text for comparing languages.
+        </p>
+        <ArticleList articles={lords_prayer} />
       </Section>
 
       <Section title="Universal Declaration of Human Rights">

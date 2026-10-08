@@ -1442,6 +1442,53 @@ export const north_wind_sentences: Article[] = [
   },
 ];
 
+// The Lord's Prayer (Book of Common Prayer), the traditional sample text for comparing languages
+export const lords_prayer: Article[] = [
+  {
+    title: "Address",
+    english: ["Our Father, which art in heaven, hallowed be thy Name."],
+    transliteration:
+      "<clause_start> <subject> father of we at heaven <clause_end> <object> name of you <verb_prescriptive> sanctify(vt).",
+  },
+  {
+    title: "Kingdom",
+    english: ["Thy Kingdom come."],
+    transliteration: "<subject> sovereignty of you <verb_prescriptive> come(vi).",
+  },
+  {
+    title: "Will",
+    english: ["Thy will be done, in earth as it is in heaven."],
+    transliteration: "<object> desire of you <verb_prescriptive> do(vt) at earth as at heaven.",
+  },
+  {
+    title: "Bread",
+    english: ["Give us this day our daily bread."],
+    transliteration: "<verb_prescriptive> give(vt) today to we <object> food <per> day.",
+  },
+  {
+    title: "Forgiveness",
+    english: ["And forgive us our trespasses, as we forgive them that trespass against us."],
+    transliteration:
+      "<verb_prescriptive> forgive(vt) for wrong of we <object> we as <subject> we <verb> forgive(vt) <object> person plural <clause_start> <subject> <blank> <verb> hurt(vt) <object> we <clause_end>.",
+  },
+  {
+    title: "Temptation",
+    english: ["And lead us not into temptation, but deliver us from evil."],
+    transliteration:
+      "<verb_prescriptive> not lead(vt) to temptation <object> we but <verb_prescriptive> free(vt) from <max_negative> goodness <object> we.",
+  },
+  {
+    title: "Doxology",
+    english: ["For thine is the kingdom, the power, and the glory, for ever and ever."],
+    transliteration: "<subject> you <verb> possess(vt) always <object> sovereignty and ability and praise.",
+  },
+  {
+    title: "Amen",
+    english: ["Amen."],
+    transliteration: "certainly.",
+  },
+];
+
 export type Token =
   | { kind: "punctuation"; text: string }
   | { kind: "foreign"; text: string } // the word after <foreign>: a name or borrowing, said as written

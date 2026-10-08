@@ -516,7 +516,9 @@ export function GrammarView() {
         Accusing is <W w="blame(vt)" /> and the accused <i>&lt;ee&gt; blame(vt)</i>; guilty is{" "}
         <W w="culpable" /> and innocent <i>not culpable</i>. Convicting is{" "}
         <i>judge(vt) as culpable</i>, with <W w="as" /> saying what the object is judged to be, and
-        acquitting <i>judge(vt) as not culpable</i>. <W w="impartial" />, fair, is the middle of the
+        acquitting <i>judge(vt) as not culpable</i>. A <W w="wrong" /> or sin is <i>deed bad</i>,
+        and to <W w="forgive(vt)" /> is <i>release(vt) from blame</i>. To <W w="tempt(vt)" /> is{" "}
+        <i>persuade(vt) to wrong</i>, and <W w="temptation" /> <i>&lt;gerund&gt; tempt(vt)</i>. <W w="impartial" />, fair, is the middle of the
         value axis, neither choosing nor rejecting.
       </p>
       <Example meaning="The law shall presume the accused not guilty.">
@@ -848,7 +850,7 @@ export function GrammarView() {
       </p>
       <p className="mt-2">
         The <W w="sky" /> is <i>place high</i>, the high place, as Toki Pona's <i>sewi</i> is up, sky
-        and heaven. <W w="rain" /> is <i>water sky</i> and a <W w="cloud" /> <i>covering sky</i>, the
+        and heaven; <W w="heaven" />, <i>sky sacred</i>, says the second outright. <W w="rain" /> is <i>water sky</i> and a <W w="cloud" /> <i>covering sky</i>, the
         sky's covering. What fire leaves is <W w="ash" />, <i>result fire</i>, and <W w="smoke" /> is
         that as a gas, <i>ash gas</i>.
       </p>
@@ -1015,7 +1017,8 @@ export function GrammarView() {
         <li>
           <b>After a preposition</b>, for because, when, so that and until:{" "}
           <i>from &lt;subject&gt; …</i> is because…, <i>for &lt;subject&gt; …</i> so that…, and{" "}
-          <W w="if" /> takes one the same way. “When” and “until” are clauses describing a noun,{" "}
+          <W w="if" /> takes one the same way. <W w="as" />, “like” with a noun (<i>as sibling</i>), is
+          “just as” with a clause: <i>as &lt;subject&gt; we &lt;verb&gt; forgive(vt) …</i>. “When” and “until” are clauses describing a noun,{" "}
           <i>at time &lt;clause_start&gt; …</i> and <i>to time &lt;clause_start&gt; …</i>, so they keep the
           bracket.
         </li>
@@ -1286,6 +1289,19 @@ export function GrammarView() {
         <i>&lt;subject&gt; mother &lt;verb_prescriptive&gt; come(vi)</i> is “Mother, come”.
       </p>
       <Example meaning="Mother, come.">&lt;subject&gt; mother &lt;verb_prescriptive&gt; come(vi)</Example>
+      <p className="mt-2">
+        When the one addressed isn't the next clause's subject, the address stands apart, as a
+        bracketed subject opening the sentence. The bracket does what a comma and a pause do in
+        English: <i>&lt;clause_start&gt; &lt;subject&gt; father &lt;clause_end&gt;</i> is “Father, …”. It
+        never fills a role in the clause after it, even one whose doer is unsaid, and from then on
+        the one addressed is <W w="<pronoun_second_person>" />, as English vocatives are “you”.
+        It comes first, since a bracket after a noun describes that noun, and on its own it's
+        calling someone, with <W w="<clause_end>" /> dropped at the sentence's end.
+      </p>
+      <Example meaning="Our Father in heaven, hallowed be thy name.">
+        &lt;clause_start&gt; &lt;subject&gt; father of we at heaven &lt;clause_end&gt; &lt;object&gt; name of
+        you &lt;verb_prescriptive&gt; sanctify(vt)
+      </Example>
 
       <H2>Other grammar words</H2>
       <p>

@@ -2030,7 +2030,14 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "leadership",
       steps: {
-        max_positive: { noun: "sovereignty", adj: "sovereign", verb: "rule(vi)", verb_i: "rule", verb_t: "rule over" },
+        max_positive: {
+          noun: "sovereignty",
+          adj: "sovereign",
+          verb: "rule(vi)",
+          verb_i: "rule",
+          verb_t: "rule over",
+          synonyms: { noun: ["kingdom", "reign"] },
+        },
         min_positive: { noun: "guidance", verb: "guide(vi)", verb_i: "guide", verb_t: "guide" },
       },
     },
@@ -2494,7 +2501,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       notes:
         "Credit and blame. Acknowledging, the neutral step, attributes without judging. The adjectives are about who deserves it: culpable is to blame. Thank you is thanks to you, and sorry blame to me",
       steps: {
-        max_positive: { noun: "praise", verb: "praise(vt)", verb_i: "praise", verb_t: "praise" },
+        max_positive: { noun: "praise", verb: "praise(vt)", verb_i: "praise", verb_t: "praise", synonyms: { noun: ["glory"] } },
         neutral: {
           noun: "acknowledgment",
           verb: "acknowledge(vt)",
@@ -3678,6 +3685,10 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("court", ["<place>", "judge(vt)"], { synonyms: ["tribunal"] });
   noun("trial", ["<gerund>", "judge(vt)"], { synonyms: ["hearing"] });
   noun("crime", ["deed", "forbidden"], { synonyms: ["offence"] });
+  noun("wrong", ["deed", "bad"], { synonyms: ["sin", "trespass", "wrongdoing"], notes: "A bad deed, as a crime is a forbidden one" });
+  phrase("forgive(vi)", ["release(vt)", "from", "blame"], "forgive", "forgive");
+  phrase("tempt(vi)", ["persuade(vt)", "to", "wrong"], "tempt", "tempt");
+  noun("temptation", ["<gerund>", "tempt(vi)"]);
   noun("constitution", ["law", "source"], { notes: "The law other laws come from" });
 
   // Society, people first: a country is a society's land and a government its authority
@@ -3799,6 +3810,7 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("glue", ["<tool>", "stick(vi)"]);
   noun("tree", ["plant", "big"]);
   noun("sky", ["place", "high"], { notes: "The high place, as Toki Pona's sewi is up, sky and heaven" });
+  noun("heaven", ["sky", "sacred"], { synonyms: ["paradise"], notes: "The sacred sky; plain sky does too, as Spanish cielo" });
   noun("rain", ["water", "sky"]);
   noun("cloud", ["covering", "sky"], { notes: "The sky's covering" });
   noun("root", ["foot", "plant"], { gloss: "root (of a plant)" });

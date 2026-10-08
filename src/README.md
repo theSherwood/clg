@@ -77,7 +77,7 @@ Texts other conlangs are compared on, translated to test the grammar and vocabul
 - [x] The Tower of Babel (Genesis 11:1-9, King James Version)
 - [x] The North Wind and the Sun (the IPA's sample passage)
 - [ ] Schleicher's fable, The Sheep and the Horses
-- [ ] The Lord's Prayer
+- [x] The Lord's Prayer
 - [ ] Syntax test cases (graded sentences from the CONLANG list; source to find)
 
 Open from Babel: understand is know(vt) for now. A quote's own bracket and an inner bracket
