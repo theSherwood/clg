@@ -28,10 +28,19 @@ import {
 
 const SYLLABICS_FONT = "'Euphemia UCAS', 'Noto Sans Canadian Aboriginal', sans-serif";
 
+// A saved setting, if it's still the same kind of value; saved settings objects are merged into
+// the defaults, so ones saved before a field was added still work
 function load<T>(key: string, fallback: T): T {
   try {
     const saved = localStorage.getItem(key);
-    return saved ? { ...fallback, ...JSON.parse(saved) } : fallback;
+    if (!saved) return fallback;
+    const value: unknown = JSON.parse(saved);
+    if (typeof fallback === "object" && fallback !== null) {
+      return typeof value === "object" && value !== null && !Array.isArray(value)
+        ? { ...fallback, ...value }
+        : fallback;
+    }
+    return typeof value === typeof fallback ? (value as T) : fallback;
   } catch {
     return fallback;
   }
