@@ -1085,7 +1085,8 @@ export function GrammarView() {
           the clause it's attached to: a subclause the main clause's, and a clause joined by{" "}
           <W w="and" />, <W w="or" /> or <W w="but" /> the previous clause's. Only a sentence that
           opens with a verb marker has nothing to borrow from: with <W w="<verb_prescriptive>" /> it's
-          a command to the listener, and otherwise the subject is unspecified, “someone”. A clause
+          a command to the listener, and otherwise the subject is unspecified, “someone”. A topic or
+          a <W w="<vocative>" /> before it doesn't count, since both stand outside the clause. A clause
           that opens with <W w="<object>" /> leaves the doer unsaid wherever it is.
         </p>
         <Example meaning="I want to sleep.">
@@ -1328,7 +1329,9 @@ export function GrammarView() {
           comma and a pause do in English: <T>&lt;vocative&gt; father</T> is “Father, …”. Like any role
           marker it comes before its phrase, which runs to the next marker. It never fills a role in
           the clause after it, even one whose doer is unsaid, and from then on the one addressed is{" "}
-          <W w="<pronoun_second_person>" />, as English vocatives are “you”. On its own it's calling
+          <W w="<pronoun_second_person>" />, as English vocatives are “you”. So a command after it
+          needs no subject, since a command is to “you” anyway, but a clause opening with{" "}
+          <W w="<object>" /> keeps its doer unsaid: “hallowed be thy name”, not “hallow thy name”. On its own it's calling
           someone: <T>&lt;vocative&gt; mother</T>, “Mother!”
         </p>
         <Example meaning="Our Father in heaven, hallowed be thy name.">
