@@ -105,55 +105,51 @@ function Stems({ rows, size }: { rows: number[][]; size: number }) {
   );
 }
 
-// A word in the line script, as one stroke. Within a syllable the pen travels above or below the
-// line, at the level of the mark it's on: a dash is the pen running along that level, so
-// neighbouring dashes on one side join into a longer line, and a loop is a small curl outward from
-// it. The pen crosses over only where the side changes, and runs along the line itself between
-// syllables, which is what shows where each one starts.
+// A word in the line script, as one smooth stroke. The pen never returns to the line itself: it
+// travels above or below it, at the level of the mark it's on. A dash is the pen running along
+// that level, so neighbouring dashes on one side join into a longer line, and a loop is a small
+// curl outward from it. Where the side changes, the pen crosses over in an S-curve that leaves and
+// arrives level. Every position is the same width, and syllables follow on without a gap (a gap
+// would read as a longer dash), so a word is counted off four positions at a time.
 const LINE_SLOT = 0.32;
-const LINE_GAP = 0.4;
 
 function line_path(marks: number[][], size: number, middle: number, start: number): string {
   const slot = size * LINE_SLOT;
-  const gap = size * LINE_GAP;
-  const ramp = slot * 0.25; // how far the pen travels while changing level
+  const ramp = slot * 0.45; // how far the pen travels while crossing over
   const level = size * 0.16; // how far above or below the line the marks run
   const loop_height = size * 0.17;
   const loop_width = slot * 0.5;
-  let path = `M ${start} ${middle}`;
-  marks.forEach((syllable, i) => {
-    const x0 = start + i * (4 * slot + gap);
-    const y = syllable.map((mark) => middle + (mark & 1 ? 1 : -1) * level);
-    path += ` L ${x0} ${middle} L ${x0 + ramp} ${y[0]}`;
-    syllable.forEach((mark, j) => {
-      const left = x0 + j * slot;
-      const right = left + slot;
-      if (mark & 2) {
-        const s = mark & 1 ? 1 : -1;
-        const a = left + (slot - loop_width) / 2;
-        const w = loop_width;
-        const yj = y[j]!;
-        path +=
-          ` L ${a} ${yj}` +
-          ` C ${a + w * 1.05} ${yj + s * loop_height * 0.1} ${a + w} ${yj + s * loop_height * 1.3} ${a + w * 0.5} ${yj + s * loop_height * 1.3}` +
-          ` C ${a} ${yj + s * loop_height * 1.3} ${a - w * 0.05} ${yj + s * loop_height * 0.1} ${a + w} ${yj}`;
-      }
-      if (j < 3) {
-        // Stay level into the next mark, or cross over around the boundary between them
-        if (y[j + 1] !== y[j]) path += ` L ${right - ramp / 2} ${y[j]} L ${right + ramp / 2} ${y[j + 1]}`;
-      } else {
-        path += ` L ${right - ramp} ${y[j]} L ${right} ${middle}`;
-      }
-    });
+  const flat = marks.flat();
+  const y = flat.map((mark) => middle + (mark & 1 ? 1 : -1) * level);
+  let path = `M ${start} ${y[0]}`;
+  flat.forEach((mark, k) => {
+    const left = start + k * slot;
+    const right = left + slot;
+    const yk = y[k]!;
+    if (mark & 2) {
+      const s = mark & 1 ? 1 : -1;
+      const a = left + (slot - loop_width) / 2;
+      const w = loop_width;
+      path +=
+        ` L ${a} ${yk}` +
+        ` C ${a + w * 1.05} ${yk + s * loop_height * 0.1} ${a + w} ${yk + s * loop_height * 1.3} ${a + w * 0.5} ${yk + s * loop_height * 1.3}` +
+        ` C ${a} ${yk + s * loop_height * 1.3} ${a - w * 0.05} ${yk + s * loop_height * 0.1} ${a + w} ${yk}`;
+    }
+    const next = y[k + 1];
+    if (next === undefined) {
+      path += ` L ${right} ${yk}`;
+    } else if (next !== yk) {
+      // An S-curve across the boundary, level where it leaves and where it arrives
+      path += ` L ${right - ramp / 2} ${yk} C ${right} ${yk} ${right} ${next} ${right + ramp / 2} ${next}`;
+    }
   });
-  const end = start + marks.length * 4 * slot + (marks.length - 1) * gap;
-  return path + ` L ${end} ${middle}`;
+  return path;
 }
 
 function Line({ marks, size }: { marks: number[][]; size: number }) {
   const stroke = Math.max(1.5, size / 16);
   const height = size * 0.85;
-  const width = marks.length * 4 * size * LINE_SLOT + (marks.length - 1) * size * LINE_GAP + 2 * stroke;
+  const width = marks.length * 4 * size * LINE_SLOT + 2 * stroke;
   return (
     <svg
       width={width}
