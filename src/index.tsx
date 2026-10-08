@@ -59,17 +59,6 @@ const WordPreviewItem: React.FC<WordPreviewItemProps> = ({ word }) => {
       interactive={true}
       delay={[200, 50]} // delay: [show, hide]
       theme="light"
-      popperOptions={{
-        // Ensure popper can flip if not enough space
-        strategy: "fixed",
-        modifiers: [
-          { name: "preventOverflow", options: { boundary: "clippingParents" } },
-          {
-            name: "flip",
-            options: { fallbackPlacements: ["left-start", "top-start", "bottom-start"] },
-          },
-        ],
-      }}
     >
       <div
         className={`border-2 p-2 m-1 rounded cursor-default

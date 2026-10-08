@@ -35,8 +35,29 @@ export const LazyTippy = (props: LazyTippyProps) => {
     }),
   };
 
-  // Wide enough for an axis's word matrix, but never wider than the window
-  const computedProps = { maxWidth: "min(960px, calc(100vw - 16px))", ...props };
+  // Wide enough for an axis's word matrix, but never wider than the window. A popup nested in
+  // another goes in that popup's root, outside its scrolling boxes so they can't clip it, and
+  // still inside it so moving into the nested one keeps the outer one open. A popup slides as far
+  // as it needs to, even off its reference, to stay in the window.
+  const computedProps: TippyProps = {
+    maxWidth: "min(960px, calc(100vw - 16px))",
+    appendTo: (reference) => reference.closest("[data-tippy-root]") ?? document.body,
+    popperOptions: {
+      modifiers: [
+        { name: "preventOverflow", options: { padding: 8, altAxis: true, tether: false } },
+        {
+          name: "flip",
+          options: {
+            padding: 8,
+            ...(props.placement === "right-start" && {
+              fallbackPlacements: ["left-start", "bottom-start", "top-start"],
+            }),
+          },
+        },
+      ],
+    },
+    ...props,
+  };
 
   computedProps.plugins = [lazyPlugin, ...(props.plugins || [])];
 
@@ -87,14 +108,10 @@ const NESTED_TIPPY: Partial<TippyProps> = {
   interactive: true,
   delay: [150, 0],
   theme: "light",
-  popperOptions: {
-    strategy: "fixed",
-    modifiers: [
-      { name: "preventOverflow", options: { boundary: "clippingParents" } },
-      { name: "flip", options: { fallbackPlacements: ["left-start", "top-start", "bottom-start"] } },
-    ],
-  },
 };
+
+// A popup is never taller than the window; past that, it scrolls
+const POPUP_STYLE: React.CSSProperties = { maxHeight: "calc(100vh - 16px)", overflowY: "auto" };
 
 // Opens another form's popup on hover; children default to the form's sound and meanings
 function FormHover({
@@ -314,7 +331,10 @@ function StepSound({
   return (
     <LazyTippy
       content={
-        <div className="p-3 bg-white shadow-lg rounded-md border border-gray-200 text-sm font-sans font-normal text-left whitespace-normal">
+        <div
+          className="p-3 bg-white shadow-lg rounded-md border border-gray-200 text-sm font-sans font-normal text-left whitespace-normal"
+          style={POPUP_STYLE}
+        >
           <div className="flex items-baseline gap-2">
             <span className="font-mono text-lg font-bold text-indigo-700">{sound}</span>
             <span className="text-xs font-semibold text-blue-600">COMPOUND</span>
@@ -507,7 +527,10 @@ export function FormPopoverContent({
   }
 
   return (
-    <div className="p-3 bg-white shadow-lg rounded-md border border-gray-200 text-sm font-sans font-normal text-left whitespace-normal">
+    <div
+      className="p-3 bg-white shadow-lg rounded-md border border-gray-200 text-sm font-sans font-normal text-left whitespace-normal"
+      style={POPUP_STYLE}
+    >
       <div className="flex items-baseline gap-2 flex-wrap">
         <span className="font-mono text-lg font-bold text-indigo-700">
           {pronounce(word, phonology)}
