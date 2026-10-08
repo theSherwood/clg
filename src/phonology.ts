@@ -184,3 +184,117 @@ export function save_phonology(phonology: Phonology) {
     else localStorage.setItem(STORAGE_KEY, JSON.stringify(edited));
   } catch {}
 }
+
+// A foreign name or borrowing, respelled in our syllables, as Japanese and Toki Pona adapt
+// names (London, Lonton). Each sound is kept where we have it; otherwise a consonant becomes
+// the onset at its place and manner, and a vowel the nearest we have. n, m, r and l close the
+// syllable before them where they can, a vowel with no onset takes kh (velar fricative), and an
+// onset with no vowel takes u. Babel is ba-bel, Shinar shen-khar and Adam kha-dan.
+const FOREIGN_FEATURES: Record<string, [place: string, manner: string]> = {
+  k: ["velar", "unvoiced"],
+  c: ["velar", "unvoiced"],
+  q: ["velar", "unvoiced"],
+  g: ["velar", "voiced"],
+  h: ["velar", "fricative"],
+  x: ["velar", "fricative"],
+  kh: ["velar", "fricative"],
+  gh: ["velar", "voiced fricative"],
+  t: ["coronal", "unvoiced"],
+  d: ["coronal", "voiced"],
+  n: ["coronal", "voiced"],
+  l: ["coronal", "voiced"],
+  r: ["coronal", "voiced"],
+  th: ["coronal", "fricative"],
+  dh: ["coronal", "voiced fricative"],
+  p: ["labial", "unvoiced"],
+  b: ["labial", "voiced"],
+  m: ["labial", "voiced"],
+  f: ["labial", "fricative"],
+  ph: ["labial", "fricative"],
+  v: ["labial", "voiced fricative"],
+  w: ["labial", "voiced fricative"],
+  bh: ["labial", "voiced fricative"],
+  s: ["sibilant", "unvoiced"],
+  z: ["sibilant", "voiced"],
+  sh: ["sibilant", "fricative"],
+  ch: ["sibilant", "fricative"],
+  zh: ["sibilant", "voiced fricative"],
+  j: ["sibilant", "voiced fricative"],
+  y: ["sibilant", "voiced fricative"],
+};
+// Nearest vowels, best first, for a vowel we don't have
+const FOREIGN_VOWELS: Record<string, string[]> = {
+  a: ["a", "o", "e"],
+  e: ["e", "i", "a"],
+  i: ["i", "e", "u"],
+  y: ["i", "e", "u"],
+  o: ["o", "u", "a"],
+  u: ["u", "o", "e"],
+};
+const VOWEL_LETTERS = new Set(Object.keys(FOREIGN_VOWELS));
+const FOREIGN_ONSET_DEFAULT: [string, string] = ["velar", "fricative"];
+const FOREIGN_EPENTHETIC = "u";
+
+export function adapt_foreign(name: string, phonology: Phonology): string[] {
+  const letters = name
+    .normalize("NFD")
+    .toLowerCase()
+    .replace(/[^a-z]/g, "")
+    .replace(/(.)\1+/g, "$1");
+  const has = (list: string[], sound: string) => list.find((s) => variants_of(s).includes(sound));
+  const onset_at = ([place, manner]: [string, string]) => {
+    const C = phonology.places.indexOf(place);
+    const M = phonology.manners.indexOf(manner);
+    return C >= 0 && M >= 0 ? phonology.onsets[M]![C]! : phonology.onsets[0]![0]!;
+  };
+  const vowel_for = (v: string) =>
+    has(phonology.vowels, v) ??
+    (FOREIGN_VOWELS[v] ?? []).map((x) => has(phonology.vowels, x)).find(Boolean) ??
+    phonology.vowels[0]!;
+  // Split into sounds, longest match first: our own spellings, then the digraphs we know
+  const known = [...phonology.onsets.flat(), ...phonology.vowels, ...phonology.finals]
+    .flatMap(variants_of)
+    .concat(Object.keys(FOREIGN_FEATURES), [...VOWEL_LETTERS])
+    .filter((s) => s.length > 0)
+    .sort((a, b) => b.length - a.length);
+  const sounds: string[] = [];
+  for (let i = 0; i < letters.length; ) {
+    const sound = known.find((s) => letters.startsWith(s, i)) ?? letters[i]!;
+    sounds.push(sound);
+    i += sound.length;
+  }
+  const is_vowel = (s: string | undefined, next: string | undefined): boolean =>
+    s !== undefined &&
+    (s === "y" ? !is_vowel(next, undefined) : VOWEL_LETTERS.has(s) || has(phonology.vowels, s) !== undefined);
+
+  type Syllable = { onset?: string; vowel?: string; final?: string };
+  const syllables: Syllable[] = [];
+  let current: Syllable = {};
+  const close = () => {
+    if (current.onset === undefined && current.vowel === undefined) return;
+    current.onset ??= onset_at(FOREIGN_ONSET_DEFAULT);
+    current.vowel ??= vowel_for(FOREIGN_EPENTHETIC);
+    syllables.push(current);
+    current = {};
+  };
+  sounds.forEach((sound, i) => {
+    const final = has(phonology.finals.filter((f) => f !== ""), sound);
+    if (is_vowel(sound, sounds[i + 1])) {
+      if (current.vowel === undefined) current.vowel = vowel_for(sound);
+      else if (current.final === undefined && final) current.final = final;
+      else {
+        close();
+        current.vowel = vowel_for(sound);
+      }
+    } else if (current.vowel !== undefined && current.final === undefined && final) {
+      current.final = final;
+    } else {
+      close();
+      const onset = has(phonology.onsets.flat(), sound);
+      const features = FOREIGN_FEATURES[sound];
+      if (onset ?? features) current.onset = onset ?? onset_at(features!);
+    }
+  });
+  close();
+  return syllables.map((s) => [s.onset!, s.vowel!, s.final ?? ""].map(spelling_of).join(""));
+}

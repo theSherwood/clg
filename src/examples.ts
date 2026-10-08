@@ -1351,7 +1351,7 @@ export const babel_verses: Article[] = [
       "And it came to pass, as they journeyed from the east, that they found a plain in the land of Shinar; and they dwelt there.",
     ],
     transliteration:
-      "at time <clause_start> <subject> they <verb> go(vi) <continuous_tense_aspect> from east <clause_end> <subject> they <verb> find(vt) formerly <object> land flat at <foreign> shinar. <subject> they <verb> stay(vi) formerly at that.",
+      "at time <clause_start> <subject> they <verb> go(vi) <continuous_tense_aspect> from east <clause_end> <subject> they <verb> find(vt) formerly <object> land flat at land <foreign> shinar. <subject> they <verb> stay(vi) formerly at that.",
   },
   {
     title: "Genesis 11:3",

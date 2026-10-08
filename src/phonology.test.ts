@@ -2,6 +2,7 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { dictionary } from "./dict";
 import {
   type Phonology,
+  adapt_foreign,
   check_phonology,
   default_phonology,
   is_phonology,
@@ -121,5 +122,25 @@ describe("storage", () => {
     store.set("clg.phonology.v2", JSON.stringify(fixture));
     expect(load_phonology()).toEqual(default_phonology);
     expect(store.has("clg.phonology.v2")).toBe(false);
+  });
+});
+
+describe("foreign names", () => {
+  const adapt = (name: string) => adapt_foreign(name, default_phonology).join("-");
+
+  test("sounds we have are kept, and n m r l close the syllable before them", () => {
+    expect(adapt("babel")).toBe("ba-ber");
+    expect(adapt("shinar")).toBe("shen-khar");
+    expect(adapt("london")).toBe("don-don");
+  });
+
+  test("a vowel with no onset takes kh, and an onset with no vowel takes u", () => {
+    expect(adapt("adam")).toBe("kha-dan");
+    expect(adapt("egypt")).toBe("khe-ge-pu-tu");
+  });
+
+  test("onsets follow place and manner, wherever the playground puts them", () => {
+    expect(adapt_foreign("fava", fixture)).toEqual(["fa", "va"]);
+    expect(adapt_foreign("hiwa", fixture)).toEqual(["khe", "va"]);
   });
 });

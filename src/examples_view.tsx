@@ -34,7 +34,7 @@ import {
 } from "./examples";
 import { swadesh, toki_pona_words } from "./comparison";
 import { ComparisonTable, TallyLine } from "./comparison_view";
-import { pronounce } from "./phonology";
+import { adapt_foreign, pronounce } from "./phonology";
 import { FormPopoverContent, LazyTippy, PhonologyContext } from "./word_ui";
 
 type WordToken = Extract<Token, { kind: "word" }>;
@@ -68,13 +68,16 @@ const TokenBox: React.FC<{ token: WordToken }> = ({ token }) => {
   );
 };
 
-// A foreign name or borrowing is said as written, so its sound is its spelling
-const ForeignBox: React.FC<{ text: string }> = ({ text }) => (
-  <span className="inline-flex flex-col items-center px-1 rounded border border-gray-200 text-xs leading-tight">
-    <span className="text-gray-700 italic">{text}</span>
-    <span className="font-mono text-gray-500">{text}</span>
-  </span>
-);
+// A foreign name or borrowing, respelled in our syllables
+const ForeignBox: React.FC<{ text: string }> = ({ text }) => {
+  const phonology = useContext(PhonologyContext);
+  return (
+    <span className="inline-flex flex-col items-center px-1 rounded border border-gray-200 text-xs leading-tight">
+      <span className="text-gray-700 italic">{text}</span>
+      <span className="font-mono text-indigo-700">{adapt_foreign(text, phonology).join("-")}</span>
+    </span>
+  );
+};
 
 // Each word over its sound, then the whole thing as it would be spoken, with gaps for words that
 // don't have roots yet
@@ -83,7 +86,13 @@ function Interlinear({ transliteration }: { transliteration: string }) {
   const tokens = useMemo(() => tokenize(transliteration), [transliteration]);
   const spoken = tokens
     .map((t) =>
-      t.kind === "punctuation" || t.kind === "foreign" ? t.text : t.word ? pronounce(t.word, phonology) : "___",
+      t.kind === "punctuation"
+        ? t.text
+        : t.kind === "foreign"
+          ? adapt_foreign(t.text, phonology).join("")
+          : t.word
+            ? pronounce(t.word, phonology)
+            : "___",
     )
     .join(" ")
     .replace(/ ([.,;])/g, "$1");

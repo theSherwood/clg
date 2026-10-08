@@ -1267,9 +1267,25 @@ export function GrammarView() {
 
       <H2>Other grammar words</H2>
       <p>
-        <W w="<foreign>" /> marks the next word as a foreign word or name, said as it's spelled:{" "}
-        <i>&lt;foreign&gt; babel</i>. Possession needs no word of its own: <W w="of" /> covers it, as in <i>family of me</i>.
+        Possession needs no word of its own: <W w="of" /> covers it, as in <i>family of me</i>.
       </p>
+      <p className="mt-2">
+        <W w="<foreign>" /> marks the next word as a foreign name or borrowing. Every syllable we
+        can say is already a root, so a name sounds like a compound, and the marker is what says
+        it's sound rather than meaning. A name is one word, ending where the next stressed
+        syllable starts, so one of several words is run together: <i>&lt;foreign&gt; new_york</i>.
+        It's respelled in our syllables, as Japanese and Toki Pona adapt names: sounds we have
+        are kept; another consonant becomes the onset at its place and manner (h is kh, f ph, v
+        and w bh, j and y zh), and another vowel the nearest (i is e). n, m, r and l close the
+        syllable before them where they can, and are otherwise d or b. A vowel with no onset takes
+        kh, and an onset with no vowel takes u. So Babel is <i>ba-ber</i> (r and l being one
+        sound), Shinar <i>shen-khar</i>, Adam <i>kha-dan</i> and London <i>don-don</i>. A name
+        usually follows a noun for its kind, as in Toki Pona's <i>ma Kanata</i>, so the listener
+        knows what's coming: <i>land &lt;foreign&gt; shinar</i>, <i>person &lt;foreign&gt; adam</i>.
+      </p>
+      <Example meaning="Adam came from the land of Shinar.">
+        &lt;subject&gt; person &lt;foreign&gt; adam &lt;verb&gt; come(vi) formerly from land &lt;foreign&gt; shinar
+      </Example>
       <p className="mt-2">
         <W w="<filler>" /> is a hesitation, like “um” or Spanish “pues”. It means nothing and can go
         anywhere, even inside a phrase or a number; the grammar carries on as if it weren't there.
