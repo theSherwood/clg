@@ -800,7 +800,9 @@ const VIEWS = [
 type View = (typeof VIEWS)[number]["key"];
 
 function view_from_hash(): View {
-  return VIEWS.find((v) => `#${v.key}` === window.location.hash)?.key ?? "words";
+  // #view, or #view/section on pages with contents
+  const key = window.location.hash.slice(1).split("/")[0];
+  return VIEWS.find((v) => v.key === key)?.key ?? "words";
 }
 
 function DictionaryView() {

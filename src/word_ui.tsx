@@ -15,7 +15,7 @@ import {
   sections,
 } from "./dict";
 import { tokenize } from "./examples";
-import { type Phonology, default_phonology, pronounce, syllable_of } from "./phonology";
+import { type Phonology, adapt_foreign, default_phonology, pronounce, syllable_of } from "./phonology";
 import Tippy, { type TippyProps } from "@tippyjs/react";
 import "tippy.js/dist/tippy.css"; // Default tippy styling
 import "tippy.js/themes/light.css"; // Optional: a light theme
@@ -25,8 +25,22 @@ export const PhonologyContext = React.createContext<Phonology>(default_phonology
 // Export own set of props (even if they are the same for now) to enable clients to be more future-proof
 export type LazyTippyProps = TippyProps;
 
+// A page can have thousands of words to hover, so a tooltip isn't created until its reference is
+// first hovered for the show delay; then it's created already showing and works as usual.
 export const LazyTippy = (props: LazyTippyProps) => {
   const [mounted, setMounted] = React.useState(false);
+  const [active, set_active] = React.useState(false);
+  const timer = React.useRef<ReturnType<typeof setTimeout>>(undefined);
+  React.useEffect(() => () => clearTimeout(timer.current), []);
+  if (!active && React.isValidElement(props.children)) {
+    const show_delay = Array.isArray(props.delay) ? (props.delay[0] ?? 0) : (props.delay ?? 0);
+    return React.cloneElement(props.children as React.ReactElement<React.HTMLAttributes<Element>>, {
+      onMouseEnter: () => {
+        timer.current = setTimeout(() => set_active(true), show_delay);
+      },
+      onMouseLeave: () => clearTimeout(timer.current),
+    });
+  }
 
   const lazyPlugin = {
     fn: () => ({
@@ -68,7 +82,7 @@ export const LazyTippy = (props: LazyTippyProps) => {
     computedProps.content = mounted ? props.content : "";
   }
 
-  return <Tippy {...computedProps} />;
+  return <Tippy showOnCreate {...computedProps} />;
 };
 
 // A form is a sequence of root IDs, so one sound. Several English words can share a form (a
@@ -672,5 +686,39 @@ export function T({ children }: { children: React.ReactNode }) {
     <i>
       <Phrase text={React.Children.toArray(children).join("")} />
     </i>
+  );
+}
+
+// A transliteration as it would be spoken, each word opening its popup, with gaps for words that
+// don't have roots yet. Punctuation hugs the word before it.
+export function Spoken({ transliteration }: { transliteration: string }) {
+  const phonology = useContext(PhonologyContext);
+  const tokens = React.useMemo(() => tokenize(transliteration), [transliteration]);
+  return (
+    <p className="font-mono text-sm text-indigo-800">
+      {tokens.map((t, i) => {
+        const space = i > 0 && t.kind !== "punctuation" ? " " : "";
+        if (t.kind === "punctuation") return <React.Fragment key={i}>{t.text}</React.Fragment>;
+        if (t.kind === "foreign") {
+          return (
+            <React.Fragment key={i}>
+              {space}
+              {adapt_foreign(t.text, phonology).join("")}
+            </React.Fragment>
+          );
+        }
+        if (!t.word) return <React.Fragment key={i}>{space}___</React.Fragment>;
+        return (
+          <React.Fragment key={i}>
+            {space}
+            <WordHover word={t.word}>
+              <span className="cursor-default hover:underline decoration-dotted">
+                {pronounce(t.word, phonology)}
+              </span>
+            </WordHover>
+          </React.Fragment>
+        );
+      })}
+    </p>
   );
 }
