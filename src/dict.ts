@@ -1956,6 +1956,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     { noun: "doubt", adj: "doubtful", verb: "doubt(vi)", verb_i: "doubt", verb_t: "doubt" },
     {
       noun: "belief",
+      synonyms: { noun: ["opinion"] },
       adj: "believing",
       verb: "believe(vi)",
       verb_i: "believe",
@@ -3299,6 +3300,12 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
 
   // Saying or showing what isn't so
   phrase("tell_a_lie(vi)", ["say(vt)", "falsely"], "tell a lie", "lie about");
+  // Thinking is inner speech, so think(vt) takes a clause as say(vt) does: think that…
+  phrase("think(vi)", ["say(vt)", "within"], "think", "think");
+  noun("thought", ["<gerund>", "think(vi)"], { notes: "Thinking" });
+  noun("idea", ["<ee>", "think(vt)"], { synonyms: ["notion"], notes: "What's thought" });
+  noun("god", ["<ee>", "worship(vt)"], { synonyms: ["deity"], notes: "What's worshipped" });
+  noun("religion", ["belief", "worship"], { synonyms: ["faith"], notes: "A belief with worship" });
   phrase("pretend(vi)", ["show(vi)", "falsely"], "pretend", "disguise");
   // Saying or writing exactly: the clause is verbatim, so its pronouns are whoever first said it.
   // With meta, the words are someone else's, repeated: quoting

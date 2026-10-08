@@ -529,6 +529,16 @@ export function GrammarView() {
         Appearing and disappearing aren't showing: they're <W w="emerge(vi)" /> and{" "}
         <W w="vanish(vi)" />.
       </p>
+      <p className="mt-2">
+        Thinking is inner speech: <W w="think(vi)" /> is <i>say(vt) within</i>, so like{" "}
+        <W w="say(vt)" /> it takes a clause, “think that…”. <W w="thought" /> is{" "}
+        <i>&lt;gerund&gt; think(vi)</i> and an <W w="idea" /> <i>&lt;ee&gt; think(vt)</i>, what's
+        thought. An opinion is a <W w="belief" />. A <W w="god" /> is <i>&lt;ee&gt; worship(vt)</i>,
+        what's worshipped, and a <W w="religion" /> <i>belief worship</i>, a belief with worship.
+      </p>
+      <Example meaning="I think that you slept.">
+        &lt;subject&gt; I &lt;verb&gt; think(vt) &lt;object&gt; &lt;subject&gt; you &lt;verb&gt; sleep(vi) formerly
+      </Example>
 
       <H2>Comparison</H2>
       <p>

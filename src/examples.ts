@@ -1204,6 +1204,8 @@ export const udhr_articles: Article[] = [
     english: [
       "Everyone has the right to freedom of thought, conscience and religion; this right includes freedom to change his religion or belief, and freedom, either alone or in community with others and in public or private, to manifest his religion or belief in teaching, practice, worship and observance.",
     ],
+    transliteration:
+      "<subject> everyone <verb> be_entitled_to(vt) <object> freedom in thought and conscience and religion. <subject> everyone <verb> be_entitled_to(vt) <object> <verb> alter(vt) <object> religion or belief of self. <subject> everyone <verb> be_entitled_to(vt) <object> <verb> show(vt) visibly or secretly <object> it with no_one or with society by <gerund> educate(vt) and <gerund> do(vt) and worship and <gerund> obey(vt).",
   },
   {
     title: "Article 19",
@@ -1211,7 +1213,7 @@ export const udhr_articles: Article[] = [
       "Everyone has the right to freedom of opinion and expression; this right includes freedom to hold opinions without interference and to seek, receive and impart information and ideas through any media and regardless of frontiers.",
     ],
     transliteration:
-      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> believe(vi) freely and <verb> speak(vi) freely. <subject> everyone <verb> be_entitled_to(vt) <object> <verb> seek(vt) and receive(vt) and send(vt) <object> information by everything at everywhere.",
+      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> believe(vi) freely and <verb> speak(vi) freely. <subject> everyone <verb> be_entitled_to(vt) <object> <verb> seek(vt) and receive(vt) and send(vt) <object> information and idea by everything at everywhere.",
   },
   {
     title: "Article 20",
