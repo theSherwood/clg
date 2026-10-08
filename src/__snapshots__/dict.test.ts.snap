@@ -81,6 +81,7 @@ exports[`root IDs 1`] = `
   "172": "choose(vi), choice, chosen, selectively",
   "173": "thank(vt), thanks, creditable, gratefully",
   "174": "invent(vt), originality, original, originally",
+  "175": "help(vt), help, helpful, helpfully",
   "176": "grow(vi), bigness, big, hugely",
   "177": "accelerate(vt), fastness, fast, quickly",
   "178": "change(vi), dynamism, dynamic, dynamically",

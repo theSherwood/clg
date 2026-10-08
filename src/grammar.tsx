@@ -271,7 +271,7 @@ export function GrammarView() {
         object, as in <i>work(vt) information</i>, to compute.
       </p>
       <Example meaning="These rights shall never be used against their purpose.">
-        &lt;object&gt; right this &lt;verb_prescriptive&gt; use(vt) never for &lt;gerund&gt; contrast_with(vt)
+        &lt;object&gt; right this &lt;verb_prescriptive&gt; use(vt) never for &lt;gerund&gt; oppose(vt)
         purpose of it
       </Example>
       <p className="mt-2">
@@ -522,8 +522,12 @@ export function GrammarView() {
       <p>
         A <W w="worker" /> is <i>&lt;er&gt; work(vi)</i>, to <W w="pay(vi)" /> is{" "}
         <i>give(vt) money</i>, with <W w="to" /> for whom, and a <W w="wage" /> is{" "}
-        <i>money work</i>. A <W w="union" /> is <i>group worker</i>, and to{" "}
-        <W w="cooperate(vi)" /> <i>work(vi) together</i>. Enough is the middle of the quantity axis:{" "}
+        <i>money work</i>, and a <W w="union" /> <i>group worker</i>. Whose side one acts on is
+        the support axis: <W w="help(vt)" /> and <W w="oppose(vt)" />, with{" "}
+        <W w="cooperate(vi)" /> a lesser helping and <W w="compete(vi)" /> a lesser opposing,
+        against someone toward the same goal; a <W w="rival" /> is <i>&lt;ee&gt; compete(vi)</i>.
+        Making something easier or harder, whatever the intent, is <W w="enable(vt)" /> and{" "}
+        <W w="hinder(vt)" />. Enough is the middle of the quantity axis:{" "}
         <W w="enough" />, between few and many.
       </p>
       <p className="mt-2">
@@ -603,6 +607,8 @@ export function GrammarView() {
         <i>&lt;gerund&gt; think(vi)</i> and an <W w="idea" /> <i>&lt;ee&gt; think(vt)</i>, what's
         thought. An opinion is a <W w="belief" />. A <W w="god" /> is <i>&lt;ee&gt; worship(vt)</i>,
         what's worshipped, and a <W w="religion" /> <i>belief worship</i>, a belief with worship.
+        An <W w="emotion" /> is <i>&lt;gerund&gt; sense(vt) value</i>, sensing what matters: fear
+        senses danger and joy good.
         A <W w="language" /> is <i>&lt;tool&gt; say(vt)</i>, what one speaks with, a{" "}
         <W w="message" /> <i>&lt;ee&gt; send(vt) information</i> and a <W w="reputation" />{" "}
         <i>belief of other</i>, what others believe of one.

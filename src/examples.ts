@@ -1179,7 +1179,7 @@ export const udhr_articles: Article[] = [
       "This right may not be invoked in the case of prosecutions genuinely arising from non-political crimes or from acts contrary to the purposes and principles of the United Nations.",
     ],
     transliteration:
-      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> seek(vt) <object> safety in country other from <gerund> hurt(vt). <subject> right this <verb> not include(vt) <object> person <clause_start> <object> <blank> <verb> judge(vt) about crime not politics or about deed <clause_start> <subject> <blank> <verb> contrast_with(vt) <object> purpose of group of country all <clause_end> <clause_end>.",
+      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> seek(vt) <object> safety in country other from <gerund> hurt(vt). <subject> right this <verb> not include(vt) <object> person <clause_start> <object> <blank> <verb> judge(vt) about crime not politics or about deed <clause_start> <subject> <blank> <verb> oppose(vt) <object> purpose of group of country all <clause_end> <clause_end>.",
   },
   {
     title: "Article 15",
@@ -1315,7 +1315,7 @@ export const udhr_articles: Article[] = [
       "These rights and freedoms may in no case be exercised contrary to the purposes and principles of the United Nations.",
     ],
     transliteration:
-      "<subject> everyone <verb> possess(vt) <object> duty to society <clause_start> <subject> it <verb> mature(vi) freely fully ably only in <blank> <clause_end>. <object> right and freedom of everyone <verb_prescriptive> limit(vt) only by law and only for acknowledgment of right and freedom of other and for merit and order of society and goodness of everyone in society democracy. <object> right and freedom this <verb_prescriptive> use(vt) never for <gerund> contrast_with(vt) purpose and axiom of group of country all.",
+      "<subject> everyone <verb> possess(vt) <object> duty to society <clause_start> <subject> it <verb> mature(vi) freely fully ably only in <blank> <clause_end>. <object> right and freedom of everyone <verb_prescriptive> limit(vt) only by law and only for acknowledgment of right and freedom of other and for merit and order of society and goodness of everyone in society democracy. <object> right and freedom this <verb_prescriptive> use(vt) never for <gerund> oppose(vt) purpose and axiom of group of country all.",
   },
   {
     title: "Article 30",

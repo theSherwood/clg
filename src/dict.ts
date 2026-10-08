@@ -2752,6 +2752,51 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       adverb: "originally",
     },
   ],
+  [
+    {
+      noun: "support",
+      notes:
+        "Whose side one acts on: helping toward another's aim or working against it. Cooperating is a lesser helping and competing a lesser opposing, against someone toward the same goal; a rival is <ee> compete(vi). Making something easier or harder, whatever the intent, is enable and hinder",
+      steps: {
+        min_positive: {
+          noun: "cooperation",
+          adj: "cooperative",
+          verb: "cooperate(vi)",
+          verb_i: "cooperate",
+          verb_t: "cooperate with",
+          adverb: "cooperatively",
+        },
+        min_negative: {
+          noun: "competition",
+          adj: "competitive",
+          verb: "compete(vi)",
+          verb_i: "compete",
+          verb_t: "compete against",
+          adverb: "competitively",
+          synonyms: { noun: ["rivalry", "contest"] },
+        },
+        max_negative: { noun: "sabotage", verb: "sabotage(vt)", verb_i: "sabotage", verb_t: "sabotage" },
+      },
+    },
+    {
+      noun: "opposition",
+      adj: "opposed",
+      verb: "oppose(vt)",
+      verb_i: "resist",
+      verb_t: "oppose",
+      adverb: "obstructively",
+      synonyms: { verb: ["obstruct", "thwart"] },
+    },
+    {
+      noun: "help",
+      adj: "helpful",
+      verb: "help(vt)",
+      verb_i: "help out",
+      verb_t: "help",
+      adverb: "helpfully",
+      synonyms: { noun: ["assistance", "aid"], verb: ["assist", "aid", "support"] },
+    },
+  ],
 ];
 
 // Grammar markers, which are also domain words: they mark the role of what follows and its noun
@@ -3152,6 +3197,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "make_peace(vi)", "defend(vi)", "tend(vi)", "command(vt)", "withstand(vt)",
     "recommend(vi)", "say(vt)", "write(vi)", "sense(vt)", "use(vi)",
     "do(vt)", "touch(vi)", "count(vi)", "thank(vt)", "invent(vt)", "show(vi)", "fly(vi)", "choose(vi)", "infer(vt)",
+    "help(vt)",
   ],
   relation: [
     "possess(vt)", "be(vt)", "be_entitled_to(vt)", "resemble(vt)", "result_from(vt)", "love(vt)", "know(vt)", "desire(vt)", "face(vt)", "include(vt)",
@@ -3390,6 +3436,11 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("idea", ["<ee>", "think(vt)"], { synonyms: ["notion"], notes: "What's thought" });
   noun("god", ["<ee>", "worship(vt)"], { synonyms: ["deity"], notes: "What's worshipped" });
   noun("religion", ["belief", "worship"], { synonyms: ["faith"], notes: "A belief with worship" });
+  noun("emotion", ["<gerund>", "sense(vt)", "value"], {
+    synonyms: ["feeling"],
+    notes: "Sensing value: fear senses danger, joy good. Sensing what's inside the body is sense(vt) within",
+  });
+  noun("rival", ["<ee>", "compete(vi)"], { notes: "Who one competes against" });
   noun("language", ["<tool>", "say(vt)"], { synonyms: ["tongue", "speech"], notes: "What one speaks with" });
   noun("message", ["<ee>", "send(vt)", "information"], { synonyms: ["letter", "mail", "correspondence"] });
   noun("reputation", ["belief", "of", "other"], { synonyms: ["honour", "name"], notes: "What others believe of one" });
@@ -3404,7 +3455,6 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   phrase("pay(vi)", ["give(vi)", "money"], "pay", "pay for");
   noun("wage", ["money", "work"], { synonyms: ["pay", "salary", "remuneration"] });
   noun("union", ["group", "worker"], { synonyms: ["trade union", "labor union"] });
-  phrase("cooperate(vi)", ["work(vi)", "together"], "cooperate", "cooperate with");
   noun("health", ["integrity", "body"], { notes: "A body's integrity" });
   noun("medicine", ["<gerund>", "mend(vt)", "body"], { synonyms: ["medical care", "healthcare"] });
   noun("doctor", ["<er>", "mend(vt)", "body"], { synonyms: ["physician", "healer"] });
