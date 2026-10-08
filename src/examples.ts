@@ -1078,7 +1078,7 @@ export const udhr_articles: Article[] = [
       "All human beings are born free and equal in dignity and rights. They are endowed with reason and conscience and should act towards one another in a spirit of brotherhood.",
     ],
     transliteration:
-      "<subject> everyone <verb?> be(vt) <complement> free and same in value and right. <subject> it all <verb> possess(vt) <object> reason and conscience and <verb_prescriptive> act(vi) for other and in path family. ??",
+      "<subject> everyone <verb> be(vt) <complement> free and same in value? and right. <subject> it all <verb> possess(vt) <object> reason and conscience and <verb_prescriptive> act(vi) to other as sibling.",
   },
   {
     title: "Article 2",
@@ -1090,7 +1090,7 @@ export const udhr_articles: Article[] = [
     title: "Article 3",
     english: ["Everyone has the right to life, liberty and security of person."],
     transliteration:
-      "<subject> everyone <verb> possess(vt) <object> right of life and freedom and safety.",
+      "<subject> everyone <verb> be_entitled_to(vt) <object> life and freedom and safety.",
   },
   {
     title: "Article 4",
@@ -1098,7 +1098,7 @@ export const udhr_articles: Article[] = [
       "No one shall be held in slavery or servitude; slavery and the slave trade shall be prohibited in all their forms.",
     ],
     transliteration:
-      "<subject> no_one <verb_prescriptive> be(vt) <complement> <ee> force(vt). <object> <gerund> use_force(vi) and trade <ee> force(vt) in shape all <verb_prescriptive> forbid(vi).",
+      "<subject> no_one <verb_prescriptive> be(vt) <complement> owned or forced. <object> <gerund> use_force(vi) and trade <ee> force(vt) in shape all <verb_prescriptive> forbid(vt).",
   },
   {
     title: "Article 5",
@@ -1106,13 +1106,13 @@ export const udhr_articles: Article[] = [
       "No one shall be subjected to torture or to cruel, inhuman or degrading treatment or punishment.",
     ],
     transliteration:
-      "<object> no_one <verb_prescriptive> suffer(vi) or lose_importance(vi).",
+      "<object> no_one <verb_prescriptive> torment(vt) or trivialize(vt).",
   },
   {
     title: "Article 6",
     english: ["Everyone has the right to recognition everywhere as a person before the law."],
     transliteration:
-      "<subject> everyone <verb> possess(vt) <object> right of <gerund> know(vt) as person by law.",
+      "<subject> everyone <verb> be_entitled_to(vt) <object> <clause_start> <object> self <verb> know(vt) as person by law at everywhere <clause_end>.",
   },
   {
     title: "Article 7",
@@ -1130,7 +1130,7 @@ export const udhr_articles: Article[] = [
     title: "Article 9",
     english: ["No one shall be subjected to arbitrary arrest, detention or exile."],
     transliteration:
-      "<object> no_one <verb_prescriptive> get_stuck(vi) or exit(vi) randomly.",
+      "<object> no_one <verb_prescriptive> constrain(vt) or eject(vt) randomly.",
   },
   {
     title: "Article 10",

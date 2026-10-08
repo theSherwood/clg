@@ -57,3 +57,13 @@ fit as its scale steps.
 - [ ] furniture: chair, table, bed and desk are <place> + verb for now, so a table is also a
   restaurant and a desk a workplace (as Arabic maktab is desk and office). The alternative is
   topside as a head, Toki Pona's supa, at 2-3 more syllables each. Punted
+
+## Open from the UDHR
+
+- [ ] value / dignity: not importance; something like preferredness, near the selection axis
+- [ ] kind / type / form that isn't geometric (shape and form are geometry ranks)
+- [ ] arbitrary, as in arbitrary arrest: not random, but without lawful basis
+- [ ] and before <gerund>: and before a role marker joins clauses, which breaks lists of gerunds
+  ("slavery and the slave trade", Article 4)
+- [ ] each other: other alone reads as another person
+- [ ] born free: <complement> only follows be(vt), so a depictive after another verb has no form

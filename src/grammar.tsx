@@ -126,7 +126,7 @@ export function GrammarView() {
         object. Every draft so far is in subject–verb–object order.
       </p>
       <Example meaning="Everyone has the right to life, liberty and security of person.">
-        &lt;subject&gt; everyone &lt;verb&gt; possess(vt) &lt;object&gt; right of life and freedom and safety.
+        &lt;subject&gt; everyone &lt;verb&gt; be_entitled_to(vt) &lt;object&gt; life and freedom and safety.
       </Example>
       <p>
         <b>Transitivity.</b> A transitive verb always takes <W w="<object>" />, even when nothing
@@ -214,8 +214,8 @@ export function GrammarView() {
         <W w="<verb_interrogative>" /> makes it a question. In a question, <W w="<blank>" /> stands
         for what's being asked about; without it, the question is yes or no.
       </p>
-      <Example meaning="No one shall be held in slavery.">
-        &lt;subject&gt; no_one &lt;verb_prescriptive&gt; be(vt) &lt;complement&gt; &lt;ee&gt; force(vt).
+      <Example meaning="No one shall be held in slavery or servitude.">
+        &lt;subject&gt; no_one &lt;verb_prescriptive&gt; be(vt) &lt;complement&gt; owned or forced.
       </Example>
       <Example meaning="Who does the soldier kill?">
         &lt;subject&gt; soldier &lt;verb_interrogative&gt; kill(vt) &lt;object&gt; &lt;blank&gt;
@@ -236,8 +236,10 @@ export function GrammarView() {
 
       <H2>Leaving the doer unsaid</H2>
       <p>
-        There's no passive voice. A clause with no subject leaves the doer unsaid, which is what the
-        passive is for: <i>&lt;object&gt; rock &lt;verb&gt; eat(vt) formerly</i> is “the rock was eaten”.
+        There's no passive voice. A clause that opens with <W w="<object>" /> and has no subject
+        leaves the doer unsaid, which is what the passive is for:{" "}
+        <i>&lt;object&gt; rock &lt;verb&gt; eat(vt) formerly</i> is “the rock was eaten”. A clause that opens
+        with its verb marker instead borrows a subject (see Conjunctions and clauses).
       </p>
       <Example meaning="The rock was eaten.">&lt;object&gt; rock &lt;verb&gt; eat(vt) formerly</Example>
 
@@ -782,7 +784,8 @@ export function GrammarView() {
         <W w="<subject>" />, <W w="<object>" />, <W w="<complement>" />), a clause starting with{" "}
         <W w="<subject>" /> or a verb marker can only be a subclause, so the bracket is left out.
         After a noun, a role marker would start the next part of the main clause instead, so
-        there it stays. <W w="<clause_end>" /> can be dropped at the end of a sentence, but not
+        there it stays. A subclause that opens with <W w="<object>" /> keeps it too, since{" "}
+        <i>&lt;object&gt; &lt;object&gt;</i> is hard to read. <W w="<clause_end>" /> can be dropped at the end of a sentence, but not
         before more of the main clause, whose next role marker would otherwise be read as part of
         the subclause.
       </p>
@@ -825,10 +828,24 @@ export function GrammarView() {
         place &lt;clause_start&gt; &lt;subject&gt; I &lt;verb&gt; sleep(vi) at &lt;blank&gt; &lt;clause_end&gt;
       </Example>
       <p className="mt-2">
-        A subclause with no subject takes the main clause's subject: <i>I desire(vt) &lt;object&gt;
-        &lt;verb&gt; sleep(vi)</i> is “I want to sleep”. A main clause with no subject
-        leaves it unspecified, “someone”.
+        <b>Missing subjects.</b> A clause that opens with its verb marker borrows the subject of
+        the clause it's attached to: a subclause the main clause's, and a clause joined by{" "}
+        <W w="and" />, <W w="or" /> or <W w="but" /> the previous clause's. Only a sentence that
+        opens with a verb marker has nothing to borrow from: with <W w="<verb_prescriptive>" /> it's
+        a command to the listener, and otherwise the subject is unspecified, “someone”. A clause
+        that opens with <W w="<object>" /> leaves the doer unsaid wherever it is.
       </p>
+      <Example meaning="I want to sleep.">
+        &lt;subject&gt; I &lt;verb&gt; desire(vt) &lt;object&gt; &lt;verb&gt; sleep(vi)
+      </Example>
+      <Example meaning="I want to be known.">
+        &lt;subject&gt; I &lt;verb&gt; desire(vt) &lt;object&gt; &lt;clause_start&gt; &lt;object&gt; me
+        &lt;verb&gt; know(vt) &lt;clause_end&gt;
+      </Example>
+      <Example meaning="I ate and slept.">
+        &lt;subject&gt; I &lt;verb&gt; eat(vt) formerly &lt;object&gt; food and &lt;verb&gt; sleep(vi)
+      </Example>
+      <Example meaning="Come here!">&lt;verb_prescriptive&gt; come(vi) to this</Example>
       <p className="mt-2">
         Cause and effect is the causality axis, a relation: <W w="result_from(vt)" /> has the
         effect as its subject and <W w="cause(vt)" /> the cause. A plain “because” is{" "}
