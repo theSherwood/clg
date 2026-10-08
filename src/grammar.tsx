@@ -533,9 +533,14 @@ export function GrammarView() {
         <i>&lt;gerund&gt; educate(vt)</i>, a <W w="teacher" /> <i>&lt;er&gt; educate(vt)</i>, a{" "}
         <W w="student" /> <i>&lt;ee&gt; educate(vt)</i> and a <W w="school" />{" "}
         <i>&lt;place&gt; educate(vt)</i>. Elementary education is <i>education juvenile</i> and
-        higher education <i>education mature</i>. <W w="culture" /> is <i>life society</i>, a
-        society's way of life, <W w="art" /> <i>beauty artificial</i>, made beauty, and{" "}
-        <W w="science" /> <i>knowledge organized</i>. Costing nothing is the far cheap end of price,{" "}
+        higher education <i>education mature</i>. A pattern is a <W w="regularity" />, so a{" "}
+        <W w="habit" /> is <i>regularity person</i>, a person's patterns, and <W w="culture" />{" "}
+        <i>regularity society</i>, a society's. The rest are activities, named by the gerund
+        like education: <W w="science" /> is <i>&lt;gerund&gt; seek(vt) knowledge</i>, with a{" "}
+        <W w="scientist" />, and <W w="art" /> <i>&lt;gerund&gt; create(vt) beauty</i>, with an{" "}
+        <W w="artist" /> and an <W w="artwork" />. Seeking succeeds in <W w="find(vt)" />, the
+        far end of searching, as hiding ends in <W w="misplace(vt)" />, losing something. Losing a contest is{" "}
+        <W w="lose(vi)" />. Costing nothing is the far cheap end of price,{" "}
         <W w="gratis" />; <W w="free" /> is liberty. Respect and tolerance are{" "}
         <W w="acknowledge(vt)" />.
       </p>

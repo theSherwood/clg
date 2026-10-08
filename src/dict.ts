@@ -407,6 +407,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
           verb_i: "become regular",
           verb_t: "regulate",
           adverb: "regularly",
+          synonyms: { noun: ["pattern"] },
         },
         min_negative: {
           noun: "irregularity",
@@ -2063,7 +2064,27 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { notes: 'Maybe the opposite of "search" should be "lose"?' },
+    {
+      notes: "At the ends, finding is searching fulfilled and losing hiding fulfilled. Forgetting is the memory axis's",
+      steps: {
+        max_positive: {
+          noun: "discovery",
+          adj: "found",
+          verb: "find(vt)",
+          verb_i: "find out",
+          verb_t: "find",
+          synonyms: { verb: ["discover"] },
+        },
+        max_negative: {
+          noun: "loss",
+          adj: "lost",
+          verb: "misplace(vt)",
+          verb_i: "get lost",
+          verb_t: "misplace",
+          synonyms: { verb: ["lose"] },
+        },
+      },
+    },
     {
       noun: "hiding",
       adj: "hidden",
@@ -3604,9 +3625,16 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("teacher", ["<er>", "educate(vt)"]);
   noun("student", ["<ee>", "educate(vt)"], { synonyms: ["pupil"] });
   noun("school", ["<place>", "educate(vt)"]);
-  noun("culture", ["life", "society"], { notes: "A society's life, its way of life" });
-  noun("art", ["beauty", "artificial"], { synonyms: ["the arts"], notes: "Made beauty" });
-  noun("science", ["knowledge", "organized"], { notes: "Organized knowledge, as German Wissenschaft" });
+  noun("habit", ["regularity", "person"], { synonyms: ["routine"], notes: "A person's patterns" });
+  noun("culture", ["regularity", "society"], { synonyms: ["custom", "tradition"], notes: "A society's patterns" });
+  noun("art", ["<gerund>", "create(vt)", "beauty"], { synonyms: ["the arts"], notes: "Creating beauty" });
+  noun("artist", ["<er>", "create(vt)", "beauty"]);
+  noun("artwork", ["<ee>", "create(vt)", "beauty"], { synonyms: ["work of art"] });
+  noun("science", ["<gerund>", "search(vi)", "knowledge"], {
+    synonyms: ["research", "inquiry"],
+    notes: "Seeking knowledge: the process, whose success is find(vt)",
+  });
+  noun("scientist", ["<er>", "search(vi)", "knowledge"], { synonyms: ["researcher"] });
   noun("political_science", ["science", "politics"], { gloss: "political science" });
   noun("member", ["<ee>", "include(vt)"], { notes: "Who or what is included" });
   noun("citizen", ["member", "country"], {
