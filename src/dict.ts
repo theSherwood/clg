@@ -1442,7 +1442,27 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "age" },
+    {
+      noun: "age",
+      notes: "Mature is leaning old, grown, and juvenile leaning new, young. An adult is person mature",
+      steps: {
+        min_negative: {
+          noun: "maturity",
+          adj: "mature",
+          verb: "mature(vi)",
+          verb_i: "mature",
+          verb_t: "bring to maturity",
+          adverb: "maturely",
+          synonyms: { adj: ["grown", "grown-up"] },
+        },
+        min_positive: {
+          noun: "youth",
+          adj: "juvenile",
+          adverb: "youthfully",
+          synonyms: { adj: ["young", "adolescent"] },
+        },
+      },
+    },
     { noun: "oldness", adj: "old", verb: "age(vi)", verb_i: "age", verb_t: "age" },
     {
       noun: "newness",
@@ -3306,6 +3326,14 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("idea", ["<ee>", "think(vt)"], { synonyms: ["notion"], notes: "What's thought" });
   noun("god", ["<ee>", "worship(vt)"], { synonyms: ["deity"], notes: "What's worshipped" });
   noun("religion", ["belief", "worship"], { synonyms: ["faith"], notes: "A belief with worship" });
+  noun("language", ["<tool>", "say(vt)"], { synonyms: ["tongue", "speech"], notes: "What one speaks with" });
+  noun("message", ["<ee>", "send(vt)", "information"], { synonyms: ["letter", "mail", "correspondence"] });
+  noun("reputation", ["belief", "of", "other"], { synonyms: ["honour", "name"], notes: "What others believe of one" });
+  phrase("discriminate(vi)", ["reject(vt)", "by", "type"], "discriminate", "discriminate against");
+  noun("discrimination", ["<gerund>", "discriminate(vi)"], { synonyms: ["distinction"] });
+  phrase("marry(vi)", ["connect(vi)", "family"], "marry", "marry");
+  noun("marriage", ["<gerund>", "marry(vi)"]);
+  noun("adult", ["person", "mature"]);
   phrase("pretend(vi)", ["show(vi)", "falsely"], "pretend", "disguise");
   // Saying or writing exactly: the clause is verbatim, so its pronouns are whoever first said it.
   // With meta, the words are someone else's, repeated: quoting

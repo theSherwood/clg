@@ -446,6 +446,12 @@ export function GrammarView() {
       <Example meaning="My grandparent has many descendants.">
         &lt;subject&gt; grandparent of me &lt;verb&gt; possess(vt) &lt;object&gt; &lt;max_positive&gt; child many
       </Example>
+      <p className="mt-2">
+        To <W w="marry(vi)" /> is <i>connect(vi) family</i>, as mating is <i>connect(vi) sex</i>,
+        and a <W w="marriage" /> <i>&lt;gerund&gt; marry(vi)</i>. Growing up is the age axis:{" "}
+        <W w="juvenile" /> leans new and <W w="mature" /> leans old, so an <W w="adult" /> is{" "}
+        <i>person mature</i>. <W w="child" /> is the lineage word, someone's child, at any age.
+      </p>
       <Open>
         Gendered words are long: “mother” is <i>parent female</i>, which is <i>&lt;negative&gt; child
         &lt;negative&gt; male</i>, four syllables for a very common word.
@@ -535,6 +541,9 @@ export function GrammarView() {
         <i>&lt;gerund&gt; think(vi)</i> and an <W w="idea" /> <i>&lt;ee&gt; think(vt)</i>, what's
         thought. An opinion is a <W w="belief" />. A <W w="god" /> is <i>&lt;ee&gt; worship(vt)</i>,
         what's worshipped, and a <W w="religion" /> <i>belief worship</i>, a belief with worship.
+        A <W w="language" /> is <i>&lt;tool&gt; say(vt)</i>, what one speaks with, a{" "}
+        <W w="message" /> <i>&lt;ee&gt; send(vt) information</i> and a <W w="reputation" />{" "}
+        <i>belief of other</i>, what others believe of one.
       </p>
       <Example meaning="I think that you slept.">
         &lt;subject&gt; I &lt;verb&gt; think(vt) &lt;object&gt; &lt;subject&gt; you &lt;verb&gt; sleep(vi) formerly
@@ -645,7 +654,9 @@ export function GrammarView() {
         Kinds are the ends of the abstraction axis, which runs from <W w="concrete" /> to{" "}
         <W w="abstract" />. A <W w="type" /> (<W w="generic" />) is generalizing as far as it goes,
         and an <W w="instance" /> (<W w="particular" />) is the fully particular case. “What kind?”
-        is <i>type &lt;blank&gt;</i>, and “in all its forms” is <i>in type all</i>.
+        is <i>type &lt;blank&gt;</i>, and “in all its forms” is <i>in type all</i>. To{" "}
+        <W w="discriminate(vi)" /> is <i>reject(vt) by type</i>, and its opposite is{" "}
+        <W w="impartially" />.
       </p>
       <Example meaning="What kind of animal is it?">
         &lt;subject&gt; it &lt;verb_interrogative&gt; be(vt) &lt;complement&gt; animal &lt;regroup&gt; type &lt;blank&gt;

@@ -1085,6 +1085,8 @@ export const udhr_articles: Article[] = [
     english: [
       "Everyone is entitled to all the rights and freedoms set forth in this Declaration, without distinction of any kind, such as race, colour, sex, language, religion, political or other opinion, national or social origin, property, birth or other status. Furthermore, no distinction shall be made on the basis of the political, jurisdictional or international status of the country or territory to which a person belongs, whether it be independent, trust, non-self-governing or under any other limitation of sovereignty.",
     ],
+    transliteration:
+      "<subject> everyone <verb> be_entitled_to(vt) <object> right and freedom all of this. <object> no_one <verb_prescriptive> discriminate_against(vt) by lineage or color or sex or language or religion or belief or country or society or possession or <gerund> be_born(vi) or type other. <object> no_one <verb_prescriptive> discriminate_against(vt) by government or sovereignty of country of it.",
   },
   {
     title: "Article 3",
@@ -1119,6 +1121,8 @@ export const udhr_articles: Article[] = [
     english: [
       "All are equal before the law and are entitled without any discrimination to equal protection of the law. All are entitled to equal protection against any discrimination in violation of this Declaration and against any incitement to such discrimination.",
     ],
+    transliteration:
+      "<subject> everyone <verb> be(vt) <complement> same in law and <verb> be_entitled_to(vt) <object> defense same of law. <subject> everyone <verb> be_entitled_to(vt) <object> defense same from discrimination and from <gerund> persuade(vt) to discrimination.",
   },
   {
     title: "Article 8",
@@ -1156,6 +1160,8 @@ export const udhr_articles: Article[] = [
     english: [
       "No one shall be subjected to arbitrary interference with his privacy, family, home or correspondence, nor to attacks upon his honour and reputation. Everyone has the right to the protection of the law against such interference or attacks.",
     ],
+    transliteration:
+      "<subject> no_one <verb_prescriptive> enter(vi) for nothing in privacy and family and house and message of other and <verb_prescriptive> worsen(vt) <object> reputation of other. <subject> everyone <verb> be_entitled_to(vt) <object> defense of law from this.",
   },
   {
     title: "Article 13",
@@ -1189,6 +1195,8 @@ export const udhr_articles: Article[] = [
       "Marriage shall be entered into only with the free and full consent of the intending spouses.",
       "The family is the natural and fundamental group unit of society and is entitled to protection by society and the State.",
     ],
+    transliteration:
+      "<subject> adult all <verb> be_entitled_to(vt) <object> <verb> marry(vi) and <verb> start(vt) <object> family. <object> no_one <verb_prescriptive> discriminate_against(vt) in marriage by lineage or country or religion. <subject> spouse plural <verb> be(vt) <complement> same in right at start of marriage and in it and at stop of it. <object> marriage <verb_prescriptive> start(vt) only if <subject> spouse plural <verb> allow(vt) <object> it freely fully. <subject> family <verb> be(vt) <complement> group natural and source of society and <verb> be_entitled_to(vt) <object> defense by society and government.",
   },
   {
     title: "Article 17",
