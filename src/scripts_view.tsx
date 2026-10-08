@@ -194,41 +194,32 @@ function Line({ marks, size }: { marks: number[][]; size: number }) {
 }
 
 // A word in cursive stems. The stems are one stroke for the whole word: the pen writes one stem
-// down and the next up, joining them with a small arch at the foot or the top. Each syllable's
-// rungs are a second stroke, written top to bottom: every rung starts at whichever end is nearer
-// where the last one finished, and the pen turns between them in a curve, never a horizontal
-// line, so a join can't be taken for a rung.
-type Segment = [from: number, to: number];
-
-function rung_stroke(states: number[], x: number, top: number, row_height: number, reach: number): Point[] {
-  const turn = reach * 0.3; // how far a turn bulges past the rungs' ends
-  const rungs = states.flatMap((state, r): { y: number; ends: Segment }[] => {
-    if (state === 0) return [];
-    const left = state & 1 ? x - reach : x;
-    const right = state & 2 ? x + reach : x;
-    return [{ y: top + (r + 0.5) * row_height, ends: [left, right] }];
-  });
-  const points: Point[] = [];
-  let at: number | undefined;
-  for (const [i, { y, ends }] of rungs.entries()) {
-    // Start from the end nearer where the pen is
-    const [from, to] = at === undefined || Math.abs(ends[0] - at) <= Math.abs(ends[1] - at) ? ends : [ends[1], ends[0]];
-    if (at !== undefined) {
-      const previous_y = rungs[i - 1]!.y;
-      const middle_y = (previous_y + y) / 2;
-      if (Math.abs(from - at) < 1e-6) {
-        // Same side: a rounded U past the ends
-        const out = from >= x ? 1 : -1;
-        points.push([at + out * turn, middle_y]);
-      } else {
-        points.push([(at + from) / 2, middle_y]);
-      }
-    }
+// down and the next up, joining them with a small arch at the foot or the top. Rungs are written
+// left to right, top to bottom, in strokes of their own: a rung that finishes out on the right
+// curves round into the next rung, but one that comes in from the left ends at the stem, and so
+// does its stroke. The joins are curves, never horizontal, so a join can't be taken for a rung.
+function rung_strokes(states: number[], x: number, top: number, row_height: number, reach: number): Point[][] {
+  const turn = reach * 0.3; // how far a join swings out past the right end
+  const strokes: Point[][] = [];
+  let current: Point[] = [];
+  let previous_y = 0;
+  states.forEach((state, r) => {
+    if (state === 0) return;
+    const y = top + (r + 0.5) * row_height;
+    const from = state & 1 ? x - reach : x;
+    const to = state & 2 ? x + reach : x;
+    // Coming on from a rung that finished on the right: swing out and round into this one
+    if (current.length > 0) current.push([x + reach + turn, (previous_y + y) / 2]);
     const step = (to - from) * 0.2;
-    points.push([from, y], [from + step, y], [to - step, y], [to, y]);
-    at = to;
-  }
-  return points;
+    current.push([from, y], [from + step, y], [to - step, y], [to, y]);
+    previous_y = y;
+    if (!(state & 2)) {
+      strokes.push(current);
+      current = [];
+    }
+  });
+  if (current.length > 0) strokes.push(current);
+  return strokes;
 }
 
 function CursiveStems({ rows, size }: { rows: number[][]; size: number }) {
@@ -259,10 +250,11 @@ function CursiveStems({ rows, size }: { rows: number[][]; size: number }) {
       fill="none"
     >
       <path d={spline(stems)} />
-      {rows.map((states, i) => {
-        const points = rung_stroke(states, i * column + column / 2, pad, row_height, reach);
-        return points.length > 0 ? <path key={i} d={spline(points)} /> : null;
-      })}
+      {rows.flatMap((states, i) =>
+        rung_strokes(states, i * column + column / 2, pad, row_height, reach).map((points, j) => (
+          <path key={`${i}-${j}`} d={spline(points)} />
+        )),
+      )}
     </svg>
   );
 }
@@ -527,7 +519,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
     },
     {
       name: "Cursive stems",
-      note: "The same stems joined into one stroke per word, and each syllable's rungs joined into one stroke",
+      note: "The same stems joined into one stroke per word; rungs written left to right, joined until one ends at the stem",
       render: (ids) => <CursiveStems rows={ids.map((id) => layout_values(id, phonology, stems))} size={size} />,
     },
     {
