@@ -1426,7 +1426,7 @@ export const north_wind_sentences: Article[] = [
       "Then the North Wind blew as hard as he could, but the more he blew the more closely did the traveler fold his cloak around him; and at last the North Wind gave up the attempt.",
     ],
     transliteration:
-      "<subject> wind north <verb> blow(vi) formerly afterwards <max_positive> strongly but <subject> traveler <verb> enclose(vt) formerly tightly by cloak <object> self and <subject> closure of cloak <verb> increase(vi) formerly with <gerund> blow(vi) of wind. <subject> wind north <verb> stop(vt) formerly afterwards <object> attempt of self.",
+      "<subject> wind north <verb> blow(vi) formerly afterwards <max_positive> strongly but <subject> traveler <verb> hold(vt) formerly tightly by cloak <object> self and <subject> closure of cloak <verb> increase(vi) formerly with <gerund> blow(vi) of wind. <subject> wind north <verb> stop(vt) formerly afterwards <object> attempt of self.",
   },
   {
     title: "Sentence 4",
@@ -1521,7 +1521,7 @@ export const siduri_advice: Article[] = [
     title: "Feast and dance",
     english: ["Let every day be a feast of rejoicing; dance and play day and night."],
     transliteration:
-      "<subject> day all <verb_prescriptive> be(vt) <complement> feast fun. <verb_prescriptive> dance(vi) and enjoy_oneself(vi) at daytime and night.",
+      "<verb_prescriptive> feast(vi) pleasantly at day all. <verb_prescriptive> dance(vi) and enjoy_oneself(vi) at daytime and night.",
   },
   {
     title: "Wash",

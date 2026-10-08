@@ -1776,7 +1776,17 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   [
     {
       notes:
-        "negative verb forms: to release; positive verb forms: to contain; also container; negative noun liberator (no positive noun)",
+        "negative verb forms: to release; positive verb forms: to contain; also container; negative noun liberator (no positive noun). Holding is containing, so its opposite is releasing; gripping is holding fully",
+      steps: {
+        max_positive: {
+          noun: "grip",
+          adj: "clenched",
+          verb: "grip(vt)",
+          verb_i: "clench",
+          verb_t: "grip",
+          synonyms: { verb: ["clutch", "grasp"], noun: ["grasp", "clutch"] },
+        },
+      },
     },
     {
       noun: "release",
@@ -1790,7 +1800,8 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       adj: "contained",
       verb: "close_in(vi)",
       verb_i: "close in",
-      verb_t: "enclose",
+      verb_t: "hold",
+      synonyms: { verb: ["enclose", "contain"] },
     },
   ],
   [
@@ -3850,9 +3861,10 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("cloak", ["clothing", "outside"], { synonyms: ["coat"], notes: "Outerwear" });
   // Washing cleans with water, as seeing senses light; washing yourself is bathing
   phrase("wash(vt)", ["clean(vt)", "water"], "bathe", "wash");
-  phrase("hold(vt)", ["touch(vt)", "strongly"], "hold on", "hold", { synonyms: ["grasp", "grip"], notes: "Touching strongly" });
   noun("belly", ["torso", "front"], { synonyms: ["abdomen", "stomach"], notes: "The front of the torso" });
-  noun("feast", ["food", "many"], { synonyms: ["banquet"], notes: "Abundant food" });
+  // Feasting is eating hugely, which sounds just like eating big
+  phrase("feast(vi)", ["eat(vt)", "hugely"], "feast", "feast on");
+  noun("feast", ["<gerund>", "feast(vi)"], { synonyms: ["banquet"], notes: "Feasting" });
   noun("music", ["sound", "beautiful"]);
   // go(vi) is moving in general, so dancing is moving to music
   phrase("dance(vi)", ["go(vi)", "music"], "dance", "dance");

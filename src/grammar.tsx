@@ -605,8 +605,9 @@ export function GrammarView() {
           listening are attending to what's shown or said, so they're the far ends of{" "}
           <W w="show(vi)" /> and <W w="say(vt)" />. Feelings are perceived the same way, with{" "}
           <W w="sense(vt)" /> and the feeling: <T>sense(vt) pain</T> is to feel pain, so{" "}
-          <W w="feel(vt)" /> stays touch. Holding is touching strongly: <W w="hold(vt)" /> is{" "}
-          <T>touch(vt) strongly</T>, to grasp or grip.
+          <W w="feel(vt)" /> stays touch. Holding isn't touching but containing: <W w="hold(vt)" /> is
+          the containment verb, whose opposite is <W w="release(vt)" />, and to grip is to hold fully,{" "}
+          <W w="grip(vt)" />.
         </p>
         <p className="mt-2">
           Washing is built like the senses, from <W w="clean(vt)" /> and the medium: <W w="wash(vt)" />{" "}
@@ -770,8 +771,9 @@ export function GrammarView() {
           mountain. A plant's parts are its body's: <W w="root" /> is <T>foot plant</T>,{" "}
           <W w="trunk" /> <T>torso plant</T>, <W w="branch" /> <T>arm plant</T> and <W w="leaf" />{" "}
           <T>finger plant</T>, and <T>mouth water</T> is a river's mouth. <W w="seed" /> is{" "}
-          <T>&lt;ee&gt; sow(vt)</T> and <W w="fruit" /> <T>food seed</T>, food with seed in it. A{" "}
-          <W w="feast" /> is <T>food many</T>, abundant food.
+          <T>&lt;ee&gt; sow(vt)</T> and <W w="fruit" /> <T>food seed</T>, food with seed in it. To{" "}
+          <W w="feast(vi)" /> is <T>eat(vt) hugely</T>, which sounds just like “eat big”, and a{" "}
+          <W w="feast" /> is feasting.
         </p>
 
         <H2>Kinds</H2>
