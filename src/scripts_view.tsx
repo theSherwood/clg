@@ -193,47 +193,58 @@ function Line({ marks, size }: { marks: number[][]; size: number }) {
   );
 }
 
-// A word in cursive stems, as one stroke. Each rung is a loop out to its side and back to the
-// stem, and a rung across is a figure eight lying through it. The pen writes one stem down and the
-// next up, joining them with a small arch at the foot or the top, so the word meanders without
-// crossing itself; the rows still read top to bottom.
-function cursive_stem_points(states: number[], x: number, top: number, row_height: number, reach: number): Point[] {
-  const points: Point[] = [[x, top]];
-  states.forEach((state, r) => {
-    const y = top + (r + 0.5) * row_height;
-    const lobe = (dir: number): Point[] => [
-      [x + dir * reach * 0.55, y - row_height * 0.24],
-      [x + dir * reach, y],
-      [x + dir * reach * 0.55, y + row_height * 0.24],
-    ];
-    if (state === 0) return;
-    // Pin the stem straight on the way in and out, so only the loops curve
-    points.push([x, y - row_height * 0.42], [x, y - row_height * 0.2]);
-    if (state === 3) points.push(...lobe(-1), [x, y], ...lobe(1));
-    else points.push(...lobe(state & 1 ? -1 : 1));
-    points.push([x, y + row_height * 0.2], [x, y + row_height * 0.42]);
+// A word in cursive stems. The stems are one stroke for the whole word: the pen writes one stem
+// down and the next up, joining them with a small arch at the foot or the top. Each syllable's
+// rungs are a second stroke, written top to bottom: every rung starts at whichever end is nearer
+// where the last one finished, and the pen turns between them in a curve, never a horizontal
+// line, so a join can't be taken for a rung.
+type Segment = [from: number, to: number];
+
+function rung_stroke(states: number[], x: number, top: number, row_height: number, reach: number): Point[] {
+  const turn = reach * 0.3; // how far a turn bulges past the rungs' ends
+  const rungs = states.flatMap((state, r): { y: number; ends: Segment }[] => {
+    if (state === 0) return [];
+    const left = state & 1 ? x - reach : x;
+    const right = state & 2 ? x + reach : x;
+    return [{ y: top + (r + 0.5) * row_height, ends: [left, right] }];
   });
-  points.push([x, top + 4 * row_height]);
+  const points: Point[] = [];
+  let at: number | undefined;
+  for (const [i, { y, ends }] of rungs.entries()) {
+    // Start from the end nearer where the pen is
+    const [from, to] = at === undefined || Math.abs(ends[0] - at) <= Math.abs(ends[1] - at) ? ends : [ends[1], ends[0]];
+    if (at !== undefined) {
+      const previous_y = rungs[i - 1]!.y;
+      const middle_y = (previous_y + y) / 2;
+      if (Math.abs(from - at) < 1e-6) {
+        // Same side: a rounded U past the ends
+        const out = from >= x ? 1 : -1;
+        points.push([at + out * turn, middle_y]);
+      } else {
+        points.push([(at + from) / 2, middle_y]);
+      }
+    }
+    const step = (to - from) * 0.2;
+    points.push([from, y], [from + step, y], [to - step, y], [to, y]);
+    at = to;
+  }
   return points;
 }
 
 function CursiveStems({ rows, size }: { rows: number[][]; size: number }) {
-  const column = size * 0.8; // wider than plain stems, so facing loops keep apart
+  const column = size * 0.72;
   const height = size * 1.2;
   const pad = size * 0.14; // room for the arches between stems
   const row_height = (height - 2 * pad) / 4;
   const reach = column * 0.32;
   const stroke = Math.max(1.5, size / 16);
-  const points: Point[] = [];
-  rows.forEach((states, i) => {
+  const stems: Point[] = [];
+  rows.forEach((_, i) => {
     const x = i * column + column / 2;
-    const stem = cursive_stem_points(states, x, pad, row_height, reach);
-    if (i > 0) {
-      // An arch from the last stem's end: at the foot after a stem written down, else at the top
-      const y = i % 2 === 1 ? height - pad * 0.35 : pad * 0.35;
-      points.push([x - column / 2, y]);
-    }
-    points.push(...(i % 2 === 0 ? stem : stem.reverse()));
+    const down = i % 2 === 0;
+    if (i > 0) stems.push([x - column / 2, down ? pad * 0.35 : height - pad * 0.35]);
+    const ys = [0, 0.25, 0.5, 0.75, 1].map((t) => pad + t * 4 * row_height);
+    stems.push(...(down ? ys : ys.reverse()).map((y): Point => [x, y]));
   });
   return (
     <svg
@@ -247,7 +258,11 @@ function CursiveStems({ rows, size }: { rows: number[][]; size: number }) {
       strokeLinejoin="round"
       fill="none"
     >
-      <path d={spline(points)} />
+      <path d={spline(stems)} />
+      {rows.map((states, i) => {
+        const points = rung_stroke(states, i * column + column / 2, pad, row_height, reach);
+        return points.length > 0 ? <path key={i} d={spline(points)} /> : null;
+      })}
     </svg>
   );
 }
@@ -512,7 +527,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
     },
     {
       name: "Cursive stems",
-      note: "The same stems written in one stroke: each rung a loop out to its side, each stem joined to the next",
+      note: "The same stems joined into one stroke per word, and each syllable's rungs joined into one stroke",
       render: (ids) => <CursiveStems rows={ids.map((id) => layout_values(id, phonology, stems))} size={size} />,
     },
     {
