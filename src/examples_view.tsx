@@ -157,7 +157,7 @@ const all_transliterations = [
   ...arithmetic_examples.map((e) => e.transliteration),
   ...more_grammar_examples.map((e) => e.transliteration),
   ...conversation_examples.map((e) => e.transliteration),
-  ...udhr_articles.flatMap((a) => (a.transliteration ? [a.transliteration] : [])),
+  ...[...udhr_preamble, ...udhr_articles].flatMap((a) => (a.transliteration ? [a.transliteration] : [])),
 ];
 
 // Words the examples need that have no root, most used first
@@ -181,8 +181,8 @@ function coverage() {
 
 export function ExamplesView() {
   const { total, rooted, candidates, missing } = useMemo(coverage, []);
-  const translated = udhr_articles.filter((a) => a.transliteration);
-  const untranslated = udhr_articles.filter((a) => !a.transliteration);
+  const translated = [...udhr_preamble, ...udhr_articles].filter((a) => a.transliteration);
+  const untranslated = [...udhr_preamble, ...udhr_articles].filter((a) => !a.transliteration);
   return (
     <div className="p-4 max-w-5xl mx-auto">
       <h1 className="text-xl font-bold mb-1">Worked examples</h1>
@@ -276,31 +276,25 @@ export function ExamplesView() {
             </div>
           ))}
         </div>
-        <details className="mt-6 text-sm">
-          <summary className="cursor-pointer font-semibold">
-            Not translated yet: preamble and {untranslated.length} articles
-          </summary>
-          <div className="mt-2 space-y-3 text-gray-600">
-            <div>
-              <h3 className="font-semibold text-gray-800">Preamble</h3>
-              {udhr_preamble.map((p) => (
-                <p key={p} className="mb-1">
-                  {p}
-                </p>
+        {untranslated.length > 0 && (
+          <details className="mt-6 text-sm">
+            <summary className="cursor-pointer font-semibold">
+              Not translated yet: {untranslated.length}
+            </summary>
+            <div className="mt-2 space-y-3 text-gray-600">
+              {untranslated.map((a) => (
+                <div key={a.title}>
+                  <h3 className="font-semibold text-gray-800">{a.title}</h3>
+                  {a.english.map((p) => (
+                    <p key={p} className="mb-1">
+                      {p}
+                    </p>
+                  ))}
+                </div>
               ))}
             </div>
-            {untranslated.map((a) => (
-              <div key={a.title}>
-                <h3 className="font-semibold text-gray-800">{a.title}</h3>
-                {a.english.map((p) => (
-                  <p key={p} className="mb-1">
-                    {p}
-                  </p>
-                ))}
-              </div>
-            ))}
-          </div>
-        </details>
+          </details>
+        )}
       </Section>
     </div>
   );

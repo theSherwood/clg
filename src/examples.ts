@@ -1058,17 +1058,26 @@ export const conversation_examples: Example[] = [
 
 // Universal Declaration of Human Rights
 
-export const udhr_preamble: string[] = [
-  "Whereas recognition of the inherent dignity and of the equal and inalienable rights of all members of the human family is the foundation of freedom, justice and peace in the world,",
-  "Whereas disregard and contempt for human rights have resulted in barbarous acts which have outraged the conscience of mankind, and the advent of a world in which human beings shall enjoy freedom of speech and belief and freedom from fear and want has been proclaimed as the highest aspiration of the common people,",
-  "Whereas it is essential, if man is not to be compelled to have recourse, as a last resort, to rebellion against tyranny and oppression, that human rights should be protected by the rule of law,",
-  "Whereas it is essential to promote the development of friendly relations between nations,",
-  "Whereas the peoples of the United Nations have in the Charter reaffirmed their faith in fundamental human rights, in the dignity and worth of the human person and in the equal rights of men and women and have determined to promote social progress and better standards of life in larger freedom,",
-  "Whereas Member States have pledged themselves to achieve, in co-operation with the United Nations, the promotion of universal respect for and observance of human rights and fundamental freedoms,",
-  "Whereas a common understanding of these rights and freedoms is of the greatest importance for the full realization of this pledge,",
-  "Now, therefore,",
-  "The General Assembly,",
-  "Proclaims this Universal Declaration of Human Rights as a common standard of achievement for all peoples and all nations, to the end that every individual and every organ of society, keeping this Declaration constantly in mind, shall strive by teaching and education to promote respect for these rights and freedoms and by progressive measures, national and international, to secure their universal and effective recognition and observance, both among the peoples of Member States themselves and among the peoples of territories under their jurisdiction.",
+// The preamble is one long sentence of whereas-clauses; the translation states each as its own
+// sentence and ends with consequently, as "so" is said
+export const udhr_preamble: Article[] = [
+  {
+    title: "Preamble",
+    english: [
+    "Whereas recognition of the inherent dignity and of the equal and inalienable rights of all members of the human family is the foundation of freedom, justice and peace in the world,",
+    "Whereas disregard and contempt for human rights have resulted in barbarous acts which have outraged the conscience of mankind, and the advent of a world in which human beings shall enjoy freedom of speech and belief and freedom from fear and want has been proclaimed as the highest aspiration of the common people,",
+    "Whereas it is essential, if man is not to be compelled to have recourse, as a last resort, to rebellion against tyranny and oppression, that human rights should be protected by the rule of law,",
+    "Whereas it is essential to promote the development of friendly relations between nations,",
+    "Whereas the peoples of the United Nations have in the Charter reaffirmed their faith in fundamental human rights, in the dignity and worth of the human person and in the equal rights of men and women and have determined to promote social progress and better standards of life in larger freedom,",
+    "Whereas Member States have pledged themselves to achieve, in co-operation with the United Nations, the promotion of universal respect for and observance of human rights and fundamental freedoms,",
+    "Whereas a common understanding of these rights and freedoms is of the greatest importance for the full realization of this pledge,",
+    "Now, therefore,",
+    "The General Assembly,",
+    "Proclaims this Universal Declaration of Human Rights as a common standard of achievement for all peoples and all nations, to the end that every individual and every organ of society, keeping this Declaration constantly in mind, shall strive by teaching and education to promote respect for these rights and freedoms and by progressive measures, national and international, to secure their universal and effective recognition and observance, both among the peoples of Member States themselves and among the peoples of territories under their jurisdiction.",
+    ],
+    transliteration:
+      "<subject> everyone <verb> possess(vt) <object> dignity and right same. <subject> no_one <verb> take(vt) ably <object> it. <subject> <gerund> acknowledge(vt) it <verb> be(vt) <complement> source of freedom and impartiality and peace at earth. <subject> <gerund> ignore(vt) and hate(vt) right of person <verb> cause(vt) <perfect_tense_aspect> <object> deed <max_negative> good <clause_start> <subject> conscience of everyone <verb> condemn(vt) <object> <blank> <clause_end>. <subject> everyone <verb> desire(vt) <max_positive> eagerly <object> earth <clause_start> <subject> everyone <verb> speak(vi) and believe(vi) freely and <verb> be(vt) <complement> free from fear and lack in <blank> <clause_end>. <object> right of person <verb_prescriptive> defend(vt) necessarily by law for <subject> person <verb> not oppose(vt) by coercion <object> <gerund> rule_over(vt) cruelly if <subject> nothing other <verb> help_out(vi). <subject> <gerund> increase(vt) liking between country plural <verb> be(vt) <complement> necessary. <subject> society plural of group of country all <verb> again say(vt) <perfect_tense_aspect> in constitution of it <object> <subject> it <verb> believe(vt) <object> right of person and dignity and value of person and right same of person male and person female. <subject> it <verb> choose(vt) <perfect_tense_aspect> <object> <verb> improve(vt) <object> society and life in freedom many. <subject> country member <verb> become be_bound_to(vt) <perfect_tense_aspect> <object> <verb> increase(vt) <object> acknowledgment and <gerund> obey(vt) of right and freedom of person at everywhere by <gerund> cooperate(vi) with group of country all. <subject> knowledge mutual of right and freedom this <verb> be(vt) <complement> <max_positive> important for <gerund> do(vt) duty this fully. <subject> group of country all <verb> say(vt) consequently <object> this as purpose of society all and country all. <subject> everyone and group all of society <verb_prescriptive> think(vt) always <object> this and <verb_prescriptive> increase(vt) <object> acknowledgment of right and freedom this by education. <subject> it <verb_prescriptive> secure(vt) <object> acknowledgment and <gerund> obey(vt) of it at everywhere by deed in country and between country plural in society of country member and of land <clause_start> <subject> country member <verb> govern(vt) <object> <blank> <clause_end>.",
+  },
 ];
 
 export const udhr_articles: Article[] = [
