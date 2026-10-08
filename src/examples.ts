@@ -1106,7 +1106,7 @@ export const udhr_articles: Article[] = [
       "No one shall be subjected to torture or to cruel, inhuman or degrading treatment or punishment.",
     ],
     transliteration:
-      "<object> no_one <verb_prescriptive> torment(vt) or use(vt) as thing.",
+      "<object> no_one <verb_prescriptive> torment(vt) or punish(vt) cruelly or use(vt) as thing.",
   },
   {
     title: "Article 6",

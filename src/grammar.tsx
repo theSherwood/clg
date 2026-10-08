@@ -348,8 +348,10 @@ export function GrammarView() {
         A <W w="law" /> or rule is <i>command abstract</i>, a general command: it applies to anyone
         in a given kind of case, where a <W w="command" /> is an order to someone about something
         particular. Whose law it is goes with <W w="of" />. To <W w="punish(vt)" /> is{" "}
-        <i>torment(vt) for law</i>, to hurt for the rule's sake; without an object it's to be
-        punished, to suffer for the law.
+        <i>hurt(vt) for law</i>, to hurt for the rule's sake; without an object it's to be
+        punished, to suffer for the law. Pain's fullest step is <W w="torment(vt)" /> (torture),
+        and its adverb <W w="cruelly" />: <i>punish(vt) cruelly</i> is cruel punishment, to the point
+        of agony.
       </p>
       <Example meaning="Everyone has the right to speak.">
         &lt;subject&gt; everyone &lt;verb&gt; be_entitled_to(vt) &lt;object&gt; &lt;gerund&gt; say(vt)

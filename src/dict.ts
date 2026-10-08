@@ -1350,14 +1350,30 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    { noun: "comfort" },
+    {
+      noun: "comfort",
+      notes:
+        "Hurting is the negative; tormenting, the fullest pain, the max negative. Cruel is excruciating: punish(vt) cruelly is punishing to the point of agony. Causing pain for its own sake is torment(vt) for pain",
+      steps: {
+        max_negative: {
+          noun: "agony",
+          adj: "excruciating",
+          verb: "torment(vt)",
+          verb_i: "be in agony",
+          verb_t: "torment",
+          adverb: "cruelly",
+          synonyms: { noun: ["torment", "torture"], adj: ["cruel", "harsh"], verb: ["torture"] },
+        },
+      },
+    },
     {
       noun: "pain",
       adj: "painful",
-      verb: "torment(vt)",
+      verb: "hurt(vt)",
       verb_i: "suffer",
-      verb_t: "torment",
+      verb_t: "hurt",
       adverb: "painfully",
+      synonyms: { verb: ["harm"] },
     },
     {
       noun: "pleasure",
@@ -3461,7 +3477,7 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
     notes:
       "A general command: one that says nothing of particular people or ends, unlike a command, which is an order to someone. Whose law is said with of",
   });
-  phrase("punish(vt)", ["torment(vt)", "for", "law"], "be punished", "punish");
+  phrase("punish(vt)", ["hurt(vt)", "for", "law"], "be punished", "punish");
 
   // Conversation
   idiom("yes", ["true"], { notes: "That's so" });
