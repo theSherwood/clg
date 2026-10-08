@@ -705,12 +705,12 @@ export const clause_examples: Example[] = [
   {
     title: "A quote",
     english: "She quoted her mother: “I'm weak”",
-    transliteration: "<subject> it <verb> quote(vt) formerly from mother of it <object> <subject> I <verb> be(vt) <complement> weak",
+    transliteration: "<subject> it <verb> quote(vt) formerly from mother of it <object> <clause_start> <subject> I <verb> be(vt) <complement> weak <clause_end>",
   },
   {
     title: "Direct speech",
     english: "She said, “I'm weak”",
-    transliteration: "<subject> it <verb> say_verbatim(vt) formerly <object> <subject> I <verb> be(vt) <complement> weak",
+    transliteration: "<subject> it <verb> say_verbatim(vt) formerly <object> <clause_start> <subject> I <verb> be(vt) <complement> weak <clause_end>",
   },
   {
     title: "That…",
@@ -1359,7 +1359,7 @@ export const babel_verses: Article[] = [
       "And they said one to another, Go to, let us make brick, and burn them thoroughly. And they had brick for stone, and slime had they for morter.",
     ],
     transliteration:
-      "<subject> they <verb> say_verbatim(vt) formerly to each_other <object> <subject> we <verb_prescriptive> create(vt) <object> brick and <verb_prescriptive> burn(vt) completely <object> it. <subject> they <verb> use(vt) formerly <object> brick as rock and <verb> use(vt) <object> liquid dark as glue.",
+      "<subject> they <verb> say_verbatim(vt) formerly to each_other <object> <clause_start> <subject> we <verb_prescriptive> create(vt) <object> brick and <verb_prescriptive> burn(vt) completely <object> it <clause_end>. <subject> they <verb> use(vt) formerly <object> brick as rock and <verb> use(vt) <object> liquid dark as glue.",
   },
   {
     title: "Genesis 11:4",
@@ -1367,7 +1367,7 @@ export const babel_verses: Article[] = [
       "And they said, Go to, let us build us a city and a tower, whose top may reach unto heaven; and let us make us a name, lest we be scattered abroad upon the face of the whole earth.",
     ],
     transliteration:
-      "<subject> they <verb> say_verbatim(vt) formerly <object> <subject> we <verb_prescriptive> create(vt) <object> city and tower <clause_start> <subject> top of <blank> <verb> touch(vt) <object> sky <clause_end> and <verb_prescriptive> create(vt) <object> reputation of self for <clause_start> <object> we <verb> not disperse(vt) to everywhere at earth.",
+      "<subject> they <verb> say_verbatim(vt) formerly <object> <clause_start> <subject> we <verb_prescriptive> create(vt) <object> city and tower <clause_start> <subject> top of <blank> <verb> touch(vt) <object> sky <clause_end> and <verb_prescriptive> create(vt) <object> reputation of self for <clause_start> <object> we <verb> not disperse(vt) to everywhere at earth <clause_end> <clause_end>.",
   },
   {
     title: "Genesis 11:5",

@@ -972,8 +972,9 @@ export function GrammarView() {
         <W w="<subject>" /> or a verb marker can only be a subclause, so the bracket is left out.
         After a noun, a role marker would start the next part of the main clause instead, so
         there it stays. A subclause that opens with <W w="<object>" /> keeps it too, since{" "}
-        <i>&lt;object&gt; &lt;object&gt;</i> is hard to read. <W w="<clause_end>" /> can be dropped at the end of a sentence, but not
-        before more of the main clause, whose next role marker would otherwise be read as part of
+        <i>&lt;object&gt; &lt;object&gt;</i> is hard to read. <W w="<clause_end>" /> can be dropped at the end of a sentence, or of
+        a bracketed clause around it, whose own <W w="<clause_end>" /> closes both; but not before
+        more of the main clause, whose next role marker would otherwise be read as part of
         the subclause.
       </p>
       <ul className="mt-2 list-disc pl-6 space-y-1">
@@ -982,11 +983,12 @@ export function GrammarView() {
           believe that…. Its pronouns are the speaker's, so after <W w="say(vt)" /> it's indirect
           speech. With <W w="identically" /> on the verb, it's direct speech, the very words, and its
           pronouns, here and now are the speaker's at the time: <W w="say_verbatim(vt)" /> is{" "}
-          <i>say(vt) identically</i>. Direct speech is a sentence of its own, so a quote that opens
-          with <W w="<verb_prescriptive>" /> is a command: <i>say_verbatim(vt) &lt;object&gt;
-          &lt;verb_prescriptive&gt; see(vi)</i>, they said, “Behold”. A quote longer than one sentence
-          keeps its brackets and has periods inside them:{" "}
-          <i>&lt;object&gt; &lt;clause_start&gt; … . … &lt;clause_end&gt;</i>. Adding <W w="meta" /> makes it a quote, someone else's words
+          <i>say(vt) identically</i>. Direct speech is a sentence of its own, so it always has both
+          brackets: it can open with anything, and only <W w="<clause_end>" /> shows where it
+          stops. A quote that opens with <W w="<verb_prescriptive>" /> is a command:{" "}
+          <i>say_verbatim(vt) &lt;object&gt; &lt;clause_start&gt; &lt;verb_prescriptive&gt; see(vi)
+          &lt;clause_end&gt;</i>, they said, “Behold”. A quote longer than one sentence has periods
+          inside its brackets: <i>&lt;object&gt; &lt;clause_start&gt; … . … &lt;clause_end&gt;</i>. Adding <W w="meta" /> makes it a quote, someone else's words
           repeated, with <W w="from" /> for whose: <W w="quote(vt)" /> is{" "}
           <i>say(vt) identically meta</i>. Writing works the same way: <W w="write_verbatim(vt)" /> and{" "}
           <W w="quote_in_writing(vt)" />. A <W w="quotation" /> is <i>&lt;ee&gt; quote(vt)</i>, what's
