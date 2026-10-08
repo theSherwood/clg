@@ -2468,7 +2468,14 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       notes:
         "The subject of result_from is the effect, and of cause the cause. Change verbs with an object already mean making something happen directly (melt(vt) is to make melt); cause(vt) is for causes that are things or events: the storm caused the flood",
     },
-    { noun: "cause", adj: "causal", verb: "cause(vt)", verb_t: "cause", adverb: "causally" },
+    {
+      noun: "cause",
+      adj: "causal",
+      verb: "cause(vt)",
+      verb_t: "cause",
+      adverb: "causally",
+      synonyms: { noun: ["reason"] },
+    },
     {
       noun: "result",
       adj: "resulting",
@@ -3436,6 +3443,10 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
     notes: "What works data. A computer was first a person who computed, and <er> work(vt) information still is",
   });
   noun("reason", ["<tool>", "infer(vt)"], { gloss: "reason (the faculty)", notes: "What one reasons with" });
+  noun("purpose", ["<to>", "aim(vt)"], {
+    synonyms: ["goal", "aim", "target"],
+    notes: "What an act is aimed at, as <to> go(vi) is where one goes. A reason for acting, where a premise is one for believing and a cause one for happening",
+  });
   noun("mind", ["<er>", "sense(vt)", "self"], { notes: "What perceives itself" });
   noun("model", ["<er>", "resemble(vt)"], {
     gloss: "model / likeness",

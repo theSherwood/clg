@@ -62,7 +62,8 @@ fit as its scale steps.
 
 - [x] value / dignity: value is the selection axis's noun, dignity value intrinsic (provisional)
 - [x] kind / type / form that isn't geometric: type and instance, the ends of abstraction
-- [ ] arbitrary, as in arbitrary arrest: not random, but without lawful basis
+- [x] arbitrary, as in arbitrary arrest: for nothing, for no purpose. Purpose is <to> aim(vt),
+  and reason a synonym of cause
 - [x] and before <gerund>: only <subject>, <object> and verb markers start a clause, so a gerund
   after and is a list item
 - [x] each other: each_other, other mutual, with mutual on the trade step

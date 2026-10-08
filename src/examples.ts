@@ -1130,7 +1130,7 @@ export const udhr_articles: Article[] = [
     title: "Article 9",
     english: ["No one shall be subjected to arbitrary arrest, detention or exile."],
     transliteration:
-      "<object> no_one <verb_prescriptive> constrain(vt) or eject(vt) randomly.",
+      "<object> no_one <verb_prescriptive> constrain(vt) or eject(vt) for nothing.",
   },
   {
     title: "Article 10",

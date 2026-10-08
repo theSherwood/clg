@@ -240,7 +240,8 @@ export function GrammarView() {
         <i>at &lt;blank&gt;</i> where, <i>to &lt;blank&gt;</i> where to,{" "}
         <i>from &lt;blank&gt;</i> where from, <i>at time &lt;blank&gt;</i> when,{" "}
         <i>for &lt;blank&gt;</i> why, <i>by &lt;blank&gt;</i> how (by what means),{" "}
-        <i>with &lt;blank&gt;</i> with whom and <i>number &lt;blank&gt;</i> how many.
+        <i>with &lt;blank&gt;</i> with whom and <i>number &lt;blank&gt;</i> how many. The answers
+        follow the same pattern: <i>for nothing</i> is for no reason, arbitrarily.
       </p>
       <Example meaning="Why do you fight?">
         &lt;subject&gt; you &lt;verb_interrogative&gt; fight(vi) for &lt;blank&gt;
@@ -391,7 +392,9 @@ export function GrammarView() {
         positive, whose no-object meaning is <W w="reason(vi)" />. At the ends,{" "}
         <W w="posit(vt)" /> an <W w="axiom" /> and <W w="derive(vt)" /> a <W w="theorem" />.{" "}
         <W w="reason" />, the faculty, is <i>&lt;tool&gt; infer(vt)</i>. A reason for believing
-        something is a premise, where a reason something happened is a <W w="cause" />.
+        something is a premise, a reason something happened a <W w="cause" />, and a reason for
+        doing it a <W w="purpose" />, <i>&lt;to&gt; aim(vt)</i>, what the act is aimed at. In general,
+        “a reason” is a cause, as German <i>Grund</i> and Toki Pona <i>tan</i> are both.
       </p>
       <Example meaning="I infer that you slept.">
         &lt;subject&gt; I &lt;verb&gt; infer(vt) &lt;object&gt; &lt;subject&gt; you &lt;verb&gt; sleep(vi) formerly
