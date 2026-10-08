@@ -347,7 +347,9 @@ export function GrammarView() {
       <p className="mt-2">
         A <W w="law" /> or rule is <i>command abstract</i>, a general command: it applies to anyone
         in a given kind of case, where a <W w="command" /> is an order to someone about something
-        particular. Whose law it is goes with <W w="of" />.
+        particular. Whose law it is goes with <W w="of" />. To <W w="punish(vt)" /> is{" "}
+        <i>torment(vt) for law</i>, to hurt for the rule's sake; without an object it's to be
+        punished, to suffer for the law.
       </p>
       <Example meaning="Everyone has the right to speak.">
         &lt;subject&gt; everyone &lt;verb&gt; be_entitled_to(vt) &lt;object&gt; &lt;gerund&gt; say(vt)
