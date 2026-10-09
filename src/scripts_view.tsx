@@ -511,6 +511,13 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
                   value={line_style.spacing === "condensed" ? 1 : 0}
                   on_change={(i) => set_line_style({ ...line_style, spacing: i === 1 ? "condensed" : "even" })}
                 />
+                {line_style.spacing === "condensed" && (
+                  <Toggle
+                    options={["period at top", "period after"]}
+                    value={line_style.period_position === "after" ? 1 : 0}
+                    on_change={(i) => set_line_style({ ...line_style, period_position: i === 1 ? "after" : "top" })}
+                  />
+                )}
               </>
             )}
             <label className="flex items-center gap-1" title="Midline colour">

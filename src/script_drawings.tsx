@@ -119,6 +119,7 @@ export type LineStyle = {
   midline_shape: "straight" | "circle";
   grow: "in" | "out";
   spacing: "even" | "condensed";
+  period_position: "top" | "after"; // where a condensed sentence's period goes
 };
 export const default_line_style: LineStyle = {
   join: "cursive",
@@ -129,6 +130,7 @@ export const default_line_style: LineStyle = {
   midline_shape: "straight",
   grow: "in",
   spacing: "even",
+  period_position: "top",
 };
 
 // The midline is ruled like lined paper: thinner than the writing, in its own colour
@@ -319,12 +321,13 @@ export function Line({ marks, size, style = default_line_style }: { marks: numbe
 }
 
 // The line script round circles: each sentence is a ring, read clockwise, with the marks above the
-// line outside it and those below inside, and every sentence ends at the top, so the periods line
-// up. Rings are a line apart, and all are as big as the longest sentence for its place needs, so
-// the writing stays one size. With even spacing a sentence shorter than its ring has its gaps
-// widened until it closes the circle; condensed, it keeps its gaps and runs up to its period,
-// leaving the rest of the ring empty. The first sentence is the outer ring when growing in, and the
-// inner one when growing out.
+// line outside it and those below inside. A sentence ends at the top, so the periods line up,
+// unless a condensed sentence puts its period right after it instead. Rings are a line apart, and
+// all are as big as the longest sentence for its place needs, so the writing stays one size. With
+// even spacing a sentence shorter than its ring has its gaps widened until it closes the circle;
+// condensed, it keeps its gaps, leaving the rest of the ring empty, and either runs up to its
+// period at the top or starts at the top with its period right after its last word. The first
+// sentence is the outer ring when growing in, and the inner one when growing out.
 type CircleItem = { geometry: LineGeometry; word?: Word } | { period: true } | { blank: number };
 
 export function LineCircles({
@@ -420,7 +423,10 @@ export function LineCircles({
         <circle key={`mid${k}`} cx={centre} cy={centre} r={R} stroke={style.midline_color} strokeWidth={midline_width(size)} />,
       );
     }
-    let x = circumference + tail - used;
+    let x =
+      style.spacing === "condensed" && style.period_position === "after"
+        ? ring_gap / 2 // start just past the top
+        : circumference + tail - used;
     items.forEach((item, i) => {
       const width = width_of(item);
       if ("geometry" in item) {
