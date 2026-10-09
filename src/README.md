@@ -18,6 +18,8 @@ the page's thread.
 - `examples.ts`: worked examples (number examples, the UDHR, the Tower of Babel) and the
   tokenizer that looks up their words
 - `grammar.tsx`: the grammar and syntax page
+- `stem_routes.ts`: how cursive stems join a syllable's rungs into strokes, every route the rules
+  allow, and the one drawn
 - `circle_layouts.ts`: the stave script laid out round circles, by `circle_flow.ts` (the default),
   `circle_relax.ts` or `circle_solver.ts`; pure geometry, run in `circle_worker.ts` and drawn by
   `script_drawings.tsx`

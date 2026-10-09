@@ -188,3 +188,42 @@ test("the built-in script presets all differ, and settings compare whatever thei
   const reordered = Object.fromEntries(Object.entries(settings).reverse().map(([k, v]) => [k, Object.fromEntries(Object.entries(v).reverse())]));
   expect(same_settings(settings, reordered as typeof settings)).toBe(true);
 });
+
+test("cursive stem routes: every rung once, only turns the rules allow, and the fewest strokes", async () => {
+  const { all_routes, best_route, possible_turns, rungs_of } = await import("./stem_routes");
+  const { default_stems } = await import("./scripts");
+  const { syllable_of } = await import("./phonology");
+  const rules = [
+    { turns: "next", direction: "down" },
+    { turns: "next", direction: "any" },
+    { turns: "clear", direction: "down" },
+    { turns: "clear", direction: "any" },
+  ] as const;
+  for (let id = 0; id < 256; id++) {
+    const states = layout_values(id, default_phonology, default_stems);
+    const rungs = rungs_of(states);
+    for (const rule of rules) {
+      const { strokes } = best_route(states, rule);
+      // Each rung drawn once
+      expect(strokes.flatMap((s) => s.map((step) => step.rung)).sort()).toEqual(rungs.map((_, i) => i));
+      // Each turn between neighbours in a stroke is one the rules allow, on the side the pen leaves by
+      const allowed = possible_turns(rungs, rule);
+      for (const stroke of strokes)
+        stroke.slice(1).forEach((step, i) => {
+          const [a, b] = [stroke[i]!.rung, step.rung].sort((x, y) => x - y);
+          expect(stroke[i]!.to).toBe(step.from);
+          expect(allowed.some((t) => t.side === step.from && t.a === a && t.b === b)).toBe(true);
+          if (rule.direction === "down") expect(rungs[step.rung]!.row).toBeGreaterThan(rungs[stroke[i]!.rung]!.row);
+        });
+      // The fewest strokes any route allows: rungs less the most turns
+      const most = Math.max(...all_routes(rungs, rule).map((r) => r.length));
+      expect(strokes.length).toBe(rungs.length - most);
+    }
+  }
+  const of = (sound: string) => layout_values(Array.from({ length: 256 }, (_, i) => i).find((i) => syllable_of(i, default_phonology) === sound)!, default_phonology, default_stems);
+  // dhei takes one stroke when turns may skip clear rows and go up, two otherwise
+  expect(best_route(of("dhei"), { turns: "clear", direction: "any" }).strokes.length).toBe(1);
+  expect(best_route(of("dhei"), { turns: "next", direction: "down" }).strokes.length).toBe(2);
+  // Four rungs across: five ways to turn on each side, less the eight that close a loop
+  expect(all_routes(rungs_of([3, 3, 3, 3]), { turns: "clear", direction: "any" }).length).toBe(17);
+});

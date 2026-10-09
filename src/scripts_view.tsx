@@ -490,6 +490,28 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
           />
         </Row>
         <Row
+          label="Turns"
+          hint="Which rungs a U-turn may join: only the next one, or past rows whose rungs don't reach that side"
+          off={stems_style.join !== "cursive" && "Only cursive stems"}
+        >
+          <Toggle
+            options={["next rung", "skip clear rows"]}
+            value={stems_style.turns === "clear" ? 1 : 0}
+            on_change={(i) => set_stems_style({ ...stems_style, turns: i === 1 ? "clear" : "next" })}
+          />
+        </Row>
+        <Row
+          label="Direction"
+          hint="Whether a stroke's U-turns only go down the stem, or up as well"
+          off={stems_style.join !== "cursive" && "Only cursive stems"}
+        >
+          <Toggle
+            options={["downward", "any"]}
+            value={stems_style.direction === "any" ? 1 : 0}
+            on_change={(i) => set_stems_style({ ...stems_style, direction: i === 1 ? "any" : "down" })}
+          />
+        </Row>
+        <Row
           label="Curve"
           hint="How round the joins between stems and the turns between rungs are; none is square"
           off={stems_style.join !== "cursive" && "Only cursive stems"}

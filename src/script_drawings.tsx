@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { type Laid, type LayoutOptions, type Wire, from_wire, solve_layout, solved_extent } from "./circle_layouts";
 import { type Solved, solve_circles } from "./circle_solver";
+import { type StemRouting, best_route, default_stem_routing } from "./stem_routes";
 import { T, type Word } from "./dict";
 import { type Phonology } from "./phonology";
 import {
@@ -38,13 +39,14 @@ export function load<T>(key: string, fallback: T): T {
 
 // The stem script's modes: each syllable a stem of its own, or a word's stems joined into one stroke
 export const STEM_JOINS = ["separate", "cursive"] as const;
-// curve: with cursive stems, how far their joins and U-turns are rounded, from 0 (square) to 1
-export type StemsStyle = { join: (typeof STEM_JOINS)[number]; curve: number };
-export const default_stems_style: StemsStyle = { join: "cursive", curve: 1 };
+// With cursive stems: curve, how far their joins and U-turns are rounded, from 0 (square) to 1;
+// and routing, how a syllable's rungs are joined into strokes (see stem_routes.ts)
+export type StemsStyle = { join: (typeof STEM_JOINS)[number]; curve: number } & StemRouting;
+export const default_stems_style: StemsStyle = { join: "cursive", curve: 1, ...default_stem_routing };
 
 // A word in the stem script, in whichever mode the style asks for
 export function StemsWord({ rows, size, style }: { rows: number[][]; size: number; style: StemsStyle }) {
-  return style.join === "cursive" ? <CursiveStems rows={rows} size={size} curve={style.curve} /> : <Stems rows={rows} size={size} />;
+  return style.join === "cursive" ? <CursiveStems rows={rows} size={size} curve={style.curve} routing={style} /> : <Stems rows={rows} size={size} />;
 }
 
 // A word in the stem script: one stem per syllable, a rung per row (none, left, right, across)
@@ -683,51 +685,25 @@ export function StaveCircles(args: CircleLayoutArgs) {
 // rung's outer end to the next one's, on the same side, so it never comes near the stem. A rung
 // that starts a stroke is written out from the stem, ready to join on; one that's joined into is
 // written in to the stem, where the stroke ends; a rung across carries the stroke to its other side.
-function rung_strokes(states: number[], x: number, top: number, row_height: number, reach: number): Point[][] {
+function rung_strokes(states: number[], x: number, top: number, row_height: number, reach: number, routing: StemRouting): Point[][] {
   const bulge = reach * 0.26; // how far a U-turn reaches past the rungs' ends
-  const rungs = states.flatMap((state, r) =>
-    state === 0 ? [] : [{ y: top + (r + 0.5) * row_height, left: (state & 1) > 0, right: (state & 2) > 0 }],
+  const { rungs, strokes } = best_route(states, routing);
+  const y = (r: number) => top + (rungs[r]!.row + 0.5) * row_height;
+  const end = (side: number) => x + side * reach; // a rung's end on a side, or at the stem for 0
+  return strokes.map((steps) =>
+    steps.flatMap(({ rung, from, to }, i): Point[] => {
+      // The first rung starts where the pen comes in; each after it starts with the U-turn from
+      // the rung before, out past both their ends and back in
+      const lead: Point[] =
+        i === 0
+          ? [[end(from), y(rung)]]
+          : [
+              [x + from * (reach + bulge), y(steps[i - 1]!.rung)],
+              [x + from * (reach + bulge), y(rung)],
+            ];
+      return [...lead, [end(to), y(rung)]];
+    }),
   );
-  const reaches = (rung: (typeof rungs)[number], side: number) => (side < 0 ? rung.left : rung.right);
-  const strokes: Point[][] = [];
-  let current: Point[] = [];
-  let pen = 0; // the side the pen is on, -1 left or 1 right, or 0 when the stroke has ended
-  rungs.forEach((rung, k) => {
-    const { y, left, right } = rung;
-    if (pen !== 0 && reaches(rung, pen)) {
-      // Out past the last rung's end, along, and back in to this one's
-      const turn = x + pen * (reach + bulge);
-      current.push([turn, rungs[k - 1]!.y], [turn, y]);
-      if (left && right) {
-        current.push([x - pen * reach, y]);
-        pen = -pen;
-      } else {
-        current.push([x, y]);
-        strokes.push(current);
-        current = [];
-        pen = 0;
-      }
-      return;
-    }
-    if (current.length > 0) strokes.push(current);
-    if (left && right) {
-      // Write it toward the side the next rung can be joined from
-      const next = rungs[k + 1];
-      pen = next && !next.right && next.left ? -1 : 1;
-      current = [
-        [x - pen * reach, y],
-        [x + pen * reach, y],
-      ];
-    } else {
-      pen = left ? -1 : 1;
-      current = [
-        [x, y],
-        [x + pen * reach, y],
-      ];
-    }
-  });
-  if (current.length > 0) strokes.push(current);
-  return strokes;
 }
 
 // A line of horizontal and vertical runs with its corners rounded: each corner is cut back along
@@ -760,7 +736,17 @@ function rounded_path(points: Point[], curve: number, most: { horizontal: number
   return `${d} L ${last[0]} ${last[1]}`;
 }
 
-export function CursiveStems({ rows, size, curve = 1 }: { rows: number[][]; size: number; curve?: number }) {
+export function CursiveStems({
+  rows,
+  size,
+  curve = 1,
+  routing = default_stem_routing,
+}: {
+  rows: number[][];
+  size: number;
+  curve?: number;
+  routing?: StemRouting;
+}) {
   const column = size * 0.72;
   const height = size * 1.2;
   const pad = size * 0.14; // room for the joins between stems
@@ -793,7 +779,7 @@ export function CursiveStems({ rows, size, curve = 1 }: { rows: number[][]; size
     >
       <path d={rounded_path(stems, curve, { horizontal: column / 2, vertical: dip })} />
       {rows.flatMap((states, i) =>
-        rung_strokes(states, middle(i), pad, row_height, reach).map((points, j) => (
+        rung_strokes(states, middle(i), pad, row_height, reach, routing).map((points, j) => (
           <path key={`${i}-${j}`} d={rounded_path(points, curve, { horizontal: reach * 0.26, vertical: Infinity })} />
         )),
       )}
