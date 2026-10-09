@@ -33,6 +33,7 @@ import {
   type PeriodStyle,
   type ScriptRenderer,
   type ScriptSettings,
+  type Spacing,
   default_stave_style,
   default_period,
   STAVE_JOINS,
@@ -45,6 +46,7 @@ import {
   type GatesStyle,
   default_gates_style,
   GATES_FORMS,
+  GATES_SPACINGS,
   StemsWord,
   StemRoute,
   STEM_JOINS,
@@ -107,7 +109,7 @@ const ScriptText = React.memo(
           {s.whole_text ? (
             <div className="overflow-x-auto">{s.whole_text(tokens, (word, node) => <WordHover word={word}>{node}</WordHover>)}</div>
           ) : (
-            <Written tokens={tokens} render={s.render} size={size} rule={s.rule} period={period} grid={s.grid} />
+            <Written tokens={tokens} render={s.render} size={size} rule={s.rule} period={period} spacing={s.spacing} />
           )}
         </div>
       </div>
@@ -122,18 +124,14 @@ function Written({
   size,
   rule,
   period,
-  grid,
+  spacing,
 }: {
   tokens: ScriptToken[];
   render: (ids: number[]) => React.ReactNode;
   size?: number;
   period?: PeriodStyle;
   rule?: { color: string; size: number };
-  // A script set on a grid: the space between words, the cell a period or other punctuation takes
-  // in place of the space before it, and a one-syllable word's width (which a word with no root
-  // yet takes, as a ?), in pixels, so every word starts on the grid; and the space between rows,
-  // if not the usual
-  grid?: { gap: number; cell: number; glyph: number; row?: number };
+  spacing?: Spacing; // a script's own spacing (see Spacing)
 }) {
   const ruled: React.CSSProperties | undefined = rule && {
     lineHeight: 1,
@@ -145,12 +143,12 @@ function Written({
   };
   return (
     <div
-      className={`flex flex-wrap items-center ${grid === undefined ? "gap-x-[0.5em]" : ""}`}
-      style={{ rowGap: grid?.row ?? ROW_GAP, columnGap: grid?.gap, ...ruled }}
+      className={`flex flex-wrap items-center ${spacing === undefined ? "gap-x-[0.5em]" : ""}`}
+      style={{ rowGap: spacing?.row ?? ROW_GAP, columnGap: spacing?.gap, ...ruled }}
     >
       {tokens.map((t, i) =>
-        "punctuation" in t && grid ? (
-          <span key={i} className="flex shrink-0 items-center justify-center text-gray-500" style={{ marginLeft: -grid.gap, width: grid.cell }}>
+        "punctuation" in t && spacing ? (
+          <span key={i} className="flex shrink-0 items-center justify-center text-gray-500" style={{ marginLeft: -spacing.gap, width: spacing.cell }}>
             {t.punctuation === "." && size ? <Period size={size} style={period} /> : t.punctuation}
           </span>
         ) : "punctuation" in t && t.punctuation === "." && size ? (
@@ -169,8 +167,8 @@ function Written({
           <span key={i} title={t.text}>
             {render(t.ids)}
           </span>
-        ) : grid ? (
-          <span key={i} className="flex shrink-0 justify-center text-red-500 text-sm" style={{ width: grid.glyph }} title={`${t.text}: no root yet`}>
+        ) : spacing ? (
+          <span key={i} className="flex shrink-0 justify-center text-red-500 text-sm" style={{ width: spacing.glyph }} title={`${t.text}: no root yet`}>
             ?
           </span>
         ) : (
@@ -671,6 +669,17 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
               options={[...GATES_FORMS]}
               value={GATES_FORMS.indexOf(gates_style.form)}
               on_change={(i) => set_gates_style({ ...gates_style, form: GATES_FORMS[i]! })}
+            />
+          </Row>
+          <Row
+            label="Spacing"
+            hint="Close: a sliver between a word's syllables, and a stroke left out between words and rows. Grid: every word in every row on a grid of half syllables"
+            off={gates_style.form !== "fret" && "Only the fret: bars, open at the ends, need the room to tell syllables apart"}
+          >
+            <Toggle
+              options={[...GATES_SPACINGS]}
+              value={GATES_SPACINGS.indexOf(gates_style.spacing)}
+              on_change={(i) => set_gates_style({ ...gates_style, spacing: GATES_SPACINGS[i]! })}
             />
           </Row>
           <Row label="Weight" hint="The strokes, as a share of the pitch between them">

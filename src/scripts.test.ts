@@ -395,14 +395,14 @@ test("a 4×3 block of points has exactly four paths through every point from one
 });
 
 test("bar scripts and the fret on a grid: every word, and every period after one, moves the next word on by whole units", async () => {
-  const { bar_grid, Gates, default_gates_style, gates_span } = await import("./script_drawings");
+  const { bar_spacing, Gates, default_gates_style, gates_span } = await import("./script_drawings");
   const { renderToStaticMarkup } = await import("react-dom/server");
   const { createElement } = await import("react");
   for (const form of ["bars", "fret"] as const)
     for (const size of [16, 32, 57])
       for (const weight of [0.2, 0.6, 0.9]) {
-        const style = { ...default_gates_style, weight, form };
-        const { gap, cell, glyph } = bar_grid(size, weight, gates_span(style));
+        const style = { ...default_gates_style, weight, form, spacing: "grid" as const };
+        const { gap, cell, glyph } = bar_spacing(size, weight, gates_span(style), "grid");
         for (const n of [1, 2, 3, 5]) {
           const svg = renderToStaticMarkup(createElement(Gates, { rows: Array.from({ length: n }, () => [0, 1, 2, 3]), size, style }));
           const width = Number(/width="([\d.]+)"/.exec(svg)![1]);
@@ -411,4 +411,27 @@ test("bar scripts and the fret on a grid: every word, and every period after one
           if (n === 1) expect(width).toBeCloseTo(glyph, 9);
         }
       }
+});
+
+test("the fret spaced close: a word's syllables a sliver apart, narrower than the white between strokes, and words a stroke apart", async () => {
+  const { bar_spacing, Gates, default_gates_style, gates_span } = await import("./script_drawings");
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const { createElement } = await import("react");
+  for (const weight of [0.2, 0.6, 0.9]) {
+    const style = { ...default_gates_style, weight, form: "fret" as const, spacing: "close" as const };
+    const size = 64;
+    const span = gates_span(style);
+    const pitch = (size * 0.8) / (span + weight);
+    const w = weight * pitch;
+    const width = (n: number) =>
+      Number(/width="([\d.]+)"/.exec(renderToStaticMarkup(createElement(Gates, { rows: Array.from({ length: n }, () => [0, 1, 2, 3]), size, style })))![1]);
+    const glyph = width(1);
+    const sliver = width(2) - 2 * glyph;
+    expect(sliver).toBeGreaterThan(0);
+    expect(sliver).toBeCloseTo((pitch - w) / 2, 9);
+    const { gap, row } = bar_spacing(size, weight, span, "close");
+    // Room for one more stroke, with the usual white either side of it
+    expect(gap).toBeCloseTo(2 * (pitch - w) + w, 9);
+    expect(row).toBe(gap);
+  }
 });
