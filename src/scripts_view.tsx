@@ -32,6 +32,7 @@ import {
   default_line_style,
   default_period,
   LINE_JOINS,
+  CROSSING_SHAPES,
   LOOP_MARKS,
   midline_width,
   SCRIPT_KEYS,
@@ -567,6 +568,26 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
                   />
                   <span className="tabular-nums w-8">{line_style.clearance.toFixed(2)}</span>
                 </label>
+                {line_style.subclauses === "circles" && (
+                  <span className="flex items-center gap-1" title="The mark where a subclause's circle starts">
+                    crossing
+                    <Toggle
+                      options={[...CROSSING_SHAPES]}
+                      value={CROSSING_SHAPES.indexOf(line_style.crossing_shape)}
+                      on_change={(i) => set_line_style({ ...line_style, crossing_shape: CROSSING_SHAPES[i]! })}
+                    />
+                    <input
+                      type="range"
+                      min={0.3}
+                      max={3}
+                      step={0.1}
+                      value={line_style.crossing_scale}
+                      onChange={(e) => set_line_style({ ...line_style, crossing_scale: Number(e.target.value) })}
+                      title={`Crossing mark size: ${line_style.crossing_scale}×`}
+                      className="w-20"
+                    />
+                  </span>
+                )}
                 {line_style.subclauses === "circles" && (
                   <Toggle
                     options={["hide clause words", "show clause words"]}

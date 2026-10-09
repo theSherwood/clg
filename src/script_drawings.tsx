@@ -127,7 +127,11 @@ export type LineStyle = {
   solver: "relax" | "constraints" | "flow"; // how the circles are laid out: see circle_layout, circle_solver.ts and circle_flow.ts
   ring_sizing: "full" | "tight"; // with the constraint solver or flow: inner rings as big as they can be, or every ring as small
   clearance: number; // on circles, the room kept clear between words on different rings, as a fraction of the size
+  crossing_shape: CrossingShape; // with subclause circles, the mark where each starts, crossing its parent
+  crossing_scale: number; // and its size, 1 being the usual
 };
+export const CROSSING_SHAPES = ["circle", "square", "diamond"] as const;
+export type CrossingShape = (typeof CROSSING_SHAPES)[number];
 export const default_line_style: LineStyle = {
   join: "cursive",
   curves: true,
@@ -143,13 +147,23 @@ export const default_line_style: LineStyle = {
   solver: "flow",
   ring_sizing: "full",
   clearance: 0.15,
+  crossing_shape: "circle",
+  crossing_scale: 1,
 };
 
-// Where a subclause's circle starts, crossing its parent's ring: a small open circle, drawn like
-// the midline
-function crossing_mark(x: number, y: number, size: number, style: LineStyle, key: string): React.ReactNode {
+// Where a subclause's circle starts, crossing its parent's ring: a small open mark, drawn like the
+// midline and turned with the rings, so a square's sides run along them both
+function crossing_mark(x: number, y: number, turn: number, size: number, style: LineStyle, key: string): React.ReactNode {
   return (
-    <circle key={key} cx={x} cy={y} r={size * 0.15} fill="none" stroke={style.midline_color} strokeWidth={midline_width(size)} />
+    <g
+      key={key}
+      transform={`translate(${x} ${y}) rotate(${turn})`}
+      stroke={style.midline_color}
+      strokeWidth={midline_width(size)}
+      strokeLinejoin="miter"
+    >
+      {draw_mark(style.crossing_shape, 0, 0, size * 0.15 * style.crossing_scale)}
+    </g>
   );
 }
 
@@ -494,7 +508,7 @@ export function draw_circles(laid: Solved, { style, period, size, wrap }: Circle
     if (style.midline) {
       nodes.push(<circle key={`mid${k}`} cx={ring.cx} cy={ring.cy} r={ring.R} stroke={style.midline_color} strokeWidth={midline_width(size)} />);
     }
-    if (ring.chain.length > 0) crossings.push(crossing_mark(...place(0, 0), size, style, `cross${k}`));
+    if (ring.chain.length > 0) crossings.push(crossing_mark(...place(0, 0), turn(0), size, style, `cross${k}`));
     ring.items.forEach(({ item, x: centre, width }, i) => {
       const x = centre - width / 2;
       const key = `${k}-${i}`;
