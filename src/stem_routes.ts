@@ -21,7 +21,7 @@
 // fewest turns upward, then the shortest turns, then the earliest found (which favours the top).
 //
 // Each turn is drawn at a depth out from the rungs' ends: the shortest turns first, each one level
-// further out than any turn on its side it overlaps or any rung's end it passes, so a turn wraps
+// further out than any turn on its side it overlaps or any free rung end it passes, so a turn wraps
 // round what's inside it, clear of it, and of two that cross, the longer is further out.
 
 export const STEM_TURNS = ["next", "clear", "nest", "cross"] as const;
@@ -109,13 +109,15 @@ const wraps = (t: Turn, u: Turn) => t.side === u.side && ((t.a < u.a && u.b < t.
 export const nestings = (turns: Turn[]) => turns.reduce((n, t, i) => n + turns.slice(i + 1).filter((u) => wraps(t, u)).length, 0);
 
 // How far out each turn is drawn: shortest first, one further out than any on its side it overlaps,
-// and than any rung's end on its side that it passes, so it clears them
+// and than any free rung end on its side that it passes, so it clears them. (An end another turn
+// joins needs no room of its own: that turn overlaps this one, so they're drawn apart already.)
 export function turn_depths(rungs: Rung[], turns: Turn[]): number[] {
   const depths = turns.map(() => 0);
   const order = turns.map((_, i) => i).sort((i, j) => turns[i]!.b - turns[i]!.a - (turns[j]!.b - turns[j]!.a));
+  const joined = (r: number, side: Side) => turns.some((u) => u.side === side && (u.a === r || u.b === r));
   for (const i of order) {
     const t = turns[i]!;
-    const passes = rungs.slice(t.a + 1, t.b).some((r) => reaches(r, t.side)) ? 1 : 0;
+    const passes = rungs.some((r, k) => k > t.a && k < t.b && reaches(r, t.side) && !joined(k, t.side)) ? 1 : 0;
     depths[i] = 1 + Math.max(passes, ...order.filter((j) => depths[j]! > 0 && overlap(t, turns[j]!)).map((j) => depths[j]!));
   }
   return depths;

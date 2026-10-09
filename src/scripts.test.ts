@@ -217,12 +217,17 @@ test("cursive stem routes: every rung once, only turns the rules allow, and the 
       const { routes } = ranked_routes(states, rule);
       const most = Math.max(...routes.map((r) => r.turns.length));
       expect(strokes.length).toBe(rungs.length - most);
-      // A turn clears what it passes: one level out past any rung's end on its side, and at a depth
-      // of its own beside any turn on its side it overlaps
+      // A turn clears what it passes: one level out past any free rung end on its side, and at a
+      // depth of its own beside any turn on its side it overlaps; and it goes no further out than
+      // those need
       for (const r of routes) {
         const depths = turn_depths(rungs, r.turns);
         r.turns.forEach((t, i) => {
-          if (rungs.slice(t.a + 1, t.b).some((x) => (t.side < 0 ? x.left : x.right))) expect(depths[i]).toBeGreaterThanOrEqual(2);
+          const joined = (k: number) => r.turns.some((u) => u.side === t.side && (u.a === k || u.b === k));
+          const pins = rungs.some((x, k) => k > t.a && k < t.b && (t.side < 0 ? x.left : x.right) && !joined(k));
+          if (pins) expect(depths[i]).toBeGreaterThanOrEqual(2);
+          const inside = r.turns.filter((u, j) => j !== i && u.side === t.side && t.a < u.b && u.a < t.b && depths[j]! < depths[i]!);
+          expect(depths[i]).toBe(1 + Math.max(pins ? 1 : 0, ...inside.map((u) => depths[r.turns.indexOf(u)]!)));
           r.turns.forEach((u, j) => {
             if (j !== i && u.side === t.side && t.a < u.b && u.a < t.b) expect(depths[j]).not.toBe(depths[i]);
           });
