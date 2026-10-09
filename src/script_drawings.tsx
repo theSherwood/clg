@@ -1,4 +1,5 @@
 import React from "react";
+import { solve_circles } from "./circle_solver";
 import { T, type Word } from "./dict";
 import { type Phonology } from "./phonology";
 import {
@@ -122,6 +123,7 @@ export type LineStyle = {
   period_position: "top" | "after"; // where a condensed sentence's period goes
   subclauses: "inline" | "circles"; // on circles, whether subclauses get circles of their own
   clause_words: "hide" | "show"; // with subclause circles, whether <clause_start> and <clause_end> are written
+  solver: "relax" | "constraints"; // how the circles are laid out: see circle_layout and circle_solver.ts
 };
 export const default_line_style: LineStyle = {
   join: "cursive",
@@ -135,6 +137,7 @@ export const default_line_style: LineStyle = {
   period_position: "top",
   subclauses: "inline",
   clause_words: "hide",
+  solver: "relax",
 };
 
 // The midline is ruled like lined paper: thinner than the writing, in its own colour
@@ -332,7 +335,7 @@ export function Line({ marks, size, style = default_line_style }: { marks: numbe
 // condensed, it keeps its gaps, and either starts just after its period at the top, leaving the
 // room to spare before the period, or starts at the top with its period right after it. The first
 // sentence is the outer ring when growing in, and the inner one when growing out.
-type CircleItem =
+export type CircleItem =
   | { geometry: LineGeometry; word?: Word }
   | { period: true }
   | { blank: number }
@@ -431,7 +434,7 @@ type CircleLayoutArgs = {
 };
 
 export function LineCircles(args: CircleLayoutArgs) {
-  const laid_out = circle_layout(args);
+  const laid_out = args.style.solver === "constraints" ? best_layout(args) : circle_layout(args);
   if (!laid_out) return null;
   const centre = laid_out.extent + args.size * 0.3;
   const side = 2 * centre;
@@ -440,6 +443,97 @@ export function LineCircles(args: CircleLayoutArgs) {
       <g transform={`translate(${centre} ${centre})`}>{laid_out.nodes}</g>
     </svg>
   );
+}
+
+// The constraint solver's layout where it settles with nothing overlapping and comes out smaller,
+// and otherwise the relaxation's, which always settles
+export function best_layout(args: CircleLayoutArgs) {
+  const relaxed = circle_layout(args);
+  const solved = constraint_layout(args);
+  if (!relaxed || !solved) return relaxed ?? solved;
+  return solved.overlaps === 0 && solved.extent < relaxed.extent
+    ? { ...solved, solver: "constraints" as const }
+    : { ...relaxed, solver: "relax" as const };
+}
+
+// The circles laid out by the constraint solver (circle_solver.ts), drawn round (0, 0), with how
+// far it all reaches, how many rounds it took and how many overlaps were left
+export function constraint_layout({ tokens, phonology, layout, style, period, size, wrap }: CircleLayoutArgs) {
+  const stroke = Math.max(1.5, size / 16);
+  const rings = circle_sentences(
+    tokens,
+    (ids) => line_geometry(ids.map((id) => layout_values(id, phonology, layout)), size, style),
+    size,
+    style.subclauses === "circles",
+    style.clause_words === "show",
+  );
+  if (rings.length === 0) return undefined;
+  const period_width = size * 0.3 * period.scale;
+  const solved = solve_circles({ rings, style, size, period_width });
+  const step = size * 0.08; // straight lines are cut this fine so they bend with the ring
+  const nodes: React.ReactNode[] = [];
+  let extent = 0;
+  const reach = (x: number, y: number, by = 0) => (extent = Math.max(extent, Math.abs(x) + by, Math.abs(y) + by));
+  solved.rings.forEach((ring, k) => {
+    const place = (x: number, y: number): Point => {
+      const angle = ring.start + x / ring.R;
+      const r = ring.R - y;
+      return [ring.cx + r * Math.cos(angle), ring.cy + r * Math.sin(angle)];
+    };
+    const turn = (x: number) => ((ring.start + x / ring.R) * 180) / Math.PI + 90;
+    const bend = (points: Point[], at: number): Point[] =>
+      points.flatMap(([x, y], i): Point[] => {
+        if (i === 0) return [place(at + x, y)];
+        const [px, py] = points[i - 1]!;
+        const pieces = Math.max(1, Math.ceil(Math.hypot(x - px, y - py) / step));
+        return Array.from({ length: pieces }, (_, n): Point => {
+          const t = (n + 1) / pieces;
+          return place(at + px + (x - px) * t, py + (y - py) * t);
+        });
+      });
+    if (style.midline) {
+      nodes.push(<circle key={`mid${k}`} cx={ring.cx} cy={ring.cy} r={ring.R} stroke={style.midline_color} strokeWidth={midline_width(size)} />);
+      reach(ring.cx, ring.cy, ring.R);
+    }
+    ring.items.forEach(({ item, x: centre, width }, i) => {
+      const x = centre - width / 2;
+      const key = `${k}-${i}`;
+      if ("geometry" in item) {
+        const g = item.geometry;
+        const word = (
+          <g key={key}>
+            {/* An invisible band along the word, so it's easy to hover */}
+            <path d={polyline(bend([[0, 0], [width, 0]], x))} stroke="transparent" strokeWidth={size * 0.9} />
+            {g.strokes.map((s, j) => (
+              <path key={j} d={s.smooth ? spline(s.points.map(([px, py]) => place(x + px, py))) : polyline(bend(s.points, x))} />
+            ))}
+            {g.marks.map((m, j) => {
+              const [mx, my] = place(x + m.x, m.y);
+              return (
+                <g key={`m${j}`} transform={`translate(${mx} ${my}) rotate(${turn(x + m.x)})`}>
+                  {draw_mark(m.shape, 0, 0, m.r)}
+                </g>
+              );
+            })}
+          </g>
+        );
+        nodes.push(item.word ? <React.Fragment key={key}>{wrap(item.word, word)}</React.Fragment> : word);
+        for (let t = 0; t <= 1; t += 0.25) {
+          const [px, py] = place(x + width * t, 0);
+          reach(px, py, solved.footprint);
+        }
+      } else if ("period" in item) {
+        const [px, py] = place(centre, 0);
+        nodes.push(
+          <g key={key} transform={`translate(${px} ${py}) rotate(${turn(centre)})`}>
+            {draw_mark(period.shape, 0, 0, Math.max(width / 2 - stroke, stroke))}
+          </g>,
+        );
+        reach(px, py, solved.footprint);
+      }
+    });
+  });
+  return { nodes, extent, rounds: solved.rounds, overlaps: solved.overlaps };
 }
 
 // The circles laid out round (0, 0): what to draw, how far it reaches, and how many rounds of

@@ -93,3 +93,27 @@ test("clause words are written on their circle only when asked", async () => {
   expect(words(true)).toContain("<clause_start>");
   expect(words(true)).toContain("<clause_end>");
 });
+
+test("the constraint solver lays the Lord's Prayer out tighter than the relaxation, with no overlaps", async () => {
+  const { circle_layout, constraint_layout, best_layout, default_line_style, default_period } = await import("./script_drawings");
+  const { default_line } = await import("./scripts");
+  const { lords_prayer, babel_verses } = await import("./examples");
+  const args = (text: string, spacing: "even" | "condensed") => ({
+    tokens: script_tokens(text, default_phonology),
+    phonology: default_phonology,
+    layout: default_line,
+    style: { ...default_line_style, midline_shape: "circle" as const, subclauses: "circles" as const, spacing, solver: "constraints" as const },
+    period: default_period,
+    size: 28,
+    wrap: (_: unknown, node: unknown) => node as never,
+  });
+  const lords = lords_prayer.map((a) => a.transliteration).join(" ");
+  for (const spacing of ["even", "condensed"] as const) {
+    const solved = constraint_layout(args(lords, spacing))!;
+    expect(solved.overlaps).toBe(0);
+    expect(solved.extent).toBeLessThan(circle_layout(args(lords, spacing))!.extent);
+  }
+  // Where it can't settle, the best layout falls back to the relaxation, so nothing overlaps
+  const babel = babel_verses.map((a) => a.transliteration).join(" ");
+  expect(best_layout(args(babel, "even"))!.overlaps).toBe(0);
+});
