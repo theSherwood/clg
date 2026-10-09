@@ -28,6 +28,7 @@ import {
   type LineStyle,
   Period,
   default_line_style,
+  LINE_JOINS,
   LOOP_MARKS,
   midline_width,
   SCRIPT_KEYS,
@@ -441,11 +442,11 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
           <div className="flex flex-wrap items-center gap-2 mb-1.5 text-xs">
             <span className="w-14 font-semibold text-gray-500">style</span>
             <Toggle
-              options={["joined", "separate"]}
-              value={line_style.joined ? 0 : 1}
-              on_change={(i) => set_line_style({ ...line_style, joined: i === 0 })}
+              options={[...LINE_JOINS]}
+              value={LINE_JOINS.indexOf(line_style.join)}
+              on_change={(i) => set_line_style({ ...line_style, join: LINE_JOINS[i]! })}
             />
-            {line_style.joined ? (
+            {line_style.join === "cursive" ? (
               <Toggle
                 options={["curves", "angles"]}
                 value={line_style.curves ? 0 : 1}
