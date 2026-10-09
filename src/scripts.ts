@@ -66,15 +66,14 @@ export const default_stems: MarkLayout = {
 // (bit 1 below, bit 2 loop). Every position has a mark, so a syllable is always four marks long.
 export const LINE_MARKS = ["dash above", "dash below", "loop above", "loop below"] as const;
 
+// Place, manner, vowel, final, left to right, and each mark's values in order are a dash above, a
+// dash below, a loop above and a loop below, like the stems' rungs
 export const default_line: MarkLayout = {
   order: ["C", "M", "V", "N"],
   values: {
-    // Lips round, so labial is a loop; the tongue tip goes up and the back of it down
-    C: { coronal: 0, velar: 1, labial: 2, sibilant: 3 },
-    // Below is voiced and a loop fricative
+    C: { velar: 0, coronal: 1, labial: 2, sibilant: 3 },
     M: { unvoiced: 0, voiced: 1, fricative: 2, "voiced fricative": 3 },
-    // Rounded vowels are loops; above is high
-    V: { e: 0, a: 1, u: 2, o: 3 },
+    V: { a: 0, e: 1, o: 2, u: 3 },
     N: { none: 0, n: 1, r: 2, i: 3 },
   },
 };
@@ -103,12 +102,14 @@ export type SyllabicsSettings = {
   vowel_turns: Assignment;
 };
 
+// Each mark's values in order: the shapes for manner and final, and for place and vowel the turns
+// base, ¼, ¾ and ½, so the second and third values point opposite ways
 export const default_syllabics: SyllabicsSettings = {
   shapes: ["chevron", "cup", "corner", "hook"],
   onset_shapes: { unvoiced: 0, voiced: 1, fricative: 2, "voiced fricative": 3 },
   rime_shapes: { none: 0, n: 1, r: 2, i: 3 },
-  place_turns: { sibilant: 0, labial: 1, coronal: 2, velar: 3 },
-  vowel_turns: { a: 0, e: 1, u: 2, o: 3 },
+  place_turns: { velar: 0, coronal: 1, labial: 3, sibilant: 2 },
+  vowel_turns: { a: 0, e: 1, o: 3, u: 2 },
 };
 
 export function syllabics_glyphs(id: number, phonology: Phonology, settings: SyllabicsSettings): string {

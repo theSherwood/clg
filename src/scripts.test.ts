@@ -26,8 +26,8 @@ test("the default syllabics gives every syllable its own pair of glyphs", () => 
   const pairs = ids.map((id) => syllabics_glyphs(id, default_phonology, default_syllabics));
   expect(new Set(pairs).size).toBe(256);
   expect(pairs.every((p) => [...p].length === 2)).toBe(true);
-  // ka: velar unvoiced onset, then a with no final
-  expect(pairs[0]).toBe("ᐳᐯ");
+  // ka: velar unvoiced onset, then a with no final, both the first value of every mark
+  expect(pairs[0]).toBe("ᐯᐯ");
 });
 
 test("a transliteration becomes root IDs word by word, foreign names included", () => {
