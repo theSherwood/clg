@@ -22,8 +22,7 @@ import {
   FRETS,
   FRET_HALF,
   FRET_KINDS,
-  FRET_QUARTER_DIAGONAL,
-  FRET_QUARTER_SIDE,
+  FRET_QUARTER,
   type FretKind,
   type GridPoint,
   GATES,
@@ -196,7 +195,7 @@ function Written({
 }
 
 // The paths a fret's values pick, each drawn from where the stroke comes in, marked with a dot. For
-// blocks and quarters, a block's four paths by value; for halves, the sixteen by the first mark's
+// blocks and quarters, a block's four paths by value (a quarter's from its top left corner down); for halves, the sixteen by the first mark's
 // value (down) and the second's (across).
 function FretLegend({ kind }: { kind: FretKind }) {
   const draw = (path: GridPoint[], w: number, h: number) => {
@@ -223,10 +222,7 @@ function FretLegend({ kind }: { kind: FretKind }) {
     kind === "halves"
       ? FRETS.map((f, i) => [f, FRET_HALF.slice(4 * i, 4 * i + 4), 3, 6])
       : kind === "quarters"
-        ? [
-            ["corner", FRET_QUARTER_DIAGONAL, 3, 3],
-            ["side", FRET_QUARTER_SIDE, 3, 3],
-          ]
+        ? [["quarter", FRET_QUARTER, 3, 3]]
         : [
             ["tall", FRET_TALL, 3, 4],
             ["wide", FRET_WIDE, 4, 3],
@@ -742,7 +738,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
           </Row>
           <Row
             label="Fret"
-            hint="Four blocks on a 7×7 grid, a mark each; two halves on a 6×6 grid, two marks each; or four quarters on a 6×6 grid, a mark each, that may skip a corner and cross once"
+            hint="Four blocks on a 7×7 grid, a mark each; two halves on a 6×6 grid, two marks each; or four quarters on a 6×6 grid, a mark each, that may skip a point and cross once"
             off={gates_style.form !== "fret" && "Only the fret"}
           >
             <Toggle
@@ -795,7 +791,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
                     halves:
                       "Two marks a half: the first two pick the left half's path, the first's value down and the second's across, and the last two the right half's, mirrored.",
                     quarters:
-                      "A quarter per mark, in the stroke's order: top left, bottom left, bottom right, top right. Each value is one of a quarter's four paths, the last two skipping a corner and crossing once; the right quarters' are the left ones' mirrored.",
+                      "A quarter per mark, in the stroke's order: down the left side of the top left, along the top of the bottom left and the bottom right, and up the right side of the top right. Each value is one of four paths, the same in every quarter turned to lie along its side, the last two skipping a point and crossing once.",
                   }[gates_style.fret]
                 }
               </p>

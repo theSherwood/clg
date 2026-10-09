@@ -167,23 +167,19 @@ export const FRET_HALF: GridPoint[][] = [
   [[0, 0], [0, 1], [1, 1], [1, 0], [2, 0], [2, 1], [2, 2], [2, 3], [1, 3], [1, 2], [0, 2], [0, 3], [0, 4], [0, 5], [1, 5], [1, 4], [2, 4], [2, 5]],
 ];
 
-// Quarters: four 3×3 blocks, a mark each, down the left (top left block from its top left corner to
-// its bottom right, bottom left from its top right to its bottom right), a step along the bottom,
-// and back up the right. A 3×3 block has exactly four ways between those corners if the stroke
-// may skip one point, and may cross itself where it does, so long as it goes straight across:
-// two paths through every point, and two that skip a corner and cross once in the middle. So a
-// syllable skips up to four points, one a block, and crosses itself as often.
-export const FRET_QUARTER_DIAGONAL: GridPoint[][] = [
-  [[0, 0], [0, 1], [0, 2], [1, 2], [1, 1], [1, 0], [2, 0], [2, 1], [2, 2]],
-  [[0, 0], [1, 0], [2, 0], [2, 1], [1, 1], [0, 1], [0, 2], [1, 2], [2, 2]],
-  [[0, 0], [0, 1], [1, 1], [2, 1], [2, 0], [1, 0], [1, 1], [1, 2], [2, 2]],
-  [[0, 0], [1, 0], [1, 1], [1, 2], [0, 2], [0, 1], [1, 1], [2, 1], [2, 2]],
-];
-export const FRET_QUARTER_SIDE: GridPoint[][] = [
-  [[2, 0], [2, 1], [1, 1], [1, 0], [0, 0], [0, 1], [0, 2], [1, 2], [2, 2]],
-  [[2, 0], [1, 0], [0, 0], [0, 1], [0, 2], [1, 2], [1, 1], [2, 1], [2, 2]],
-  [[2, 0], [2, 1], [1, 1], [0, 1], [0, 0], [1, 0], [1, 1], [1, 2], [2, 2]],
-  [[2, 0], [1, 0], [1, 1], [1, 2], [0, 2], [0, 1], [1, 1], [2, 1], [2, 2]],
+// Quarters: four 3×3 blocks, a mark each, each from one corner to the next corner along a side: down
+// the left side of the top left block, along the top of the bottom left one, a step, along the top
+// of the bottom right one, and up the right side of the top right one. A 3×3 block has exactly four
+// ways between two corners on a side if the stroke may skip one point, and may cross itself where
+// it does, so long as it goes straight across: two paths through every point, and two that skip a
+// point and cross once in the middle. Every quarter takes the same four, turned to lie along its
+// side, so a syllable skips up to four points, one a quarter, and crosses itself as often.
+// A quarter's paths, from its top left corner down to its bottom left
+export const FRET_QUARTER: GridPoint[][] = [
+  [[0, 0], [0, 1], [1, 1], [1, 0], [2, 0], [2, 1], [2, 2], [1, 2], [0, 2]],
+  [[0, 0], [1, 0], [2, 0], [2, 1], [2, 2], [1, 2], [1, 1], [0, 1], [0, 2]],
+  [[0, 0], [0, 1], [1, 1], [2, 1], [2, 0], [1, 0], [1, 1], [1, 2], [0, 2]],
+  [[0, 0], [1, 0], [1, 1], [1, 2], [2, 2], [2, 1], [1, 1], [0, 1], [0, 2]],
 ];
 
 export const FRET_KINDS = ["blocks", "halves", "quarters"] as const;
@@ -198,13 +194,9 @@ export function fret_path(marks: number[], kind: FretKind = "blocks"): GridPoint
   const [a, b, c, d] = marks as [number, number, number, number];
   if (kind === "halves") return [...FRET_HALF[4 * a + b]!, ...mirrored(FRET_HALF[4 * c + d]!)];
   if (kind === "quarters") {
-    const side = (path: GridPoint[]) => path.map(([x, y]): GridPoint => [x, 3 + y]);
-    return [
-      ...FRET_QUARTER_DIAGONAL[a]!,
-      ...side(FRET_QUARTER_SIDE[b]!),
-      ...mirrored(side(FRET_QUARTER_SIDE[c]!)),
-      ...mirrored(FRET_QUARTER_DIAGONAL[d]!),
-    ];
+    // Turned to lie along the top of a bottom quarter
+    const along = (path: GridPoint[]) => path.map(([x, y]): GridPoint => [y, 3 + x]);
+    return [...FRET_QUARTER[a]!, ...along(FRET_QUARTER[b]!), ...mirrored(along(FRET_QUARTER[c]!)), ...mirrored(FRET_QUARTER[d]!)];
   }
   return blocks_path(marks);
 }

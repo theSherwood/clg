@@ -1369,7 +1369,7 @@ export function script_renderers(
               blocks: "A syllable in one stroke through every point of a 7×7 grid, top left to top right: four blocks round the centre, a mark each, each one of the four paths through every point of it",
               halves: "A syllable in one stroke through every point of a 6×6 grid, top left to top right: two halves, two marks each, each one of the sixteen paths through every point of it",
               quarters:
-                "A syllable in one stroke on a 6×6 grid, top left to top right: four quarters, a mark each, each one of two paths through every point of it or two that skip a corner and cross once, straight across",
+                "A syllable in one stroke on a 6×6 grid, top left to top right: four quarters, a mark each, each one of the same four paths turned to lie along its side: two through every point of it, or two that skip a point and cross once, straight across",
             }[gates_style.fret]
           : "Five bars a syllable, always all there; each gap between them a gate: open, bridged at the top, at the bottom, or closed",
       render: (ids) => <Gates rows={ids.map((id) => layout_values(id, phonology, gates))} size={size} style={gates_style} />,
