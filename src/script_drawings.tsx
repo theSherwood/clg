@@ -227,6 +227,16 @@ function cursive_geometry(marks: number[][], size: number, curves: boolean): Sta
     }
   });
   if (!(flat.at(-1)! & 2)) points.push([flat.length * slot, side.at(-1)! * level]);
+  // A loop that starts or ends the stroke starts or ends where the stroke crosses itself, half way
+  // across the loop, so nothing sticks out past it: on its way out for the first, on its way in for
+  // the last
+  const across = (from: Point, to: Point, x: number): Point => {
+    const t = (x - from[0]) / (to[0] - from[0]);
+    return [x, from[1] + (to[1] - from[1]) * t];
+  };
+  const middle = (k: number) => k * slot + slot / 2;
+  if (flat[0]! & 2) points[0] = across(points[3]!, points[4]!, middle(0));
+  if (flat.at(-1)! & 2) points[points.length - 1] = across(points.at(-5)!, points.at(-4)!, middle(flat.length - 1));
   return { strokes: [{ points, smooth: curves }], marks: [], width: flat.length * slot };
 }
 
