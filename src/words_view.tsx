@@ -154,10 +154,13 @@ export function WordsView() {
       tags: tally("tags", (e) => e.word.data.t),
     };
   }, [filters, match]);
-  const shown_candidates =
-    lengths.size === 0 && domains.size === 0 && tags.size === 0
-      ? candidates.filter((c) => [c.word, c.gloss ?? ""].join(" ").toLowerCase().includes(filters.query.trim().toLowerCase()))
-      : [];
+  const shown_candidates = useMemo(
+    () =>
+      filters.lengths.size === 0 && filters.domains.size === 0 && filters.tags.size === 0
+        ? candidates.filter((c) => [c.word, c.gloss ?? ""].join(" ").toLowerCase().includes(filters.query.trim().toLowerCase()))
+        : [],
+    [filters],
+  );
 
   const toggle = <K,>(set: (f: (s: Set<K>) => Set<K>) => void, key: K) =>
     set((s) => {
@@ -236,15 +239,11 @@ export function WordsView() {
     </div>
   );
 
-  const refresh = parts.map((p) => p.title + p.groups.map((g) => g.title + g.entries.length).join()).join();
-
-  return (
-    <WithContents view="words" refresh={refresh} sidebar={controls}>
-      <div className="p-4">
-        <div className="lg:hidden">{controls}</div>
-        <div className="-mx-4 -mt-3 mb-2">
-          <VerbsByType />
-        </div>
+  // The list, made again only when what it shows changes: typing in the search box shouldn't have
+  // to go through every word before the box shows what was typed
+  const list = useMemo(
+    () => (
+      <>
         {parts.length === 0 && shown_candidates.length === 0 && (
           <p className="p-4 text-center text-gray-500">No words match.</p>
         )}
@@ -295,6 +294,21 @@ export function WordsView() {
             </div>
           </section>
         )}
+      </>
+    ),
+    [parts, shown_candidates, view, sounds],
+  );
+
+  const refresh = parts.map((p) => p.title + p.groups.map((g) => g.title + g.entries.length).join()).join();
+
+  return (
+    <WithContents view="words" refresh={refresh} sidebar={controls}>
+      <div className="p-4">
+        <div className="lg:hidden">{controls}</div>
+        <div className="-mx-4 -mt-3 mb-2">
+          <VerbsByType />
+        </div>
+        {list}
       </div>
     </WithContents>
   );

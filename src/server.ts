@@ -8,12 +8,22 @@ import { is_phonology, phonology_to_json } from "./phonology";
 const DEFAULTS_FILE = "phonology.defaults.json";
 const SECTION_ORDER_FILE = "section_order.json";
 
+// The circle layout worker, bundled for the browser once per run (dev.ts restarts the server when
+// a source file changes)
+let circle_worker: Promise<Response> | undefined;
+async function build_circle_worker(): Promise<Response> {
+  const built = await Bun.build({ entrypoints: [join(import.meta.dir, "circle_worker.ts")], target: "browser" });
+  if (!built.success) return new Response(built.logs.join("\n"), { status: 500 });
+  return new Response(await built.outputs[0]!.text(), { headers: { "Content-Type": "text/javascript" } });
+}
+
 const server = Bun.serve({
   hostname: "localhost",
   port: 3005,
   development: true,
   routes: {
     "/": index,
+    "/circle_worker.js": async () => (await (circle_worker ??= build_circle_worker())).clone(),
     "/api/phonology-defaults": {
       POST: async (request) => {
         const phonology = await request.json().catch(() => null);

@@ -1,6 +1,6 @@
-import React from "react";
-import { flow_circles } from "./circle_flow";
-import { solve_circles } from "./circle_solver";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { type Laid, type LayoutOptions, type Wire, from_wire, solve_layout, solved_extent } from "./circle_layouts";
+import { type Solved, solve_circles } from "./circle_solver";
 import { T, type Word } from "./dict";
 import { type Phonology } from "./phonology";
 import {
@@ -429,13 +429,6 @@ export function circle_sentences(
   return sentences;
 }
 
-// Where a word or period sits once laid out, as a chain of discs along it wide enough to cover
-// its marks above and below the line, and where it belongs: its sentence, and the subclauses down
-// to the ring it's on (the same ring as another footprint when ring is the same array)
-type Footprint = { points: Point[]; sentence: number; chain: CircleItem[]; ring: CircleItem[]; item: CircleItem };
-
-// Where a layout put things, for another to start from: each ring (by its list of items), its
-// radius and each item's centre along it
 // The radius of the discs a word's footprint on a circle is made of: as far as the tallest word in
 // the text reaches from its line (with its stroke), and half the clearance kept between words
 export function circle_footprint(rings: CircleItem[][], size: number, style: LineStyle): number {
@@ -451,8 +444,6 @@ export function circle_footprint(rings: CircleItem[][], size: number, style: Lin
   return Math.max(reach, size * 0.2) + Math.max(1.5, size / 16) / 2 + (style.clearance * size) / 2;
 }
 
-export type Placement = Map<CircleItem[], { R: number; centres: Map<CircleItem, number> }>;
-
 type CircleLayoutArgs = {
   tokens: ScriptToken[];
   phonology: Phonology;
@@ -463,30 +454,8 @@ type CircleLayoutArgs = {
   wrap: (word: Word, node: React.ReactElement) => React.ReactNode;
 };
 
-export function LineCircles(args: CircleLayoutArgs) {
-  const laid_out =
-    args.style.solver === "flow"
-      ? flow_layout(args)
-      : args.style.solver === "constraints"
-        ? best_layout(args)
-        : circle_layout(args);
-  if (!laid_out) return null;
-  const centre = laid_out.extent + args.size * 0.3;
-  const side = 2 * centre;
-  return (
-    <svg width={side} height={side} viewBox={`0 0 ${side} ${side}`} className="block" {...svg_props(args.size, args.style)}>
-      <g transform={`translate(${centre} ${centre})`}>{laid_out.nodes}</g>
-    </svg>
-  );
-}
-
-// The circles laid out by flowing each ring round what's inside it (circle_flow.ts)
-export const flow_layout = (args: CircleLayoutArgs) => constraint_layout(args, undefined, undefined, flow_circles);
-
-// The constraint solver's layout where it settles with nothing overlapping and comes out smaller,
-// and otherwise the relaxation's, which always settles
-export function best_layout(args: CircleLayoutArgs) {
-  const { tokens, phonology, layout, style, size } = args;
+// What a circle layout starts from: the sentences as rings of items, and the solver's options
+function circle_options({ tokens, phonology, layout, style, period, size }: CircleLayoutArgs): LayoutOptions {
   const rings = circle_sentences(
     tokens,
     (ids) => line_geometry(ids.map((id) => layout_values(id, phonology, layout)), size, style),
@@ -494,43 +463,16 @@ export function best_layout(args: CircleLayoutArgs) {
     style.subclauses === "circles",
     style.clause_words === "show",
   );
-  const relaxed = circle_layout(args, rings);
-  if (!relaxed) return undefined;
-  // The solver starts from the relaxation's layout, and keeps only improvements on it
-  const solved = constraint_layout(args, rings, relaxed.placed);
-  if (!solved) return relaxed;
-  return solved.overlaps === 0 && solved.extent < relaxed.extent
-    ? { ...solved, solver: "constraints" as const }
-    : { ...relaxed, solver: "relax" as const };
+  return { rings, style, size, period_width: size * 0.3 * period.scale, footprint: circle_footprint(rings, size, style) };
 }
 
-// The circles laid out by the constraint solver (circle_solver.ts), drawn round (0, 0), with how
-// far it all reaches, how many rounds it took and how many overlaps were left
-export function constraint_layout(
-  { tokens, phonology, layout, style, period, size, wrap }: CircleLayoutArgs,
-  given?: CircleItem[][],
-  start?: Placement,
-  solve: (options: Parameters<typeof solve_circles>[0]) => ReturnType<typeof solve_circles> = solve_circles,
-) {
+// A laid out text drawn round (0, 0), with how far it all reaches
+export function draw_circles(laid: Solved, { style, period, size, wrap }: CircleLayoutArgs) {
   const stroke = Math.max(1.5, size / 16);
-  const rings =
-    given ??
-    circle_sentences(
-      tokens,
-      (ids) => line_geometry(ids.map((id) => layout_values(id, phonology, layout)), size, style),
-      size,
-      style.subclauses === "circles",
-      style.clause_words === "show",
-    );
-  if (rings.length === 0) return undefined;
-  const period_width = size * 0.3 * period.scale;
-  const solved = solve({ rings, style, size, period_width, footprint: circle_footprint(rings, size, style), start });
   const step = size * 0.08; // straight lines are cut this fine so they bend with the ring
   const nodes: React.ReactNode[] = [];
   const crossings: React.ReactNode[] = []; // drawn last, over every ring
-  let extent = 0;
-  const reach = (x: number, y: number, by = 0) => (extent = Math.max(extent, Math.abs(x) + by, Math.abs(y) + by));
-  solved.rings.forEach((ring, k) => {
+  laid.rings.forEach((ring, k) => {
     const place = (x: number, y: number): Point => {
       const angle = ring.start + x / ring.R;
       const r = ring.R - y;
@@ -549,7 +491,6 @@ export function constraint_layout(
       });
     if (style.midline) {
       nodes.push(<circle key={`mid${k}`} cx={ring.cx} cy={ring.cy} r={ring.R} stroke={style.midline_color} strokeWidth={midline_width(size)} />);
-      reach(ring.cx, ring.cy, ring.R);
     }
     if (ring.chain.length > 0) crossings.push(crossing_mark(...place(0, 0), size, `cross${k}`));
     ring.items.forEach(({ item, x: centre, width }, i) => {
@@ -575,10 +516,6 @@ export function constraint_layout(
           </g>
         );
         nodes.push(item.word ? <React.Fragment key={key}>{wrap(item.word, word)}</React.Fragment> : word);
-        for (let t = 0; t <= 1; t += 0.25) {
-          const [px, py] = place(x + width * t, 0);
-          reach(px, py, solved.footprint);
-        }
       } else if ("period" in item) {
         const [px, py] = place(centre, 0);
         nodes.push(
@@ -586,318 +523,121 @@ export function constraint_layout(
             {draw_mark(period.shape, 0, 0, Math.max(width / 2 - stroke, stroke))}
           </g>,
         );
-        reach(px, py, solved.footprint);
       }
     });
   });
-  return { nodes: [...nodes, ...crossings], extent, rounds: solved.rounds, overlaps: solved.overlaps };
+  return { nodes: [...nodes, ...crossings], extent: solved_extent(laid, style) };
 }
 
-// The circles laid out round (0, 0): what to draw, how far it reaches, and how many rounds of
-// making room it took and how many overlaps were left (none, unless it gave up)
-export function circle_layout(
-  { tokens, phonology, layout, style, period, size, wrap }: CircleLayoutArgs,
-  given?: CircleItem[][],
-) {
-  const stroke = Math.max(1.5, size / 16);
-  const rings =
-    given ??
-    circle_sentences(
-      tokens,
-      (ids) => line_geometry(ids.map((id) => layout_values(id, phonology, layout)), size, style),
-      size,
-      style.subclauses === "circles",
-      style.clause_words === "show",
-    );
-  if (rings.length === 0) return undefined;
+// Laid out and drawn here and now, by the solver the style asks for, or another
+function laid_out_now(args: CircleLayoutArgs, solver = args.style.solver) {
+  const options = circle_options({ ...args, style: { ...args.style, solver } });
+  if (options.rings.length === 0) return undefined;
+  const laid = solve_layout(options);
+  return { ...draw_circles(laid, args), rounds: laid.rounds, overlaps: laid.overlaps, solver: laid.solver };
+}
+export const circle_layout = (args: CircleLayoutArgs) => laid_out_now(args, "relax");
+export const flow_layout = (args: CircleLayoutArgs) => laid_out_now(args, "flow");
+// The constraint solver from the relaxation's layout, where it does better
+export const best_layout = (args: CircleLayoutArgs) => laid_out_now(args, "constraints");
+// The constraint solver on its own, from its own start
+export function constraint_layout(args: CircleLayoutArgs) {
+  const options = circle_options(args);
+  if (options.rings.length === 0) return undefined;
+  const laid = solve_circles(options);
+  return { ...draw_circles(laid, args), rounds: laid.rounds, overlaps: laid.overlaps };
+}
 
-  const gap = size * 0.25;
-  const period_width = size * 0.3 * period.scale;
-  const clear = size * 0.3; // kept clear either side of a subclause's circle on its parent's ring
-  const footprint = circle_footprint(rings, size, style); // the radius of the discs a footprint is made of
-  const band = Math.max(size * 1.35, 2 * footprint); // between sentences' rings, to start with
-  const step = size * 0.08; // straight lines are cut this fine so they bend with the ring
-  // What the layout adjusts until no two words overlap: more room for a subclause on its parent's
-  // ring, and more room between two sentences' rings
-  const room = new Map<CircleItem, number>();
-  const spread = rings.map(() => 0);
-  // More room before an item on a sentence's ring, taken from the ring's room to spare, which
-  // slides it (and what follows) along the ring
-  const slide = new Map<CircleItem, number>();
+// Recent layouts, by what they were laid out from, so going back to a setting is instant
+type Remembered = { options: LayoutOptions; period: PeriodStyle; laid: Laid };
+const laid_cache = new Map<string, Remembered>();
+const remember = (key: string, value: Remembered) => {
+  laid_cache.delete(key);
+  laid_cache.set(key, value);
+  if (laid_cache.size > 24) laid_cache.delete(laid_cache.keys().next().value!);
+};
 
-  // A subclause's circle crosses its parent's ring at right angles, which it does exactly when the
-  // distance between their centres is the square root of the sum of their radii squared: there,
-  // each one's radius is the other's tangent. Its centre is that far out from the parent's, so a
-  // little outside the ring, and between the crossings it covers an arc of 2R atan(r / R).
-  const covered = (R: number, r: number) => (Number.isFinite(R) ? 2 * R * Math.atan2(r, R) : 2 * r);
-
-  // One pass of laying the text out, with the room and spread as they stand
-  const lay_out = () => {
-    // An item's width along a ring of radius R: a subclause takes the arc its circle covers, so no
-    // writing on the ring falls inside it, plus any room it's been given
-    const width_of = (item: CircleItem, R: number): number =>
-      "geometry" in item
-        ? item.geometry.width
-        : "period" in item
-          ? period_width
-          : "blank" in item
-            ? item.blank
-            : covered(R, radius_of(item.clause)) + 2 * (clear + (room.get(item) ?? 0));
-    const length_of = (items: CircleItem[], R: number) =>
-      items.reduce((n, item) => n + width_of(item, R) + gap + (slide.get(item) ?? 0), 0);
-    // A subclause's circle is the smallest its own writing fits round, including the arcs its own
-    // subclauses' circles cover, which depend on its size, so it's found by a few rounds of refining
-    const radii_found = new Map<CircleItem[], number>();
-    function radius_of(items: CircleItem[]): number {
-      const known = radii_found.get(items);
-      if (known) return known;
-      let r = Math.max(size * 0.5, length_of(items, Infinity) / (2 * Math.PI));
-      for (let round = 0; round < 8; round++) r = Math.max(r, length_of(items, r) / (2 * Math.PI));
-      radii_found.set(items, r);
-      return r;
-    }
-
-    // Sentences' rings: a line apart, plus any spread, each big enough for its sentence. A
-    // sentence's ring is big beside its subclauses' circles, so each covers about its diameter.
-    const lengths = rings.map((items) => length_of(items, Infinity));
-    const offsets = rings.map((_, k) => spread.slice(0, k).reduce((n, extra) => n + band + extra, 0));
-    const last = rings.length - 1;
-    const radii =
-      style.grow === "in"
-        ? (() => {
-            const outer = Math.max(size * 0.8 + offsets[last]!, ...lengths.map((l, k) => l / (2 * Math.PI) + offsets[k]!));
-            return offsets.map((o) => outer - o);
-          })()
-        : (() => {
-            const inner = Math.max(size * 0.8, ...lengths.map((l, k) => l / (2 * Math.PI) - offsets[k]!));
-            return offsets.map((o) => inner + o);
-          })();
-
-    const nodes: React.ReactNode[] = [];
-    const crossings: React.ReactNode[] = []; // drawn last, over every ring
-    const footprints: Footprint[] = [];
-    // Where each ring's items were put: its radius, and each item's centre along it
-    const placed: Placement = new Map();
-    let extent = 0; // how far anything reaches from the centre
-    const reach = (x: number, y: number, by = 0) => (extent = Math.max(extent, Math.hypot(x, y) + by));
-
-    // One ring of items round (cx, cy), starting at an angle and read clockwise. A sentence's ring
-    // starts at the top and places its period; a subclause's starts where it crosses its parent.
-    const draw_ring = (
-      items: CircleItem[],
-      cx: number,
-      cy: number,
-      R: number,
-      start: number,
-      sentence: number,
-      chain: CircleItem[],
-      key: string,
-    ) => {
-      const circumference = 2 * Math.PI * R;
-      const length = length_of(items, R);
-      const ring_gap = style.spacing === "even" ? gap + (circumference - length) / items.length : gap;
-      const centres = new Map<CircleItem, number>();
-      placed.set(items, { R, centres });
-      // With the period at the top, the sentence starts just clockwise of it and any room to spare is
-      // left between its last word and the period; otherwise it starts at the top and the period
-      // follows its last word
-      const is_sentence = chain.length === 0;
-      const period_at_top = is_sentence && (style.spacing === "even" || style.period_position === "top");
-      const last = items.at(-1)!;
-      const half_period = "period" in last ? width_of(last, R) / 2 : 0;
-      // Where a point along the ring goes: x along it from the start, y below the line inward
-      const angle_at = (x: number) => start + (2 * Math.PI * x) / circumference;
-      const place = (x: number, y: number): Point => {
-        const angle = angle_at(x);
-        const r = R - y;
-        return [cx + r * Math.cos(angle), cy + r * Math.sin(angle)];
-      };
-      const turn = (x: number) => (angle_at(x) * 180) / Math.PI + 90;
-      const bend = (points: Point[], at: number): Point[] =>
-        points.flatMap(([x, y], i): Point[] => {
-          if (i === 0) return [place(at + x, y)];
-          const [px, py] = points[i - 1]!;
-          const pieces = Math.max(1, Math.ceil(Math.hypot(x - px, y - py) / step));
-          return Array.from({ length: pieces }, (_, n): Point => {
-            const t = (n + 1) / pieces;
-            return place(at + px + (x - px) * t, py + (y - py) * t);
-          });
-        });
-      // A footprint's discs, along the line from x for a width
-      const discs = (x: number, width: number): Point[] => {
-        const n = Math.max(1, Math.ceil(width / (footprint * 0.7)));
-        return Array.from({ length: n + 1 }, (_, i) => place(x + (width * i) / n, 0));
-      };
-      if (style.midline) {
-        nodes.push(<circle key={`mid${key}`} cx={cx} cy={cy} r={R} stroke={style.midline_color} strokeWidth={midline_width(size)} />);
-        reach(cx, cy, R);
-      }
-      if (!is_sentence) crossings.push(crossing_mark(...place(0, 0), size, `cross${key}`));
-      // A subclause starts just clockwise of where it crosses its parent, which is its top
-      let x = period_at_top ? half_period + ring_gap : is_sentence ? ring_gap / 2 : gap;
-      items.forEach((item, i) => {
-        const width = width_of(item, R);
-        x += slide.get(item) ?? 0;
-        centres.set(item, "period" in item && period_at_top ? circumference : x + width / 2);
-        if ("geometry" in item) {
-          const g = item.geometry;
-          const word = (
-            <g key={`${key}-${i}`}>
-              {/* An invisible band along the word, so it's easy to hover */}
-              <path d={polyline(bend([[0, 0], [width, 0]], x))} stroke="transparent" strokeWidth={size * 0.9} />
-              {g.strokes.map((s, j) => (
-                <path
-                  key={j}
-                  d={s.smooth ? spline(s.points.map(([px, py]) => place(x + px, py))) : polyline(bend(s.points, x))}
-                />
-              ))}
-              {g.marks.map((m, j) => {
-                const [mx, my] = place(x + m.x, m.y);
-                return (
-                  <g key={`m${j}`} transform={`translate(${mx} ${my}) rotate(${turn(x + m.x)})`}>
-                    {draw_mark(m.shape, 0, 0, m.r)}
-                  </g>
-                );
-              })}
-            </g>
-          );
-          nodes.push(item.word ? <React.Fragment key={`${key}-${i}`}>{wrap(item.word, word)}</React.Fragment> : word);
-          const points = discs(x, width);
-          footprints.push({ points, sentence, chain, ring: items, item });
-          for (const [px, py] of points) reach(px, py, footprint);
-        } else if ("period" in item) {
-          const at = period_at_top ? circumference : x + width / 2;
-          const [px, py] = place(at, 0);
-          nodes.push(
-            <g key={`${key}-${i}`} transform={`translate(${px} ${py}) rotate(${turn(at)})`}>
-              {draw_mark(period.shape, 0, 0, Math.max(width / 2 - stroke, stroke))}
-            </g>,
-          );
-          footprints.push({ points: [[px, py]], sentence, chain, ring: items, item });
-          reach(px, py, footprint);
-        } else if ("clause" in item) {
-          // The subclause's circle crosses this ring at right angles either side of where the clause
-          // comes; its text starts at the first crossing, going clockwise, and goes once round
-          const r = radius_of(item.clause);
-          const angle = angle_at(x + width / 2);
-          const d = Math.hypot(R, r);
-          const px = cx + d * Math.cos(angle);
-          const py = cy + d * Math.sin(angle);
-          const before = angle - Math.atan2(r, R); // the first crossing, on this ring
-          const sub_start = Math.atan2(cy + R * Math.sin(before) - py, cx + R * Math.cos(before) - px);
-          draw_ring(item.clause, px, py, r, sub_start, sentence, [...chain, item], `${key}-${i}`);
-        }
-        x += width + ring_gap;
-      });
+// A layout worked out off the page's thread, in a worker of the component's own, so the page stays
+// responsive however long it takes. Until it's ready, the last layout stays up. A change while the
+// worker is busy stops it and starts afresh. Without workers, it's laid out here.
+function useLaidOut(args: CircleLayoutArgs) {
+  const { tokens, phonology, layout, style, period, size } = args;
+  const key = JSON.stringify([tokens.map((t) => ("punctuation" in t ? t.punctuation : t.ids)), phonology, layout, style, period, size]);
+  const [shown, set_shown] = useState<({ key: string } & Remembered) | null>(() => {
+    const cached = laid_cache.get(key);
+    return cached ? { key, ...cached } : null;
+  });
+  const worker = useRef<{ worker: Worker; busy: boolean } | null>(null);
+  useEffect(
+    () => () => {
+      worker.current?.worker.terminate();
+      worker.current = null;
+    },
+    [],
+  );
+  useEffect(() => {
+    const cached = laid_cache.get(key);
+    if (cached) return set_shown({ key, ...cached });
+    const options = circle_options(args);
+    const done = (laid: Laid) => {
+      remember(key, { options, period, laid });
+      set_shown({ key, options, period, laid });
     };
-    rings.forEach((items, k) => draw_ring(items, 0, 0, radii[k]!, -Math.PI / 2, k, [], `${k}`));
-    // How much room each sentence's ring has to spare
-    const spare = rings.map((items, k) => 2 * Math.PI * radii[k]! - length_of(items, radii[k]!));
-    return { nodes: [...nodes, ...crossings], footprints, extent, spare, placed };
-  };
+    if (options.rings.length === 0) return set_shown(null);
+    if (typeof Worker === "undefined") return done(solve_layout(options));
+    if (worker.current?.busy) {
+      worker.current.worker.terminate();
+      worker.current = null;
+    }
+    if (!worker.current) worker.current = { worker: new Worker("/circle_worker.js", { type: "module" }), busy: false };
+    const current = worker.current;
+    current.busy = true;
+    current.worker.onmessage = (event: MessageEvent<{ laid: Wire }>) => {
+      current.busy = false;
+      done(from_wire(event.data.laid, options.rings));
+    };
+    // If the worker can't run, lay it out here after all
+    current.worker.onerror = (event) => {
+      event.preventDefault();
+      current.busy = false;
+      done(solve_layout(options));
+    };
+    current.worker.postMessage({ id: 0, options: { ...options, rings: without_words(options.rings) } });
+  }, [key]);
+  return { shown, pending: shown?.key !== key };
+}
 
-  // Two footprints on different rings overlap if any of their discs do, by as much as the deepest
-  // pair of discs overlaps. Discs are bucketed by a grid as big as a disc's reach, so each is only
-  // checked against its neighbours.
-  type Overlap = { a: Footprint; b: Footprint; depth: number; at_a: Point; at_b: Point };
-  const overlaps = (footprints: Footprint[]): Overlap[] => {
-    const cell = 2 * footprint;
-    const grid = new Map<string, { f: number; p: Point }[]>();
-    footprints.forEach((f, i) =>
-      f.points.forEach((p) => {
-        const k = `${Math.floor(p[0] / cell)},${Math.floor(p[1] / cell)}`;
-        const bucket = grid.get(k);
-        if (bucket) bucket.push({ f: i, p });
-        else grid.set(k, [{ f: i, p }]);
-      }),
-    );
-    const found = new Map<string, Overlap>();
-    for (const [k, here] of grid) {
-      const [gx, gy] = k.split(",").map(Number) as [number, number];
-      for (let dx = -1; dx <= 1; dx++)
-        for (let dy = -1; dy <= 1; dy++)
-          for (const b of grid.get(`${gx + dx},${gy + dy}`) ?? [])
-            for (const a of here) {
-              if (a.f >= b.f) continue;
-              const fa = footprints[a.f]!;
-              const fb = footprints[b.f]!;
-              if (fa.ring === fb.ring) continue; // words along one ring are laid out apart already
-              const depth = 2 * footprint - Math.hypot(a.p[0] - b.p[0], a.p[1] - b.p[1]);
-              if (depth <= 0) continue;
-              const key = `${a.f},${b.f}`;
-              const seen = found.get(key);
-              if (!seen || depth > seen.depth) found.set(key, { a: fa, b: fb, depth, at_a: a.p, at_b: b.p });
-            }
-    }
-    return [...found.values()];
-  };
+// Rings as sent to a worker: words stay behind, since only their shapes matter to the layout
+const without_words = (rings: CircleItem[][]): CircleItem[][] =>
+  rings.map((items) =>
+    items.map((item) =>
+      "geometry" in item ? { geometry: item.geometry } : "clause" in item ? { clause: without_words([item.clause])[0]! } : item,
+    ),
+  );
 
-  // Lay out, then for each pair of words that overlap make room by as much as they overlap. In one
-  // sentence, the subclause each is in gets more room on the ring where they part, so their circles
-  // move apart along it. Between sentences, a word on a sentence's own ring slides along it away
-  // from the other, backward if the other is ahead of it and forward if behind, taking room its ring
-  // has to spare; only when that can't work (no room to spare, or neither word on a sentence's own
-  // ring) do the two sentences' rings move apart. Repeat until nothing overlaps (or give up).
-  let result = lay_out();
-  let found = overlaps(result.footprints);
-  let rounds = 0;
-  for (; rounds < 80 && found.length > 0; rounds++) {
-    const least = size * 0.05;
-    const grow_gaps = new Map<number, number>();
-    const grow_room = new Map<CircleItem, number>();
-    const grow_slide = new Map<CircleItem, number>();
-    const spare_used = new Map<number, number>();
-    const more = <K,>(map: Map<K, number>, key: K, by: number) => map.set(key, Math.max(map.get(key) ?? 0, by));
-    for (const { a, b, depth, at_a, at_b } of found) {
-      const by = depth + least;
-      if (a.sentence !== b.sentence) {
-        // The word on a sentence's own ring, and which way the other lies along that ring
-        const [word, here, there] = a.chain.length === 0 ? [a, at_a, at_b] : [b, at_b, at_a];
-        const next = word.ring[word.ring.indexOf(word.item) + 1];
-        let ahead = Math.atan2(there[1], there[0]) - Math.atan2(here[1], here[0]);
-        ahead = Math.atan2(Math.sin(ahead), Math.cos(ahead));
-        // Moving it back means more room after it, before the next item; forward, more before it
-        const target = ahead > 0 ? next : word.item;
-        const used = spare_used.get(word.sentence) ?? 0;
-        if (word.chain.length === 0 && target && rounds < 40 && used + by <= result.spare[word.sentence]!) {
-          more(grow_slide, target, by);
-          spare_used.set(word.sentence, used + by);
-        } else more(grow_gaps, Math.min(a.sentence, b.sentence), by);
-        continue;
-      }
-      let p = 0;
-      while (p < a.chain.length && p < b.chain.length && a.chain[p] === b.chain[p]) p++;
-      // Room is added on both sides of a subclause, so half the depth moves it far enough
-      if (a.chain[p]) more(grow_room, a.chain[p]!, by / 2);
-      if (b.chain[p]) more(grow_room, b.chain[p]!, by / 2);
-    }
-    for (const [k, by] of grow_gaps) spread[k] = spread[k]! + by;
-    for (const [c, by] of grow_room) room.set(c, (room.get(c) ?? 0) + by);
-    for (const [item, by] of grow_slide) slide.set(item, (slide.get(item) ?? 0) + by);
-    result = lay_out();
-    found = overlaps(result.footprints);
-  }
-  // Making room overshoots (a ring that grows re-spaces its words, which can move a circle into a
-  // fresh collision), so each gap that was widened is narrowed again as far as it can go with
-  // nothing overlapping, found by halving
-  if (found.length === 0) {
-    for (let k = 0; k < spread.length; k++) {
-      if (spread[k]! <= 0) continue;
-      let enough = spread[k]!;
-      let too_little = 0;
-      for (let step = 0; step < 6; step++) {
-        const middle = (enough + too_little) / 2;
-        spread[k] = middle;
-        if (overlaps(lay_out().footprints).length === 0) enough = middle;
-        else too_little = middle;
-      }
-      spread[k] = enough;
-    }
-    result = lay_out();
-    found = overlaps(result.footprints);
-  }
-  const left = found.length;
-  return { nodes: result.nodes, extent: result.extent, rounds, overlaps: left, placed: result.placed };
+export function LineCircles(args: CircleLayoutArgs) {
+  const { shown, pending } = useLaidOut(args);
+  // Drawn as it was laid out, which may be a setting or two behind while the next is worked out,
+  // and only again once there's a new layout
+  const drawn = useMemo(
+    () => shown && draw_circles(shown.laid, { ...args, style: shown.options.style, size: shown.options.size, period: shown.period }),
+    [shown],
+  );
+  if (!shown || !drawn) return pending ? <div className="text-xs text-gray-400">Laying out…</div> : null;
+  const { style, size } = shown.options;
+  const centre = drawn.extent + size * 0.3;
+  const side = 2 * centre;
+  return (
+    <svg
+      width={side}
+      height={side}
+      viewBox={`0 0 ${side} ${side}`}
+      className={`block transition-opacity ${pending ? "opacity-40" : ""}`}
+      {...svg_props(size, style)}
+    >
+      <g transform={`translate(${centre} ${centre})`}>{drawn.nodes}</g>
+    </svg>
+  );
 }
 
 // A word in cursive stems. The stems are one stroke for the whole word: the pen writes one stem
@@ -1040,9 +780,11 @@ export function stored_script_settings(): ScriptSettings {
 
 // rule: in running text, a midline ruled across the whole text, under every row of words.
 // whole_text: a script that lays out a whole text itself rather than word by word (the line script
-// round circles); wrap makes a word hoverable.
+// round circles); wrap makes a word hoverable. settings: what the script's drawing depends on, so
+// text in it is drawn again only when they change.
 export type ScriptRenderer = {
   name: string;
+  settings: string;
   note: string;
   render: (ids: number[]) => React.ReactNode;
   style?: React.CSSProperties;
@@ -1064,16 +806,19 @@ export function script_renderers(
   return [
     {
       name: "Stems",
+      settings: JSON.stringify([phonology, stems, size]),
       note: "A stem per syllable, with a rung for each mark",
       render: (ids) => <Stems rows={ids.map((id) => layout_values(id, phonology, stems))} size={size} />,
     },
     {
       name: "Cursive stems",
+      settings: JSON.stringify([phonology, stems, size]),
       note: "The same stems joined into one stroke per word; rungs joined by U-turns between their outer ends",
       render: (ids) => <CursiveStems rows={ids.map((id) => layout_values(id, phonology, stems))} size={size} />,
     },
     {
       name: "Line",
+      settings: JSON.stringify([phonology, line, line_style, period, size, in_text]),
       note: "Four marks per syllable along a line: a dash or a loop, above or below",
       render: (ids) => (
         <Line
@@ -1099,6 +844,7 @@ export function script_renderers(
     },
     {
       name: "Syllabics",
+      settings: JSON.stringify([phonology, syllabics, period, size]),
       note: "Two glyphs per syllable, each a shape turned one of four ways",
       render: (ids) => ids.map((id) => syllabics_glyphs(id, phonology, syllabics)).join(""),
       style: { fontSize: size * 0.8, fontFamily: SYLLABICS_FONT },

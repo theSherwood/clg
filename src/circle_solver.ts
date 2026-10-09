@@ -1,4 +1,8 @@
-import type { CircleItem, LineStyle, Placement, Point } from "./script_drawings";
+import type { CircleItem, LineStyle, Point } from "./script_drawings";
+
+// Where a layout put things, for another to start from: each ring (by its list of items), its
+// radius and each item's centre along it
+export type Placement = Map<CircleItem[], { R: number; centres: Map<CircleItem, number> }>;
 
 // Lays the line script out round circles by constraint projection, as physics engines and
 // force-directed graph layouts do. The layout is a set of variables: each sentence's ring's radius

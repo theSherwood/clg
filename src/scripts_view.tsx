@@ -28,6 +28,7 @@ import {
   type LineStyle,
   Period,
   type PeriodStyle,
+  type ScriptRenderer,
   default_line_style,
   default_period,
   LINE_JOINS,
@@ -74,6 +75,28 @@ const PRESETS: { label: string; text: string }[] = [
 // rule: a midline ruled under every row, like lined paper, at the middle of the words (each row
 // is the words' height, and rows are ROW_GAP apart)
 const ROW_GAP = 4;
+
+// The text in one script, drawn again only when the text or that script's settings change, so
+// changing one script's settings doesn't redraw the others
+const ScriptText = React.memo(
+  function ScriptText({ script: s, tokens, size, period }: { script: ScriptRenderer; tokens: ScriptToken[]; size: number; period: PeriodStyle }) {
+    return (
+      <div className="mb-3">
+        <h3 className="text-xs font-semibold text-gray-600">
+          {s.name} <span className="font-normal text-gray-400">{s.note}</span>
+        </h3>
+        <div style={s.style} className="text-gray-900">
+          {s.whole_text ? (
+            <div className="overflow-x-auto">{s.whole_text(tokens, (word, node) => <WordHover word={word}>{node}</WordHover>)}</div>
+          ) : (
+            <Written tokens={tokens} render={s.render} size={size} rule={s.rule} period={period} />
+          )}
+        </div>
+      </div>
+    );
+  },
+  (a, b) => a.script.settings === b.script.settings && a.tokens === b.tokens && a.size === b.size && a.period === b.period,
+);
 
 function Written({
   tokens,
@@ -314,7 +337,22 @@ function SyllabicsControls({
 }
 
 // Every syllable in each script, laid out like the Roots grid: 16 IDs to a row
-function AllSyllables({
+// Drawn again only when something it shows changes: of the line style, only how a word is drawn,
+// not how a text is laid out
+const word_style = ({ join, curves, loop_mark, midline, midline_color }: LineStyle) =>
+  JSON.stringify([join, curves, loop_mark, midline, midline_color]);
+const AllSyllables = React.memo(
+  AllSyllablesGrid,
+  (a, b) =>
+    a.phonology === b.phonology &&
+    a.stems === b.stems &&
+    a.line === b.line &&
+    a.syllabics === b.syllabics &&
+    a.size === b.size &&
+    word_style(a.line_style) === word_style(b.line_style),
+);
+
+function AllSyllablesGrid({
   phonology,
   stems,
   line,
@@ -364,6 +402,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
   const [stems, set_stems] = useStored<MarkLayout>(SCRIPT_KEYS.stems, default_stems);
   const [line, set_line] = useStored<MarkLayout>(SCRIPT_KEYS.line, default_line);
   const [line_style, set_line_style] = useStored<LineStyle>(SCRIPT_KEYS.line_style, default_line_style);
+  const [grid_open, set_grid_open] = useState(false);
   const [period, set_period] = useStored<PeriodStyle>(SCRIPT_KEYS.period, default_period);
   const [syllabics, set_syllabics] = useStored<SyllabicsSettings>(SCRIPT_KEYS.syllabics, default_syllabics);
   const [size, set_size] = useStored("script_size", 32);
@@ -442,20 +481,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
       </div>
 
       {scripts.map((s) => (
-        <div key={s.name} className="mb-3">
-          <h3 className="text-xs font-semibold text-gray-600">
-            {s.name} <span className="font-normal text-gray-400">{s.note}</span>
-          </h3>
-          <div style={s.style} className="text-gray-900">
-            {s.whole_text ? (
-              <div className="overflow-x-auto">
-                {s.whole_text(tokens, (word, node) => <WordHover word={word}>{node}</WordHover>)}
-              </div>
-            ) : (
-              <Written tokens={tokens} render={s.render} size={size} rule={s.rule} period={period} />
-            )}
-          </div>
-        </div>
+        <ScriptText key={s.name} script={s} tokens={tokens} size={size} period={period} />
       ))}
 
       <div className="grid gap-4 md:grid-cols-2 mt-2">
@@ -581,16 +607,19 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
         </div>
       </div>
 
-      <details className="mt-2">
+      {/* Drawn only while open */}
+      <details className="mt-2" onToggle={(e) => set_grid_open(e.currentTarget.open)}>
         <summary className="cursor-pointer text-xs font-semibold text-gray-600">All 256 syllables</summary>
-        <AllSyllables
-          phonology={phonology}
-          stems={stems}
-          line={line}
-          line_style={line_style}
-          syllabics={syllabics}
-          size={size}
-        />
+        {grid_open && (
+          <AllSyllables
+            phonology={phonology}
+            stems={stems}
+            line={line}
+            line_style={line_style}
+            syllabics={syllabics}
+            size={size}
+          />
+        )}
       </details>
     </div>
   );

@@ -158,3 +158,22 @@ test("flowing the circles keeps the clearance asked for, and full rings are no b
   expect(layout({ clearance: 1 }).extent).toBeGreaterThan(layout({ clearance: 0 }).extent);
   expect(layout({ ring_sizing: "full" }).extent).toBeLessThanOrEqual(layout({ ring_sizing: "tight" }).extent);
 });
+
+test("a layout sent back from the circle worker names the same items it was laid out with", async () => {
+  const { circle_sentences, circle_footprint, line_geometry, default_line_style } = await import("./script_drawings");
+  const { solve_layout, to_wire, from_wire } = await import("./circle_layouts");
+  const { default_line } = await import("./scripts");
+  const { babel_verses } = await import("./examples");
+  const style = { ...default_line_style, midline_shape: "circle" as const, subclauses: "circles" as const, solver: "flow" as const };
+  const tokens = script_tokens(babel_verses.map((a) => a.transliteration).join(" "), default_phonology);
+  const rings = circle_sentences(tokens, (ids) => line_geometry(ids.map((id) => layout_values(id, default_phonology, default_line)), 28, style), 28, true, false);
+  const options = { rings, style, size: 28, period_width: 28 * 0.3, footprint: circle_footprint(rings, 28, style) };
+  const here = solve_layout(options);
+  // As the worker sees it: a copy of the rings, laid out there and sent back
+  const copy = structuredClone(options);
+  const back = from_wire(structuredClone(to_wire(solve_layout(copy), copy.rings)), rings);
+  expect(back.rings.map((r) => r.items.map((it) => [it.item, it.x]))).toEqual(here.rings.map((r) => r.items.map((it) => [it.item, it.x])));
+  expect(back.rings.flatMap((r) => r.items).every((it) => rings.some(function has(items): boolean {
+    return items.some((item) => item === it.item || ("clause" in item && has(item.clause)));
+  }))).toBe(true);
+});
