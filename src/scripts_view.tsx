@@ -40,6 +40,7 @@ import {
   StemsWord,
   StemRoute,
   STEM_JOINS,
+  STEM_WIDTHS,
   type StemsStyle,
   default_stems_style,
   load,
@@ -96,7 +97,7 @@ const ScriptText = React.memo(
           {s.whole_text ? (
             <div className="overflow-x-auto">{s.whole_text(tokens, (word, node) => <WordHover word={word}>{node}</WordHover>)}</div>
           ) : (
-            <Written tokens={tokens} render={s.render} size={size} rule={s.rule} period={period} />
+            <Written tokens={tokens} render={s.render} size={size} rule={s.rule} period={period} word_gap={s.word_gap} />
           )}
         </div>
       </div>
@@ -111,12 +112,14 @@ function Written({
   size,
   rule,
   period,
+  word_gap,
 }: {
   tokens: ScriptToken[];
   render: (ids: number[]) => React.ReactNode;
   size?: number;
   period?: PeriodStyle;
   rule?: { color: string; size: number };
+  word_gap?: number; // in pixels, instead of half an em; a period then takes the space before it
 }) {
   const ruled: React.CSSProperties | undefined = rule && {
     lineHeight: 1,
@@ -127,10 +130,17 @@ function Written({
     })(),
   };
   return (
-    <div className="flex flex-wrap items-center gap-x-[0.5em]" style={{ rowGap: ROW_GAP, ...ruled }}>
+    <div
+      className={`flex flex-wrap items-center ${word_gap === undefined ? "gap-x-[0.5em]" : ""}`}
+      style={{ rowGap: ROW_GAP, columnGap: word_gap, ...ruled }}
+    >
       {tokens.map((t, i) =>
         "punctuation" in t && t.punctuation === "." && size ? (
-          <span key={i} className="flex items-center">
+          <span
+            key={i}
+            className="flex items-center justify-center"
+            style={word_gap === undefined ? undefined : { marginLeft: -word_gap, width: word_gap }}
+          >
             <Period size={size} style={period} />
           </span>
         ) : "punctuation" in t ? (
@@ -538,6 +548,17 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
             options={["shortest turns", "skipping rungs"]}
             value={stems_style.prefer === "skips" ? 1 : 0}
             on_change={(i) => set_stems_style({ ...stems_style, prefer: i === 1 ? "skips" : "short" })}
+          />
+        </Row>
+        <Row
+          label="Width"
+          hint="Each glyph as narrow as its turns allow; as wide either side of its stem; or every glyph as wide as the widest, with a glyph's width between words"
+          off={stems_style.join !== "cursive" && "Only cursive stems"}
+        >
+          <Toggle
+            options={["tight", "balanced", "monospace"]}
+            value={STEM_WIDTHS.indexOf(stems_style.width)}
+            on_change={(i) => set_stems_style({ ...stems_style, width: STEM_WIDTHS[i]! })}
           />
         </Row>
         <Row

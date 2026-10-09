@@ -40,13 +40,16 @@ export function load<T>(key: string, fallback: T): T {
 // The stem script's modes: each syllable a stem of its own, or a word's stems joined into one stroke
 export const STEM_JOINS = ["separate", "cursive"] as const;
 // With cursive stems: curve, how far their joins and U-turns are rounded, from 0 (square) to 1;
-// and routing, how a syllable's rungs are joined into strokes (see stem_routes.ts)
-export type StemsStyle = { join: (typeof STEM_JOINS)[number]; curve: number } & StemRouting;
-export const default_stems_style: StemsStyle = { join: "cursive", curve: 1, ...default_stem_routing };
+// routing, how a syllable's rungs are joined into strokes (see stem_routes.ts); and width, how
+// wide each syllable's glyph is: as tight as its turns allow, the same either side of its stem, or
+// the same for every syllable (monospace, with a glyph's width between words too)
+export const STEM_WIDTHS = ["tight", "balanced", "mono"] as const;
+export type StemsStyle = { join: (typeof STEM_JOINS)[number]; curve: number; width: (typeof STEM_WIDTHS)[number] } & StemRouting;
+export const default_stems_style: StemsStyle = { join: "cursive", curve: 1, width: "tight", ...default_stem_routing };
 
 // A word in the stem script, in whichever mode the style asks for
 export function StemsWord({ rows, size, style }: { rows: number[][]; size: number; style: StemsStyle }) {
-  return style.join === "cursive" ? <CursiveStems rows={rows} size={size} curve={style.curve} routing={style} /> : <Stems rows={rows} size={size} />;
+  return style.join === "cursive" ? <CursiveStems rows={rows} size={size} curve={style.curve} routing={style} width={style.width} /> : <Stems rows={rows} size={size} />;
 }
 
 // A word in the stem script: one stem per syllable, a rung per row (none, left, right, across)
@@ -692,6 +695,36 @@ function route_extra(strokes: Step[][]): { left: number; right: number } {
   return { left: deepest(-1), right: deepest(1) };
 }
 
+// The most any syllable's turns reach out on a side under some routing, in levels beyond the
+// first: over every set of rung states, as any mapping without look-alikes uses them all
+const widest = new Map<string, number>();
+function widest_extra(routing: StemRouting): number {
+  const key = `${routing.turns}|${routing.direction}|${routing.prefer}`;
+  if (!widest.has(key)) {
+    let most = 0;
+    for (let n = 0; n < 256; n++) {
+      const extra = route_extra(best_route([n & 3, (n >> 2) & 3, (n >> 4) & 3, (n >> 6) & 3], routing).strokes);
+      most = Math.max(most, extra.left, extra.right);
+    }
+    widest.set(key, most);
+  }
+  return widest.get(key)!;
+}
+
+// How far a syllable's glyph reaches out either side of its usual column, by the width setting
+function glyph_extra(strokes: Step[][], style: Pick<StemsStyle, "width"> & StemRouting) {
+  const own = route_extra(strokes);
+  if (style.width === "tight") return own;
+  const both = style.width === "mono" ? widest_extra(style) : Math.max(own.left, own.right);
+  return { left: both, right: both };
+}
+
+// A cursive stem glyph's width when every one is the same (monospace)
+export function mono_glyph_width(size: number, style: StemsStyle): number {
+  const { column, level } = stem_measures(size);
+  return column + 2 * widest_extra(style) * level;
+}
+
 // A route's strokes as lines of horizontal and vertical runs, for rounding. Each U-turn reaches out
 // past the rungs' ends by a bulge, and a level further for each depth it's nested or crossed at.
 function route_points(
@@ -814,19 +847,21 @@ export function CursiveStems({
   size,
   curve = 1,
   routing = default_stem_routing,
+  width = "tight",
 }: {
   rows: number[][];
   size: number;
   curve?: number;
   routing?: StemRouting;
+  width?: StemsStyle["width"];
 }) {
   const measures = stem_measures(size);
   const { column, height, pad, stroke, bulge, level } = measures;
   // Each syllable's column, widened on either side by however deep its turns go there
   const routes = rows.map((states) => best_route(states, routing));
-  const extras = routes.map((route) => route_extra(route.strokes));
+  const extras = routes.map((route) => glyph_extra(route.strokes, { ...routing, width }));
   const starts = extras.map((_, i) => extras.slice(0, i).reduce((n, e) => n + column + (e.left + e.right) * level, 0));
-  const width = starts.at(-1)! + column + (extras.at(-1)!.left + extras.at(-1)!.right) * level;
+  const total = starts.at(-1)! + column + (extras.at(-1)!.left + extras.at(-1)!.right) * level;
   const middle = (i: number) => starts[i]! + extras[i]!.left * level + column / 2;
   // Down the first stem, then under or over to the next and along it, and so on; each join runs
   // a little past the stems' ends
@@ -841,9 +876,9 @@ export function CursiveStems({
   stems.push([middle(rows.length - 1), (rows.length - 1) % 2 === 0 ? bottom : top]);
   return (
     <svg
-      width={width}
+      width={total}
       height={height}
-      viewBox={`0 0 ${width} ${height}`}
+      viewBox={`0 0 ${total} ${height}`}
       className="inline-block align-middle"
       stroke="currentColor"
       strokeWidth={stroke}
@@ -929,6 +964,7 @@ export type ScriptRenderer = {
   render: (ids: number[]) => React.ReactNode;
   style?: React.CSSProperties;
   rule?: { color: string; size: number };
+  word_gap?: number; // the space between words, in pixels, where the script sets it
   whole_text?: (tokens: ScriptToken[], wrap: (word: Word, node: React.ReactElement) => React.ReactNode) => React.ReactNode;
 };
 
@@ -952,6 +988,7 @@ export function script_renderers(
           ? "A stem per syllable, with a rung for each mark; a word's stems joined into one stroke, its rungs by U-turns between their outer ends"
           : "A stem per syllable, with a rung for each mark",
       render: (ids) => <StemsWord rows={ids.map((id) => layout_values(id, phonology, stems))} size={size} style={stems_style} />,
+      word_gap: stems_style.join === "cursive" && stems_style.width === "mono" ? mono_glyph_width(size, stems_style) : undefined,
     },
     {
       name: "Stave",
