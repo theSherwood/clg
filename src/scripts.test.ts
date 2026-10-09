@@ -54,3 +54,42 @@ test("subclauses become circles: brackets, the grammar's unbracketed clauses, an
     "<subject> person [<subject> <blank> <verb> say(vt) <object> [<verb> sleep(vi)]] <verb> come(vi) .",
   );
 });
+
+test("on circles with subclause circles, no two words overlap", async () => {
+  const { circle_layout, default_line_style, default_period } = await import("./script_drawings");
+  const { default_line } = await import("./scripts");
+  const { lords_prayer, babel_verses } = await import("./examples");
+  for (const articles of [lords_prayer, babel_verses])
+    for (const clause_words of ["hide", "show"] as const) {
+      const text = articles.map((a) => a.transliteration).join(" ");
+      const style = { ...default_line_style, midline_shape: "circle" as const, subclauses: "circles" as const, clause_words };
+      const laid_out = circle_layout({
+        tokens: script_tokens(text, default_phonology),
+        phonology: default_phonology,
+        layout: default_line,
+        style,
+        period: default_period,
+        size: 28,
+        wrap: (_, node) => node,
+      });
+      expect(laid_out?.overlaps).toBe(0);
+    }
+});
+
+test("clause words are written on their circle only when asked", async () => {
+  const { circle_sentences } = await import("./script_drawings");
+  const words = (show: boolean) =>
+    JSON.stringify(
+      circle_sentences(
+        script_tokens("<subject> person <clause_start> <subject> <blank> <verb> sleep(vi) <clause_end> <verb> come(vi).", default_phonology),
+        () => ({ strokes: [], marks: [], width: 1 }),
+        30,
+        true,
+        show,
+      ),
+      (key, value) => (key === "geometry" ? undefined : key === "word" ? value.word : value),
+    );
+  expect(words(false)).not.toContain("<clause_start>");
+  expect(words(true)).toContain("<clause_start>");
+  expect(words(true)).toContain("<clause_end>");
+});

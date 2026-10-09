@@ -121,6 +121,7 @@ export type LineStyle = {
   spacing: "even" | "condensed";
   period_position: "top" | "after"; // where a condensed sentence's period goes
   subclauses: "inline" | "circles"; // on circles, whether subclauses get circles of their own
+  clause_words: "hide" | "show"; // with subclause circles, whether <clause_start> and <clause_end> are written
 };
 export const default_line_style: LineStyle = {
   join: "cursive",
@@ -133,6 +134,7 @@ export const default_line_style: LineStyle = {
   spacing: "even",
   period_position: "top",
   subclauses: "inline",
+  clause_words: "hide",
 };
 
 // The midline is ruled like lined paper: thinner than the writing, in its own colour
@@ -351,8 +353,9 @@ function opens_clause(previous: Word | undefined, word: Word | undefined): boole
 }
 
 // A text as sentences, each a list of items. With subclauses as circles, a clause is an item of
-// its own, holding its words: <clause_start> and <clause_end> become the circle and aren't written,
-// and an unbracketed subclause is found by the grammar's rule. A <clause_end> closes the innermost
+// its own, holding its words: <clause_start> and <clause_end> become the circle, and are written at
+// its start and end only with show_brackets. An unbracketed subclause is found by the grammar's
+// rule. A <clause_end> closes the innermost
 // bracket and any unbracketed clauses inside it, or with no bracket open, the innermost
 // unbracketed clause; anything still open closes at the end of the sentence.
 export function circle_sentences(
@@ -360,6 +363,7 @@ export function circle_sentences(
   geometry: (ids: number[]) => LineGeometry,
   size: number,
   subclauses: boolean,
+  show_brackets = false,
 ): CircleItem[][] {
   const sentences: CircleItem[][] = [];
   let stack: { items: CircleItem[]; bracketed: boolean }[] = [];
@@ -389,16 +393,21 @@ export function circle_sentences(
       continue;
     }
     const name = t.word?.word;
+    const item = (): CircleItem => (t.ids ? { geometry: geometry(t.ids), word: t.word } : { blank: size * 0.5 });
     if (subclauses && name === "<clause_start>") {
-      stack.push({ items: [], bracketed: true });
+      stack.push({ items: show_brackets ? [item()] : [], bracketed: true });
     } else if (subclauses && name === "<clause_end>") {
       if (stack.some((c, i) => i > 0 && c.bracketed)) {
         while (!stack.at(-1)!.bracketed) close();
+        if (show_brackets) top().push(item());
         close();
-      } else if (stack.length > 1) close();
+      } else if (stack.length > 1) {
+        if (show_brackets) top().push(item());
+        close();
+      }
     } else {
       if (subclauses && opens_clause(previous, t.word)) stack.push({ items: [], bracketed: false });
-      top().push(t.ids ? { geometry: geometry(t.ids), word: t.word } : { blank: size * 0.5 });
+      top().push(item());
     }
     previous = t.word;
   }
@@ -406,15 +415,12 @@ export function circle_sentences(
   return sentences;
 }
 
-export function LineCircles({
-  tokens,
-  phonology,
-  layout,
-  style,
-  period,
-  size,
-  wrap,
-}: {
+// Where a word or period sits once laid out, as a chain of discs along it wide enough to cover
+// its marks above and below the line, and where it belongs: its sentence, and the subclauses down
+// to the ring it's on (the same ring as another footprint when ring is the same array)
+type Footprint = { points: Point[]; sentence: number; chain: CircleItem[]; ring: CircleItem[] };
+
+type CircleLayoutArgs = {
   tokens: ScriptToken[];
   phonology: Phonology;
   layout: MarkLayout;
@@ -422,19 +428,44 @@ export function LineCircles({
   period: PeriodStyle;
   size: number;
   wrap: (word: Word, node: React.ReactElement) => React.ReactNode;
-}) {
+};
+
+export function LineCircles(args: CircleLayoutArgs) {
+  const laid_out = circle_layout(args);
+  if (!laid_out) return null;
+  const centre = laid_out.extent + args.size * 0.3;
+  const side = 2 * centre;
+  return (
+    <svg width={side} height={side} viewBox={`0 0 ${side} ${side}`} className="block" {...svg_props(args.size, args.style)}>
+      <g transform={`translate(${centre} ${centre})`}>{laid_out.nodes}</g>
+    </svg>
+  );
+}
+
+// The circles laid out round (0, 0): what to draw, how far it reaches, and how many rounds of
+// making room it took and how many overlaps were left (none, unless it gave up)
+export function circle_layout({ tokens, phonology, layout, style, period, size, wrap }: CircleLayoutArgs) {
   const stroke = Math.max(1.5, size / 16);
   const rings = circle_sentences(
     tokens,
     (ids) => line_geometry(ids.map((id) => layout_values(id, phonology, layout)), size, style),
     size,
     style.subclauses === "circles",
+    style.clause_words === "show",
   );
-  if (rings.length === 0) return null;
+  if (rings.length === 0) return undefined;
 
   const gap = size * 0.25;
   const period_width = size * 0.3 * period.scale;
   const clear = size * 0.3; // kept clear either side of a subclause's circle on its parent's ring
+  const band = size * 1.35; // between sentences' rings, to start with
+  const footprint = size * 0.38; // the radius of the discs a footprint is made of
+  const step = size * 0.08; // straight lines are cut this fine so they bend with the ring
+  // What the layout adjusts until no two words overlap: more room for a subclause on its parent's
+  // ring, and more room between two sentences' rings
+  const room = new Map<CircleItem, number>();
+  const spread = rings.map(() => 0);
+
   // How much of a ring of radius R a circle of radius r centred on it covers: the arc between where
   // they cross (the whole ring, if the circle is big enough to swallow it)
   const covered = (R: number, r: number) => {
@@ -443,155 +474,230 @@ export function LineCircles({
     const a = R - (r * r) / (2 * R);
     return 2 * R * Math.atan2(Math.sqrt(Math.max(0, R * R - a * a)), a);
   };
-  // An item's width along a ring of radius R: a subclause takes the arc its circle covers, so no
-  // writing on the ring falls inside it
-  const width_of = (item: CircleItem, R: number): number =>
-    "geometry" in item
-      ? item.geometry.width
-      : "period" in item
-        ? period_width
-        : "blank" in item
-          ? item.blank
-          : covered(R, radius_of(item.clause)) + 2 * clear;
-  const length_of = (items: CircleItem[], R: number) => items.reduce((n, item) => n + width_of(item, R) + gap, 0);
-  // A subclause's circle is the smallest its own writing fits round, including the arcs its own
-  // subclauses' circles cover, which depend on its size, so it's found by a few rounds of refining
-  const radii_found = new Map<CircleItem[], number>();
-  function radius_of(items: CircleItem[]): number {
-    const known = radii_found.get(items);
-    if (known) return known;
-    let r = Math.max(size * 0.5, length_of(items, Infinity) / (2 * Math.PI));
-    for (let round = 0; round < 8; round++) r = Math.max(r, length_of(items, r) / (2 * Math.PI));
-    radii_found.set(items, r);
-    return r;
-  }
-  // How far a ring's subclause circles reach out from it, either side
-  const reach_of = (items: CircleItem[]): number =>
-    Math.max(0, ...items.map((item) => ("clause" in item ? radius_of(item.clause) + reach_of(item.clause) : 0)));
 
-  // A sentence's ring is big beside its subclauses' circles, so each covers about its diameter
-  const lengths = rings.map((items) => length_of(items, Infinity));
-  // Rings are a line apart, plus the room their own subclause circles take: a circle is centred on
-  // its ring, so it reaches out as far either side, and only the gaps next to it widen
-  const reaches = rings.map(reach_of);
-  const band = size * 1.35;
-  const offsets = reaches.map((_, k) =>
-    reaches.slice(0, k).reduce((n, r, j) => n + band + r + reaches[j + 1]!, 0),
-  );
-  const last = rings.length - 1;
-  const radii =
-    style.grow === "in"
-      ? (() => {
-          const outer = Math.max(
-            size * 0.8 + reaches[last]! + offsets[last]!,
-            ...lengths.map((l, k) => l / (2 * Math.PI) + offsets[k]!),
-          );
-          return offsets.map((o) => outer - o);
-        })()
-      : (() => {
-          const inner = Math.max(size * 0.8 + reaches[0]!, ...lengths.map((l, k) => l / (2 * Math.PI) - offsets[k]!));
-          return offsets.map((o) => inner + o);
-        })();
-  const outermost = style.grow === "in" ? 0 : last;
-  const outer = radii[outermost]!;
-  const margin = size * 0.75 + reaches[outermost]!;
-  const centre = outer + margin;
-  const step = size * 0.08; // straight lines are cut this fine so they bend with the ring
-
-  const nodes: React.ReactNode[] = [];
-  // One ring of items round (cx, cy), starting at an angle and read clockwise. A sentence's ring
-  // starts at the top and places its period; a subclause's starts where it crosses its parent.
-  const draw_ring = (items: CircleItem[], cx: number, cy: number, R: number, start: number, sentence: boolean, key: string) => {
-    const circumference = 2 * Math.PI * R;
-    const length = length_of(items, R);
-    const ring_gap = style.spacing === "even" ? gap + (circumference - length) / items.length : gap;
-    // With the period at the top, the sentence starts just clockwise of it and any room to spare is
-    // left between its last word and the period; otherwise it starts at the top and the period
-    // follows its last word
-    const period_at_top = sentence && (style.spacing === "even" || style.period_position === "top");
-    const last = items.at(-1)!;
-    const half_period = "period" in last ? width_of(last, R) / 2 : 0;
-    // Where a point along the ring goes: x along it from the start, y below the line inward
-    const angle_at = (x: number) => start + (2 * Math.PI * x) / circumference;
-    const place = (x: number, y: number): Point => {
-      const angle = angle_at(x);
-      const r = R - y;
-      return [cx + r * Math.cos(angle), cy + r * Math.sin(angle)];
-    };
-    const turn = (x: number) => (angle_at(x) * 180) / Math.PI + 90;
-    const bend = (points: Point[], at: number): Point[] =>
-      points.flatMap(([x, y], i): Point[] => {
-        if (i === 0) return [place(at + x, y)];
-        const [px, py] = points[i - 1]!;
-        const pieces = Math.max(1, Math.ceil(Math.hypot(x - px, y - py) / step));
-        return Array.from({ length: pieces }, (_, n): Point => {
-          const t = (n + 1) / pieces;
-          return place(at + px + (x - px) * t, py + (y - py) * t);
-        });
-      });
-    if (style.midline) {
-      nodes.push(<circle key={`mid${key}`} cx={cx} cy={cy} r={R} stroke={style.midline_color} strokeWidth={midline_width(size)} />);
+  // One pass of laying the text out, with the room and spread as they stand
+  const lay_out = () => {
+    // An item's width along a ring of radius R: a subclause takes the arc its circle covers, so no
+    // writing on the ring falls inside it, plus any room it's been given
+    const width_of = (item: CircleItem, R: number): number =>
+      "geometry" in item
+        ? item.geometry.width
+        : "period" in item
+          ? period_width
+          : "blank" in item
+            ? item.blank
+            : covered(R, radius_of(item.clause)) + 2 * (clear + (room.get(item) ?? 0));
+    const length_of = (items: CircleItem[], R: number) => items.reduce((n, item) => n + width_of(item, R) + gap, 0);
+    // A subclause's circle is the smallest its own writing fits round, including the arcs its own
+    // subclauses' circles cover, which depend on its size, so it's found by a few rounds of refining
+    const radii_found = new Map<CircleItem[], number>();
+    function radius_of(items: CircleItem[]): number {
+      const known = radii_found.get(items);
+      if (known) return known;
+      let r = Math.max(size * 0.5, length_of(items, Infinity) / (2 * Math.PI));
+      for (let round = 0; round < 8; round++) r = Math.max(r, length_of(items, r) / (2 * Math.PI));
+      radii_found.set(items, r);
+      return r;
     }
-    // A subclause starts just clockwise of where it crosses its parent, which is its top
-    let x = period_at_top ? half_period + ring_gap : sentence ? ring_gap / 2 : gap;
-    items.forEach((item, i) => {
-      const width = width_of(item, R);
-      if ("geometry" in item) {
-        const g = item.geometry;
-        const word = (
-          <g key={`${key}-${i}`}>
-            {/* An invisible band along the word, so it's easy to hover */}
-            <path d={polyline(bend([[0, 0], [width, 0]], x))} stroke="transparent" strokeWidth={size * 0.9} />
-            {g.strokes.map((s, j) => (
-              <path
-                key={j}
-                d={s.smooth ? spline(s.points.map(([px, py]) => place(x + px, py))) : polyline(bend(s.points, x))}
-              />
-            ))}
-            {g.marks.map((m, j) => {
-              const [mx, my] = place(x + m.x, m.y);
-              return (
-                <g key={`m${j}`} transform={`translate(${mx} ${my}) rotate(${turn(x + m.x)})`}>
-                  {draw_mark(m.shape, 0, 0, m.r)}
-                </g>
-              );
-            })}
-          </g>
-        );
-        nodes.push(item.word ? <React.Fragment key={`${key}-${i}`}>{wrap(item.word, word)}</React.Fragment> : word);
-      } else if ("period" in item) {
-        const at = period_at_top ? circumference : x + width / 2;
-        const [px, py] = place(at, 0);
-        nodes.push(
-          <g key={`${key}-${i}`} transform={`translate(${px} ${py}) rotate(${turn(at)})`}>
-            {draw_mark(period.shape, 0, 0, Math.max(width / 2 - stroke, stroke))}
-          </g>,
-        );
-      } else if ("clause" in item) {
-        // The subclause's circle is centred on this ring where the clause comes, so it crosses the
-        // ring twice; its text starts at the first crossing and goes once round
-        const [px, py] = place(x + width / 2, 0);
-        const r = radius_of(item.clause);
-        const a = R - (r * r) / (2 * R); // the crossings' distance from this ring's centre along the line to the subclause's
-        const h = Math.sqrt(Math.max(0, R * R - a * a));
-        const ux = (px - cx) / R;
-        const uy = (py - cy) / R;
-        // the crossing just before the clause, going clockwise round this ring
-        const ix = cx + a * ux + h * uy;
-        const iy = cy + a * uy - h * ux;
-        const sub_start = r < 2 * R ? Math.atan2(iy - py, ix - px) : angle_at(x + width / 2) + Math.PI;
-        draw_ring(item.clause, px, py, r, sub_start, false, `${key}-${i}`);
+
+    // Sentences' rings: a line apart, plus any spread, each big enough for its sentence. A
+    // sentence's ring is big beside its subclauses' circles, so each covers about its diameter.
+    const lengths = rings.map((items) => length_of(items, Infinity));
+    const offsets = rings.map((_, k) => spread.slice(0, k).reduce((n, extra) => n + band + extra, 0));
+    const last = rings.length - 1;
+    const radii =
+      style.grow === "in"
+        ? (() => {
+            const outer = Math.max(size * 0.8 + offsets[last]!, ...lengths.map((l, k) => l / (2 * Math.PI) + offsets[k]!));
+            return offsets.map((o) => outer - o);
+          })()
+        : (() => {
+            const inner = Math.max(size * 0.8, ...lengths.map((l, k) => l / (2 * Math.PI) - offsets[k]!));
+            return offsets.map((o) => inner + o);
+          })();
+
+    const nodes: React.ReactNode[] = [];
+    const footprints: Footprint[] = [];
+    let extent = 0; // how far anything reaches from the centre
+    const reach = (x: number, y: number, by = 0) => (extent = Math.max(extent, Math.hypot(x, y) + by));
+
+    // One ring of items round (cx, cy), starting at an angle and read clockwise. A sentence's ring
+    // starts at the top and places its period; a subclause's starts where it crosses its parent.
+    const draw_ring = (
+      items: CircleItem[],
+      cx: number,
+      cy: number,
+      R: number,
+      start: number,
+      sentence: number,
+      chain: CircleItem[],
+      key: string,
+    ) => {
+      const circumference = 2 * Math.PI * R;
+      const length = length_of(items, R);
+      const ring_gap = style.spacing === "even" ? gap + (circumference - length) / items.length : gap;
+      // With the period at the top, the sentence starts just clockwise of it and any room to spare is
+      // left between its last word and the period; otherwise it starts at the top and the period
+      // follows its last word
+      const is_sentence = chain.length === 0;
+      const period_at_top = is_sentence && (style.spacing === "even" || style.period_position === "top");
+      const last = items.at(-1)!;
+      const half_period = "period" in last ? width_of(last, R) / 2 : 0;
+      // Where a point along the ring goes: x along it from the start, y below the line inward
+      const angle_at = (x: number) => start + (2 * Math.PI * x) / circumference;
+      const place = (x: number, y: number): Point => {
+        const angle = angle_at(x);
+        const r = R - y;
+        return [cx + r * Math.cos(angle), cy + r * Math.sin(angle)];
+      };
+      const turn = (x: number) => (angle_at(x) * 180) / Math.PI + 90;
+      const bend = (points: Point[], at: number): Point[] =>
+        points.flatMap(([x, y], i): Point[] => {
+          if (i === 0) return [place(at + x, y)];
+          const [px, py] = points[i - 1]!;
+          const pieces = Math.max(1, Math.ceil(Math.hypot(x - px, y - py) / step));
+          return Array.from({ length: pieces }, (_, n): Point => {
+            const t = (n + 1) / pieces;
+            return place(at + px + (x - px) * t, py + (y - py) * t);
+          });
+        });
+      // A footprint's discs, along the line from x for a width
+      const discs = (x: number, width: number): Point[] => {
+        const n = Math.max(1, Math.ceil(width / (footprint * 0.7)));
+        return Array.from({ length: n + 1 }, (_, i) => place(x + (width * i) / n, 0));
+      };
+      if (style.midline) {
+        nodes.push(<circle key={`mid${key}`} cx={cx} cy={cy} r={R} stroke={style.midline_color} strokeWidth={midline_width(size)} />);
+        reach(cx, cy, R);
       }
-      x += width + ring_gap;
-    });
+      // A subclause starts just clockwise of where it crosses its parent, which is its top
+      let x = period_at_top ? half_period + ring_gap : is_sentence ? ring_gap / 2 : gap;
+      items.forEach((item, i) => {
+        const width = width_of(item, R);
+        if ("geometry" in item) {
+          const g = item.geometry;
+          const word = (
+            <g key={`${key}-${i}`}>
+              {/* An invisible band along the word, so it's easy to hover */}
+              <path d={polyline(bend([[0, 0], [width, 0]], x))} stroke="transparent" strokeWidth={size * 0.9} />
+              {g.strokes.map((s, j) => (
+                <path
+                  key={j}
+                  d={s.smooth ? spline(s.points.map(([px, py]) => place(x + px, py))) : polyline(bend(s.points, x))}
+                />
+              ))}
+              {g.marks.map((m, j) => {
+                const [mx, my] = place(x + m.x, m.y);
+                return (
+                  <g key={`m${j}`} transform={`translate(${mx} ${my}) rotate(${turn(x + m.x)})`}>
+                    {draw_mark(m.shape, 0, 0, m.r)}
+                  </g>
+                );
+              })}
+            </g>
+          );
+          nodes.push(item.word ? <React.Fragment key={`${key}-${i}`}>{wrap(item.word, word)}</React.Fragment> : word);
+          const points = discs(x, width);
+          footprints.push({ points, sentence, chain, ring: items });
+          for (const [px, py] of points) reach(px, py, footprint);
+        } else if ("period" in item) {
+          const at = period_at_top ? circumference : x + width / 2;
+          const [px, py] = place(at, 0);
+          nodes.push(
+            <g key={`${key}-${i}`} transform={`translate(${px} ${py}) rotate(${turn(at)})`}>
+              {draw_mark(period.shape, 0, 0, Math.max(width / 2 - stroke, stroke))}
+            </g>,
+          );
+          footprints.push({ points: [[px, py]], sentence, chain, ring: items });
+          reach(px, py, footprint);
+        } else if ("clause" in item) {
+          // The subclause's circle is centred on this ring where the clause comes, so it crosses the
+          // ring twice; its text starts at the first crossing and goes once round
+          const [px, py] = place(x + width / 2, 0);
+          const r = radius_of(item.clause);
+          const a = R - (r * r) / (2 * R); // the crossings' distance from this ring's centre along the line to the subclause's
+          const h = Math.sqrt(Math.max(0, R * R - a * a));
+          const ux = (px - cx) / R;
+          const uy = (py - cy) / R;
+          // the crossing just before the clause, going clockwise round this ring
+          const ix = cx + a * ux + h * uy;
+          const iy = cy + a * uy - h * ux;
+          const sub_start = r < 2 * R ? Math.atan2(iy - py, ix - px) : angle_at(x + width / 2) + Math.PI;
+          draw_ring(item.clause, px, py, r, sub_start, sentence, [...chain, item], `${key}-${i}`);
+        }
+        x += width + ring_gap;
+      });
+    };
+    rings.forEach((items, k) => draw_ring(items, 0, 0, radii[k]!, -Math.PI / 2, k, [], `${k}`));
+    return { nodes, footprints, extent };
   };
-  rings.forEach((items, k) => draw_ring(items, centre, centre, radii[k]!, -Math.PI / 2, true, `${k}`));
-  const side = 2 * centre;
-  return (
-    <svg width={side} height={side} viewBox={`0 0 ${side} ${side}`} className="block" {...svg_props(size, style)}>
-      {nodes}
-    </svg>
-  );
+
+  // Two footprints on different rings overlap if any of their discs do, by as much as the deepest
+  // pair of discs overlaps. Discs are bucketed by a grid as big as a disc's reach, so each is only
+  // checked against its neighbours.
+  const overlaps = (footprints: Footprint[]): { a: Footprint; b: Footprint; depth: number }[] => {
+    const cell = 2 * footprint;
+    const grid = new Map<string, { f: number; p: Point }[]>();
+    footprints.forEach((f, i) =>
+      f.points.forEach((p) => {
+        const k = `${Math.floor(p[0] / cell)},${Math.floor(p[1] / cell)}`;
+        const bucket = grid.get(k);
+        if (bucket) bucket.push({ f: i, p });
+        else grid.set(k, [{ f: i, p }]);
+      }),
+    );
+    const found = new Map<string, { a: Footprint; b: Footprint; depth: number }>();
+    for (const [k, here] of grid) {
+      const [gx, gy] = k.split(",").map(Number) as [number, number];
+      for (let dx = -1; dx <= 1; dx++)
+        for (let dy = -1; dy <= 1; dy++)
+          for (const b of grid.get(`${gx + dx},${gy + dy}`) ?? [])
+            for (const a of here) {
+              if (a.f >= b.f) continue;
+              const fa = footprints[a.f]!;
+              const fb = footprints[b.f]!;
+              if (fa.ring === fb.ring) continue; // words along one ring are laid out apart already
+              const depth = 2 * footprint - Math.hypot(a.p[0] - b.p[0], a.p[1] - b.p[1]);
+              if (depth <= 0) continue;
+              const key = `${a.f},${b.f}`;
+              const seen = found.get(key);
+              if (!seen || depth > seen.depth) found.set(key, { a: fa, b: fb, depth });
+            }
+    }
+    return [...found.values()];
+  };
+
+  // Lay out, then for each pair of words that overlap make room by as much as they overlap: between
+  // their sentences' rings if they're in different sentences, or else for the subclause each is in
+  // on the ring where they part, so their circles move apart along it. Repeat until nothing
+  // overlaps (or give up).
+  let result = lay_out();
+  let found = overlaps(result.footprints);
+  let rounds = 0;
+  for (; rounds < 60 && found.length > 0; rounds++) {
+    const least = size * 0.05;
+    const grow_gaps = new Map<number, number>();
+    const grow_room = new Map<CircleItem, number>();
+    const more = <K,>(map: Map<K, number>, key: K, by: number) => map.set(key, Math.max(map.get(key) ?? 0, by));
+    for (const { a, b, depth } of found) {
+      const by = depth + least;
+      if (a.sentence !== b.sentence) {
+        more(grow_gaps, Math.min(a.sentence, b.sentence), by);
+        continue;
+      }
+      let p = 0;
+      while (p < a.chain.length && p < b.chain.length && a.chain[p] === b.chain[p]) p++;
+      // Room is added on both sides of a subclause, so half the depth moves it far enough
+      if (a.chain[p]) more(grow_room, a.chain[p]!, by / 2);
+      if (b.chain[p]) more(grow_room, b.chain[p]!, by / 2);
+    }
+    for (const [k, by] of grow_gaps) spread[k] = spread[k]! + by;
+    for (const [c, by] of grow_room) room.set(c, (room.get(c) ?? 0) + by);
+    result = lay_out();
+    found = overlaps(result.footprints);
+  }
+  const left = found.length;
+  return { nodes: result.nodes, extent: result.extent, rounds, overlaps: left };
 }
 
 // A word in cursive stems. The stems are one stroke for the whole word: the pen writes one stem
