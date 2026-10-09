@@ -25,7 +25,9 @@ import {
 import {
   CursiveStems,
   Line,
+  type LineStyle,
   Period,
+  default_line_style,
   SCRIPT_KEYS,
   SYLLABICS_FONT,
   Stems,
@@ -142,6 +144,23 @@ function AssignmentRow({
       {clash.length > 0 && (
         <div className="ml-16 text-xs text-red-600">Look alike: {clash.join("; ")}</div>
       )}
+    </div>
+  );
+}
+
+// Two or more choices side by side, one of them selected
+function Toggle({ options, value, on_change }: { options: string[]; value: number; on_change: (i: number) => void }) {
+  return (
+    <div className="inline-flex rounded border border-gray-300 overflow-hidden">
+      {options.map((label, i) => (
+        <button
+          key={label}
+          onClick={() => on_change(i)}
+          className={`px-1.5 py-0.5 ${i === value ? "bg-indigo-600 text-white" : "bg-white text-gray-700 hover:bg-gray-100"}`}
+        >
+          {label}
+        </button>
+      ))}
     </div>
   );
 }
@@ -278,12 +297,14 @@ function AllSyllables({
   phonology,
   stems,
   line,
+  line_style,
   syllabics,
   size,
 }: {
   phonology: Phonology;
   stems: MarkLayout;
   line: MarkLayout;
+  line_style: LineStyle;
   syllabics: SyllabicsSettings;
   size: number;
 }) {
@@ -302,7 +323,7 @@ function AllSyllables({
                     <div className="grid grid-cols-2 items-center justify-items-center gap-x-1">
                       <Stems rows={[layout_values(id, phonology, stems)]} size={size * 0.7} />
                       <CursiveStems rows={[layout_values(id, phonology, stems)]} size={size * 0.7} />
-                      <Line marks={[layout_values(id, phonology, line)]} size={size * 0.6} />
+                      <Line marks={[layout_values(id, phonology, line)]} size={size * 0.6} style={line_style} />
                       <div style={{ fontSize: size * 0.5, fontFamily: SYLLABICS_FONT }} className="leading-tight whitespace-nowrap">
                         {syllabics_glyphs(id, phonology, syllabics)}
                       </div>
@@ -321,13 +342,14 @@ function AllSyllables({
 export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
   const [stems, set_stems] = useStored<MarkLayout>(SCRIPT_KEYS.stems, default_stems);
   const [line, set_line] = useStored<MarkLayout>(SCRIPT_KEYS.line, default_line);
+  const [line_style, set_line_style] = useStored<LineStyle>(SCRIPT_KEYS.line_style, default_line_style);
   const [syllabics, set_syllabics] = useStored<SyllabicsSettings>(SCRIPT_KEYS.syllabics, default_syllabics);
   const [size, set_size] = useStored("script_size", 32);
   const [text, set_text] = useStored("script_text", PRESETS[0]!.text);
   const tokens = useMemo(() => script_tokens(text, phonology), [text, phonology]);
   const sounds = (ids: number[]) => ids.map((id) => syllable_of(id, phonology)).join("");
 
-  const scripts = script_renderers(phonology, { stems, line, syllabics }, size);
+  const scripts = script_renderers(phonology, { stems, line, line_style, syllabics }, size);
 
   return (
     <div className="mb-4 p-3 rounded border border-gray-200 bg-gray-50 text-sm">
@@ -342,6 +364,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
             onClick={() => {
               set_stems(default_stems);
               set_line(default_line);
+              set_line_style(default_line_style);
               set_syllabics(default_syllabics);
             }}
             className="px-2 py-0.5 rounded border border-gray-300 bg-white hover:bg-gray-100"
@@ -399,6 +422,24 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
             options={RUNGS.map((r, i) => `${["│", "┤", "├", "┼"][i]} ${r}`)}
           />
           <h3 className="text-xs font-semibold text-gray-600 mt-3 mb-1">Line: a mark per position</h3>
+          <div className="flex flex-wrap items-center gap-2 mb-1.5 text-xs">
+            <span className="w-14 font-semibold text-gray-500">style</span>
+            <Toggle
+              options={["joined", "separate"]}
+              value={line_style.joined ? 0 : 1}
+              on_change={(i) => set_line_style({ ...line_style, joined: i === 0 })}
+            />
+            <Toggle
+              options={["curves", "angles"]}
+              value={line_style.curves ? 0 : 1}
+              on_change={(i) => set_line_style({ ...line_style, curves: i === 0 })}
+            />
+            <Toggle
+              options={["midline", "no midline"]}
+              value={line_style.midline ? 0 : 1}
+              on_change={(i) => set_line_style({ ...line_style, midline: i === 0 })}
+            />
+          </div>
           <LayoutControls
             phonology={phonology}
             layout={line}
@@ -415,7 +456,14 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
 
       <details className="mt-2">
         <summary className="cursor-pointer text-xs font-semibold text-gray-600">All 256 syllables</summary>
-        <AllSyllables phonology={phonology} stems={stems} line={line} syllabics={syllabics} size={size} />
+        <AllSyllables
+          phonology={phonology}
+          stems={stems}
+          line={line}
+          line_style={line_style}
+          syllabics={syllabics}
+          size={size}
+        />
       </details>
     </div>
   );

@@ -104,9 +104,9 @@ export function spline(points: Point[]): string {
   return path;
 }
 
-function line_path(marks: number[][], size: number, middle: number, start: number): string {
+function line_path(marks: number[][], size: number, middle: number, start: number, curves: boolean): string {
   const slot = size * LINE_SLOT;
-  const level = size * 0.16; // how far above or below the line the marks run
+  const level = size * 0.2; // how far above or below the line the marks run, as for separate marks
   const loop_height = size * 0.17;
   const loop_width = slot * 0.5;
   const flat = marks.flat();
@@ -134,13 +134,43 @@ function line_path(marks: number[][], size: number, middle: number, start: numbe
     }
   });
   points.push([start + flat.length * slot, middle + side.at(-1)! * level]);
-  return spline(points);
+  return curves ? spline(points) : `M ${points.map(([x, y]) => `${x} ${y}`).join(" L ")}`;
 }
 
-export function Line({ marks, size }: { marks: number[][]; size: number }) {
+// How the line script is drawn: one stroke per word or each mark on its own, curves or straight
+// lines, and whether the midline itself is drawn
+export type LineStyle = { joined: boolean; curves: boolean; midline: boolean };
+export const default_line_style: LineStyle = { joined: true, curves: true, midline: false };
+
+// Each mark on its own: a dash, or a loop drawn as a circle (with curves) or a diamond (without),
+// above or below the line. A separate mark can't run into the next, so syllables can have a gap.
+function line_marks(marks: number[][], size: number, middle: number, start: number, curves: boolean): React.ReactNode[] {
+  const slot = size * LINE_SLOT;
+  const gap = size * 0.4;
+  const offset = size * 0.2;
+  const r = slot * 0.2;
+  return marks.flatMap((syllable, i) =>
+    syllable.map((mark, j) => {
+      const x = start + i * (4 * slot + gap) + (j + 0.5) * slot;
+      const y = mark & 1 ? middle + offset : middle - offset;
+      const key = `${i}-${j}`;
+      if (!(mark & 2)) return <line key={key} x1={x - slot * 0.22} y1={y} x2={x + slot * 0.22} y2={y} />;
+      return curves ? (
+        <circle key={key} cx={x} cy={y} r={r} />
+      ) : (
+        <path key={key} d={`M ${x} ${y - r * 1.2} L ${x + r * 1.2} ${y} L ${x} ${y + r * 1.2} L ${x - r * 1.2} ${y} Z`} />
+      );
+    }),
+  );
+}
+
+export function Line({ marks, size, style = default_line_style }: { marks: number[][]; size: number; style?: LineStyle }) {
   const stroke = Math.max(1.5, size / 16);
-  const height = size * 0.9;
-  const width = marks.length * 4 * size * LINE_SLOT + 2 * stroke;
+  const height = size * 1.0;
+  const slot = size * LINE_SLOT;
+  const syllables = marks.length * 4 * slot + (style.joined ? 0 : (marks.length - 1) * size * 0.4);
+  const width = syllables + 2 * stroke;
+  const middle = height / 2;
   return (
     <svg
       width={width}
@@ -153,7 +183,12 @@ export function Line({ marks, size }: { marks: number[][]; size: number }) {
       strokeLinejoin="round"
       fill="none"
     >
-      <path d={line_path(marks, size, height / 2, stroke)} />
+      {style.midline && <line x1={stroke} y1={middle} x2={width - stroke} y2={middle} />}
+      {style.joined ? (
+        <path d={line_path(marks, size, middle, stroke, style.curves)} />
+      ) : (
+        line_marks(marks, size, middle, stroke, style.curves)
+      )}
     </svg>
   );
 }
@@ -254,14 +289,25 @@ export function Period({ size }: { size: number }) {
 }
 
 // The settings the script playground keeps in this browser, read fresh, so popups follow it
-export type ScriptSettings = { stems: MarkLayout; line: MarkLayout; syllabics: SyllabicsSettings };
+export type ScriptSettings = {
+  stems: MarkLayout;
+  line: MarkLayout;
+  line_style: LineStyle;
+  syllabics: SyllabicsSettings;
+};
 
-export const SCRIPT_KEYS = { stems: "script_stems", line: "script_line", syllabics: "script_syllabics" } as const;
+export const SCRIPT_KEYS = {
+  stems: "script_stems",
+  line: "script_line",
+  line_style: "script_line_style",
+  syllabics: "script_syllabics",
+} as const;
 
 export function stored_script_settings(): ScriptSettings {
   return {
     stems: load(SCRIPT_KEYS.stems, default_stems),
     line: load(SCRIPT_KEYS.line, default_line),
+    line_style: load(SCRIPT_KEYS.line_style, default_line_style),
     syllabics: load(SCRIPT_KEYS.syllabics, default_syllabics),
   };
 }
@@ -275,7 +321,7 @@ export type ScriptRenderer = {
 
 // Each script, as a way to write a word's root IDs
 export function script_renderers(phonology: Phonology, settings: ScriptSettings, size: number): ScriptRenderer[] {
-  const { stems, line, syllabics } = settings;
+  const { stems, line, line_style, syllabics } = settings;
   return [
     {
       name: "Stems",
@@ -289,8 +335,10 @@ export function script_renderers(phonology: Phonology, settings: ScriptSettings,
     },
     {
       name: "Line",
-      note: "Each word one stroke along a line, with four marks per syllable: a dash or a loop, above or below",
-      render: (ids) => <Line marks={ids.map((id) => layout_values(id, phonology, line))} size={size} />,
+      note: "Four marks per syllable along a line: a dash or a loop, above or below",
+      render: (ids) => (
+        <Line marks={ids.map((id) => layout_values(id, phonology, line))} size={size} style={line_style} />
+      ),
     },
     {
       name: "Syllabics",
