@@ -43,6 +43,7 @@ import {
   type Spacing,
   default_stave_style,
   default_period,
+  STAVE_FORMS,
   STAVE_JOINS,
   CROSSING_SHAPES,
   LOOP_MARKS,
@@ -467,8 +468,8 @@ function SyllabicsControls({
 
 // Drawn again only when something it shows changes: of the stave style, only how a word is drawn,
 // not how a text is laid out
-const word_style = ({ join, curves, loop_mark, midline, midline_color, form, meander_weight }: StaveStyle) =>
-  JSON.stringify([join, curves, loop_mark, midline, midline_color, form, meander_weight]);
+const word_style = ({ join, curves, loop_mark, midline, midline_color, form, meander_weight, pen_space, pen_hairline, pen_gap }: StaveStyle) =>
+  JSON.stringify([join, curves, loop_mark, midline, midline_color, form, meander_weight, pen_space, pen_hairline, pen_gap]);
 const AllSyllables = React.memo(
   AllSyllablesGrid,
   (a, b) =>
@@ -571,7 +572,9 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
   const set_style = (change: Partial<StaveStyle>) => set_stave_style({ ...stave_style, ...change });
   const blocks = stems_style.join === "cursive" && stems_style.form === "block";
   const meander = stave_style.form === "meander";
-  const circles = !meander && stave_style.midline_shape === "circle";
+  const pen = stave_style.form === "pen";
+  const line = stave_style.form === "line";
+  const circles = line && stave_style.midline_shape === "circle";
   const subclause_circles = circles && stave_style.subclauses === "circles";
 
   const settings: ScriptSettings = { stems, stems_style, gates, gates_style, stave, stave_style, syllabics, period };
@@ -813,8 +816,15 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
     stave: (
       <div className="space-y-3">
         <div className="space-y-2">
-          <Row label="Form" hint="Along a ruled line, or as a meander: four bridges between five bars, top for above, bottom for below, flush for a dash, set in for a loop">
-            <Toggle options={["line", "meander"]} value={meander ? 1 : 0} on_change={(i) => set_style({ form: i === 1 ? "meander" : "line" })} />
+          <Row
+            label="Form"
+            hint="Along a ruled line; as a meander: four bridges between five bars, top for above, bottom for below, flush for a dash, set in for a loop; or as with a broad pen: a loop a thick block, a dash a hairline along its edge"
+          >
+            <Toggle
+              options={[...STAVE_FORMS]}
+              value={STAVE_FORMS.indexOf(stave_style.form)}
+              on_change={(i) => set_style({ form: STAVE_FORMS[i]! })}
+            />
           </Row>
           <Row label="Weight" hint="The meander's strokes, as a share of the pitch between bars" off={!meander && OFF_MEANDER}>
             <Slider
@@ -826,15 +836,45 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
               format={(v) => `${Math.round(v * 100)}%`}
             />
           </Row>
-          <Row label="Join" off={meander && OFF_LINE}>
+          <Row label="Space" hint="With the pen, the room between marks, as a share of a mark's width; neighbours on the same side close it" off={!pen && OFF_PEN}>
+            <Slider
+              value={stave_style.pen_space}
+              min={0}
+              max={0.6}
+              step={0.05}
+              on_change={(pen_space) => set_style({ pen_space })}
+              format={(v) => `${Math.round(v * 100)}%`}
+            />
+          </Row>
+          <Row label="Hairline" hint="With the pen, a dash's thickness, as a share of a mark's width" off={!pen && OFF_PEN}>
+            <Slider
+              value={stave_style.pen_hairline}
+              min={0.04}
+              max={0.4}
+              step={0.02}
+              on_change={(pen_hairline) => set_style({ pen_hairline })}
+              format={(v) => `${Math.round(v * 100)}%`}
+            />
+          </Row>
+          <Row label="Gap" hint="With the pen, the room between the marks above the midline and those below, as a share of a mark's width" off={!pen && OFF_PEN}>
+            <Slider
+              value={stave_style.pen_gap}
+              min={0.1}
+              max={1}
+              step={0.05}
+              on_change={(pen_gap) => set_style({ pen_gap })}
+              format={(v) => `${Math.round(v * 100)}%`}
+            />
+          </Row>
+          <Row label="Join" off={!line && OFF_LINE}>
             <Toggle options={[...STAVE_JOINS]} value={STAVE_JOINS.indexOf(stave_style.join)} on_change={(i) => set_style({ join: STAVE_JOINS[i]! })} />
           </Row>
           {stave_style.join === "cursive" ? (
-            <Row label="Turns" off={meander && OFF_LINE}>
+            <Row label="Turns" off={!line && OFF_LINE}>
               <Toggle options={["curves", "angles"]} value={stave_style.curves ? 0 : 1} on_change={(i) => set_style({ curves: i === 0 })} />
             </Row>
           ) : (
-            <Row label="Loop mark" off={meander && OFF_LINE}>
+            <Row label="Loop mark" off={!line && OFF_LINE}>
               <Toggle
                 options={[...LOOP_MARKS]}
                 value={LOOP_MARKS.indexOf(stave_style.loop_mark)}
@@ -842,7 +882,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
               />
             </Row>
           )}
-          <Row label="Midline" off={meander && OFF_LINE}>
+          <Row label="Midline" off={meander && OFF_NOT_MEANDER}>
             <Toggle options={["shown", "hidden"]} value={stave_style.midline ? 0 : 1} on_change={(i) => set_style({ midline: i === 0 })} />
             <label className="flex items-center gap-1" title="Midline colour">
               <input
@@ -868,7 +908,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
     ),
     circles: (
       <div className="space-y-2">
-        <Row label="Stave script" off={meander && OFF_LINE}>
+        <Row label="Stave script" off={!line && OFF_LINE}>
           <Toggle
             options={["along lines", "round circles"]}
             value={circles ? 1 : 0}
@@ -1160,6 +1200,8 @@ const SOLVERS = ["relax", "constraints", "flow"] as const;
 const OFF_CIRCLES = "Only round circles";
 const OFF_LINE = "Only the stave along a line";
 const OFF_MEANDER = "Only the stave as a meander";
+const OFF_PEN = "Only the stave with a pen";
+const OFF_NOT_MEANDER = "Not the stave as a meander";
 const OFF_BLOCKS = "Only cursive stems in blocks";
 const OFF_SUBCLAUSES = "Only with subclauses on circles";
 

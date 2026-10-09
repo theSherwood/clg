@@ -180,9 +180,13 @@ export type StaveStyle = {
   clearance: number; // on circles, the room kept clear between words on different rings, as a fraction of the size
   crossing_shape: CrossingShape; // with subclause circles, the mark where each starts, crossing its parent
   crossing_scale: number; // and its size, 1 being the usual
-  form: "line" | "meander"; // the stave along a line, or as a meander of five bars a syllable (see meander_lines)
+  form: (typeof STAVE_FORMS)[number]; // the stave along a line, as a meander of five bars a syllable (see meander_lines), or as with a broad pen (see pen_shapes)
   meander_weight: number; // the meander's strokes, as a share of the pitch between bars
+  pen_space: number; // with the pen, the room between marks, as a share of a mark's width
+  pen_hairline: number; // and its thin strokes, the dashes, as a share of a mark's width
+  pen_gap: number; // and the room between the marks above the midline and those below, likewise
 };
+export const STAVE_FORMS = ["line", "meander", "pen"] as const;
 export const CROSSING_SHAPES = ["circle", "square", "diamond"] as const;
 export type CrossingShape = (typeof CROSSING_SHAPES)[number];
 export const default_stave_style: StaveStyle = {
@@ -204,6 +208,9 @@ export const default_stave_style: StaveStyle = {
   crossing_scale: 1,
   form: "line",
   meander_weight: 0.6,
+  pen_space: 0.15,
+  pen_hairline: 0.12,
+  pen_gap: 0.35,
 };
 
 // Where a subclause's circle starts, crossing its parent's ring: a small open mark, drawn like the
@@ -1201,10 +1208,58 @@ function BarWord({
   );
 }
 
-// A word in the stave, along its line or as a meander, as the style asks
+// The stave as with a broad pen, a calligraphy: held flat, it draws down strokes thick and
+// strokes across thin. A loop is a down stroke as broad as the nib, a square block; a dash is a
+// stroke across, a hairline as long as the block is wide, along the block's edge nearest the
+// midline. So every mark is one width, and the marks above the midline hang their blocks up from a
+// line a little above it, and those below down from a line a little below. Marks stand a little
+// apart, but neighbours on the same side of the midline run on into each other, as if written in
+// one stroke across: two blocks into one long block, a block and a dash along the hairline. The
+// shapes are rectangles in a word's own space: x from its left, y down from the midline.
+export type PenShape = { x: number; y: number; w: number; h: number };
+export function pen_measures(size: number, style: StaveStyle) {
+  const unit = (size * 0.8) / (2 + style.pen_gap);
+  return { unit, space: style.pen_space * unit, hairline: style.pen_hairline * unit, gap: style.pen_gap * unit };
+}
+export function pen_shapes(marks: number[][], size: number, style: StaveStyle): { shapes: PenShape[]; width: number } {
+  const { unit, space, hairline, gap } = pen_measures(size, style);
+  const flat = marks.flat();
+  const below = (mark: number) => (mark & 1) > 0;
+  const height = (mark: number) => (mark & 2 ? unit : hairline);
+  // A shape on a mark's side, from x across w, h deep from the line it hangs from
+  const shape = (mark: number, x: number, w: number, h: number): PenShape => ({ x, w, h, y: below(mark) ? gap / 2 : -gap / 2 - h });
+  const shapes = flat.flatMap((mark, i) => {
+    const x = i * (unit + space);
+    const next = flat[i + 1];
+    const own = shape(mark, x, unit, height(mark));
+    // Run on into the next mark across the room between, as deep as the shallower of the two
+    if (next === undefined || below(next) !== below(mark)) return [own];
+    return [own, shape(mark, x + unit, space, Math.min(height(mark), height(next)))];
+  });
+  return { shapes, width: flat.length * unit + (flat.length - 1) * space };
+}
+
+export function PenStave({ marks, size, style }: { marks: number[][]; size: number; style: StaveStyle }) {
+  const { shapes, width } = pen_shapes(marks, size, style);
+  const height = size;
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="inline-block align-middle" fill="currentColor">
+      {style.midline && <line x1={0} y1={height / 2} x2={width} y2={height / 2} stroke={style.midline_color} strokeWidth={midline_width(size)} />}
+      <g transform={`translate(0 ${height / 2})`}>
+        {shapes.map((r, i) => (
+          <rect key={i} x={r.x} y={r.y} width={r.w} height={r.h} />
+        ))}
+      </g>
+    </svg>
+  );
+}
+
+// A word in the stave, along its line, as a meander or with a pen, as the style asks
 export function StaveWord({ marks, size, style }: { marks: number[][]; size: number; style: StaveStyle }) {
   return style.form === "meander" ? (
     <BarWord rows={marks} size={size} weight={style.meander_weight} strokes_of={meander_strokes} />
+  ) : style.form === "pen" ? (
+    <PenStave marks={marks} size={size} style={style} />
   ) : (
     <Stave marks={marks} size={size} style={style} />
   );
@@ -1340,7 +1395,7 @@ export function script_renderers(
 ): ScriptRenderer[] {
   const { stems, stems_style, gates, gates_style, stave, stave_style, syllabics, period } = settings;
   const meander = stave_style.form === "meander";
-  const circles = in_text && !meander && stave_style.midline_shape === "circle";
+  const circles = in_text && stave_style.form === "line" && stave_style.midline_shape === "circle";
   return [
     {
       name: "Stems",
@@ -1383,7 +1438,9 @@ export function script_renderers(
       settings: JSON.stringify([phonology, stave, stave_style, period, size, in_text]),
       note: meander
         ? "Four marks per syllable as bridges between five bars: at the top for above the line, the bottom for below; flush for a dash, set in for a loop"
-        : "Four marks per syllable along a ruled line: a dash or a loop, above or below",
+        : stave_style.form === "pen"
+          ? "Four marks per syllable, as with a broad pen: a loop a thick block, a dash a hairline along its edge, above or below the midline; neighbours on the same side run on into each other"
+          : "Four marks per syllable along a ruled line: a dash or a loop, above or below",
       render: (ids) => (
         <StaveWord
           marks={ids.map((id) => layout_values(id, phonology, stave))}

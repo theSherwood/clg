@@ -448,6 +448,33 @@ test("the 6×6 frets: one stroke from the top left corner to the top right, neve
   expect(new Set(FRET_HALF.map((p) => JSON.stringify(p))).size).toBe(16);
 });
 
+test("the stave with a pen: every mark one width, dashes along the blocks' inner edges, and neighbours on a side run together", async () => {
+  const { pen_shapes, pen_measures, default_stave_style } = await import("./script_drawings");
+  const style = default_stave_style;
+  const size = 40;
+  const { unit, space, hairline, gap } = pen_measures(size, style);
+  const drawings = new Set<string>();
+  for (const id of ids) {
+    const marks = layout_values(id, default_phonology, default_stave);
+    const { shapes, width } = pen_shapes([marks], size, style);
+    expect(width).toBeCloseTo(4 * unit + 3 * space, 9);
+    drawings.add(JSON.stringify(shapes));
+    marks.forEach((mark, i) => {
+      const below = (mark & 1) > 0;
+      const own = shapes.find((r) => Math.abs(r.x - i * (unit + space)) < 1e-9 && Math.abs(r.w - unit) < 1e-9)!;
+      expect(own.h).toBeCloseTo(mark & 2 ? unit : hairline, 9);
+      // Hung from a line a little off the midline, on the mark's side
+      if (below) expect(own.y).toBeCloseTo(gap / 2, 9);
+      else expect(own.y + own.h).toBeCloseTo(-gap / 2, 9);
+      // The room after a mark is filled only when the next is on the same side
+      const next = marks[i + 1];
+      const bridge = shapes.find((r) => Math.abs(r.x - (i * (unit + space) + unit)) < 1e-9 && Math.abs(r.w - space) < 1e-9);
+      expect(Boolean(bridge)).toBe(next !== undefined && (next & 1) === (mark & 1));
+    });
+  }
+  expect(drawings.size).toBe(256);
+});
+
 test("the fret joined: a word is one stroke, each syllable running on from the last along their tops", async () => {
   const { Gates, default_gates_style } = await import("./script_drawings");
   const { renderToStaticMarkup } = await import("react-dom/server");
