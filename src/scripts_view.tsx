@@ -521,6 +521,13 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
                   value={line_style.solver === "constraints" ? 1 : 0}
                   on_change={(i) => set_line_style({ ...line_style, solver: i === 1 ? "constraints" : "relax" })}
                 />
+                {line_style.solver === "constraints" && (
+                  <Toggle
+                    options={["rings full", "rings tight"]}
+                    value={line_style.ring_sizing === "tight" ? 1 : 0}
+                    on_change={(i) => set_line_style({ ...line_style, ring_sizing: i === 1 ? "tight" : "full" })}
+                  />
+                )}
                 {line_style.subclauses === "circles" && (
                   <Toggle
                     options={["hide clause words", "show clause words"]}

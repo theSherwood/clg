@@ -280,9 +280,23 @@ export function solve_circles({ rings: sentences, style, size, period_width }: S
 
   // Preferences: every ring as small as it can be, spaced evenly (or packed from its start when
   // condensed), and centred
+  // How rings are sized. "tight": every ring as small as it can be. "full": only the outermost
+  // sentence's ring is pulled in, squeezing the whole layout, and each ring inside it is pulled out
+  // to a band inside the one around it, so it uses all the room it has and its words can slide
+  // aside rather than push rings apart. Subclauses' circles are as small as they can be either way.
+  const full = style.ring_sizing !== "tight";
+  const outermost = order[0]!;
   const prefer = (strength: number) => {
+    if (full)
+      for (let k = 0; k + 1 < order.length; k++) {
+        const outer = order[k]!;
+        const inner = order[k + 1]!;
+        const room = q[outer.radius]! - Math.abs(q[outer.cy!]! - q[inner.cy!]!) - band;
+        if (room > q[inner.radius]!) q[inner.radius] = q[inner.radius]! + (room - q[inner.radius]!) * 0.3 * strength;
+      }
     for (const ring of all) {
-      q[ring.radius] = Math.max(low[ring.radius]!, q[ring.radius]! - size * 0.02 * strength);
+      if (!full || ring.parent || ring === outermost)
+        q[ring.radius] = Math.max(low[ring.radius]!, q[ring.radius]! - size * 0.02 * strength);
       const n = ring.items.length;
       const total = 2 * Math.PI * q[ring.radius]!;
       const widths = ring.items.map((it) => width_of(ring, it));

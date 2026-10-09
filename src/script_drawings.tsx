@@ -124,6 +124,7 @@ export type LineStyle = {
   subclauses: "inline" | "circles"; // on circles, whether subclauses get circles of their own
   clause_words: "hide" | "show"; // with subclause circles, whether <clause_start> and <clause_end> are written
   solver: "relax" | "constraints"; // how the circles are laid out: see circle_layout and circle_solver.ts
+  ring_sizing: "full" | "tight"; // with the constraint solver: inner rings as big as they can be, or every ring as small
 };
 export const default_line_style: LineStyle = {
   join: "cursive",
@@ -138,6 +139,7 @@ export const default_line_style: LineStyle = {
   subclauses: "inline",
   clause_words: "hide",
   solver: "relax",
+  ring_sizing: "full",
 };
 
 // The midline is ruled like lined paper: thinner than the writing, in its own colour
