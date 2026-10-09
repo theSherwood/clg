@@ -1,4 +1,4 @@
-import type { CircleItem, LineStyle, Point } from "./script_drawings";
+import type { CircleItem, LineStyle, Placement, Point } from "./script_drawings";
 
 // Lays the line script out round circles by constraint projection, as physics engines and
 // force-directed graph layouts do. The layout is a set of variables: each sentence's ring's radius
@@ -19,6 +19,9 @@ export type SolveOptions = {
   style: LineStyle;
   size: number;
   period_width: number;
+  // A layout with nothing overlapping to start from: then the solver improves it in steps, keeping
+  // each only if nothing overlaps and the whole is smaller, so the result can't be worse
+  start?: Placement;
 };
 
 export type SolvedItem = { item: CircleItem; x: number; width: number }; // x: the item's centre along its ring
@@ -58,7 +61,7 @@ const RING_FREE = 0.3;
 const FADE = 60;
 const SETTLE = 200;
 
-export function solve_circles({ rings: sentences, style, size, period_width }: SolveOptions): Solved {
+export function solve_circles({ rings: sentences, style, size, period_width, start }: SolveOptions): Solved {
   const gap = size * 0.25;
   const clear = size * 0.3; // kept clear either side of a subclause's circle on its parent's ring
   const band = size * 1.35; // between sentences' rings, at the least
@@ -99,12 +102,13 @@ export function solve_circles({ rings: sentences, style, size, period_width }: S
     const period_at_top = !parent && (even || style.period_position === "top") && "period" in (items.at(-1) ?? {});
     const ordered = period_at_top ? [items.at(-1)!, ...items.slice(0, -1)] : items;
     const length = natural(items);
+    const was = start?.get(items);
     const ring: Ring = {
       sentence,
       items: [],
       radius: parent
-        ? variable(Math.max(size * 0.5, length / (2 * Math.PI)), SUB_FREE, size * 0.5)
-        : variable(Math.max(size * 0.8, length / (2 * Math.PI)), RING_FREE, size * 0.8),
+        ? variable(was?.R ?? Math.max(size * 0.5, length / (2 * Math.PI)), SUB_FREE, size * 0.5)
+        : variable(was?.R ?? Math.max(size * 0.8, length / (2 * Math.PI)), RING_FREE, size * 0.8),
       cy: parent ? undefined : variable(0, RING_FREE),
       parent,
       chain,
@@ -113,7 +117,7 @@ export function solve_circles({ rings: sentences, style, size, period_width }: S
     let x = 0;
     ordered.forEach((item, i) => {
       const fixed = period_at_top && i === 0;
-      const it: Item = { item, x: variable(x, fixed ? 0 : 1) };
+      const it: Item = { item, x: variable(fixed ? 0 : (was?.centres.get(item) ?? x), fixed ? 0 : 1) };
       ring.items.push(it);
       x += gap + ("geometry" in item ? item.geometry.width : size);
       if ("clause" in item) it.child = build(item.clause, sentence, [...chain, item], { ring, item: it });
@@ -124,8 +128,9 @@ export function solve_circles({ rings: sentences, style, size, period_width }: S
   const tops = sentences.map((items, k) => build(items, k, []));
   // Sentences' rings start nested a band apart, the first outermost when growing in
   const order = style.grow === "in" ? tops : [...tops].reverse();
-  for (let k = order.length - 2; k >= 0; k--)
-    q[order[k]!.radius] = Math.max(q[order[k]!.radius]!, q[order[k + 1]!.radius]! + band);
+  if (!start)
+    for (let k = order.length - 2; k >= 0; k--)
+      q[order[k]!.radius] = Math.max(q[order[k]!.radius]!, q[order[k + 1]!.radius]! + band);
 
   // Where things are, from the variables
   const geometry = (ring: Ring): Geometry => {
@@ -177,40 +182,41 @@ export function solve_circles({ rings: sentences, style, size, period_width }: S
     return true;
   };
 
-  // Along each ring: items in order and a gap apart, round to the first again (so the ring is long
-  // enough), and the first item clear of the ring's top
-  const keep_order = () => {
-    for (const ring of all) {
-      const n = ring.items.length;
-      ring.items.forEach((a, i) => {
-        if (i + 1 < n) {
-          const b = ring.items[i + 1]!;
-          project([a.x, b.x], () => q[b.x]! - q[a.x]! - (width_of(ring, a) + width_of(ring, b)) / 2 - gap);
-        }
+  // The rules that hold the layout together, each a function to be at least zero and the variables
+  // it depends on. Along each ring: items in order and a gap apart, round to the first again (so
+  // the ring is long enough), and the first item clear of the ring's top. And each sentence's ring
+  // inside the one around it, a band apart even where their centres differ.
+  type Rule = { vars: number[]; f: () => number };
+  const rules: Rule[] = [];
+  for (const ring of all) {
+    const n = ring.items.length;
+    ring.items.forEach((a, i) => {
+      if (i + 1 < n) {
+        const b = ring.items[i + 1]!;
+        rules.push({ vars: [a.x, b.x], f: () => q[b.x]! - q[a.x]! - (width_of(ring, a) + width_of(ring, b)) / 2 - gap });
+      }
+    });
+    const first = ring.items[0]!;
+    const last = ring.items[n - 1]!;
+    if (n > 1)
+      rules.push({
+        vars: [first.x, last.x, ring.radius],
+        f: () => q[first.x]! + 2 * Math.PI * q[ring.radius]! - q[last.x]! - (width_of(ring, first) + width_of(ring, last)) / 2 - gap,
       });
-      const first = ring.items[0]!;
-      const last = ring.items[n - 1]!;
-      if (n > 1)
-        project(
-          [first.x, last.x, ring.radius],
-          () => q[first.x]! + 2 * Math.PI * q[ring.radius]! - q[last.x]! - (width_of(ring, first) + width_of(ring, last)) / 2 - gap,
-        );
-      else project([ring.radius], () => 2 * Math.PI * q[ring.radius]! - width_of(ring, first) - gap);
-      if (!ring.period_at_top) project([first.x], () => q[first.x]! - width_of(ring, first) / 2 - (ring.parent ? gap : gap / 2));
-    }
-  };
-
-  // Each sentence's ring inside the one around it, a band apart even where their centres differ
-  const keep_nested = () => {
-    for (let k = 0; k + 1 < order.length; k++) {
-      const outer = order[k]!;
-      const inner = order[k + 1]!;
-      project(
-        [outer.radius, inner.radius, outer.cy!, inner.cy!],
-        () => q[outer.radius]! - q[inner.radius]! - Math.abs(q[outer.cy!]! - q[inner.cy!]!) - band,
-      );
-    }
-  };
+    else rules.push({ vars: [ring.radius], f: () => 2 * Math.PI * q[ring.radius]! - width_of(ring, first) - gap });
+    if (!ring.period_at_top)
+      rules.push({ vars: [first.x], f: () => q[first.x]! - width_of(ring, first) / 2 - (ring.parent ? gap : gap / 2) });
+  }
+  for (let k = 0; k + 1 < order.length; k++) {
+    const outer = order[k]!;
+    const inner = order[k + 1]!;
+    rules.push({
+      vars: [outer.radius, inner.radius, outer.cy!, inner.cy!],
+      f: () => q[outer.radius]! - q[inner.radius]! - Math.abs(q[outer.cy!]! - q[inner.cy!]!) - band,
+    });
+  }
+  const keep_rules = () => rules.forEach((r) => project(r.vars, r.f));
+  const rules_hold = () => rules.every((r) => r.f() >= -size * 0.01);
 
   // A word's footprint: discs along it, wide enough to cover its marks above and below the line
   type Disc = { ring: Ring; it: Item; along: number; p: Point; index: number };
@@ -232,27 +238,36 @@ export function solve_circles({ rings: sentences, style, size, period_width }: S
   // Pairs of discs on different rings that overlap, found through a grid as big as a disc's reach
   const overlapping = (all_discs: Disc[]): [Disc, Disc][] => {
     const cell = 2 * footprint;
-    // Cells keyed by a number: column and row, each offset to stay positive
-    const key = (gx: number, gy: number) => (gx + 32768) * 65536 + (gy + 32768);
-    const grid = new Map<number, Disc[]>();
-    for (const d of all_discs) {
-      const k = key(Math.floor(d.p[0] / cell), Math.floor(d.p[1] / cell));
+    // Cells keyed by a small whole number (column and row, each offset to stay positive), which
+    // keeps the lookups fast
+    const key = (gx: number, gy: number) => (gx + 2048) * 4096 + (gy + 2048);
+    const grid = new Map<number, number[]>();
+    const cells = new Int32Array(all_discs.length * 2);
+    all_discs.forEach((d, i) => {
+      const gx = Math.floor(d.p[0] / cell);
+      const gy = Math.floor(d.p[1] / cell);
+      cells[2 * i] = gx;
+      cells[2 * i + 1] = gy;
+      const k = key(gx, gy);
       const bucket = grid.get(k);
-      if (bucket) bucket.push(d);
-      else grid.set(k, [d]);
-    }
+      if (bucket) bucket.push(i);
+      else grid.set(k, [i]);
+    });
     const pairs: [Disc, Disc][] = [];
     const reach = (2 * footprint) ** 2;
-    for (const a of all_discs) {
-      const gx = Math.floor(a.p[0] / cell);
-      const gy = Math.floor(a.p[1] / cell);
+    for (let i = 0; i < all_discs.length; i++) {
+      const a = all_discs[i]!;
+      const gx = cells[2 * i]!;
+      const gy = cells[2 * i + 1]!;
       for (let dx = -1; dx <= 1; dx++)
         for (let dy = -1; dy <= 1; dy++) {
           const bucket = grid.get(key(gx + dx, gy + dy));
           if (!bucket) continue;
-          for (const b of bucket) {
+          for (const j of bucket) {
             // Each pair once, and only across rings
-            if (a.index >= b.index || a.ring === b.ring) continue;
+            if (j <= i) continue;
+            const b = all_discs[j]!;
+            if (a.ring === b.ring) continue;
             const ex = a.p[0] - b.p[0];
             const ey = a.p[1] - b.p[1];
             if (ex * ex + ey * ey < reach) pairs.push([a, b]);
@@ -317,23 +332,80 @@ export function solve_circles({ rings: sentences, style, size, period_width }: S
   // The preferences fade out over the first rounds, then the rules alone settle it, for a while.
   // Projection can trade one push for another and never quite settle, in which case some overlaps
   // are left, and the caller falls back to another layout.
+  // A round of settling: the rules, then words apart, twice. Returns how many overlaps the last
+  // pass found.
   const settle = () => {
-    keep_order();
-    keep_nested();
-    let n = keep_apart();
-    keep_nested();
-    n += keep_apart();
-    keep_order();
+    keep_rules();
+    keep_apart();
+    keep_rules();
+    const n = keep_apart();
+    keep_rules();
     return n;
   };
-  const fade = FADE;
   let rounds = 0;
   let left = 0;
-  for (; rounds < fade + SETTLE; rounds++) {
-    const strength = Math.max(0, 1 - rounds / fade);
-    if (strength > 0) prefer(strength);
-    left = settle();
-    if (strength === 0 && left === 0) break;
+  if (!start) {
+    for (; rounds < FADE + SETTLE; rounds++) {
+      const strength = Math.max(0, 1 - rounds / FADE);
+      if (strength > 0) prefer(strength);
+      left = settle();
+      if (strength === 0 && left === 0) break;
+    }
+  } else {
+    // From a layout with nothing overlapping: try a move, let the rules settle it, and keep it only
+    // if everything holds, nothing overlaps and the whole is smaller; otherwise undo it and try a
+    // smaller one. Every kept state is checked, so the result is never worse than the start.
+    const clean = () => rules_hold() && overlapping(discs()).length === 0;
+    const settles = (most: number) => {
+      for (let r = 0; r < most; r++) {
+        rounds++;
+        // Only worth checking it's clean once the last pass found nothing overlapping
+        if (settle() === 0 && clean()) return true;
+      }
+      return clean();
+    };
+    // How far the whole reaches from the centre, either way: the bounding box to squeeze
+    const extent = () => {
+      let e = 0;
+      for (const d of discs()) e = Math.max(e, Math.abs(d.p[0]) + footprint, Math.abs(d.p[1]) + footprint);
+      if (style.midline)
+        for (const ring of all) {
+          const g = geometry(ring);
+          e = Math.max(e, Math.abs(g.cx) + g.R, Math.abs(g.cy) + g.R);
+        }
+      return e;
+    };
+    if (!clean()) settles(60);
+    let best = q.slice();
+    let best_extent = clean() ? extent() : Infinity;
+    const keep = () => {
+      best = q.slice();
+      best_extent = extent();
+    };
+    const undo = () => best.forEach((v, i) => (q[i] = v));
+    // Squeeze: pull the outermost ring in (or every ring, when tight), with inner rings filling
+    // the room they have when full
+    let step = size * 2;
+    for (let tries = 0; tries < 40 && step > size * 0.1; tries++) {
+      if (full) q[outermost.radius] = q[outermost.radius]! - step;
+      else for (const ring of order) q[ring.radius] = Math.max(low[ring.radius]!, q[ring.radius]! - step);
+      if (settles(12) && extent() < best_extent - size * 0.01) {
+        keep();
+        step *= 1.5;
+      } else {
+        undo();
+        step /= 2;
+      }
+    }
+    // Then even out the spacing along rings (or pack it, when condensed), and fill inner rings,
+    // where that stays clean and no bigger
+    for (let pass = 0; pass < 3; pass++) {
+      prefer(1);
+      q[outermost.radius] = best[outermost.radius]!;
+      if (settles(12) && extent() <= best_extent + size * 0.01) keep();
+      else undo();
+    }
+    undo();
   }
 
   left = overlapping(discs()).length;

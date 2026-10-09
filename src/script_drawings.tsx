@@ -425,6 +425,10 @@ export function circle_sentences(
 // to the ring it's on (the same ring as another footprint when ring is the same array)
 type Footprint = { points: Point[]; sentence: number; chain: CircleItem[]; ring: CircleItem[]; item: CircleItem };
 
+// Where a layout put things, for another to start from: each ring (by its list of items), its
+// radius and each item's centre along it
+export type Placement = Map<CircleItem[], { R: number; centres: Map<CircleItem, number> }>;
+
 type CircleLayoutArgs = {
   tokens: ScriptToken[];
   phonology: Phonology;
@@ -450,18 +454,7 @@ export function LineCircles(args: CircleLayoutArgs) {
 // The constraint solver's layout where it settles with nothing overlapping and comes out smaller,
 // and otherwise the relaxation's, which always settles
 export function best_layout(args: CircleLayoutArgs) {
-  const relaxed = circle_layout(args);
-  const solved = constraint_layout(args);
-  if (!relaxed || !solved) return relaxed ?? solved;
-  return solved.overlaps === 0 && solved.extent < relaxed.extent
-    ? { ...solved, solver: "constraints" as const }
-    : { ...relaxed, solver: "relax" as const };
-}
-
-// The circles laid out by the constraint solver (circle_solver.ts), drawn round (0, 0), with how
-// far it all reaches, how many rounds it took and how many overlaps were left
-export function constraint_layout({ tokens, phonology, layout, style, period, size, wrap }: CircleLayoutArgs) {
-  const stroke = Math.max(1.5, size / 16);
+  const { tokens, phonology, layout, style, size } = args;
   const rings = circle_sentences(
     tokens,
     (ids) => line_geometry(ids.map((id) => layout_values(id, phonology, layout)), size, style),
@@ -469,9 +462,36 @@ export function constraint_layout({ tokens, phonology, layout, style, period, si
     style.subclauses === "circles",
     style.clause_words === "show",
   );
+  const relaxed = circle_layout(args, rings);
+  if (!relaxed) return undefined;
+  // The solver starts from the relaxation's layout, and keeps only improvements on it
+  const solved = constraint_layout(args, rings, relaxed.placed);
+  if (!solved) return relaxed;
+  return solved.overlaps === 0 && solved.extent < relaxed.extent
+    ? { ...solved, solver: "constraints" as const }
+    : { ...relaxed, solver: "relax" as const };
+}
+
+// The circles laid out by the constraint solver (circle_solver.ts), drawn round (0, 0), with how
+// far it all reaches, how many rounds it took and how many overlaps were left
+export function constraint_layout(
+  { tokens, phonology, layout, style, period, size, wrap }: CircleLayoutArgs,
+  given?: CircleItem[][],
+  start?: Placement,
+) {
+  const stroke = Math.max(1.5, size / 16);
+  const rings =
+    given ??
+    circle_sentences(
+      tokens,
+      (ids) => line_geometry(ids.map((id) => layout_values(id, phonology, layout)), size, style),
+      size,
+      style.subclauses === "circles",
+      style.clause_words === "show",
+    );
   if (rings.length === 0) return undefined;
   const period_width = size * 0.3 * period.scale;
-  const solved = solve_circles({ rings, style, size, period_width });
+  const solved = solve_circles({ rings, style, size, period_width, start });
   const step = size * 0.08; // straight lines are cut this fine so they bend with the ring
   const nodes: React.ReactNode[] = [];
   let extent = 0;
@@ -540,15 +560,20 @@ export function constraint_layout({ tokens, phonology, layout, style, period, si
 
 // The circles laid out round (0, 0): what to draw, how far it reaches, and how many rounds of
 // making room it took and how many overlaps were left (none, unless it gave up)
-export function circle_layout({ tokens, phonology, layout, style, period, size, wrap }: CircleLayoutArgs) {
+export function circle_layout(
+  { tokens, phonology, layout, style, period, size, wrap }: CircleLayoutArgs,
+  given?: CircleItem[][],
+) {
   const stroke = Math.max(1.5, size / 16);
-  const rings = circle_sentences(
-    tokens,
-    (ids) => line_geometry(ids.map((id) => layout_values(id, phonology, layout)), size, style),
-    size,
-    style.subclauses === "circles",
-    style.clause_words === "show",
-  );
+  const rings =
+    given ??
+    circle_sentences(
+      tokens,
+      (ids) => line_geometry(ids.map((id) => layout_values(id, phonology, layout)), size, style),
+      size,
+      style.subclauses === "circles",
+      style.clause_words === "show",
+    );
   if (rings.length === 0) return undefined;
 
   const gap = size * 0.25;
@@ -615,6 +640,8 @@ export function circle_layout({ tokens, phonology, layout, style, period, size, 
 
     const nodes: React.ReactNode[] = [];
     const footprints: Footprint[] = [];
+    // Where each ring's items were put: its radius, and each item's centre along it
+    const placed: Placement = new Map();
     let extent = 0; // how far anything reaches from the centre
     const reach = (x: number, y: number, by = 0) => (extent = Math.max(extent, Math.hypot(x, y) + by));
 
@@ -633,6 +660,8 @@ export function circle_layout({ tokens, phonology, layout, style, period, size, 
       const circumference = 2 * Math.PI * R;
       const length = length_of(items, R);
       const ring_gap = style.spacing === "even" ? gap + (circumference - length) / items.length : gap;
+      const centres = new Map<CircleItem, number>();
+      placed.set(items, { R, centres });
       // With the period at the top, the sentence starts just clockwise of it and any room to spare is
       // left between its last word and the period; otherwise it starts at the top and the period
       // follows its last word
@@ -672,6 +701,7 @@ export function circle_layout({ tokens, phonology, layout, style, period, size, 
       items.forEach((item, i) => {
         const width = width_of(item, R);
         x += slide.get(item) ?? 0;
+        centres.set(item, "period" in item && period_at_top ? circumference : x + width / 2);
         if ("geometry" in item) {
           const g = item.geometry;
           const word = (
@@ -726,7 +756,7 @@ export function circle_layout({ tokens, phonology, layout, style, period, size, 
     rings.forEach((items, k) => draw_ring(items, 0, 0, radii[k]!, -Math.PI / 2, k, [], `${k}`));
     // How much room each sentence's ring has to spare
     const spare = rings.map((items, k) => 2 * Math.PI * radii[k]! - length_of(items, radii[k]!));
-    return { nodes, footprints, extent, spare };
+    return { nodes, footprints, extent, spare, placed };
   };
 
   // Two footprints on different rings overlap if any of their discs do, by as much as the deepest
@@ -830,7 +860,7 @@ export function circle_layout({ tokens, phonology, layout, style, period, size, 
     found = overlaps(result.footprints);
   }
   const left = found.length;
-  return { nodes: result.nodes, extent: result.extent, rounds, overlaps: left };
+  return { nodes: result.nodes, extent: result.extent, rounds, overlaps: left, placed: result.placed };
 }
 
 // A word in cursive stems. The stems are one stroke for the whole word: the pen writes one stem
