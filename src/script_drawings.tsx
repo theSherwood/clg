@@ -41,9 +41,10 @@ export function load<T>(key: string, fallback: T): T {
 export const STEM_JOINS = ["separate", "cursive"] as const;
 // With cursive stems: curve, how far their joins and U-turns are rounded, from 0 (square) to 1;
 // routing, how a syllable's rungs are joined into strokes (see stem_routes.ts); and width, how
-// wide each syllable's glyph is: as tight as its turns allow, the same either side of its stem, or
-// the same for every syllable (monospace, with a glyph's width between words too)
-export const STEM_WIDTHS = ["tight", "balanced", "mono"] as const;
+// wide each syllable's glyph is: as tight as its turns allow; the same either side of its stem; or
+// the same for every syllable (fixed: two units each, with a unit between words). Balanced and
+// fixed glyphs fill out their width: see route_points.
+export const STEM_WIDTHS = ["tight", "balanced", "fixed"] as const;
 export type StemsStyle = { join: (typeof STEM_JOINS)[number]; curve: number; width: (typeof STEM_WIDTHS)[number] } & StemRouting;
 export const default_stems_style: StemsStyle = { join: "cursive", curve: 1, width: "tight", ...default_stem_routing };
 
@@ -711,44 +712,67 @@ function widest_extra(routing: StemRouting): number {
   return widest.get(key)!;
 }
 
-// How far a syllable's glyph reaches out either side of its usual column, by the width setting
+// How far a syllable's glyph reaches out either side of its usual column, by the width setting,
+// and how deep each side is filled out to (none when tight)
 function glyph_extra(strokes: Step[][], style: Pick<StemsStyle, "width"> & StemRouting) {
   const own = route_extra(strokes);
-  if (style.width === "tight") return own;
-  const both = style.width === "mono" ? widest_extra(style) : Math.max(own.left, own.right);
-  return { left: both, right: both };
+  if (style.width !== "balanced" && style.width !== "fixed") return { ...own, fill: 0 };
+  const both = style.width === "fixed" ? widest_extra(style) : Math.max(own.left, own.right);
+  const deepest = Math.max(0, ...strokes.flat().map((s) => s.depth ?? 0));
+  return { left: both, right: both, fill: style.width === "fixed" ? both + 1 : deepest };
 }
 
-// A cursive stem glyph's width when every one is the same (monospace)
-export function mono_glyph_width(size: number, style: StemsStyle): number {
+// A cursive stem glyph's width when every one is the same (fixed), two units of the grid a fixed
+// text is set on, a space between words being one
+export function fixed_glyph_width(size: number, style: StemsStyle): number {
   const { column, level } = stem_measures(size);
   return column + 2 * widest_extra(style) * level;
 }
 
 // A route's strokes as lines of horizontal and vertical runs, for rounding. Each U-turn reaches out
 // past the rungs' ends by a bulge, and a level further for each depth it's nested or crossed at.
+// With fill, each side of the glyph is filled out to that depth: a turn with none further out on
+// its side moves out to it, and a free rung end (a nub) that no turn wraps round reaches out as
+// far; what's inside another turn stays put, so nothing runs into it.
 function route_points(
   rungs: Rung[],
   strokes: Step[][],
   x: number,
   top: number,
   { row_height, reach, bulge, level }: { row_height: number; reach: number; bulge: number; level: number },
+  fill = 0,
 ): Point[][] {
   const y = (r: number) => top + (rungs[r]!.row + 0.5) * row_height;
-  const end = (side: number) => x + side * reach; // a rung's end on a side, or at the stem for 0
+  const out_to = (depth: number) => reach + bulge + (depth - 1) * level; // how far out a turn at a depth is
+  // Every turn, with the rows it spans and how deep it is
+  const turns = strokes.flatMap((steps) =>
+    steps.slice(1).map((step, i) => {
+      const [a, b] = [rungs[steps[i]!.rung]!.row, rungs[step.rung]!.row];
+      return { step, side: step.from, lo: Math.min(a, b), hi: Math.max(a, b), depth: step.depth ?? 1 };
+    }),
+  );
+  const outermost = (t: (typeof turns)[number]) =>
+    !turns.some((u) => u !== t && u.side === t.side && u.lo < t.hi && t.lo < u.hi && u.depth > t.depth);
+  const wrapped = (side: number, row: number) => turns.some((t) => t.side === side && t.lo < row && row < t.hi);
+  const depth_of = new Map(turns.map((t) => [t.step, fill > 0 && outermost(t) ? Math.max(t.depth, fill) : t.depth]));
+  // A rung's end on a side (or at the stem, for 0); a free one reaching out to the fill
+  const end = (side: number, row: number, free: boolean) =>
+    x + side * (free && side !== 0 && fill > 0 && !wrapped(side, row) ? out_to(fill) : reach);
   return strokes.map((steps) =>
-    steps.flatMap(({ rung, from, to, depth = 1 }, i): Point[] => {
+    steps.flatMap((step, i): Point[] => {
+      const { rung, from, to } = step;
+      const row = rungs[rung]!.row;
       // The first rung starts where the pen comes in; each after it starts with the U-turn from
       // the rung before, out past both their ends and back in
-      const out = x + from * (reach + bulge + (depth - 1) * level);
+      const out = x + from * out_to(depth_of.get(step) ?? 1);
       const lead: Point[] =
         i === 0
-          ? [[end(from), y(rung)]]
+          ? [[end(from, row, true), y(rung)]]
           : [
               [out, y(steps[i - 1]!.rung)],
               [out, y(rung)],
             ];
-      return [...lead, [end(to), y(rung)]];
+      return [...lead, [end(to, row, i === steps.length - 1), y(rung)]];
     }),
   );
 }
@@ -888,7 +912,7 @@ export function CursiveStems({
     >
       <path d={rounded_path(stems, curve, { horizontal: column / 2, vertical: dip })} />
       {routes.flatMap(({ rungs, strokes }, i) =>
-        route_points(rungs, strokes, middle(i), pad, measures).map((points, j) => (
+        route_points(rungs, strokes, middle(i), pad, measures, extras[i]!.fill).map((points, j) => (
           <path key={`${i}-${j}`} d={rounded_path(points, curve, { horizontal: bulge, vertical: Infinity })} />
         )),
       )}
@@ -988,7 +1012,7 @@ export function script_renderers(
           ? "A stem per syllable, with a rung for each mark; a word's stems joined into one stroke, its rungs by U-turns between their outer ends"
           : "A stem per syllable, with a rung for each mark",
       render: (ids) => <StemsWord rows={ids.map((id) => layout_values(id, phonology, stems))} size={size} style={stems_style} />,
-      word_gap: stems_style.join === "cursive" && stems_style.width === "mono" ? mono_glyph_width(size, stems_style) : undefined,
+      word_gap: stems_style.join === "cursive" && stems_style.width === "fixed" ? fixed_glyph_width(size, stems_style) / 2 : undefined,
     },
     {
       name: "Stave",

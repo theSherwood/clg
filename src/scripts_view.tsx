@@ -552,11 +552,11 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
         </Row>
         <Row
           label="Width"
-          hint="Each glyph as narrow as its turns allow; as wide either side of its stem; or every glyph as wide as the widest, with a glyph's width between words"
+          hint="Each glyph as narrow as its turns allow; as wide either side of its stem; or every glyph the same, two units wide with a unit between words. Balanced and fixed glyphs stretch their outer turns and free rung ends to fill their width."
           off={stems_style.join !== "cursive" && "Only cursive stems"}
         >
           <Toggle
-            options={["tight", "balanced", "monospace"]}
+            options={["tight", "balanced", "fixed"]}
             value={STEM_WIDTHS.indexOf(stems_style.width)}
             on_change={(i) => set_stems_style({ ...stems_style, width: STEM_WIDTHS[i]! })}
           />

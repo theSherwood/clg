@@ -255,32 +255,39 @@ test("cursive stem routes: every rung once, only turns the rules allow, and the 
   expect(all_routes(rungs_of([3, 3, 3, 3]), { turns: "clear", direction: "any", prefer: "short" }).length).toBe(17);
 });
 
-test("cursive stem widths: monospace glyphs are all one width, balanced ones never narrower than tight", async () => {
+test("cursive stem widths: fixed glyphs are all one width, balanced ones never narrower than tight", async () => {
   const { renderToStaticMarkup } = await import("react-dom/server");
   const { createElement } = await import("react");
-  const { CursiveStems, mono_glyph_width, default_stems_style } = await import("./script_drawings");
+  const { CursiveStems, fixed_glyph_width, default_stems_style } = await import("./script_drawings");
   const { default_stems } = await import("./scripts");
-  const width_of = (ids: number[], width: "tight" | "balanced" | "mono", turns: "clear" | "cross") =>
-    Number(
-      /width="([\d.]+)"/.exec(
-        renderToStaticMarkup(
-          createElement(CursiveStems, {
-            rows: ids.map((id) => layout_values(id, default_phonology, default_stems)),
-            size: 40,
-            routing: { ...default_stems_style, turns },
-            width,
-          }),
-        ),
-      )![1],
+  const markup = (ids: number[], width: "tight" | "balanced" | "fixed", turns: "clear" | "cross") =>
+    renderToStaticMarkup(
+      createElement(CursiveStems, {
+        rows: ids.map((id) => layout_values(id, default_phonology, default_stems)),
+        size: 40,
+        routing: { ...default_stems_style, turns },
+        width,
+      }),
     );
+  const width_of = (ids: number[], width: "tight" | "balanced" | "fixed", turns: "clear" | "cross") => {
+    const svg = markup(ids, width, turns);
+    const total = Number(/width="([\d.]+)"/.exec(svg)![1]);
+    // Everything drawn stays inside the glyph: the paths' points alternate x and y
+    for (const [, d] of svg.matchAll(/ d="([^"]+)"/g)) {
+      const xs = d!.match(/-?[\d.]+(e-?\d+)?/g)!.map(Number).filter((_, i) => i % 2 === 0);
+      expect(Math.min(...xs)).toBeGreaterThanOrEqual(-1e-6);
+      expect(Math.max(...xs)).toBeLessThanOrEqual(total + 1e-6);
+    }
+    return total;
+  };
   for (const turns of ["clear", "cross"] as const) {
-    const glyph = mono_glyph_width(40, { ...default_stems_style, turns });
+    const glyph = fixed_glyph_width(40, { ...default_stems_style, turns });
     for (let id = 0; id < 256; id++) {
-      expect(width_of([id], "mono", turns)).toBeCloseTo(glyph, 6);
+      expect(width_of([id], "fixed", turns)).toBeCloseTo(glyph, 6);
       expect(width_of([id], "balanced", turns)).toBeGreaterThanOrEqual(width_of([id], "tight", turns) - 1e-9);
       expect(width_of([id], "balanced", turns)).toBeLessThanOrEqual(glyph + 1e-9);
     }
     // Words of several syllables: so many glyphs wide
-    for (const word of [[3, 77, 200], [255, 0, 128, 64], [170, 85]]) expect(width_of(word, "mono", turns)).toBeCloseTo(word.length * glyph, 6);
+    for (const word of [[3, 77, 200], [255, 0, 128, 64], [170, 85]]) expect(width_of(word, "fixed", turns)).toBeCloseTo(word.length * glyph, 6);
   }
 });
