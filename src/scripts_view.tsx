@@ -17,7 +17,10 @@ import {
   default_stave,
   default_stems,
   default_gates,
+  FRET_TALL,
+  FRET_WIDE,
   FRETS,
+  type GridPoint,
   GATES,
   default_syllabics,
   script_tokens,
@@ -46,6 +49,7 @@ import {
   type GatesStyle,
   default_gates_style,
   GATES_FORMS,
+  GATES_JOINS,
   GATES_SPACINGS,
   StemsWord,
   StemRoute,
@@ -178,6 +182,50 @@ function Written({
         ),
       )}
     </div>
+  );
+}
+
+// The fret's four paths through a tall block (down the left) and a wide one (along the bottom), by
+// value, each from where the stroke comes in, marked with a dot
+function FretLegend() {
+  const draw = (path: GridPoint[], w: number, h: number) => {
+    const p = 7;
+    const at = ([x, y]: GridPoint) => [x * p + 3, y * p + 3] as const;
+    return (
+      <svg width={(w - 1) * p + 6} height={(h - 1) * p + 6} className="text-gray-800">
+        <polyline points={path.map((q) => at(q).join(",")).join(" ")} fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="square" />
+        <circle cx={at(path[0]!)[0]} cy={at(path[0]!)[1]} r={2.5} className="fill-indigo-500" />
+      </svg>
+    );
+  };
+  return (
+    <table className="mb-2">
+      <tbody>
+        <tr>
+          <td />
+          {FRETS.map((f) => (
+            <td key={f} className="px-2 text-center text-gray-500">
+              {f}
+            </td>
+          ))}
+        </tr>
+        {(
+          [
+            ["tall", FRET_TALL, 3, 4],
+            ["wide", FRET_WIDE, 4, 3],
+          ] as const
+        ).map(([name, paths, w, h]) => (
+          <tr key={name}>
+            <td className="pr-2 text-gray-500">{name}</td>
+            {paths.map((path, i) => (
+              <td key={i} className="px-2 py-1 text-center">
+                {draw(path, w, h)}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
@@ -682,6 +730,17 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
               on_change={(i) => set_gates_style({ ...gates_style, spacing: GATES_SPACINGS[i]! })}
             />
           </Row>
+          <Row
+            label="Joins"
+            hint="Each syllable's stroke runs on from the last's along their tops, so a word is one stroke; or each syllable a stroke of its own"
+            off={gates_style.form !== "fret" && "Only the fret"}
+          >
+            <Toggle
+              options={[...GATES_JOINS]}
+              value={GATES_JOINS.indexOf(gates_style.joins)}
+              on_change={(i) => set_gates_style({ ...gates_style, joins: GATES_JOINS[i]! })}
+            />
+          </Row>
           <Row label="Weight" hint="The strokes, as a share of the pitch between them">
             <Slider
               value={gates_style.weight}
@@ -695,10 +754,13 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
         </div>
         <div>
           {gates_style.form === "fret" ? (
-            <p className="text-gray-500 mb-1.5">
-              A block per mark, clockwise from the top left; read from where the stroke comes in, all along the block or across it with a knot first, in the
-              middle or last
-            </p>
+            <>
+              <p className="text-gray-500 mb-1.5">
+                A block per mark, in the stroke's order: down the left, along the bottom, up the right, and, past the centre, along the top. Each value is
+                one of a block's four paths; the right and top blocks' are the left and bottom ones' upside down.
+              </p>
+              <FretLegend />
+            </>
           ) : (
             <p className="text-gray-500 mb-1.5">A gate per gap between the five bars, left to right</p>
           )}

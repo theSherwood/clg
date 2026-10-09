@@ -94,28 +94,51 @@ export function gate_lines(gates: number[]): GridLine[] {
   ];
 }
 
-// Gates as a fret, in one stroke: a 7×7 grid of points, and a path through every one of them but
-// the centre, so every syllable fills its square. The square is four blocks of 4×3 points turned a
-// quarter turn each, clockwise from the top left, round the centre; the stroke goes through each
-// block from the corner nearest the last block to the corner by the next. A 4×3 block has exactly
-// four paths through every point between those corners, and no smaller block has as many, so the
-// four blocks give exactly 4⁴ = 256 drawings, and 7×7 is the smallest such square. In a block,
-// read from where the stroke comes in, the paths are: all along it, three runs its length; or
-// across it in runs of three, with a knot along it (two short runs) at its first two points, its
-// middle two, or its last two. A mark each, a block each, the stroke starting at the left just
-// above the middle and ending just below.
-export const FRETS = ["along", "first", "middle", "last"] as const;
+// Gates as a fret, in one stroke: a path through every point of a 7×7 grid, from the top left
+// corner to the top right, so every syllable fills its square and a word's syllables can be joined
+// into one stroke along their tops. The square is four blocks round the centre point, in a U: one 3
+// wide and 4 tall down the left, one 4 wide and 3 tall along the bottom, one tall up the right, then
+// the centre, then one wide along the top and out at the top right corner:
+//   0 0 0 3 3 3 3
+//   0 0 0 3 3 3 3
+//   0 0 0 3 3 3 3
+//   0 0 0 · 2 2 2
+//   1 1 1 1 2 2 2
+//   1 1 1 1 2 2 2
+//   1 1 1 1 2 2 2
+// The stroke comes into each block at a corner and leaves at a corner by the next: a tall block's
+// two corners on the same long side, a wide block's opposite. Between those corners, each block has
+// exactly four paths through every one of its points, and no smaller block has as many, so the
+// four blocks give exactly 4⁴ = 256 drawings; a mark each, in the order the stroke takes them. Of
+// all the ways to tile a 7×7 grid with four such blocks, this U and its mirror image are the only
+// ones that chain from one top corner to the other. A value is the same path in both tall blocks
+// and in both wide ones, the second of each the first turned upside down; value A is the path of
+// parallel runs, across a tall block and along a wide one.
+export const FRETS = ["A", "B", "C", "D"] as const;
 export type GridPoint = [number, number];
-const FRET_BLOCK: GridPoint[][] = [
-  [[0, 2], [1, 2], [2, 2], [3, 2], [3, 1], [2, 1], [1, 1], [0, 1], [0, 0], [1, 0], [2, 0], [3, 0]],
-  [[0, 2], [1, 2], [1, 1], [0, 1], [0, 0], [1, 0], [2, 0], [2, 1], [2, 2], [3, 2], [3, 1], [3, 0]],
-  [[0, 2], [0, 1], [0, 0], [1, 0], [2, 0], [2, 1], [1, 1], [1, 2], [2, 2], [3, 2], [3, 1], [3, 0]],
-  [[0, 2], [0, 1], [0, 0], [1, 0], [1, 1], [1, 2], [2, 2], [3, 2], [3, 1], [2, 1], [2, 0], [3, 0]],
+// A tall block's paths, 3 wide and 4 tall, from its top left corner to its bottom left
+export const FRET_TALL: GridPoint[][] = [
+  [[0, 0], [1, 0], [2, 0], [2, 1], [1, 1], [0, 1], [0, 2], [1, 2], [2, 2], [2, 3], [1, 3], [0, 3]],
+  [[0, 0], [1, 0], [2, 0], [2, 1], [2, 2], [2, 3], [1, 3], [1, 2], [1, 1], [0, 1], [0, 2], [0, 3]],
+  [[0, 0], [0, 1], [1, 1], [1, 0], [2, 0], [2, 1], [2, 2], [2, 3], [1, 3], [1, 2], [0, 2], [0, 3]],
+  [[0, 0], [0, 1], [0, 2], [1, 2], [1, 1], [1, 0], [2, 0], [2, 1], [2, 2], [2, 3], [1, 3], [0, 3]],
 ];
-// A quarter turn clockwise about the centre of the 7×7 grid, y down
-const quarter = ([x, y]: GridPoint): GridPoint => [6 - y, x];
+// A wide block's, 4 wide and 3 tall, from its top left corner to its bottom right
+export const FRET_WIDE: GridPoint[][] = [
+  [[0, 0], [1, 0], [2, 0], [3, 0], [3, 1], [2, 1], [1, 1], [0, 1], [0, 2], [1, 2], [2, 2], [3, 2]],
+  [[0, 0], [1, 0], [1, 1], [0, 1], [0, 2], [1, 2], [2, 2], [2, 1], [2, 0], [3, 0], [3, 1], [3, 2]],
+  [[0, 0], [0, 1], [0, 2], [1, 2], [2, 2], [2, 1], [1, 1], [1, 0], [2, 0], [3, 0], [3, 1], [3, 2]],
+  [[0, 0], [0, 1], [0, 2], [1, 2], [1, 1], [1, 0], [2, 0], [3, 0], [3, 1], [2, 1], [2, 2], [3, 2]],
+];
 export function fret_path(marks: number[]): GridPoint[] {
-  return marks.flatMap((mark, block) => FRET_BLOCK[mark]!.map((point) => Array.from({ length: block }).reduce<GridPoint>(quarter, point)));
+  const [down, along, up, over] = marks;
+  return [
+    ...FRET_TALL[down!]!,
+    ...FRET_WIDE[along!]!.map(([x, y]): GridPoint => [x, 4 + y]),
+    ...FRET_TALL[up!]!.map(([x, y]): GridPoint => [4 + x, 6 - y]),
+    [3, 3],
+    ...FRET_WIDE[over!]!.map(([x, y]): GridPoint => [3 + x, 2 - y]),
+  ];
 }
 
 // The stave as a meander, a calligraphy after the gates: five bars of the same height, and each of

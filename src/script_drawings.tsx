@@ -1095,11 +1095,18 @@ export function StemBlocks({
 // Gates' style: weight, the strokes as a share of the pitch between bars; form, the gates as bars
 // and bridges, or as a fret in one stroke (see fret_path); spacing, for the fret, close or on a
 // grid (see bar_spacing). Bars are always on the grid: open gates leave a syllable's ends open, so
-// only the room between squares tells syllables apart.
+// only the room between squares tells syllables apart. joins: the fret's syllables joined along
+// their tops, so a word is one stroke, or apart.
 export const GATES_FORMS = ["bars", "fret"] as const;
 export const GATES_SPACINGS = ["close", "grid"] as const;
-export type GatesStyle = { weight: number; form: (typeof GATES_FORMS)[number]; spacing: (typeof GATES_SPACINGS)[number] };
-export const default_gates_style: GatesStyle = { weight: 0.6, form: "bars", spacing: "close" };
+export const GATES_JOINS = ["joined", "apart"] as const;
+export type GatesStyle = {
+  weight: number;
+  form: (typeof GATES_FORMS)[number];
+  spacing: (typeof GATES_SPACINGS)[number];
+  joins: (typeof GATES_JOINS)[number];
+};
+export const default_gates_style: GatesStyle = { weight: 0.6, form: "bars", spacing: "close", joins: "joined" };
 
 // A word in a script of square syllables on a grid of pitches (gates, as bars or a fret, or the
 // stave as a meander): each syllable span pitches square, drawn by strokes_of as lines through
@@ -1148,6 +1155,7 @@ function BarWord({
   span = BARS,
   apart = BAR_APART,
   strokes_of,
+  joined = false,
 }: {
   rows: number[][];
   size: number;
@@ -1155,8 +1163,11 @@ function BarWord({
   span?: number;
   apart?: number; // pitches from one syllable's last stroke to the next one's first
   strokes_of: (marks: number[]) => GridPoint[][];
+  joined?: boolean; // each syllable's strokes run on from the last's, so a word is one stroke
 }) {
   const { pitch, w } = bar_measures(size, weight, span);
+  const strokes = rows.flatMap((marks, i) => strokes_of(marks).map((points) => points.map(([x, y]): GridPoint => [i * (span + apart) + x, y])));
+  const drawn = joined ? [strokes.flat()] : strokes;
   const width = (rows.length * span + (rows.length - 1) * apart) * pitch + w;
   const height = span * pitch + w;
   return (
@@ -1171,13 +1182,9 @@ function BarWord({
       strokeLinejoin="miter"
       fill="none"
     >
-      {rows.flatMap((marks, i) =>
-        strokes_of(marks).map((points, j) => {
-          const left = i * (span + apart);
-          const at = points.map(([x, y]) => `${(left + x) * pitch + w / 2},${y * pitch + w / 2}`).join(" ");
-          return <polyline key={`${i}-${j}`} points={at} />;
-        }),
-      )}
+      {drawn.map((points, i) => (
+        <polyline key={i} points={points.map(([x, y]) => `${x * pitch + w / 2},${y * pitch + w / 2}`).join(" ")} />
+      ))}
     </svg>
   );
 }
@@ -1204,6 +1211,7 @@ export function Gates({ rows, size, style }: { rows: number[][]; size: number; s
       span={gates_span(style)}
       apart={bar_apart(gates_spacing(style))}
       strokes_of={fret ? fret_strokes : gates_strokes}
+      joined={fret && style.joins === "joined"}
     />
   );
 }
@@ -1328,7 +1336,7 @@ export function script_renderers(
       settings: JSON.stringify([phonology, gates, gates_style, period, size]),
       note:
         gates_style.form === "fret"
-          ? "A syllable in one stroke through every point of a 7×7 grid but the centre: four blocks round the centre, a mark each, each block all along or across with a knot at its start, middle or end"
+          ? "A syllable in one stroke through every point of a 7×7 grid, top left to top right: four blocks round the centre, a mark each, each one of the four paths through every point of it"
           : "Five bars a syllable, always all there; each gap between them a gate: open, bridged at the top, at the bottom, or closed",
       render: (ids) => <Gates rows={ids.map((id) => layout_values(id, phonology, gates))} size={size} style={gates_style} />,
       spacing: bar_spacing(size, gates_style.weight, gates_span(gates_style), gates_spacing(gates_style), period),

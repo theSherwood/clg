@@ -7,6 +7,8 @@ import {
   default_stems,
   default_gates,
   fret_path,
+  FRET_TALL,
+  FRET_WIDE,
   gate_lines,
   meander_lines,
   default_syllabics,
@@ -359,39 +361,61 @@ test("the stave as a meander: five full bars, one bridge in each gap, and every 
   expect(new Set(drawings.map((lines) => JSON.stringify(lines))).size).toBe(256);
 });
 
-test("gates as a fret: every syllable one stroke through every point of the 7×7 grid but the centre", () => {
+test("gates as a fret: every syllable one stroke through every point of the 7×7 grid, top left to top right", () => {
   const paths = ids.map((id) => fret_path(layout_values(id, default_phonology, default_gates)));
   for (const path of paths) {
-    expect(path.length).toBe(48);
-    const points = new Set(path.map((p) => p.join()));
-    expect(points.size).toBe(48);
-    expect(points.has("3,3")).toBe(false);
+    expect(path.length).toBe(49);
+    expect(new Set(path.map((p) => p.join())).size).toBe(49);
     for (const [x, y] of path) expect(x >= 0 && x <= 6 && y >= 0 && y <= 6).toBe(true);
     // One stroke: each point a step of one pitch from the last
     path.slice(1).forEach(([x, y], i) => expect(Math.abs(x - path[i]![0]) + Math.abs(y - path[i]![1])).toBe(1));
-    // Starting just above the middle at the left, and ending just below
-    expect(path[0]).toEqual([0, 2]);
-    expect(path.at(-1)).toEqual([0, 3]);
+    expect(path[0]).toEqual([0, 0]);
+    expect(path.at(-1)).toEqual([6, 0]);
   }
   expect(new Set(paths.map((p) => JSON.stringify(p))).size).toBe(256);
 });
 
-test("a 4×3 block of points has exactly four paths through every point from one corner to the opposite one", () => {
-  const count = (from: number[], to: number[], seen: Set<string>): number => {
-    if (seen.size === 12) return from.join() === to.join() ? 1 : 0;
+test("the fret's blocks: exactly four paths through every point between their corners, and the fret draws all four", () => {
+  // Paths through every point of a w×h block from one point to another
+  const count = (w: number, h: number, from: number[], to: number[], seen = new Set([from.join()])): number => {
+    if (seen.size === w * h) return from.join() === to.join() ? 1 : 0;
     let n = 0;
     for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
       const [x, y] = [from[0]! + dx!, from[1]! + dy!];
-      if (x < 0 || x > 3 || y < 0 || y > 2 || seen.has(`${x},${y}`)) continue;
+      if (x < 0 || x >= w || y < 0 || y >= h || seen.has(`${x},${y}`)) continue;
       seen.add(`${x},${y}`);
-      n += count([x, y], to, seen);
+      n += count(w, h, [x, y], to, seen);
       seen.delete(`${x},${y}`);
     }
     return n;
   };
-  expect(count([0, 2], [3, 0], new Set(["0,2"]))).toBe(4);
-  // And the fret draws all four in its first block
-  expect(new Set([0, 1, 2, 3].map((m) => JSON.stringify(fret_path([m, 0, 0, 0]).slice(0, 12)))).size).toBe(4);
+  expect(count(3, 4, [0, 0], [0, 3])).toBe(4);
+  expect(count(4, 3, [0, 0], [3, 2])).toBe(4);
+  for (const [paths, w, h] of [[FRET_TALL, 3, 4], [FRET_WIDE, 4, 3]] as const) {
+    expect(new Set(paths.map((p) => JSON.stringify(p))).size).toBe(4);
+    for (const path of paths) {
+      expect(new Set(path.map((p) => p.join())).size).toBe(w * h);
+      for (const [x, y] of path) expect(x < w && y < h).toBe(true);
+    }
+  }
+});
+
+test("the fret joined: a word is one stroke, each syllable running on from the last along their tops", async () => {
+  const { Gates, default_gates_style } = await import("./script_drawings");
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const { createElement } = await import("react");
+  const rows = [[0, 1, 2, 3], [3, 2, 1, 0], [1, 1, 1, 1]];
+  const svg = (joins: "joined" | "apart") =>
+    renderToStaticMarkup(createElement(Gates, { rows, size: 64, style: { ...default_gates_style, form: "fret", joins } }));
+  expect(svg("apart").match(/<polyline/g)!.length).toBe(3);
+  expect(svg("joined").match(/<polyline/g)!.length).toBe(1);
+  const points = /points="([^"]+)"/.exec(svg("joined"))![1]!.split(" ").map((p) => p.split(",").map(Number));
+  expect(points.length).toBe(3 * 49);
+  // Where one syllable ends and the next begins, a step along the top
+  for (const i of [49, 98]) {
+    expect(points[i]![1]).toBe(points[i - 1]![1]!);
+    expect(points[i]![1]).toBe(points[0]![1]!);
+  }
 });
 
 test("bar scripts and the fret on a grid: every word, and every period after one, moves the next word on by whole units", async () => {
