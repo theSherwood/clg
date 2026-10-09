@@ -49,12 +49,14 @@ export function layout_values(id: number, phonology: Phonology, layout: MarkLayo
 // rungs is still its stem, so every syllable can be seen (unlike braille, whose empty cell can't).
 export const RUNGS = ["none", "left", "right", "across"] as const;
 
+// Place, manner, vowel, final, top to bottom, and each mark's values in order take no rung, left,
+// right and across, so a rung is just the value's index
 export const default_stems: MarkLayout = {
   order: ["C", "M", "V", "N"],
   values: {
-    C: { velar: 2, coronal: 3, labial: 1, sibilant: 0 },
+    C: { velar: 0, coronal: 1, labial: 2, sibilant: 3 },
     M: { unvoiced: 0, voiced: 1, fricative: 2, "voiced fricative": 3 },
-    V: { a: 3, e: 1, o: 2, u: 0 },
+    V: { a: 0, e: 1, o: 2, u: 3 },
     N: { none: 0, n: 1, r: 2, i: 3 },
   },
 };

@@ -36,11 +36,15 @@ import { WordHover } from "./word_ui";
 // Tries out candidate scripts on real text: stems with a rung per mark, a line with a mark per
 // mark, and syllabics shapes turned four ways. Settings are kept in this browser only.
 
+// Only a value that differs from the default is kept, so a changed default reaches everyone who
+// hasn't set their own
 function useStored<T>(key: string, fallback: T): [T, (value: T) => void] {
   const [value, set_value] = useState<T>(() => load(key, fallback));
   useEffect(() => {
     try {
-      localStorage.setItem(key, JSON.stringify(value));
+      const json = JSON.stringify(value);
+      if (json === JSON.stringify(fallback)) localStorage.removeItem(key);
+      else localStorage.setItem(key, json);
     } catch {}
   }, [key, value]);
   return [value, set_value];
