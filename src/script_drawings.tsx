@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { type Laid, type LayoutOptions, type Wire, from_wire, solve_layout, solved_extent } from "./circle_layouts";
 import { type Solved, solve_circles } from "./circle_solver";
-import { type Rung, type Step, type StemRouting, best_route, default_stem_routing } from "./stem_routes";
+import { type Rung, type Side, type Step, type StemRouting, best_route, default_stem_routing, reaches } from "./stem_routes";
 import { T, type Word } from "./dict";
 import { type Phonology } from "./phonology";
 import {
@@ -45,8 +45,34 @@ export const STEM_JOINS = ["separate", "cursive"] as const;
 // the same for every syllable (fixed: two units each, with a unit between words). Balanced and
 // fixed glyphs fill out their width: see route_points.
 export const STEM_WIDTHS = ["tight", "balanced", "fixed"] as const;
-export type StemsStyle = { join: (typeof STEM_JOINS)[number]; curve: number; width: (typeof STEM_WIDTHS)[number] } & StemRouting;
-export const default_stems_style: StemsStyle = { join: "cursive", curve: 1, width: "tight", ...default_stem_routing };
+// form: in running text, cursive stems drawn with a pen (as everywhere else), or as blocks: a
+// calligraphic form on a grid of pitches, heavy strokes and slits of white between them (see
+// StemBlocks), at a scale of its own. block_weight: the stroke, as a fraction of the pitch;
+// block_reach: a rung's length, in pitches; block_joins: whether a word's stems are joined into one
+// stroke or each syllable stands apart; block_pitch: the pitch, in pixels.
+export const STEM_FORMS = ["pen", "block"] as const;
+export const BLOCK_JOINS = ["joined", "apart"] as const;
+export type StemsStyle = {
+  join: (typeof STEM_JOINS)[number];
+  curve: number;
+  width: (typeof STEM_WIDTHS)[number];
+  form: (typeof STEM_FORMS)[number];
+  block_weight: number;
+  block_reach: number;
+  block_joins: (typeof BLOCK_JOINS)[number];
+  block_pitch: number;
+} & StemRouting;
+export const default_stems_style: StemsStyle = {
+  join: "cursive",
+  curve: 1,
+  width: "tight",
+  form: "pen",
+  block_weight: 0.8,
+  block_reach: 1,
+  block_joins: "joined",
+  block_pitch: 8,
+  ...default_stem_routing,
+};
 
 // A word in the stem script, in whichever mode the style asks for
 export function StemsWord({ rows, size, style }: { rows: number[][]; size: number; style: StemsStyle }) {
@@ -920,6 +946,142 @@ export function CursiveStems({
   );
 }
 
+// Cursive stems as blocks, a calligraphic form after Genji-kō patterns: everything on a grid of
+// pitches, so rows are a pitch apart, each turn level a pitch further out than the last, and the
+// joins between stems a pitch above or below the rows; with strokes heavy enough (block_weight) that
+// what's left between them is slits of white. Routes, curve and widths work as they do for the pen.
+// Joined syllables are a pitch apart (their outermost lines, that is), syllables apart two, and
+// words two more.
+function block_measures(style: StemsStyle) {
+  const p = style.block_pitch;
+  const w = style.block_weight * p;
+  const joined = style.block_joins === "joined";
+  const syllable_gap = joined ? 1 : 2;
+  // Rows 0 to 3, with a pitch above and below for the joins, and half a stroke beyond that
+  const top = p + w / 2;
+  return { p, w, joined, syllable_gap, word_gap: syllable_gap + 2, top, height: 5 * p + w };
+}
+
+function StemBlockWord({ rows, style }: { rows: number[][]; style: StemsStyle }) {
+  const { p, w, joined, syllable_gap, top, height } = block_measures(style);
+  const R = style.block_reach;
+  const routes = rows.map((states) => best_route(states, style));
+  const widest = widest_extra(style) + 1;
+  // Each glyph's reach either side of its stem, in pitches, and how far its sides are filled out
+  const glyphs = routes.map(({ rungs, strokes }) => {
+    const deepest = (side: number) => Math.max(0, ...strokes.flat().filter((s) => s.from === side && s.depth).map((s) => s.depth!));
+    const own = (side: Side) => (deepest(side) > 0 ? R + deepest(side) : rungs.some((r) => reaches(r, side)) ? R : 0);
+    if (style.width === "fixed") return { left: R + widest, right: R + widest, fill: widest };
+    if (style.width === "balanced") {
+      const both = Math.max(own(-1), own(1));
+      return { left: both, right: both, fill: Math.max(deepest(-1), deepest(1)) };
+    }
+    return { left: own(-1), right: own(1), fill: 0 };
+  });
+  const centres: number[] = [];
+  glyphs.forEach((g, i) => centres.push(i === 0 ? g.left : centres[i - 1]! + glyphs[i - 1]!.right + syllable_gap + g.left));
+  const last = glyphs.length - 1;
+  const width = (centres[last]! + glyphs[last]!.right) * p + w;
+  const x = (c: number) => c * p + w / 2;
+  const y = (row: number) => top + row * p;
+  // The stems: one stroke for the word, down, a pitch under, up, a pitch over, and so on; or apart
+  const stems: Point[][] = joined
+    ? [
+        [
+          [x(centres[0]!), y(0)],
+          ...centres.slice(1).flatMap((c, i): Point[] => {
+            const edge = i % 2 === 0 ? y(4) : y(-1);
+            return [
+              [x(centres[i]!), edge],
+              [x(c), edge],
+            ];
+          }),
+          [x(centres[last]!), last % 2 === 0 ? y(3) : y(0)],
+        ],
+      ]
+    : centres.map((c): Point[] => [
+        [x(c), y(0)],
+        [x(c), y(3)],
+      ]);
+  const measures = { row_height: p, reach: R * p, bulge: p, level: p };
+  const square = style.curve === 0;
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      className="block"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={w}
+      strokeLinecap={square ? "square" : "round"}
+      strokeLinejoin={square ? "miter" : "round"}
+    >
+      {stems.map((points, i) => (
+        <path key={`s${i}`} d={rounded_path(points, style.curve, { horizontal: p, vertical: p })} />
+      ))}
+      {routes.flatMap(({ rungs, strokes }, i) =>
+        route_points(rungs, strokes, x(centres[i]!), top - p / 2, measures, glyphs[i]!.fill).map((points, j) => (
+          <path key={`${i}-${j}`} d={rounded_path(points, style.curve, { horizontal: p, vertical: Infinity })} />
+        )),
+      )}
+    </svg>
+  );
+}
+
+// A whole text in stem blocks, word by word, wrapping like text; a period a block of its own
+export function StemBlocks({
+  tokens,
+  phonology,
+  layout,
+  style,
+  period,
+  wrap,
+}: {
+  tokens: ScriptToken[];
+  phonology: Phonology;
+  layout: MarkLayout;
+  style: StemsStyle;
+  period: PeriodStyle;
+  wrap: (word: Word, node: React.ReactElement) => React.ReactNode;
+}) {
+  const { p, w, syllable_gap, word_gap, top, height } = block_measures(style);
+  const r = (p / 2) * period.scale;
+  return (
+    <div className="flex flex-wrap items-start" style={{ columnGap: word_gap * p, rowGap: 1.5 * p }}>
+      {tokens.map((t, i) => {
+        if ("punctuation" in t) {
+          if (t.punctuation !== ".") return null;
+          const side = 2 * r + w;
+          return (
+            <svg
+              key={i}
+              width={side}
+              height={height}
+              viewBox={`0 0 ${side} ${height}`}
+              className="block"
+              style={{ marginLeft: (syllable_gap - word_gap) * p }}
+              fill="currentColor"
+              stroke="currentColor"
+              strokeWidth={w}
+            >
+              {draw_mark(period.shape, side / 2, top + 1.5 * p, Math.max(r, w / 2))}
+            </svg>
+          );
+        }
+        if (!t.ids)
+          return (
+            <span key={i} className="text-red-500 text-sm" title="No root yet">
+              {t.text}?
+            </span>
+          );
+        const word = <StemBlockWord rows={t.ids.map((id) => layout_values(id, phonology, layout))} style={style} />;
+        return t.word ? <React.Fragment key={i}>{wrap(t.word, <span className="cursor-default">{word}</span>)}</React.Fragment> : <React.Fragment key={i}>{word}</React.Fragment>;
+      })}
+    </div>
+  );
+}
+
 // The period in every script: a small mark on the midline, level with the words' middles, a
 // circle, tick, square or diamond, scaled from its usual size
 export type PeriodStyle = { shape: LoopMark; scale: number };
@@ -1013,6 +1175,10 @@ export function script_renderers(
           : "A stem per syllable, with a rung for each mark",
       render: (ids) => <StemsWord rows={ids.map((id) => layout_values(id, phonology, stems))} size={size} style={stems_style} />,
       word_gap: stems_style.join === "cursive" && stems_style.width === "fixed" ? fixed_glyph_width(size, stems_style) / 2 : undefined,
+      whole_text:
+        in_text && stems_style.join === "cursive" && stems_style.form === "block"
+          ? (tokens, wrap) => <StemBlocks tokens={tokens} phonology={phonology} layout={stems} style={stems_style} period={period} wrap={wrap} />
+          : undefined,
     },
     {
       name: "Stave",

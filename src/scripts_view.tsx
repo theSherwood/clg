@@ -41,6 +41,8 @@ import {
   StemRoute,
   STEM_JOINS,
   STEM_WIDTHS,
+  STEM_FORMS,
+  BLOCK_JOINS,
   type StemsStyle,
   default_stems_style,
   load,
@@ -479,6 +481,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
   const scripts = script_renderers(phonology, { stems, stems_style, stave, stave_style, syllabics, period }, size, true);
 
   const set_style = (change: Partial<StaveStyle>) => set_stave_style({ ...stave_style, ...change });
+  const blocks = stems_style.join === "cursive" && stems_style.form === "block";
   const circles = stave_style.midline_shape === "circle";
   const subclause_circles = circles && stave_style.subclauses === "circles";
 
@@ -559,6 +562,51 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
             options={["tight", "balanced", "fixed"]}
             value={STEM_WIDTHS.indexOf(stems_style.width)}
             on_change={(i) => set_stems_style({ ...stems_style, width: STEM_WIDTHS[i]! })}
+          />
+        </Row>
+        <Row
+          label="Form"
+          hint="In running text, drawn with a pen, or as blocks: a calligraphic form on a grid, with heavy strokes and slits of white between them"
+          off={stems_style.join !== "cursive" && "Only cursive stems"}
+        >
+          <Toggle
+            options={[...STEM_FORMS]}
+            value={STEM_FORMS.indexOf(stems_style.form)}
+            on_change={(i) => set_stems_style({ ...stems_style, form: STEM_FORMS[i]! })}
+          />
+        </Row>
+        <Row label="Weight" hint="The blocks' strokes, as a share of the pitch between rows" off={!blocks && OFF_BLOCKS}>
+          <Slider
+            value={stems_style.block_weight}
+            min={0.2}
+            max={0.9}
+            step={0.05}
+            on_change={(block_weight) => set_stems_style({ ...stems_style, block_weight })}
+            format={(v) => `${Math.round(v * 100)}%`}
+          />
+        </Row>
+        <Row label="Reach" hint="How many pitches a rung reaches from the stem" off={!blocks && OFF_BLOCKS}>
+          <Toggle
+            options={["1", "2", "3"]}
+            value={stems_style.block_reach - 1}
+            on_change={(i) => set_stems_style({ ...stems_style, block_reach: i + 1 })}
+          />
+        </Row>
+        <Row label="Joins" hint="A word's stems joined into one stroke, or each syllable a block apart" off={!blocks && OFF_BLOCKS}>
+          <Toggle
+            options={[...BLOCK_JOINS]}
+            value={BLOCK_JOINS.indexOf(stems_style.block_joins)}
+            on_change={(i) => set_stems_style({ ...stems_style, block_joins: BLOCK_JOINS[i]! })}
+          />
+        </Row>
+        <Row label="Pitch" hint="The blocks' scale: the distance between rows" off={!blocks && OFF_BLOCKS}>
+          <Slider
+            value={stems_style.block_pitch}
+            min={3}
+            max={24}
+            step={1}
+            on_change={(block_pitch) => set_stems_style({ ...stems_style, block_pitch })}
+            format={(v) => `${v}px`}
           />
         </Row>
         <Row
@@ -919,6 +967,7 @@ function Presets({ settings, apply }: { settings: ScriptSettings; apply: (s: Scr
 }
 const SOLVERS = ["relax", "constraints", "flow"] as const;
 const OFF_CIRCLES = "Only round circles";
+const OFF_BLOCKS = "Only cursive stems in blocks";
 const OFF_SUBCLAUSES = "Only with subclauses on circles";
 
 // A labelled row of settings; one that doesn't apply as things stand is greyed out, saying why,

@@ -291,3 +291,33 @@ test("cursive stem widths: fixed glyphs are all one width, balanced ones never n
     for (const word of [[3, 77, 200], [255, 0, 128, 64], [170, 85]]) expect(width_of(word, "fixed", turns)).toBeCloseTo(word.length * glyph, 6);
   }
 });
+
+test("stem blocks: every stroke on the grid stays inside its block, at any width, joins and reach", async () => {
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const { createElement } = await import("react");
+  const { StemBlocks, default_stems_style, default_period } = await import("./script_drawings");
+  const { default_stems } = await import("./scripts");
+  const words = [[0], [255], [170, 85], [3, 77, 200, 64], ...Array.from({ length: 64 }, (_, i) => [i * 4, i * 4 + 1, i * 4 + 2, i * 4 + 3])];
+  const tokens = words.map((ids) => ({ ids, text: "" }));
+  for (const width of ["tight", "balanced", "fixed"] as const)
+    for (const block_joins of ["joined", "apart"] as const)
+      for (const block_reach of [1, 2, 3])
+        for (const turns of ["clear", "cross"] as const) {
+          const style = { ...default_stems_style, width, block_joins, block_reach, turns, block_pitch: 10, block_weight: 0.8, curve: 0 };
+          const html = renderToStaticMarkup(
+            createElement(StemBlocks, { tokens, phonology: default_phonology, layout: default_stems, style, period: default_period, wrap: (_: unknown, n: unknown) => n as never }),
+          );
+          const half = 4; // half the stroke: 0.8 of a 10px pitch, halved
+          const blocks = [...html.matchAll(/<svg width="([\d.]+)" height="([\d.]+)"[^>]*>(.*?)<\/svg>/g)];
+          expect(blocks.length).toBe(words.length);
+          for (const [, w, h, body] of blocks) {
+            for (const [, d] of body!.matchAll(/ d="([^"]+)"/g)) {
+              const n = d!.match(/-?[\d.]+(e-?\d+)?/g)!.map(Number);
+              const xs = n.filter((_, i) => i % 2 === 0);
+              const ys = n.filter((_, i) => i % 2 === 1);
+              expect(xs.every((x) => !Number.isNaN(x) && x >= half - 1e-6 && x <= Number(w) - half + 1e-6)).toBe(true);
+              expect(ys.every((y) => y >= half - 1e-6 && y <= Number(h) - half + 1e-6)).toBe(true);
+            }
+          }
+        }
+});
