@@ -456,5 +456,11 @@ test("the fret spaced close: a word's syllables as far apart as the strokes in t
     // Room for one more stroke, with the usual white either side of it
     expect(gap).toBeCloseTo(2 * (pitch - w) + w, 9);
     expect(row).toBe(gap);
+    // Joined, everything a pitch apart, and punctuation a square of its own
+    const joined = bar_spacing(size, weight, span, "close", undefined, true);
+    expect(joined.gap).toBeCloseTo(pitch - w, 9);
+    expect(joined.row).toBe(joined.gap);
+    expect(joined.cell).toBeCloseTo(glyph, 9);
+    expect(joined.slot).toBe(true);
   }
 });

@@ -152,8 +152,13 @@ function Written({
     >
       {tokens.map((t, i) =>
         "punctuation" in t && spacing ? (
-          <span key={i} className="flex shrink-0 items-center justify-center text-gray-500" style={{ marginLeft: -spacing.gap, width: spacing.cell }}>
-            {t.punctuation === "." && size ? <Period size={size} style={period} /> : t.punctuation}
+          <span
+            key={i}
+            // A script's own period is ink like its words; other punctuation is grey
+            className={`flex shrink-0 items-center justify-center ${t.punctuation === "." && spacing.period ? "" : "text-gray-500"}`}
+            style={{ marginLeft: spacing.slot ? undefined : -spacing.gap, width: spacing.cell }}
+          >
+            {t.punctuation === "." && size ? (spacing.period ?? <Period size={size} style={period} />) : t.punctuation}
           </span>
         ) : "punctuation" in t && t.punctuation === "." && size ? (
           <span key={i} className="flex items-center">
@@ -721,7 +726,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
           </Row>
           <Row
             label="Spacing"
-            hint="Close: a word's syllables as far apart as the strokes in them, and a stroke left out between words and rows. Grid: every word in every row on a grid of half syllables"
+            hint="Close: a word's syllables as far apart as the strokes in them, and a stroke left out between words and rows; with joins, everything as far apart as the strokes, and a period a square of its own. Grid: every word in every row on a grid of half syllables"
             off={gates_style.form !== "fret" && "Only the fret: bars, open at the ends, need the room to tell syllables apart"}
           >
             <Toggle

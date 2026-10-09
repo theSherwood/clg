@@ -1127,14 +1127,24 @@ const bar_measures = (size: number, weight: number, span: number) => {
 // far as a word's syllables, so the syllables sit on a grid of squares down the page as well as
 // across it. Close, a word's syllables are a pitch apart, as much white between them as between
 // two strokes, and words and rows are a stroke apart, as if one stroke were left out; a period takes
-// its own width and a stroke's room more. A word's drawing reaches half a stroke past its outer
-// points, so the spaces are a stroke short of their pitches.
+// its own width and a stroke's room more. Close with the fret's syllables joined, so the joins tell
+// words apart, everything is a pitch apart, syllables, words and rows alike, and a period or other
+// punctuation takes a syllable's square of its own. A word's drawing reaches half a stroke past its
+// outer points, so the spaces are a stroke short of their pitches.
 export function bar_apart(spacing: GatesStyle["spacing"]) {
   return spacing === "grid" ? BAR_APART : 1;
 }
-export function bar_spacing(size: number, weight: number, span = BARS, spacing: GatesStyle["spacing"] = "grid", period = default_period): Spacing {
+export function bar_spacing(
+  size: number,
+  weight: number,
+  span = BARS,
+  spacing: GatesStyle["spacing"] = "grid",
+  period = default_period,
+  joined = false,
+): Spacing {
   const { pitch, w } = bar_measures(size, weight, span);
   const glyph = span * pitch + w;
+  if (spacing === "close" && joined) return { gap: pitch - w, cell: glyph, glyph, row: pitch - w, slot: true };
   if (spacing === "close") {
     const gap = 2 * pitch - w;
     return { gap, cell: size * 0.3 * period.scale + gap, glyph, row: gap };
@@ -1200,6 +1210,20 @@ export function StaveWord({ marks, size, style }: { marks: number[][]; size: num
 
 export const gates_span = (style: GatesStyle) => (style.form === "fret" ? FRET : BARS);
 const gates_spacing = (style: GatesStyle) => (style.form === "fret" ? style.spacing : "grid");
+const gates_joined = (style: GatesStyle) => style.form === "fret" && style.joins === "joined";
+
+// The fret's period: a small square ring of strokes in the middle of a syllable's square, on the
+// same grid of points, so it reads as a stop, mostly white, among the full squares
+export function FretPeriod({ size, weight }: { size: number; weight: number }) {
+  const { pitch, w } = bar_measures(size, weight, FRET);
+  const side = FRET * pitch + w;
+  const at = (v: number) => v * pitch + w / 2;
+  return (
+    <svg width={side} height={side} viewBox={`0 0 ${side} ${side}`} className="block" fill="none" stroke="currentColor" strokeWidth={w} strokeLinejoin="miter">
+      <rect x={at(2)} y={at(2)} width={2 * pitch} height={2 * pitch} />
+    </svg>
+  );
+}
 
 export function Gates({ rows, size, style }: { rows: number[][]; size: number; style: GatesStyle }) {
   const fret = style.form === "fret";
@@ -1211,7 +1235,7 @@ export function Gates({ rows, size, style }: { rows: number[][]; size: number; s
       span={gates_span(style)}
       apart={bar_apart(gates_spacing(style))}
       strokes_of={fret ? fret_strokes : gates_strokes}
-      joined={fret && style.joins === "joined"}
+      joined={gates_joined(style)}
     />
   );
 }
@@ -1298,7 +1322,9 @@ export type ScriptRenderer = {
 // other punctuation takes in place of the space before it, a one-syllable word's width (which a
 // word with no root yet takes, as a ?), and the space between rows, if not the usual. Set on a
 // grid, every word starts on it.
-export type Spacing = { gap: number; cell: number; glyph: number; row?: number };
+// slot: punctuation takes a cell of its own, spaced like a word, rather than the space before it.
+// period: the script's own period, if not the usual.
+export type Spacing = { gap: number; cell: number; glyph: number; row?: number; slot?: boolean; period?: React.ReactNode };
 
 // Each script, as a way to write a word's root IDs
 // In running text (in_text), the stave script's midline is ruled across the text rather than drawn
@@ -1339,7 +1365,10 @@ export function script_renderers(
           ? "A syllable in one stroke through every point of a 7×7 grid, top left to top right: four blocks round the centre, a mark each, each one of the four paths through every point of it"
           : "Five bars a syllable, always all there; each gap between them a gate: open, bridged at the top, at the bottom, or closed",
       render: (ids) => <Gates rows={ids.map((id) => layout_values(id, phonology, gates))} size={size} style={gates_style} />,
-      spacing: bar_spacing(size, gates_style.weight, gates_span(gates_style), gates_spacing(gates_style), period),
+      spacing: {
+        ...bar_spacing(size, gates_style.weight, gates_span(gates_style), gates_spacing(gates_style), period, gates_joined(gates_style)),
+        period: gates_style.form === "fret" ? <FretPeriod size={size} weight={gates_style.weight} /> : undefined,
+      },
     },
     {
       name: "Stave",
