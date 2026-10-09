@@ -434,17 +434,43 @@ export function LineCircles({
 
   const gap = size * 0.25;
   const period_width = size * 0.3 * period.scale;
-  const attach = size * 0.5; // the room a subclause's circle takes on its parent's ring
-  const width_of = (item: CircleItem): number =>
-    "geometry" in item ? item.geometry.width : "period" in item ? period_width : "blank" in item ? item.blank : attach;
-  const length_of = (items: CircleItem[]) => items.reduce((n, item) => n + width_of(item) + gap, 0);
-  // A subclause's circle is sized by its own length, and reaches out as far as its own
-  // subclauses' circles do
-  const radius_of = (items: CircleItem[]) => Math.max(length_of(items) / (2 * Math.PI), size * 0.5);
+  const clear = size * 0.3; // kept clear either side of a subclause's circle on its parent's ring
+  // How much of a ring of radius R a circle of radius r centred on it covers: the arc between where
+  // they cross (the whole ring, if the circle is big enough to swallow it)
+  const covered = (R: number, r: number) => {
+    if (!Number.isFinite(R)) return 2 * r; // on a straight line, the circle's diameter
+    if (r >= 2 * R) return 2 * Math.PI * R;
+    const a = R - (r * r) / (2 * R);
+    return 2 * R * Math.atan2(Math.sqrt(Math.max(0, R * R - a * a)), a);
+  };
+  // An item's width along a ring of radius R: a subclause takes the arc its circle covers, so no
+  // writing on the ring falls inside it
+  const width_of = (item: CircleItem, R: number): number =>
+    "geometry" in item
+      ? item.geometry.width
+      : "period" in item
+        ? period_width
+        : "blank" in item
+          ? item.blank
+          : covered(R, radius_of(item.clause)) + 2 * clear;
+  const length_of = (items: CircleItem[], R: number) => items.reduce((n, item) => n + width_of(item, R) + gap, 0);
+  // A subclause's circle is the smallest its own writing fits round, including the arcs its own
+  // subclauses' circles cover, which depend on its size, so it's found by a few rounds of refining
+  const radii_found = new Map<CircleItem[], number>();
+  function radius_of(items: CircleItem[]): number {
+    const known = radii_found.get(items);
+    if (known) return known;
+    let r = Math.max(size * 0.5, length_of(items, Infinity) / (2 * Math.PI));
+    for (let round = 0; round < 8; round++) r = Math.max(r, length_of(items, r) / (2 * Math.PI));
+    radii_found.set(items, r);
+    return r;
+  }
+  // How far a ring's subclause circles reach out from it, either side
   const reach_of = (items: CircleItem[]): number =>
     Math.max(0, ...items.map((item) => ("clause" in item ? radius_of(item.clause) + reach_of(item.clause) : 0)));
 
-  const lengths = rings.map(length_of);
+  // A sentence's ring is big beside its subclauses' circles, so each covers about its diameter
+  const lengths = rings.map((items) => length_of(items, Infinity));
   // Rings are a line apart, plus the room their own subclause circles take: a circle is centred on
   // its ring, so it reaches out as far either side, and only the gaps next to it widen
   const reaches = rings.map(reach_of);
@@ -477,14 +503,14 @@ export function LineCircles({
   // starts at the top and places its period; a subclause's starts where it crosses its parent.
   const draw_ring = (items: CircleItem[], cx: number, cy: number, R: number, start: number, sentence: boolean, key: string) => {
     const circumference = 2 * Math.PI * R;
-    const length = length_of(items);
+    const length = length_of(items, R);
     const ring_gap = style.spacing === "even" ? gap + (circumference - length) / items.length : gap;
     // With the period at the top, the sentence starts just clockwise of it and any room to spare is
     // left between its last word and the period; otherwise it starts at the top and the period
     // follows its last word
     const period_at_top = sentence && (style.spacing === "even" || style.period_position === "top");
     const last = items.at(-1)!;
-    const half_period = "period" in last ? width_of(last) / 2 : 0;
+    const half_period = "period" in last ? width_of(last, R) / 2 : 0;
     // Where a point along the ring goes: x along it from the start, y below the line inward
     const angle_at = (x: number) => start + (2 * Math.PI * x) / circumference;
     const place = (x: number, y: number): Point => {
@@ -506,9 +532,10 @@ export function LineCircles({
     if (style.midline) {
       nodes.push(<circle key={`mid${key}`} cx={cx} cy={cy} r={R} stroke={style.midline_color} strokeWidth={midline_width(size)} />);
     }
-    let x = period_at_top ? half_period + ring_gap : ring_gap / 2;
+    // A subclause starts just clockwise of where it crosses its parent, which is its top
+    let x = period_at_top ? half_period + ring_gap : sentence ? ring_gap / 2 : gap;
     items.forEach((item, i) => {
-      const width = width_of(item);
+      const width = width_of(item, R);
       if ("geometry" in item) {
         const g = item.geometry;
         const word = (
