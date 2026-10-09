@@ -466,14 +466,11 @@ export function circle_layout({ tokens, phonology, layout, style, period, size, 
   const room = new Map<CircleItem, number>();
   const spread = rings.map(() => 0);
 
-  // How much of a ring of radius R a circle of radius r centred on it covers: the arc between where
-  // they cross (the whole ring, if the circle is big enough to swallow it)
-  const covered = (R: number, r: number) => {
-    if (!Number.isFinite(R)) return 2 * r; // on a straight line, the circle's diameter
-    if (r >= 2 * R) return 2 * Math.PI * R;
-    const a = R - (r * r) / (2 * R);
-    return 2 * R * Math.atan2(Math.sqrt(Math.max(0, R * R - a * a)), a);
-  };
+  // A subclause's circle crosses its parent's ring at right angles, which it does exactly when the
+  // distance between their centres is the square root of the sum of their radii squared: there,
+  // each one's radius is the other's tangent. Its centre is that far out from the parent's, so a
+  // little outside the ring, and between the crossings it covers an arc of 2R atan(r / R).
+  const covered = (R: number, r: number) => (Number.isFinite(R) ? 2 * R * Math.atan2(r, R) : 2 * r);
 
   // One pass of laying the text out, with the room and spread as they stand
   const lay_out = () => {
@@ -611,18 +608,15 @@ export function circle_layout({ tokens, phonology, layout, style, period, size, 
           footprints.push({ points: [[px, py]], sentence, chain, ring: items });
           reach(px, py, footprint);
         } else if ("clause" in item) {
-          // The subclause's circle is centred on this ring where the clause comes, so it crosses the
-          // ring twice; its text starts at the first crossing and goes once round
-          const [px, py] = place(x + width / 2, 0);
+          // The subclause's circle crosses this ring at right angles either side of where the clause
+          // comes; its text starts at the first crossing, going clockwise, and goes once round
           const r = radius_of(item.clause);
-          const a = R - (r * r) / (2 * R); // the crossings' distance from this ring's centre along the line to the subclause's
-          const h = Math.sqrt(Math.max(0, R * R - a * a));
-          const ux = (px - cx) / R;
-          const uy = (py - cy) / R;
-          // the crossing just before the clause, going clockwise round this ring
-          const ix = cx + a * ux + h * uy;
-          const iy = cy + a * uy - h * ux;
-          const sub_start = r < 2 * R ? Math.atan2(iy - py, ix - px) : angle_at(x + width / 2) + Math.PI;
+          const angle = angle_at(x + width / 2);
+          const d = Math.hypot(R, r);
+          const px = cx + d * Math.cos(angle);
+          const py = cy + d * Math.sin(angle);
+          const before = angle - Math.atan2(r, R); // the first crossing, on this ring
+          const sub_start = Math.atan2(cy + R * Math.sin(before) - py, cx + R * Math.cos(before) - px);
           draw_ring(item.clause, px, py, r, sub_start, sentence, [...chain, item], `${key}-${i}`);
         }
         x += width + ring_gap;
