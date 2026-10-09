@@ -445,25 +445,30 @@ export function LineCircles({
     Math.max(0, ...items.map((item) => ("clause" in item ? radius_of(item.clause) + reach_of(item.clause) : 0)));
 
   const lengths = rings.map(length_of);
-  // Rings are a line apart, plus room for the biggest subclause circles either side
-  const reach = Math.max(...rings.map(reach_of));
-  const spacing = size * 1.35 + 2 * reach;
-  const smallest = size * 0.8 + reach;
+  // Rings are a line apart, plus the room their own subclause circles take: a circle is centred on
+  // its ring, so it reaches out as far either side, and only the gaps next to it widen
+  const reaches = rings.map(reach_of);
+  const band = size * 1.35;
+  const offsets = reaches.map((_, k) =>
+    reaches.slice(0, k).reduce((n, r, j) => n + band + r + reaches[j + 1]!, 0),
+  );
+  const last = rings.length - 1;
   const radii =
     style.grow === "in"
       ? (() => {
           const outer = Math.max(
-            smallest + (rings.length - 1) * spacing,
-            ...lengths.map((l, k) => l / (2 * Math.PI) + k * spacing),
+            size * 0.8 + reaches[last]! + offsets[last]!,
+            ...lengths.map((l, k) => l / (2 * Math.PI) + offsets[k]!),
           );
-          return lengths.map((_, k) => outer - k * spacing);
+          return offsets.map((o) => outer - o);
         })()
       : (() => {
-          const inner = Math.max(smallest, ...lengths.map((l, k) => l / (2 * Math.PI) - k * spacing));
-          return lengths.map((_, k) => inner + k * spacing);
+          const inner = Math.max(size * 0.8 + reaches[0]!, ...lengths.map((l, k) => l / (2 * Math.PI) - offsets[k]!));
+          return offsets.map((o) => inner + o);
         })();
-  const outer = Math.max(...radii);
-  const margin = size * 0.75 + reach;
+  const outermost = style.grow === "in" ? 0 : last;
+  const outer = radii[outermost]!;
+  const margin = size * 0.75 + reaches[outermost]!;
   const centre = outer + margin;
   const step = size * 0.08; // straight lines are cut this fine so they bend with the ring
 
