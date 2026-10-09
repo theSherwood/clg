@@ -376,13 +376,29 @@ export function CursiveStems({ rows, size }: { rows: number[][]; size: number })
   );
 }
 
-// The period in every script: a small circle on the midline, so it sits level with the words' middles
-export function Period({ size }: { size: number }) {
-  const d = size * 0.3;
+// The period in every script: a small mark on the midline, level with the words' middles, a
+// circle, tick, square or diamond, scaled from its usual size
+export type PeriodStyle = { shape: LoopMark; scale: number };
+export const default_period: PeriodStyle = { shape: "circle", scale: 1 };
+
+export function Period({ size, style = default_period }: { size: number; style?: PeriodStyle }) {
+  const d = size * 0.3 * style.scale;
   const stroke = Math.max(1.5, size / 16);
+  const c = d / 2;
+  const r = c - stroke; // keeps the stroke inside the box
+  const mark =
+    style.shape === "circle" ? (
+      <circle cx={c} cy={c} r={r} />
+    ) : style.shape === "square" ? (
+      <rect x={c - r * 0.85} y={c - r * 0.85} width={r * 1.7} height={r * 1.7} />
+    ) : style.shape === "tick" ? (
+      <line x1={c} y1={stroke} x2={c} y2={d - stroke} strokeLinecap="round" />
+    ) : (
+      <path d={`M ${c} ${c - r} L ${c + r} ${c} L ${c} ${c + r} L ${c - r} ${c} Z`} />
+    );
   return (
-    <svg width={d} height={d} viewBox={`0 0 ${d} ${d}`} className="block">
-      <circle cx={d / 2} cy={d / 2} r={d / 2 - stroke} fill="none" stroke="currentColor" strokeWidth={stroke} />
+    <svg width={d} height={d} viewBox={`0 0 ${d} ${d}`} className="block" fill="none" stroke="currentColor" strokeWidth={stroke}>
+      {mark}
     </svg>
   );
 }
@@ -399,6 +415,7 @@ export const SCRIPT_KEYS = {
   stems: "script_stems",
   line: "script_line",
   line_style: "script_line_style",
+  period: "script_period",
   syllabics: "script_syllabics",
 } as const;
 

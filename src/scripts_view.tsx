@@ -27,7 +27,9 @@ import {
   Line,
   type LineStyle,
   Period,
+  type PeriodStyle,
   default_line_style,
+  default_period,
   LINE_JOINS,
   LOOP_MARKS,
   midline_width,
@@ -78,10 +80,12 @@ function Written({
   render,
   size,
   rule,
+  period,
 }: {
   tokens: ScriptToken[];
   render: (ids: number[]) => React.ReactNode;
   size?: number;
+  period?: PeriodStyle;
   rule?: { color: string; size: number };
 }) {
   const ruled: React.CSSProperties | undefined = rule && {
@@ -97,7 +101,7 @@ function Written({
       {tokens.map((t, i) =>
         "punctuation" in t && t.punctuation === "." && size ? (
           <span key={i} className="flex items-center">
-            <Period size={size} />
+            <Period size={size} style={period} />
           </span>
         ) : "punctuation" in t ? (
           <span key={i} className="-ml-[0.4em] text-gray-500">
@@ -360,6 +364,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
   const [stems, set_stems] = useStored<MarkLayout>(SCRIPT_KEYS.stems, default_stems);
   const [line, set_line] = useStored<MarkLayout>(SCRIPT_KEYS.line, default_line);
   const [line_style, set_line_style] = useStored<LineStyle>(SCRIPT_KEYS.line_style, default_line_style);
+  const [period, set_period] = useStored<PeriodStyle>(SCRIPT_KEYS.period, default_period);
   const [syllabics, set_syllabics] = useStored<SyllabicsSettings>(SCRIPT_KEYS.syllabics, default_syllabics);
   const [size, set_size] = useStored("script_size", 32);
   const [text, set_text] = useStored("script_text", PRESETS[0]!.text);
@@ -377,12 +382,31 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
             Size
             <input type="range" min={16} max={72} value={size} onChange={(e) => set_size(Number(e.target.value))} />
           </label>
+          <span className="flex items-center gap-1">
+            Period
+            <Toggle
+              options={[...LOOP_MARKS]}
+              value={LOOP_MARKS.indexOf(period.shape)}
+              on_change={(i) => set_period({ ...period, shape: LOOP_MARKS[i]! })}
+            />
+            <input
+              type="range"
+              min={0.3}
+              max={2}
+              step={0.1}
+              value={period.scale}
+              onChange={(e) => set_period({ ...period, scale: Number(e.target.value) })}
+              title={`Period size: ${period.scale}×`}
+              className="w-20"
+            />
+          </span>
           <button
             onClick={() => {
               set_stems(default_stems);
               set_line(default_line);
               set_line_style(default_line_style);
               set_syllabics(default_syllabics);
+              set_period(default_period);
             }}
             className="px-2 py-0.5 rounded border border-gray-300 bg-white hover:bg-gray-100"
           >
@@ -423,7 +447,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
             {s.name} <span className="font-normal text-gray-400">{s.note}</span>
           </h3>
           <div style={s.style} className="text-gray-900">
-            <Written tokens={tokens} render={s.render} size={size} rule={s.rule} />
+            <Written tokens={tokens} render={s.render} size={size} rule={s.rule} period={period} />
           </div>
         </div>
       ))}
