@@ -190,7 +190,7 @@ test("the built-in script presets all differ, and settings compare whatever thei
 });
 
 test("cursive stem routes: every rung once, only turns the rules allow, and the fewest strokes", async () => {
-  const { all_routes, best_route, possible_turns, ranked_routes, rungs_of } = await import("./stem_routes");
+  const { all_routes, best_route, possible_turns, ranked_routes, rungs_of, turn_depths } = await import("./stem_routes");
   type Ranked = import("./stem_routes").Ranked;
   const { default_stems } = await import("./scripts");
   const { syllable_of } = await import("./phonology");
@@ -217,6 +217,17 @@ test("cursive stem routes: every rung once, only turns the rules allow, and the 
       const { routes } = ranked_routes(states, rule);
       const most = Math.max(...routes.map((r) => r.turns.length));
       expect(strokes.length).toBe(rungs.length - most);
+      // A turn clears what it passes: one level out past any rung's end on its side, and at a depth
+      // of its own beside any turn on its side it overlaps
+      for (const r of routes) {
+        const depths = turn_depths(rungs, r.turns);
+        r.turns.forEach((t, i) => {
+          if (rungs.slice(t.a + 1, t.b).some((x) => (t.side < 0 ? x.left : x.right))) expect(depths[i]).toBeGreaterThanOrEqual(2);
+          r.turns.forEach((u, j) => {
+            if (j !== i && u.side === t.side && t.a < u.b && u.a < t.b) expect(depths[j]).not.toBe(depths[i]);
+          });
+        });
+      }
       // Nesting never crosses; only crossing does
       if (rule.turns !== "cross") expect(routes.every((r) => r.crossings === 0)).toBe(true);
       if (rule.turns === "next" || rule.turns === "clear") expect(routes.every((r) => r.nests === 0)).toBe(true);

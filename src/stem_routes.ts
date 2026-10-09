@@ -21,8 +21,8 @@
 // fewest turns upward, then the shortest turns, then the earliest found (which favours the top).
 //
 // Each turn is drawn at a depth out from the rungs' ends: the shortest turns first, each one level
-// further out than any turn on its side it overlaps, so a turn wraps round those inside it, and of
-// two that cross, the longer is further out.
+// further out than any turn on its side it overlaps or any rung's end it passes, so a turn wraps
+// round what's inside it, clear of it, and of two that cross, the longer is further out.
 
 export const STEM_TURNS = ["next", "clear", "nest", "cross"] as const;
 export type StemRouting = { turns: (typeof STEM_TURNS)[number]; direction: "down" | "any"; prefer: "short" | "skips" };
@@ -108,12 +108,16 @@ export const crossings = (turns: Turn[]) => turns.reduce((n, t, i) => n + turns.
 const wraps = (t: Turn, u: Turn) => t.side === u.side && ((t.a < u.a && u.b < t.b) || (u.a < t.a && t.b < u.b));
 export const nestings = (turns: Turn[]) => turns.reduce((n, t, i) => n + turns.slice(i + 1).filter((u) => wraps(t, u)).length, 0);
 
-// How far out each turn is drawn: shortest first, one further out than any on its side it overlaps
-export function turn_depths(turns: Turn[]): number[] {
+// How far out each turn is drawn: shortest first, one further out than any on its side it overlaps,
+// and than any rung's end on its side that it passes, so it clears them
+export function turn_depths(rungs: Rung[], turns: Turn[]): number[] {
   const depths = turns.map(() => 0);
   const order = turns.map((_, i) => i).sort((i, j) => turns[i]!.b - turns[i]!.a - (turns[j]!.b - turns[j]!.a));
-  for (const i of order)
-    depths[i] = 1 + Math.max(0, ...order.filter((j) => depths[j]! > 0 && overlap(turns[i]!, turns[j]!)).map((j) => depths[j]!));
+  for (const i of order) {
+    const t = turns[i]!;
+    const passes = rungs.slice(t.a + 1, t.b).some((r) => reaches(r, t.side)) ? 1 : 0;
+    depths[i] = 1 + Math.max(passes, ...order.filter((j) => depths[j]! > 0 && overlap(t, turns[j]!)).map((j) => depths[j]!));
+  }
   return depths;
 }
 
@@ -123,7 +127,7 @@ const monotonic = (rows: number[]) =>
 // A route's strokes as drawn: each written the way with fewer turns upward, and otherwise from the
 // top; with how many turns go up
 export function draw_route(rungs: Rung[], turns: Turn[]): { strokes: Step[][]; upward: number } {
-  const depths = turn_depths(turns);
+  const depths = turn_depths(rungs, turns);
   const turn_between = (a: number, b: number) => turns.findIndex((t) => (t.a === a && t.b === b) || (t.a === b && t.b === a));
   const side_between = (a: number, b: number) => turns[turn_between(a, b)]!.side;
   let upward = 0;
@@ -184,7 +188,7 @@ export function ranked_routes(states: number[], rules: StemRouting): { rungs: Ru
     const { strokes, upward } = draw_route(rungs, turns);
     const span = turns.reduce((n, t) => n + rungs[t.b]!.row - rungs[t.a]!.row, 0);
     const skips = turns.reduce((n, t) => n + t.b - t.a - 1, 0);
-    const nesting = turn_depths(turns).reduce((n, d) => n + d - 1, 0);
+    const nesting = turn_depths(rungs, turns).reduce((n, d) => n + d - 1, 0);
     return { turns, strokes, upward, span, skips, crossings: crossings(turns), nests: nestings(turns), nesting };
   });
   const rank = (r: Ranked) => [r.strokes.length, rules.prefer === "skips" ? -r.skips : 0, r.crossings, r.nesting, r.upward, r.span];
