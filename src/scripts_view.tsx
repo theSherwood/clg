@@ -489,6 +489,20 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
             on_change={(i) => set_stems_style({ ...stems_style, join: STEM_JOINS[i]! })}
           />
         </Row>
+        <Row
+          label="Curve"
+          hint="How round the joins between stems and the turns between rungs are; none is square"
+          off={stems_style.join !== "cursive" && "Only cursive stems"}
+        >
+          <Slider
+            value={stems_style.curve}
+            min={0}
+            max={1}
+            step={0.05}
+            on_change={(curve) => set_stems_style({ ...stems_style, curve })}
+            format={(v) => `${Math.round(v * 100)}%`}
+          />
+        </Row>
         <div>
           <p className="text-gray-500 mb-1.5">A stem per syllable, with a rung for each mark, top to bottom</p>
           <LayoutControls

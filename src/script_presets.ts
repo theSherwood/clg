@@ -36,7 +36,7 @@ export const BUILTIN_PRESETS: Preset[] = [
     "Separate squares on a rule",
     { join: "separate", loop_mark: "square", midline: true },
     { shape: "square", scale: 1 },
-    { join: "separate" },
+    { ...default_stems_style, join: "separate" },
   ),
   builtin("Cursive rings", RINGS),
   builtin("Angular ticks in rings", { ...RINGS, join: "angular", loop_mark: "tick" }),
