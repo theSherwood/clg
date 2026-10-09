@@ -194,7 +194,7 @@ test("cursive stem routes: every rung once, only turns the rules allow, and the 
   type Ranked = import("./stem_routes").Ranked;
   const { default_stems } = await import("./scripts");
   const { syllable_of } = await import("./phonology");
-  const rules = (["next", "clear"] as const).flatMap((turns) =>
+  const rules = (["next", "clear", "nest", "cross"] as const).flatMap((turns) =>
     (["down", "any"] as const).flatMap((direction) => (["short", "skips"] as const).map((prefer) => ({ turns, direction, prefer }))),
   );
   for (let id = 0; id < 256; id++) {
@@ -214,8 +214,12 @@ test("cursive stem routes: every rung once, only turns the rules allow, and the 
           if (rule.direction === "down") expect(rungs[step.rung]!.row).toBeGreaterThan(rungs[stroke[i]!.rung]!.row);
         });
       // The fewest strokes any route allows: rungs less the most turns
-      const most = Math.max(...all_routes(rungs, rule).map((r) => r.length));
+      const { routes } = ranked_routes(states, rule);
+      const most = Math.max(...routes.map((r) => r.turns.length));
       expect(strokes.length).toBe(rungs.length - most);
+      // Nesting never crosses; only crossing does
+      if (rule.turns !== "cross") expect(routes.every((r) => r.crossings === 0)).toBe(true);
+      if (rule.turns === "next" || rule.turns === "clear") expect(routes.every((r) => r.nests === 0)).toBe(true);
     }
     // Preferring skips never costs a stroke, and skips at least as many rungs
     const [short, skips] = (["short", "skips"] as const).map((prefer) => ranked_routes(states, { turns: "clear", direction: "any", prefer }).routes[0]!) as [Ranked, Ranked];
@@ -226,6 +230,11 @@ test("cursive stem routes: every rung once, only turns the rules allow, and the 
   // dhei takes one stroke when turns may skip clear rows and go up, two otherwise
   expect(best_route(of("dhei"), { turns: "clear", direction: "any", prefer: "short" }).strokes.length).toBe(1);
   expect(best_route(of("dhei"), { turns: "next", direction: "down", prefer: "short" }).strokes.length).toBe(2);
+  // phor's four right-hand rungs make two strokes one way skipping clear rows, two nesting, three crossing
+  for (const [turns, n] of [["clear", 1], ["nest", 2], ["cross", 3]] as const) {
+    const { routes } = ranked_routes(of("phor"), { turns, direction: "any", prefer: "short" });
+    expect(routes.filter((r) => r.strokes.length === 2).length).toBe(n);
+  }
   // Four rungs across: five ways to turn on each side, less the eight that close a loop
   expect(all_routes(rungs_of([3, 3, 3, 3]), { turns: "clear", direction: "any", prefer: "short" }).length).toBe(17);
 });

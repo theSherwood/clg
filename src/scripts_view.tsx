@@ -46,7 +46,7 @@ import {
   script_renderers,
 } from "./script_drawings";
 import { BUILTIN_PRESETS, type Preset, load_saved_presets, same_settings, store_saved_presets } from "./script_presets";
-import { type StemRouting, ranked_routes } from "./stem_routes";
+import { STEM_TURNS, type StemRouting, ranked_routes } from "./stem_routes";
 import { WordHover } from "./word_ui";
 
 // Tries out candidate scripts on real text: stems with a rung per mark, a stave with a mark per
@@ -509,13 +509,13 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
         </Row>
         <Row
           label="Turns"
-          hint="Which rungs a U-turn may join: only the next one, or past rows whose rungs don't reach that side"
+          hint="Which rungs a U-turn may join: only the next one; past rows whose rungs don't reach that side; any, one turn wrapping round another; or any, crossing"
           off={stems_style.join !== "cursive" && "Only cursive stems"}
         >
           <Toggle
-            options={["next rung", "skip clear rows"]}
-            value={stems_style.turns === "clear" ? 1 : 0}
-            on_change={(i) => set_stems_style({ ...stems_style, turns: i === 1 ? "clear" : "next" })}
+            options={["next rung", "skip clear rows", "nest", "cross"]}
+            value={STEM_TURNS.indexOf(stems_style.turns)}
+            on_change={(i) => set_stems_style({ ...stems_style, turns: STEM_TURNS[i]! })}
           />
         </Row>
         <Row
@@ -952,7 +952,7 @@ function RouteExplorer({
   set_id: (id: number) => void;
 }) {
   const [every, set_every] = useStored("script_routes_every", false);
-  const rules: StemRouting = every ? { turns: "clear", direction: "any", prefer: stems_style.prefer } : stems_style;
+  const rules: StemRouting = every ? { turns: "cross", direction: "any", prefer: stems_style.prefer } : stems_style;
   const states = layout_values(id, phonology, stems);
   const { rungs, routes } = ranked_routes(states, rules);
   const drawn = ranked_routes(states, stems_style).routes[0];
@@ -990,7 +990,14 @@ function RouteExplorer({
                   {route.strokes.length} {route.strokes.length === 1 ? "stroke" : "strokes"}
                 </div>
                 <div className="text-gray-500">
-                  {[route.upward > 0 && `${route.upward} up`, route.skips > 0 && `skips ${route.skips}`].filter(Boolean).join(", ") || "\u00a0"}
+                  {[
+                    route.upward > 0 && `${route.upward} up`,
+                    route.skips > 0 && `skips ${route.skips}`,
+                    route.nests > 0 && "nested",
+                    route.crossings > 0 && `${route.crossings} ${route.crossings === 1 ? "crossing" : "crossings"}`,
+                  ]
+                    .filter(Boolean)
+                    .join(", ") || "\u00a0"}
                 </div>
                 {is_drawn && <div className="text-indigo-700 font-semibold">drawn</div>}
               </div>

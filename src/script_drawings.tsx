@@ -685,26 +685,35 @@ export function StaveCircles(args: CircleLayoutArgs) {
 // rung's outer end to the next one's, on the same side, so it never comes near the stem. A rung
 // that starts a stroke is written out from the stem, ready to join on; one that's joined into is
 // written in to the stem, where the stroke ends; a rung across carries the stroke to its other side.
-function rung_strokes(states: number[], x: number, top: number, row_height: number, reach: number, routing: StemRouting): Point[][] {
-  const { rungs, strokes } = best_route(states, routing);
-  return route_points(rungs, strokes, x, top, row_height, reach);
+// How far a route's turns reach out on each side, in levels beyond the first
+function route_extra(strokes: Step[][]): { left: number; right: number } {
+  const steps = strokes.flat();
+  const deepest = (side: number) => Math.max(1, ...steps.filter((s) => s.from === side && s.depth).map((s) => s.depth!)) - 1;
+  return { left: deepest(-1), right: deepest(1) };
 }
 
-// A route's strokes as lines of horizontal and vertical runs, for rounding
-function route_points(rungs: Rung[], strokes: Step[][], x: number, top: number, row_height: number, reach: number): Point[][] {
-  const bulge = reach * 0.26; // how far a U-turn reaches past the rungs' ends
+// A route's strokes as lines of horizontal and vertical runs, for rounding. Each U-turn reaches out
+// past the rungs' ends by a bulge, and a level further for each depth it's nested or crossed at.
+function route_points(
+  rungs: Rung[],
+  strokes: Step[][],
+  x: number,
+  top: number,
+  { row_height, reach, bulge, level }: { row_height: number; reach: number; bulge: number; level: number },
+): Point[][] {
   const y = (r: number) => top + (rungs[r]!.row + 0.5) * row_height;
   const end = (side: number) => x + side * reach; // a rung's end on a side, or at the stem for 0
   return strokes.map((steps) =>
-    steps.flatMap(({ rung, from, to }, i): Point[] => {
+    steps.flatMap(({ rung, from, to, depth = 1 }, i): Point[] => {
       // The first rung starts where the pen comes in; each after it starts with the U-turn from
       // the rung before, out past both their ends and back in
+      const out = x + from * (reach + bulge + (depth - 1) * level);
       const lead: Point[] =
         i === 0
           ? [[end(from), y(rung)]]
           : [
-              [x + from * (reach + bulge), y(steps[i - 1]!.rung)],
-              [x + from * (reach + bulge), y(rung)],
+              [out, y(steps[i - 1]!.rung)],
+              [out, y(rung)],
             ];
       return [...lead, [end(to), y(rung)]];
     }),
@@ -716,7 +725,10 @@ function stem_measures(size: number) {
   const column = size * 0.72;
   const height = size * 1.2;
   const pad = size * 0.14; // room for the joins between stems
-  return { column, height, pad, row_height: (height - 2 * pad) / 4, reach: column * 0.32, stroke: Math.max(1.5, size / 16) };
+  const reach = column * 0.32;
+  const stroke = Math.max(1.5, size / 16);
+  // A U-turn reaches a bulge past the rungs' ends, and a level further for each depth
+  return { column, height, pad, row_height: (height - 2 * pad) / 4, reach, stroke, bulge: reach * 0.26, level: stroke * 2.2 };
 }
 
 const ROUTE_COLOURS = ["#2563eb", "#dc2626", "#16a34a", "#9333ea"];
@@ -725,10 +737,13 @@ const ROUTE_COLOURS = ["#2563eb", "#dc2626", "#16a34a", "#9333ea"];
 // colour of its own, numbered in the order it's written at the point it starts, with an arrowhead
 // where it ends. The stem, part of the word's own stroke, is grey.
 export function StemRoute({ rungs, strokes, size, curve }: { rungs: Rung[]; strokes: Step[][]; size: number; curve: number }) {
-  const { column, height, pad, row_height, reach, stroke } = stem_measures(size);
-  const width = column * 1.5; // room for the turns, and a start mark at either end
+  const measures = stem_measures(size);
+  const { column, height, pad, reach, stroke, level } = measures;
+  // Room for the turns, however deep, and a start mark at either end
+  const extra = route_extra(strokes);
+  const width = column * 1.5 + 2 * Math.max(extra.left, extra.right) * level;
   const x = width / 2;
-  const lines = route_points(rungs, strokes, x, pad, row_height, reach);
+  const lines = route_points(rungs, strokes, x, pad, measures);
   const dot = size * 0.075;
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="block" fill="none" strokeWidth={stroke}>
@@ -742,7 +757,7 @@ export function StemRoute({ rungs, strokes, size, curve }: { rungs: Rung[]; stro
         const barb = (turn: number): Point => [ex - head * Math.cos(angle + turn), ey - head * Math.sin(angle + turn)];
         return (
           <g key={i} stroke={colour}>
-            <path d={rounded_path(points, curve, { horizontal: reach * 0.26, vertical: Infinity })} strokeLinecap="round" strokeLinejoin="round" />
+            <path d={rounded_path(points, curve, { horizontal: measures.bulge, vertical: Infinity })} strokeLinecap="round" strokeLinejoin="round" />
             <path d={polyline([barb(0.6), [ex, ey], barb(-0.6)])} strokeLinecap="round" strokeLinejoin="round" />
             <circle cx={points[0]![0]} cy={points[0]![1]} r={dot} fill={colour} stroke="none" />
             <text
@@ -805,12 +820,18 @@ export function CursiveStems({
   curve?: number;
   routing?: StemRouting;
 }) {
-  const { column, height, pad, row_height, reach, stroke } = stem_measures(size);
+  const measures = stem_measures(size);
+  const { column, height, pad, stroke, bulge, level } = measures;
+  // Each syllable's column, widened on either side by however deep its turns go there
+  const routes = rows.map((states) => best_route(states, routing));
+  const extras = routes.map((route) => route_extra(route.strokes));
+  const starts = extras.map((_, i) => extras.slice(0, i).reduce((n, e) => n + column + (e.left + e.right) * level, 0));
+  const width = starts.at(-1)! + column + (extras.at(-1)!.left + extras.at(-1)!.right) * level;
+  const middle = (i: number) => starts[i]! + extras[i]!.left * level + column / 2;
   // Down the first stem, then under or over to the next and along it, and so on; each join runs
   // a little past the stems' ends
   const dip = pad * 0.65;
   const [top, bottom] = [pad, height - pad];
-  const middle = (i: number) => i * column + column / 2;
   const stems: Point[] = [[middle(0), top]];
   rows.forEach((_, i) => {
     if (i === 0) return;
@@ -820,9 +841,9 @@ export function CursiveStems({
   stems.push([middle(rows.length - 1), (rows.length - 1) % 2 === 0 ? bottom : top]);
   return (
     <svg
-      width={rows.length * column}
+      width={width}
       height={height}
-      viewBox={`0 0 ${rows.length * column} ${height}`}
+      viewBox={`0 0 ${width} ${height}`}
       className="inline-block align-middle"
       stroke="currentColor"
       strokeWidth={stroke}
@@ -831,9 +852,9 @@ export function CursiveStems({
       fill="none"
     >
       <path d={rounded_path(stems, curve, { horizontal: column / 2, vertical: dip })} />
-      {rows.flatMap((states, i) =>
-        rung_strokes(states, middle(i), pad, row_height, reach, routing).map((points, j) => (
-          <path key={`${i}-${j}`} d={rounded_path(points, curve, { horizontal: reach * 0.26, vertical: Infinity })} />
+      {routes.flatMap(({ rungs, strokes }, i) =>
+        route_points(rungs, strokes, middle(i), pad, measures).map((points, j) => (
+          <path key={`${i}-${j}`} d={rounded_path(points, curve, { horizontal: bulge, vertical: Infinity })} />
         )),
       )}
     </svg>
