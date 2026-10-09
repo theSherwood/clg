@@ -357,3 +357,20 @@ test("the stave as a meander: five full bars, one bridge in each gap, and every 
   }
   expect(new Set(drawings.map((lines) => JSON.stringify(lines))).size).toBe(256);
 });
+
+test("bar scripts on a grid: every word, and every period after one, moves the next word on by whole units", async () => {
+  const { bar_grid, Gates, default_gates_style } = await import("./script_drawings");
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const { createElement } = await import("react");
+  for (const size of [16, 32, 57])
+    for (const weight of [0.2, 0.6, 0.9]) {
+      const { gap, cell, glyph } = bar_grid(size, weight);
+      for (const n of [1, 2, 3, 5]) {
+        const svg = renderToStaticMarkup(createElement(Gates, { rows: Array.from({ length: n }, () => [0, 1, 2, 3]), size, style: { ...default_gates_style, weight } }));
+        const width = Number(/width="([\d.]+)"/.exec(svg)![1]);
+        // On to the next word, and on past a period's cell to the next word
+        for (const advance of [width + gap, width + cell + gap]) expect(Math.abs(advance / cell - Math.round(advance / cell))).toBeLessThan(1e-9);
+        if (n === 1) expect(width).toBeCloseTo(glyph, 9);
+      }
+    }
+});

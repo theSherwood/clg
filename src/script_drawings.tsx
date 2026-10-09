@@ -1098,6 +1098,21 @@ export const default_gates_style: GatesStyle = { weight: 0.6 };
 // square of bars on a grid of pitches, drawn by lines_of; a syllable's square stands a little
 // further from the next than its bars do from each other, so a word's syllables are told apart by
 // their five bars each
+const BAR_APART = 2; // pitches from one syllable's last bar to the next one's first
+const bar_measures = (size: number, weight: number) => {
+  const pitch = (size * 0.8) / (4 + weight);
+  return { pitch, w: weight * pitch };
+};
+
+// Bar scripts are set on a grid of units of three pitches: a syllable (four pitches, and two to the
+// next) takes two, a space between words one, and a period or other punctuation one, so the words
+// in every row start on the grid. A word's drawing reaches half a stroke past its outer bars, so
+// the space is a stroke short of its pitches.
+export function bar_grid(size: number, weight: number) {
+  const { pitch, w } = bar_measures(size, weight);
+  return { gap: (BAR_APART + 3) * pitch - w, cell: 3 * pitch, glyph: 4 * pitch + w };
+}
+
 function BarWord({
   rows,
   size,
@@ -1109,9 +1124,8 @@ function BarWord({
   weight: number;
   lines_of: (marks: number[]) => GridLine[];
 }) {
-  const pitch = (size * 0.8) / (4 + weight);
-  const w = weight * pitch;
-  const apart = 2; // pitches from one syllable's last bar to the next one's first
+  const { pitch, w } = bar_measures(size, weight);
+  const apart = BAR_APART;
   const width = (rows.length * 4 + (rows.length - 1) * apart) * pitch + w;
   const height = 4 * pitch + w;
   return (
@@ -1222,7 +1236,7 @@ export type ScriptRenderer = {
   render: (ids: number[]) => React.ReactNode;
   style?: React.CSSProperties;
   rule?: { color: string; size: number };
-  word_gap?: number; // the space between words, in pixels, where the script sets it
+  grid?: { gap: number; cell: number; glyph: number }; // a script set on a grid: the space between words, a punctuation cell, and a one-syllable word's width, in pixels
   whole_text?: (tokens: ScriptToken[], wrap: (word: Word, node: React.ReactElement) => React.ReactNode) => React.ReactNode;
 };
 
@@ -1247,7 +1261,11 @@ export function script_renderers(
           ? "A stem per syllable, with a rung for each mark; a word's stems joined into one stroke, its rungs by U-turns between their outer ends"
           : "A stem per syllable, with a rung for each mark",
       render: (ids) => <StemsWord rows={ids.map((id) => layout_values(id, phonology, stems))} size={size} style={stems_style} />,
-      word_gap: stems_style.join === "cursive" && stems_style.width === "fixed" ? fixed_glyph_width(size, stems_style) / 2 : undefined,
+      // Fixed stems: each glyph two units, a space or a period one
+      grid:
+        stems_style.join === "cursive" && stems_style.width === "fixed"
+          ? { gap: fixed_glyph_width(size, stems_style) / 2, cell: fixed_glyph_width(size, stems_style) / 2, glyph: fixed_glyph_width(size, stems_style) }
+          : undefined,
       whole_text:
         in_text && stems_style.join === "cursive" && stems_style.form === "block"
           ? (tokens, wrap) => <StemBlocks tokens={tokens} phonology={phonology} layout={stems} style={stems_style} period={period} wrap={wrap} />
@@ -1258,6 +1276,7 @@ export function script_renderers(
       settings: JSON.stringify([phonology, gates, gates_style, size]),
       note: "Five bars a syllable, always all there; each gap between them a gate: open, bridged at the top, at the bottom, or closed",
       render: (ids) => <Gates rows={ids.map((id) => layout_values(id, phonology, gates))} size={size} style={gates_style} />,
+      grid: bar_grid(size, gates_style.weight),
     },
     {
       name: "Stave",
@@ -1273,6 +1292,7 @@ export function script_renderers(
         />
       ),
       rule: in_text && !circles && !meander && stave_style.midline ? { color: stave_style.midline_color, size } : undefined,
+      grid: meander ? bar_grid(size, stave_style.meander_weight) : undefined,
       whole_text: circles
         ? (tokens, wrap) => (
             <StaveCircles

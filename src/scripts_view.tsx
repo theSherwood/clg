@@ -105,7 +105,7 @@ const ScriptText = React.memo(
           {s.whole_text ? (
             <div className="overflow-x-auto">{s.whole_text(tokens, (word, node) => <WordHover word={word}>{node}</WordHover>)}</div>
           ) : (
-            <Written tokens={tokens} render={s.render} size={size} rule={s.rule} period={period} word_gap={s.word_gap} />
+            <Written tokens={tokens} render={s.render} size={size} rule={s.rule} period={period} grid={s.grid} />
           )}
         </div>
       </div>
@@ -120,14 +120,17 @@ function Written({
   size,
   rule,
   period,
-  word_gap,
+  grid,
 }: {
   tokens: ScriptToken[];
   render: (ids: number[]) => React.ReactNode;
   size?: number;
   period?: PeriodStyle;
   rule?: { color: string; size: number };
-  word_gap?: number; // in pixels, instead of half an em; a period then takes the space before it
+  // A script set on a grid: the space between words, the cell a period or other punctuation takes
+  // in place of the space before it, and a one-syllable word's width (which a word with no root
+  // yet takes, as a ?), in pixels, so every word starts on the grid
+  grid?: { gap: number; cell: number; glyph: number };
 }) {
   const ruled: React.CSSProperties | undefined = rule && {
     lineHeight: 1,
@@ -139,16 +142,16 @@ function Written({
   };
   return (
     <div
-      className={`flex flex-wrap items-center ${word_gap === undefined ? "gap-x-[0.5em]" : ""}`}
-      style={{ rowGap: ROW_GAP, columnGap: word_gap, ...ruled }}
+      className={`flex flex-wrap items-center ${grid === undefined ? "gap-x-[0.5em]" : ""}`}
+      style={{ rowGap: ROW_GAP, columnGap: grid?.gap, ...ruled }}
     >
       {tokens.map((t, i) =>
-        "punctuation" in t && t.punctuation === "." && size ? (
-          <span
-            key={i}
-            className="flex items-center justify-center"
-            style={word_gap === undefined ? undefined : { marginLeft: -word_gap, width: word_gap }}
-          >
+        "punctuation" in t && grid ? (
+          <span key={i} className="flex shrink-0 items-center justify-center text-gray-500" style={{ marginLeft: -grid.gap, width: grid.cell }}>
+            {t.punctuation === "." && size ? <Period size={size} style={period} /> : t.punctuation}
+          </span>
+        ) : "punctuation" in t && t.punctuation === "." && size ? (
+          <span key={i} className="flex items-center">
             <Period size={size} style={period} />
           </span>
         ) : "punctuation" in t ? (
@@ -162,6 +165,10 @@ function Written({
         ) : t.ids ? (
           <span key={i} title={t.text}>
             {render(t.ids)}
+          </span>
+        ) : grid ? (
+          <span key={i} className="flex shrink-0 justify-center text-red-500 text-sm" style={{ width: grid.glyph }} title={`${t.text}: no root yet`}>
+            ?
           </span>
         ) : (
           <span key={i} className="text-red-500 text-sm" title="No root yet">
