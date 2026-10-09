@@ -325,8 +325,8 @@ export function Line({ marks, size, style = default_line_style }: { marks: numbe
 // unless a condensed sentence puts its period right after it instead. Rings are a line apart, and
 // all are as big as the longest sentence for its place needs, so the writing stays one size. With
 // even spacing a sentence shorter than its ring has its gaps widened until it closes the circle;
-// condensed, it keeps its gaps, leaving the rest of the ring empty, and either runs up to its
-// period at the top or starts at the top with its period right after its last word. The first
+// condensed, it keeps its gaps, and either starts just after its period at the top, leaving the
+// room to spare before the period, or starts at the top with its period right after it. The first
 // sentence is the outer ring when growing in, and the inner one when growing out.
 type CircleItem = { geometry: LineGeometry; word?: Word } | { period: true } | { blank: number };
 
@@ -395,12 +395,12 @@ export function LineCircles({
     const R = radii[k]!;
     const circumference = 2 * Math.PI * R;
     const ring_gap = style.spacing === "even" ? gap + (circumference - lengths[k]!) / items.length : gap;
-    // Lay the sentence out back from its end, so its last item (its period) is centred at the top
+    // With the period at the top, the sentence starts just clockwise of it and any room to spare is
+    // left between its last word and the period; otherwise it starts at the top and the period
+    // follows its last word
+    const period_at_top = style.spacing === "even" || style.period_position === "top";
     const last = items.at(-1)!;
-    // how far past the top the sentence ends: half its period, or for a sentence without one, its
-    // last word stops half a gap short of the top
-    const tail = "period" in last ? width_of(last) / 2 : -ring_gap / 2;
-    const used = items.reduce((n, item) => n + width_of(item), 0) + (items.length - 1) * ring_gap;
+    const half_period = "period" in last ? width_of(last) / 2 : 0;
     // Where a point along the ring goes: x along the circle from the top, y below the line inward
     const place = (x: number, y: number): Point => {
       const angle = -Math.PI / 2 + (2 * Math.PI * x) / circumference;
@@ -423,10 +423,7 @@ export function LineCircles({
         <circle key={`mid${k}`} cx={centre} cy={centre} r={R} stroke={style.midline_color} strokeWidth={midline_width(size)} />,
       );
     }
-    let x =
-      style.spacing === "condensed" && style.period_position === "after"
-        ? ring_gap / 2 // start just past the top
-        : circumference + tail - used;
+    let x = period_at_top ? half_period + ring_gap : ring_gap / 2;
     items.forEach((item, i) => {
       const width = width_of(item);
       if ("geometry" in item) {
@@ -453,9 +450,10 @@ export function LineCircles({
         );
         nodes.push(item.word ? <React.Fragment key={`${k}-${i}`}>{wrap(item.word, word)}</React.Fragment> : word);
       } else if ("period" in item) {
-        const [px, py] = place(x + width / 2, 0);
+        const at = period_at_top ? circumference : x + width / 2;
+        const [px, py] = place(at, 0);
         nodes.push(
-          <g key={`${k}-${i}`} transform={`translate(${px} ${py}) rotate(${turn(x + width / 2)})`}>
+          <g key={`${k}-${i}`} transform={`translate(${px} ${py}) rotate(${turn(at)})`}>
             {draw_mark(period.shape, 0, 0, Math.max(width / 2 - stroke, stroke))}
           </g>,
         );
