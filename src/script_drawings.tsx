@@ -118,6 +118,7 @@ export type LineStyle = {
   midline_color: string;
   midline_shape: "straight" | "circle";
   grow: "in" | "out";
+  spacing: "even" | "condensed";
 };
 export const default_line_style: LineStyle = {
   join: "cursive",
@@ -127,6 +128,7 @@ export const default_line_style: LineStyle = {
   midline_color: "#4b5563",
   midline_shape: "straight",
   grow: "in",
+  spacing: "even",
 };
 
 // The midline is ruled like lined paper: thinner than the writing, in its own colour
@@ -316,11 +318,13 @@ export function Line({ marks, size, style = default_line_style }: { marks: numbe
   );
 }
 
-// The line script round circles: each sentence is a ring, read clockwise from the top, with the
-// marks above the line outside it and those below inside. Rings are a line apart, and all are as
-// big as the longest sentence for its place needs, so the writing stays one size; a sentence
-// shorter than its ring has its gaps widened until it closes the circle. The first sentence is the
-// outer ring when growing in, and the inner one when growing out.
+// The line script round circles: each sentence is a ring, read clockwise, with the marks above the
+// line outside it and those below inside, and every sentence ends at the top, so the periods line
+// up. Rings are a line apart, and all are as big as the longest sentence for its place needs, so
+// the writing stays one size. With even spacing a sentence shorter than its ring has its gaps
+// widened until it closes the circle; condensed, it keeps its gaps and runs up to its period,
+// leaving the rest of the ring empty. The first sentence is the outer ring when growing in, and the
+// inner one when growing out.
 type CircleItem = { geometry: LineGeometry; word?: Word } | { period: true } | { blank: number };
 
 export function LineCircles({
@@ -387,7 +391,13 @@ export function LineCircles({
   rings.forEach((items, k) => {
     const R = radii[k]!;
     const circumference = 2 * Math.PI * R;
-    const ring_gap = gap + (circumference - lengths[k]!) / items.length;
+    const ring_gap = style.spacing === "even" ? gap + (circumference - lengths[k]!) / items.length : gap;
+    // Lay the sentence out back from its end, so its last item (its period) is centred at the top
+    const last = items.at(-1)!;
+    // how far past the top the sentence ends: half its period, or for a sentence without one, its
+    // last word stops half a gap short of the top
+    const tail = "period" in last ? width_of(last) / 2 : -ring_gap / 2;
+    const used = items.reduce((n, item) => n + width_of(item), 0) + (items.length - 1) * ring_gap;
     // Where a point along the ring goes: x along the circle from the top, y below the line inward
     const place = (x: number, y: number): Point => {
       const angle = -Math.PI / 2 + (2 * Math.PI * x) / circumference;
@@ -410,7 +420,7 @@ export function LineCircles({
         <circle key={`mid${k}`} cx={centre} cy={centre} r={R} stroke={style.midline_color} strokeWidth={midline_width(size)} />,
       );
     }
-    let x = ring_gap / 2;
+    let x = circumference + tail - used;
     items.forEach((item, i) => {
       const width = width_of(item);
       if ("geometry" in item) {

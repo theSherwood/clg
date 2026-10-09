@@ -500,11 +500,18 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
               on_change={(i) => set_line_style({ ...line_style, midline_shape: i === 1 ? "circle" : "straight" })}
             />
             {line_style.midline_shape === "circle" && (
-              <Toggle
-                options={["grow in", "grow out"]}
-                value={line_style.grow === "out" ? 1 : 0}
-                on_change={(i) => set_line_style({ ...line_style, grow: i === 1 ? "out" : "in" })}
-              />
+              <>
+                <Toggle
+                  options={["grow in", "grow out"]}
+                  value={line_style.grow === "out" ? 1 : 0}
+                  on_change={(i) => set_line_style({ ...line_style, grow: i === 1 ? "out" : "in" })}
+                />
+                <Toggle
+                  options={["even", "condensed"]}
+                  value={line_style.spacing === "condensed" ? 1 : 0}
+                  on_change={(i) => set_line_style({ ...line_style, spacing: i === 1 ? "condensed" : "even" })}
+                />
+              </>
             )}
             <label className="flex items-center gap-1" title="Midline colour">
               colour
