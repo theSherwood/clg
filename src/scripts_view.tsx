@@ -77,7 +77,7 @@ function Written({
     <div className="flex flex-wrap items-center gap-x-[0.5em] gap-y-1">
       {tokens.map((t, i) =>
         "punctuation" in t && t.punctuation === "." && size ? (
-          <span key={i} className="-ml-[0.25em]">
+          <span key={i} className="-ml-[0.25em] flex items-center">
             <Period size={size} />
           </span>
         ) : "punctuation" in t ? (
@@ -86,7 +86,7 @@ function Written({
           </span>
         ) : t.ids && t.word ? (
           <WordHover key={i} word={t.word}>
-            <span className="cursor-default">{render(t.ids)}</span>
+            <span className="cursor-default flex items-center">{render(t.ids)}</span>
           </WordHover>
         ) : t.ids ? (
           <span key={i} title={t.text}>

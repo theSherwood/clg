@@ -247,7 +247,7 @@ export function Period({ size }: { size: number }) {
   const d = size * 0.3;
   const stroke = Math.max(1.5, size / 16);
   return (
-    <svg width={d} height={d} viewBox={`0 0 ${d} ${d}`} className="inline-block align-middle">
+    <svg width={d} height={d} viewBox={`0 0 ${d} ${d}`} className="block">
       <circle cx={d / 2} cy={d / 2} r={d / 2 - stroke} fill="none" stroke="currentColor" strokeWidth={stroke} />
     </svg>
   );
