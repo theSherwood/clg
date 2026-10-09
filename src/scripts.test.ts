@@ -115,3 +115,24 @@ test("condensed, the constraint solver lays the Lord's Prayer out tighter than t
   const babel = babel_verses.map((a) => a.transliteration).join(" ");
   expect(best_layout(args(babel, "even"))!.overlaps).toBe(0);
 });
+
+test("flowing the circles lays the texts out with no overlaps, tighter than the relaxation", async () => {
+  const { circle_layout, flow_layout, default_line_style, default_period } = await import("./script_drawings");
+  const { default_line } = await import("./scripts");
+  const { lords_prayer, babel_verses } = await import("./examples");
+  const args = (text: string, spacing: "even" | "condensed") => ({
+    tokens: script_tokens(text, default_phonology),
+    phonology: default_phonology,
+    layout: default_line,
+    style: { ...default_line_style, midline_shape: "circle" as const, subclauses: "circles" as const, spacing, solver: "flow" as const },
+    period: default_period,
+    size: 28,
+    wrap: (_: unknown, node: unknown) => node as never,
+  });
+  for (const text of [lords_prayer, babel_verses].map((t) => t.map((a) => a.transliteration).join(" ")))
+    for (const spacing of ["even", "condensed"] as const) {
+      const flowed = flow_layout(args(text, spacing))!;
+      expect(flowed.overlaps).toBe(0);
+      expect(flowed.extent).toBeLessThan(circle_layout(args(text, spacing))!.extent);
+    }
+});

@@ -517,9 +517,9 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
                   on_change={(i) => set_line_style({ ...line_style, subclauses: i === 1 ? "circles" : "inline" })}
                 />
                 <Toggle
-                  options={["relax", "constraint solver"]}
-                  value={line_style.solver === "constraints" ? 1 : 0}
-                  on_change={(i) => set_line_style({ ...line_style, solver: i === 1 ? "constraints" : "relax" })}
+                  options={["relax", "constraint solver", "flow"]}
+                  value={["relax", "constraints", "flow"].indexOf(line_style.solver)}
+                  on_change={(i) => set_line_style({ ...line_style, solver: (["relax", "constraints", "flow"] as const)[i]! })}
                 />
                 {line_style.solver === "constraints" && (
                   <Toggle

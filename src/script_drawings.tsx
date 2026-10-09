@@ -1,4 +1,5 @@
 import React from "react";
+import { flow_circles } from "./circle_flow";
 import { solve_circles } from "./circle_solver";
 import { T, type Word } from "./dict";
 import { type Phonology } from "./phonology";
@@ -123,7 +124,7 @@ export type LineStyle = {
   period_position: "top" | "after"; // where a condensed sentence's period goes
   subclauses: "inline" | "circles"; // on circles, whether subclauses get circles of their own
   clause_words: "hide" | "show"; // with subclause circles, whether <clause_start> and <clause_end> are written
-  solver: "relax" | "constraints"; // how the circles are laid out: see circle_layout and circle_solver.ts
+  solver: "relax" | "constraints" | "flow"; // how the circles are laid out: see circle_layout, circle_solver.ts and circle_flow.ts
   ring_sizing: "full" | "tight"; // with the constraint solver: inner rings as big as they can be, or every ring as small
 };
 export const default_line_style: LineStyle = {
@@ -138,7 +139,7 @@ export const default_line_style: LineStyle = {
   period_position: "top",
   subclauses: "inline",
   clause_words: "hide",
-  solver: "relax",
+  solver: "flow",
   ring_sizing: "full",
 };
 
@@ -440,7 +441,12 @@ type CircleLayoutArgs = {
 };
 
 export function LineCircles(args: CircleLayoutArgs) {
-  const laid_out = args.style.solver === "constraints" ? best_layout(args) : circle_layout(args);
+  const laid_out =
+    args.style.solver === "flow"
+      ? flow_layout(args)
+      : args.style.solver === "constraints"
+        ? best_layout(args)
+        : circle_layout(args);
   if (!laid_out) return null;
   const centre = laid_out.extent + args.size * 0.3;
   const side = 2 * centre;
@@ -450,6 +456,9 @@ export function LineCircles(args: CircleLayoutArgs) {
     </svg>
   );
 }
+
+// The circles laid out by flowing each ring round what's inside it (circle_flow.ts)
+export const flow_layout = (args: CircleLayoutArgs) => constraint_layout(args, undefined, undefined, flow_circles);
 
 // The constraint solver's layout where it settles with nothing overlapping and comes out smaller,
 // and otherwise the relaxation's, which always settles
@@ -478,6 +487,7 @@ export function constraint_layout(
   { tokens, phonology, layout, style, period, size, wrap }: CircleLayoutArgs,
   given?: CircleItem[][],
   start?: Placement,
+  solve: (options: Parameters<typeof solve_circles>[0]) => ReturnType<typeof solve_circles> = solve_circles,
 ) {
   const stroke = Math.max(1.5, size / 16);
   const rings =
@@ -491,7 +501,7 @@ export function constraint_layout(
     );
   if (rings.length === 0) return undefined;
   const period_width = size * 0.3 * period.scale;
-  const solved = solve_circles({ rings, style, size, period_width, start });
+  const solved = solve({ rings, style, size, period_width, start });
   const step = size * 0.08; // straight lines are cut this fine so they bend with the ring
   const nodes: React.ReactNode[] = [];
   let extent = 0;
