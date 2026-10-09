@@ -61,6 +61,39 @@ export const default_stems: MarkLayout = {
   },
 };
 
+// Gates: five bars of the same height, always all there, so every syllable fills its square; the
+// four gaps between them are a mark each, left to right, and each gap a gate: open, bridged at
+// the top, bridged at the bottom, or both, a closed cell (bit 1 top, bit 2 bottom). Bridges join
+// only neighbouring bars, top and bottom, so the gates make exactly 2⁸ = 256 drawings, every one a
+// syllable.
+export const GATES = ["open", "top", "bottom", "closed"] as const;
+
+// Place, manner, vowel, final, left to right, and each mark's values in order take an open gate,
+// a top, a bottom and a closed one, so the most common value of each (velar, unvoiced, a, no
+// final) leaves its gap open
+export const default_gates: MarkLayout = {
+  order: ["C", "M", "V", "N"],
+  values: {
+    C: { velar: 0, coronal: 1, labial: 2, sibilant: 3 },
+    M: { unvoiced: 0, voiced: 1, fricative: 2, "voiced fricative": 3 },
+    V: { a: 0, e: 1, o: 2, u: 3 },
+    N: { none: 0, n: 1, r: 2, i: 3 },
+  },
+};
+
+// A syllable in gates as lines on a grid of pitches, x from 0 to 4 and y from 0 (top) to 4: the
+// five bars, then each gate's bridges
+export type GridLine = [number, number, number, number];
+export function gate_lines(gates: number[]): GridLine[] {
+  return [
+    ...[0, 1, 2, 3, 4].map((x): GridLine => [x, 0, x, 4]),
+    ...gates.flatMap((gate, i): GridLine[] => [
+      ...(gate & 1 ? [[i, 0, i + 1, 0] as GridLine] : []),
+      ...(gate & 2 ? [[i, 4, i + 1, 4] as GridLine] : []),
+    ]),
+  ];
+}
+
 // The stave script: a word is a horizontal line written in one stroke, and each syllable four
 // marks along it, left to right, each a flat-topped bump or a small loop, above or below the line
 // (bit 1 below, bit 2 loop). Every position has a mark, so a syllable is always four marks long.

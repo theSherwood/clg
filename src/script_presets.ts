@@ -1,5 +1,5 @@
-import { type ScriptSettings, default_period, default_stave_style, default_stems_style } from "./script_drawings";
-import { default_stave, default_stems, default_syllabics } from "./scripts";
+import { type ScriptSettings, default_gates_style, default_period, default_stave_style, default_stems_style } from "./script_drawings";
+import { default_gates, default_stave, default_stems, default_syllabics } from "./scripts";
 
 // Named sets of script settings for the playground: a few built in, and any the reader saves,
 // kept in this browser. A preset holds every script setting but the size and the text.
@@ -9,6 +9,8 @@ export type Preset = { name: string; settings: ScriptSettings; builtin?: true };
 const defaults: ScriptSettings = {
   stems: default_stems,
   stems_style: default_stems_style,
+  gates: default_gates,
+  gates_style: default_gates_style,
   stave: default_stave,
   stave_style: default_stave_style,
   syllabics: default_syllabics,
@@ -62,6 +64,8 @@ export function load_saved_presets(): Preset[] {
         settings: {
           stems: { ...defaults.stems, ...p.settings.stems },
           stems_style: { ...defaults.stems_style, ...p.settings.stems_style },
+          gates: { ...defaults.gates, ...p.settings.gates },
+          gates_style: { ...defaults.gates_style, ...p.settings.gates_style },
           stave: { ...defaults.stave, ...p.settings.stave },
           stave_style: { ...defaults.stave_style, ...p.settings.stave_style },
           syllabics: { ...defaults.syllabics, ...p.settings.syllabics },

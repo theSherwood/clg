@@ -5,6 +5,8 @@ import {
   clashes,
   default_stave,
   default_stems,
+  default_gates,
+  gate_lines,
   default_syllabics,
   layout_values,
   script_tokens,
@@ -13,8 +15,8 @@ import {
 
 const ids = Array.from({ length: 256 }, (_, id) => id);
 
-test("the default stems and stave marks give every syllable its own drawing", () => {
-  for (const layout of [default_stems, default_stave]) {
+test("the default stems, gates and stave marks give every syllable its own drawing", () => {
+  for (const layout of [default_stems, default_gates, default_stave]) {
     const drawings = ids.map((id) => layout_values(id, default_phonology, layout).join(""));
     expect(new Set(drawings).size).toBe(256);
     for (const mark of layout.order) {
@@ -320,4 +322,22 @@ test("stem blocks: every stroke on the grid stays inside its block, at any width
             }
           }
         }
+});
+
+test("gates: every syllable is five full bars, its own drawing, and the 256 are every way to bridge them", () => {
+  const drawings = ids.map((id) => gate_lines(layout_values(id, default_phonology, default_gates)));
+  for (const lines of drawings) {
+    // The five bars, top to bottom, always
+    for (const x of [0, 1, 2, 3, 4]) expect(lines).toContainEqual([x, 0, x, 4]);
+    // Every other line a bridge between neighbouring bars at the top or the bottom
+    for (const [x1, y1, x2, y2] of lines.slice(5)) {
+      expect(y1).toBe(y2);
+      expect([0, 4]).toContain(y1);
+      expect(x2 - x1).toBe(1);
+    }
+  }
+  const keys = drawings.map((lines) => JSON.stringify(lines.slice(5)));
+  expect(new Set(keys).size).toBe(256);
+  // Eight bridges can each be there or not, and every one of those 2^8 drawings is a syllable
+  expect(new Set(drawings.map((lines) => lines.slice(5).length)).size).toBe(9);
 });

@@ -16,6 +16,8 @@ import {
   clashes,
   default_stave,
   default_stems,
+  default_gates,
+  GATES,
   default_syllabics,
   script_tokens,
   layout_values,
@@ -37,6 +39,9 @@ import {
   midline_width,
   SCRIPT_KEYS,
   SYLLABICS_FONT,
+  Gates,
+  type GatesStyle,
+  default_gates_style,
   StemsWord,
   StemRoute,
   STEM_JOINS,
@@ -396,6 +401,8 @@ const AllSyllables = React.memo(
     a.phonology === b.phonology &&
     a.stems === b.stems &&
     a.stems_style === b.stems_style &&
+    a.gates === b.gates &&
+    a.gates_style === b.gates_style &&
     a.stave === b.stave &&
     a.syllabics === b.syllabics &&
     a.size === b.size &&
@@ -406,6 +413,8 @@ function AllSyllablesGrid({
   phonology,
   stems,
   stems_style,
+  gates,
+  gates_style,
   stave,
   stave_style,
   syllabics,
@@ -415,6 +424,8 @@ function AllSyllablesGrid({
   phonology: Phonology;
   stems: MarkLayout;
   stems_style: StemsStyle;
+  gates: MarkLayout;
+  gates_style: GatesStyle;
   stave: MarkLayout;
   stave_style: StaveStyle;
   syllabics: SyllabicsSettings;
@@ -437,11 +448,12 @@ function AllSyllablesGrid({
                     className="border border-gray-200 px-1 text-center align-top cursor-pointer hover:bg-indigo-50"
                   >
                     <div className="text-[10px] font-mono text-indigo-700">{syllable_of(id, phonology)}</div>
-                    {/* Stems and the stave side by side, syllabics under them */}
+                    {/* Stems and the stave side by side, gates and syllabics under them */}
                     <div className="grid grid-cols-2 items-center justify-items-center gap-x-1">
                       <StemsWord rows={[layout_values(id, phonology, stems)]} size={size * 0.7} style={stems_style} />
                       <Stave marks={[layout_values(id, phonology, stave)]} size={size * 0.6} style={stave_style} />
-                      <div style={{ fontSize: size * 0.5, fontFamily: SYLLABICS_FONT }} className="col-span-2 leading-tight whitespace-nowrap">
+                      <Gates rows={[layout_values(id, phonology, gates)]} size={size * 0.6} style={gates_style} />
+                      <div style={{ fontSize: size * 0.5, fontFamily: SYLLABICS_FONT }} className="leading-tight whitespace-nowrap">
                         {syllabics_glyphs(id, phonology, syllabics)}
                       </div>
                     </div>
@@ -459,6 +471,8 @@ function AllSyllablesGrid({
 export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
   const [stems, set_stems] = useStored<MarkLayout>(SCRIPT_KEYS.stems, default_stems);
   const [stems_style, set_stems_style] = useStored<StemsStyle>(SCRIPT_KEYS.stems_style, default_stems_style);
+  const [gates, set_gates] = useStored<MarkLayout>(SCRIPT_KEYS.gates, default_gates);
+  const [gates_style, set_gates_style] = useStored<GatesStyle>(SCRIPT_KEYS.gates_style, default_gates_style);
   const [stave, set_stave] = useStored<MarkLayout>(SCRIPT_KEYS.stave, default_stave);
   const [stave_style, set_stave_style] = useStored<StaveStyle>(SCRIPT_KEYS.stave_style, default_stave_style);
   const [grid_open, set_grid_open] = useState(false);
@@ -478,17 +492,19 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
   const tokens = useMemo(() => script_tokens(text, phonology), [text, phonology]);
   const sounds = (ids: number[]) => ids.map((id) => syllable_of(id, phonology)).join("");
 
-  const scripts = script_renderers(phonology, { stems, stems_style, stave, stave_style, syllabics, period }, size, true);
+  const scripts = script_renderers(phonology, { stems, stems_style, gates, gates_style, stave, stave_style, syllabics, period }, size, true);
 
   const set_style = (change: Partial<StaveStyle>) => set_stave_style({ ...stave_style, ...change });
   const blocks = stems_style.join === "cursive" && stems_style.form === "block";
   const circles = stave_style.midline_shape === "circle";
   const subclause_circles = circles && stave_style.subclauses === "circles";
 
-  const settings: ScriptSettings = { stems, stems_style, stave, stave_style, syllabics, period };
+  const settings: ScriptSettings = { stems, stems_style, gates, gates_style, stave, stave_style, syllabics, period };
   const apply = (s: ScriptSettings) => {
     set_stems(s.stems);
     set_stems_style(s.stems_style);
+    set_gates(s.gates);
+    set_gates_style(s.gates_style);
     set_stave(s.stave);
     set_stave_style(s.stave_style);
     set_syllabics(s.syllabics);
@@ -631,6 +647,30 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
             set_layout={set_stems}
             positions="rows"
             options={RUNGS.map((r, i) => `${["│", "┤", "├", "┼"][i]} ${r}`)}
+          />
+        </div>
+      </div>
+    ),
+    gates: (
+      <div className="space-y-3">
+        <Row label="Weight" hint="The strokes, as a share of the pitch between bars">
+          <Slider
+            value={gates_style.weight}
+            min={0.15}
+            max={0.9}
+            step={0.05}
+            on_change={(weight) => set_gates_style({ ...gates_style, weight })}
+            format={(v) => `${Math.round(v * 100)}%`}
+          />
+        </Row>
+        <div>
+          <p className="text-gray-500 mb-1.5">A gate per gap between the five bars, left to right</p>
+          <LayoutControls
+            phonology={phonology}
+            layout={gates}
+            set_layout={set_gates}
+            positions="gaps"
+            options={GATES.map((g, i) => `${["‖", "⊓", "⊔", "□"][i]} ${g}`)}
           />
         </div>
       </div>
@@ -823,6 +863,8 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
                 phonology={phonology}
                 stems={stems}
                 stems_style={stems_style}
+                gates={gates}
+                gates_style={gates_style}
                 stave={stave}
                 stave_style={stave_style}
                 syllabics={syllabics}
@@ -840,6 +882,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
 const SECTIONS = [
   ["general", "General"],
   ["stems", "Stems"],
+  ["gates", "Gates"],
   ["stave", "Stave"],
   ["circles", "Stave in rings"],
   ["syllabics", "Syllabics"],

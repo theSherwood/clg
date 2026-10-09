@@ -9,6 +9,8 @@ import {
   type SyllabicsSettings,
   default_stave,
   default_stems,
+  default_gates,
+  gate_lines,
   default_syllabics,
   layout_values,
   type ScriptToken,
@@ -1082,6 +1084,40 @@ export function StemBlocks({
   );
 }
 
+// Gates' style: weight, the strokes as a share of the pitch between bars
+export type GatesStyle = { weight: number };
+export const default_gates_style: GatesStyle = { weight: 0.6 };
+
+// A word in gates: each syllable a square of five bars, the gates between them bridged at the top,
+// the bottom, both or neither; a syllable's square stands a little further from the next than its
+// bars do from each other, so a word's syllables are told apart by their five bars each
+export function Gates({ rows, size, style }: { rows: number[][]; size: number; style: GatesStyle }) {
+  const pitch = (size * 0.8) / (4 + style.weight);
+  const w = style.weight * pitch;
+  const apart = 2; // pitches from one syllable's last bar to the next one's first
+  const width = (rows.length * 4 + (rows.length - 1) * apart) * pitch + w;
+  const height = 4 * pitch + w;
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      className="inline-block align-middle"
+      stroke="currentColor"
+      strokeWidth={w}
+      strokeLinecap="square"
+      fill="none"
+    >
+      {rows.flatMap((gates, i) =>
+        gate_lines(gates).map(([x1, y1, x2, y2], j) => {
+          const left = i * (4 + apart);
+          return <line key={`${i}-${j}`} x1={(left + x1) * pitch + w / 2} y1={y1 * pitch + w / 2} x2={(left + x2) * pitch + w / 2} y2={y2 * pitch + w / 2} />;
+        }),
+      )}
+    </svg>
+  );
+}
+
 // The period in every script: a small mark on the midline, level with the words' middles, a
 // circle, tick, square or diamond, scaled from its usual size
 export type PeriodStyle = { shape: LoopMark; scale: number };
@@ -1113,6 +1149,8 @@ export function Period({ size, style = default_period }: { size: number; style?:
 export type ScriptSettings = {
   stems: MarkLayout;
   stems_style: StemsStyle;
+  gates: MarkLayout;
+  gates_style: GatesStyle;
   stave: MarkLayout;
   stave_style: StaveStyle;
   syllabics: SyllabicsSettings;
@@ -1122,6 +1160,8 @@ export type ScriptSettings = {
 export const SCRIPT_KEYS = {
   stems: "script_stems",
   stems_style: "script_stems_style",
+  gates: "script_gates",
+  gates_style: "script_gates_style",
   stave: "script_line",
   stave_style: "script_line_style",
   period: "script_period",
@@ -1132,6 +1172,8 @@ export function stored_script_settings(): ScriptSettings {
   return {
     stems: load(SCRIPT_KEYS.stems, default_stems),
     stems_style: load(SCRIPT_KEYS.stems_style, default_stems_style),
+    gates: load(SCRIPT_KEYS.gates, default_gates),
+    gates_style: load(SCRIPT_KEYS.gates_style, default_gates_style),
     stave: load(SCRIPT_KEYS.stave, default_stave),
     stave_style: load(SCRIPT_KEYS.stave_style, default_stave_style),
     period: load(SCRIPT_KEYS.period, default_period),
@@ -1163,7 +1205,7 @@ export function script_renderers(
   size: number,
   in_text = false,
 ): ScriptRenderer[] {
-  const { stems, stems_style, stave, stave_style, syllabics, period } = settings;
+  const { stems, stems_style, gates, gates_style, stave, stave_style, syllabics, period } = settings;
   const circles = in_text && stave_style.midline_shape === "circle";
   return [
     {
@@ -1179,6 +1221,12 @@ export function script_renderers(
         in_text && stems_style.join === "cursive" && stems_style.form === "block"
           ? (tokens, wrap) => <StemBlocks tokens={tokens} phonology={phonology} layout={stems} style={stems_style} period={period} wrap={wrap} />
           : undefined,
+    },
+    {
+      name: "Gates",
+      settings: JSON.stringify([phonology, gates, gates_style, size]),
+      note: "Five bars a syllable, always all there; each gap between them a gate: open, bridged at the top, at the bottom, or closed",
+      render: (ids) => <Gates rows={ids.map((id) => layout_values(id, phonology, gates))} size={size} style={gates_style} />,
     },
     {
       name: "Stave",
