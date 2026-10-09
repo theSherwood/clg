@@ -28,6 +28,7 @@ import {
   type LineStyle,
   Period,
   default_line_style,
+  midline_width,
   SCRIPT_KEYS,
   SYLLABICS_FONT,
   Stems,
@@ -66,20 +67,34 @@ const PRESETS: { label: string; text: string }[] = [
 
 // A text in one script. With a size, it's written in a script, whose period is a circle on the
 // midline; without, it's the sounds, punctuated as usual
+// rule: a midline ruled under every row, like lined paper, at the middle of the words (each row
+// is the words' height, and rows are ROW_GAP apart)
+const ROW_GAP = 4;
+
 function Written({
   tokens,
   render,
   size,
+  rule,
 }: {
   tokens: ScriptToken[];
   render: (ids: number[]) => React.ReactNode;
   size?: number;
+  rule?: { color: string; size: number };
 }) {
+  const ruled: React.CSSProperties | undefined = rule && {
+    lineHeight: 1,
+    backgroundImage: (() => {
+      const half = midline_width(rule.size) / 2;
+      const middle = rule.size / 2;
+      return `repeating-linear-gradient(to bottom, transparent 0 ${middle - half}px, ${rule.color} ${middle - half}px ${middle + half}px, transparent ${middle + half}px ${rule.size + ROW_GAP}px)`;
+    })(),
+  };
   return (
-    <div className="flex flex-wrap items-center gap-x-[0.5em] gap-y-1">
+    <div className="flex flex-wrap items-center gap-x-[0.5em]" style={{ rowGap: ROW_GAP, ...ruled }}>
       {tokens.map((t, i) =>
         "punctuation" in t && t.punctuation === "." && size ? (
-          <span key={i} className="-ml-[0.25em] flex items-center">
+          <span key={i} className="flex items-center">
             <Period size={size} />
           </span>
         ) : "punctuation" in t ? (
@@ -349,7 +364,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
   const tokens = useMemo(() => script_tokens(text, phonology), [text, phonology]);
   const sounds = (ids: number[]) => ids.map((id) => syllable_of(id, phonology)).join("");
 
-  const scripts = script_renderers(phonology, { stems, line, line_style, syllabics }, size);
+  const scripts = script_renderers(phonology, { stems, line, line_style, syllabics }, size, true);
 
   return (
     <div className="mb-4 p-3 rounded border border-gray-200 bg-gray-50 text-sm">
@@ -406,7 +421,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
             {s.name} <span className="font-normal text-gray-400">{s.note}</span>
           </h3>
           <div style={s.style} className="text-gray-900">
-            <Written tokens={tokens} render={s.render} size={size} />
+            <Written tokens={tokens} render={s.render} size={size} rule={s.rule} />
           </div>
         </div>
       ))}
@@ -439,6 +454,15 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
               value={line_style.midline ? 0 : 1}
               on_change={(i) => set_line_style({ ...line_style, midline: i === 0 })}
             />
+            <label className="flex items-center gap-1" title="Midline colour">
+              colour
+              <input
+                type="color"
+                value={line_style.midline_color}
+                onChange={(e) => set_line_style({ ...line_style, midline_color: e.target.value })}
+                className="w-6 h-5 p-0 border border-gray-300 rounded bg-white"
+              />
+            </label>
           </div>
           <LayoutControls
             phonology={phonology}

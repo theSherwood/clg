@@ -139,8 +139,13 @@ function line_path(marks: number[][], size: number, middle: number, start: numbe
 
 // How the line script is drawn: one stroke per word or each mark on its own, curves or straight
 // lines, and whether the midline itself is drawn
-export type LineStyle = { joined: boolean; curves: boolean; midline: boolean };
-export const default_line_style: LineStyle = { joined: true, curves: true, midline: false };
+export type LineStyle = { joined: boolean; curves: boolean; midline: boolean; midline_color: string };
+export const default_line_style: LineStyle = { joined: true, curves: true, midline: false, midline_color: "#93c5fd" };
+
+// The midline is ruled like lined paper: thinner than the writing, in its own colour
+export function midline_width(size: number): number {
+  return Math.max(1, size / 24);
+}
 
 // Each mark on its own: a dash, or a loop drawn as a circle (with curves) or a diamond (without),
 // above or below the line. A separate mark can't run into the next, so syllables can have a gap.
@@ -183,7 +188,17 @@ export function Line({ marks, size, style = default_line_style }: { marks: numbe
       strokeLinejoin="round"
       fill="none"
     >
-      {style.midline && <line x1={stroke} y1={middle} x2={width - stroke} y2={middle} />}
+      {style.midline && (
+        <line
+          x1={0}
+          y1={middle}
+          x2={width}
+          y2={middle}
+          stroke={style.midline_color}
+          strokeWidth={midline_width(size)}
+          strokeLinecap="butt"
+        />
+      )}
       {style.joined ? (
         <path d={line_path(marks, size, middle, stroke, style.curves)} />
       ) : (
@@ -312,15 +327,24 @@ export function stored_script_settings(): ScriptSettings {
   };
 }
 
+// rule: in running text, a midline ruled across the whole text, under every row of words
 export type ScriptRenderer = {
   name: string;
   note: string;
   render: (ids: number[]) => React.ReactNode;
   style?: React.CSSProperties;
+  rule?: { color: string; size: number };
 };
 
 // Each script, as a way to write a word's root IDs
-export function script_renderers(phonology: Phonology, settings: ScriptSettings, size: number): ScriptRenderer[] {
+// In running text (in_text), the line script's midline is ruled across the text rather than drawn
+// under each word, so it doesn't break between words
+export function script_renderers(
+  phonology: Phonology,
+  settings: ScriptSettings,
+  size: number,
+  in_text = false,
+): ScriptRenderer[] {
   const { stems, line, line_style, syllabics } = settings;
   return [
     {
@@ -337,8 +361,13 @@ export function script_renderers(phonology: Phonology, settings: ScriptSettings,
       name: "Line",
       note: "Four marks per syllable along a line: a dash or a loop, above or below",
       render: (ids) => (
-        <Line marks={ids.map((id) => layout_values(id, phonology, line))} size={size} style={line_style} />
+        <Line
+          marks={ids.map((id) => layout_values(id, phonology, line))}
+          size={size}
+          style={in_text ? { ...line_style, midline: false } : line_style}
+        />
       ),
+      rule: in_text && line_style.midline ? { color: line_style.midline_color, size } : undefined,
     },
     {
       name: "Syllabics",
