@@ -521,13 +521,26 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
                   value={["relax", "constraints", "flow"].indexOf(line_style.solver)}
                   on_change={(i) => set_line_style({ ...line_style, solver: (["relax", "constraints", "flow"] as const)[i]! })}
                 />
-                {line_style.solver === "constraints" && (
+                {line_style.solver !== "relax" && (
                   <Toggle
                     options={["rings full", "rings tight"]}
                     value={line_style.ring_sizing === "tight" ? 1 : 0}
                     on_change={(i) => set_line_style({ ...line_style, ring_sizing: i === 1 ? "tight" : "full" })}
                   />
                 )}
+                <label className="flex items-center gap-1" title="Room kept clear between words on different rings">
+                  clearance
+                  <input
+                    type="range"
+                    min={0}
+                    max={1}
+                    step={0.05}
+                    value={line_style.clearance}
+                    onChange={(e) => set_line_style({ ...line_style, clearance: Number(e.target.value) })}
+                    className="w-20"
+                  />
+                  <span className="tabular-nums w-8">{line_style.clearance.toFixed(2)}</span>
+                </label>
                 {line_style.subclauses === "circles" && (
                   <Toggle
                     options={["hide clause words", "show clause words"]}

@@ -19,6 +19,7 @@ export type SolveOptions = {
   style: LineStyle;
   size: number;
   period_width: number;
+  footprint: number; // the radius of the discs a word's footprint is made of (see circle_footprint)
   // A layout with nothing overlapping to start from: then the solver improves it in steps, keeping
   // each only if nothing overlaps and the whole is smaller, so the result can't be worse
   start?: Placement;
@@ -61,11 +62,10 @@ const RING_FREE = 0.3;
 const FADE = 60;
 const SETTLE = 200;
 
-export function solve_circles({ rings: sentences, style, size, period_width, start }: SolveOptions): Solved {
+export function solve_circles({ rings: sentences, style, size, period_width, footprint, start }: SolveOptions): Solved {
   const gap = size * 0.25;
   const clear = size * 0.3; // kept clear either side of a subclause's circle on its parent's ring
-  const band = size * 1.35; // between sentences' rings, at the least
-  const footprint = size * 0.38; // the radius of the discs a word's footprint is made of
+  const band = Math.max(size * 1.35, 2 * footprint); // between sentences' rings, at the least
   const even = style.spacing === "even";
 
   // The variables, each with how freely it moves (0 for fixed) and its bounds

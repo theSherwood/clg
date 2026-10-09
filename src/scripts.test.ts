@@ -1,5 +1,6 @@
 import { expect, test } from "bun:test";
 import { default_phonology } from "./phonology";
+import type { LineStyle } from "./script_drawings";
 import {
   clashes,
   default_line,
@@ -135,4 +136,25 @@ test("flowing the circles lays the texts out with no overlaps, tighter than the 
       expect(flowed.overlaps).toBe(0);
       expect(flowed.extent).toBeLessThan(circle_layout(args(text, spacing))!.extent);
     }
+});
+
+test("flowing the circles keeps the clearance asked for, and full rings are no bigger overall than tight ones", async () => {
+  const { flow_layout, default_line_style, default_period } = await import("./script_drawings");
+  const { default_line } = await import("./scripts");
+  const { lords_prayer } = await import("./examples");
+  const text = lords_prayer.map((a) => a.transliteration).join(" ");
+  const layout = (style: Partial<LineStyle>) =>
+    flow_layout({
+      tokens: script_tokens(text, default_phonology),
+      phonology: default_phonology,
+      layout: default_line,
+      style: { ...default_line_style, midline_shape: "circle", subclauses: "circles", solver: "flow", ...style },
+      period: default_period,
+      size: 28,
+      wrap: (_: unknown, node: unknown) => node as never,
+    })!;
+  // Overlaps are counted with the clearance included in each word's footprint
+  for (const clearance of [0, 0.5, 1]) expect(layout({ clearance }).overlaps).toBe(0);
+  expect(layout({ clearance: 1 }).extent).toBeGreaterThan(layout({ clearance: 0 }).extent);
+  expect(layout({ ring_sizing: "full" }).extent).toBeLessThanOrEqual(layout({ ring_sizing: "tight" }).extent);
 });

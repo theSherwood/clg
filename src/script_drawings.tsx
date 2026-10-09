@@ -125,7 +125,8 @@ export type LineStyle = {
   subclauses: "inline" | "circles"; // on circles, whether subclauses get circles of their own
   clause_words: "hide" | "show"; // with subclause circles, whether <clause_start> and <clause_end> are written
   solver: "relax" | "constraints" | "flow"; // how the circles are laid out: see circle_layout, circle_solver.ts and circle_flow.ts
-  ring_sizing: "full" | "tight"; // with the constraint solver: inner rings as big as they can be, or every ring as small
+  ring_sizing: "full" | "tight"; // with the constraint solver or flow: inner rings as big as they can be, or every ring as small
+  clearance: number; // on circles, the room kept clear between words on different rings, as a fraction of the size
 };
 export const default_line_style: LineStyle = {
   join: "cursive",
@@ -141,6 +142,7 @@ export const default_line_style: LineStyle = {
   clause_words: "hide",
   solver: "flow",
   ring_sizing: "full",
+  clearance: 0.15,
 };
 
 // The midline is ruled like lined paper: thinner than the writing, in its own colour
@@ -428,6 +430,21 @@ type Footprint = { points: Point[]; sentence: number; chain: CircleItem[]; ring:
 
 // Where a layout put things, for another to start from: each ring (by its list of items), its
 // radius and each item's centre along it
+// The radius of the discs a word's footprint on a circle is made of: as far as the tallest word in
+// the text reaches from its line (with its stroke), and half the clearance kept between words
+export function circle_footprint(rings: CircleItem[][], size: number, style: LineStyle): number {
+  let reach = 0;
+  const visit = (items: CircleItem[]) =>
+    items.forEach((item) => {
+      if ("clause" in item) visit(item.clause);
+      if (!("geometry" in item)) return;
+      for (const s of item.geometry.strokes) for (const [, y] of s.points) reach = Math.max(reach, Math.abs(y));
+      for (const m of item.geometry.marks) reach = Math.max(reach, Math.abs(m.y) + m.r);
+    });
+  rings.forEach(visit);
+  return Math.max(reach, size * 0.2) + Math.max(1.5, size / 16) / 2 + (style.clearance * size) / 2;
+}
+
 export type Placement = Map<CircleItem[], { R: number; centres: Map<CircleItem, number> }>;
 
 type CircleLayoutArgs = {
@@ -501,7 +518,7 @@ export function constraint_layout(
     );
   if (rings.length === 0) return undefined;
   const period_width = size * 0.3 * period.scale;
-  const solved = solve({ rings, style, size, period_width, start });
+  const solved = solve({ rings, style, size, period_width, footprint: circle_footprint(rings, size, style), start });
   const step = size * 0.08; // straight lines are cut this fine so they bend with the ring
   const nodes: React.ReactNode[] = [];
   let extent = 0;
@@ -589,8 +606,8 @@ export function circle_layout(
   const gap = size * 0.25;
   const period_width = size * 0.3 * period.scale;
   const clear = size * 0.3; // kept clear either side of a subclause's circle on its parent's ring
-  const band = size * 1.35; // between sentences' rings, to start with
-  const footprint = size * 0.38; // the radius of the discs a footprint is made of
+  const footprint = circle_footprint(rings, size, style); // the radius of the discs a footprint is made of
+  const band = Math.max(size * 1.35, 2 * footprint); // between sentences' rings, to start with
   const step = size * 0.08; // straight lines are cut this fine so they bend with the ring
   // What the layout adjusts until no two words overlap: more room for a subclause on its parent's
   // ring, and more room between two sentences' rings
