@@ -94,6 +94,30 @@ export function gate_lines(gates: number[]): GridLine[] {
   ];
 }
 
+// Gates as a fret, in one stroke: a 7×7 grid of points, and a path through every one of them but
+// the centre, so every syllable fills its square. The square is four blocks of 4×3 points turned a
+// quarter turn each, clockwise from the top left, round the centre; the stroke goes through each
+// block from the corner nearest the last block to the corner by the next. A 4×3 block has exactly
+// four paths through every point between those corners, and no smaller block has as many, so the
+// four blocks give exactly 4⁴ = 256 drawings, and 7×7 is the smallest such square. In a block,
+// read from where the stroke comes in, the paths are: all along it, three runs its length; or
+// across it in runs of three, with a knot along it (two short runs) at its first two points, its
+// middle two, or its last two. A mark each, a block each, the stroke starting at the left just
+// above the middle and ending just below.
+export const FRETS = ["along", "first", "middle", "last"] as const;
+export type GridPoint = [number, number];
+const FRET_BLOCK: GridPoint[][] = [
+  [[0, 2], [1, 2], [2, 2], [3, 2], [3, 1], [2, 1], [1, 1], [0, 1], [0, 0], [1, 0], [2, 0], [3, 0]],
+  [[0, 2], [1, 2], [1, 1], [0, 1], [0, 0], [1, 0], [2, 0], [2, 1], [2, 2], [3, 2], [3, 1], [3, 0]],
+  [[0, 2], [0, 1], [0, 0], [1, 0], [2, 0], [2, 1], [1, 1], [1, 2], [2, 2], [3, 2], [3, 1], [3, 0]],
+  [[0, 2], [0, 1], [0, 0], [1, 0], [1, 1], [1, 2], [2, 2], [3, 2], [3, 1], [2, 1], [2, 0], [3, 0]],
+];
+// A quarter turn clockwise about the centre of the 7×7 grid, y down
+const quarter = ([x, y]: GridPoint): GridPoint => [6 - y, x];
+export function fret_path(marks: number[]): GridPoint[] {
+  return marks.flatMap((mark, block) => FRET_BLOCK[mark]!.map((point) => Array.from({ length: block }).reduce<GridPoint>(quarter, point)));
+}
+
 // The stave as a meander, a calligraphy after the gates: five bars of the same height, and each of
 // the four gaps between them bridged once, for a mark each, left to right: at the top for a mark
 // above the line, at the bottom for one below, flush with the bars' ends for a dash and set in by

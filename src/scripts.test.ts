@@ -6,6 +6,7 @@ import {
   default_stave,
   default_stems,
   default_gates,
+  fret_path,
   gate_lines,
   meander_lines,
   default_syllabics,
@@ -358,19 +359,56 @@ test("the stave as a meander: five full bars, one bridge in each gap, and every 
   expect(new Set(drawings.map((lines) => JSON.stringify(lines))).size).toBe(256);
 });
 
-test("bar scripts on a grid: every word, and every period after one, moves the next word on by whole units", async () => {
-  const { bar_grid, Gates, default_gates_style } = await import("./script_drawings");
+test("gates as a fret: every syllable one stroke through every point of the 7×7 grid but the centre", () => {
+  const paths = ids.map((id) => fret_path(layout_values(id, default_phonology, default_gates)));
+  for (const path of paths) {
+    expect(path.length).toBe(48);
+    const points = new Set(path.map((p) => p.join()));
+    expect(points.size).toBe(48);
+    expect(points.has("3,3")).toBe(false);
+    for (const [x, y] of path) expect(x >= 0 && x <= 6 && y >= 0 && y <= 6).toBe(true);
+    // One stroke: each point a step of one pitch from the last
+    path.slice(1).forEach(([x, y], i) => expect(Math.abs(x - path[i]![0]) + Math.abs(y - path[i]![1])).toBe(1));
+    // Starting just above the middle at the left, and ending just below
+    expect(path[0]).toEqual([0, 2]);
+    expect(path.at(-1)).toEqual([0, 3]);
+  }
+  expect(new Set(paths.map((p) => JSON.stringify(p))).size).toBe(256);
+});
+
+test("a 4×3 block of points has exactly four paths through every point from one corner to the opposite one", () => {
+  const count = (from: number[], to: number[], seen: Set<string>): number => {
+    if (seen.size === 12) return from.join() === to.join() ? 1 : 0;
+    let n = 0;
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const [x, y] = [from[0]! + dx!, from[1]! + dy!];
+      if (x < 0 || x > 3 || y < 0 || y > 2 || seen.has(`${x},${y}`)) continue;
+      seen.add(`${x},${y}`);
+      n += count([x, y], to, seen);
+      seen.delete(`${x},${y}`);
+    }
+    return n;
+  };
+  expect(count([0, 2], [3, 0], new Set(["0,2"]))).toBe(4);
+  // And the fret draws all four in its first block
+  expect(new Set([0, 1, 2, 3].map((m) => JSON.stringify(fret_path([m, 0, 0, 0]).slice(0, 12)))).size).toBe(4);
+});
+
+test("bar scripts and the fret on a grid: every word, and every period after one, moves the next word on by whole units", async () => {
+  const { bar_grid, Gates, default_gates_style, gates_span } = await import("./script_drawings");
   const { renderToStaticMarkup } = await import("react-dom/server");
   const { createElement } = await import("react");
-  for (const size of [16, 32, 57])
-    for (const weight of [0.2, 0.6, 0.9]) {
-      const { gap, cell, glyph } = bar_grid(size, weight);
-      for (const n of [1, 2, 3, 5]) {
-        const svg = renderToStaticMarkup(createElement(Gates, { rows: Array.from({ length: n }, () => [0, 1, 2, 3]), size, style: { ...default_gates_style, weight } }));
-        const width = Number(/width="([\d.]+)"/.exec(svg)![1]);
-        // On to the next word, and on past a period's cell to the next word
-        for (const advance of [width + gap, width + cell + gap]) expect(Math.abs(advance / cell - Math.round(advance / cell))).toBeLessThan(1e-9);
-        if (n === 1) expect(width).toBeCloseTo(glyph, 9);
+  for (const form of ["bars", "fret"] as const)
+    for (const size of [16, 32, 57])
+      for (const weight of [0.2, 0.6, 0.9]) {
+        const style = { ...default_gates_style, weight, form };
+        const { gap, cell, glyph } = bar_grid(size, weight, gates_span(style));
+        for (const n of [1, 2, 3, 5]) {
+          const svg = renderToStaticMarkup(createElement(Gates, { rows: Array.from({ length: n }, () => [0, 1, 2, 3]), size, style }));
+          const width = Number(/width="([\d.]+)"/.exec(svg)![1]);
+          // On to the next word, and on past a period's cell to the next word
+          for (const advance of [width + gap, width + cell + gap]) expect(Math.abs(advance / cell - Math.round(advance / cell))).toBeLessThan(1e-9);
+          if (n === 1) expect(width).toBeCloseTo(glyph, 9);
+        }
       }
-    }
 });

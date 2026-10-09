@@ -17,6 +17,7 @@ import {
   default_stave,
   default_stems,
   default_gates,
+  FRETS,
   GATES,
   default_syllabics,
   script_tokens,
@@ -43,6 +44,7 @@ import {
   Gates,
   type GatesStyle,
   default_gates_style,
+  GATES_FORMS,
   StemsWord,
   StemRoute,
   STEM_JOINS,
@@ -129,8 +131,9 @@ function Written({
   rule?: { color: string; size: number };
   // A script set on a grid: the space between words, the cell a period or other punctuation takes
   // in place of the space before it, and a one-syllable word's width (which a word with no root
-  // yet takes, as a ?), in pixels, so every word starts on the grid
-  grid?: { gap: number; cell: number; glyph: number };
+  // yet takes, as a ?), in pixels, so every word starts on the grid; and the space between rows,
+  // if not the usual
+  grid?: { gap: number; cell: number; glyph: number; row?: number };
 }) {
   const ruled: React.CSSProperties | undefined = rule && {
     lineHeight: 1,
@@ -143,7 +146,7 @@ function Written({
   return (
     <div
       className={`flex flex-wrap items-center ${grid === undefined ? "gap-x-[0.5em]" : ""}`}
-      style={{ rowGap: ROW_GAP, columnGap: grid?.gap, ...ruled }}
+      style={{ rowGap: grid?.row ?? ROW_GAP, columnGap: grid?.gap, ...ruled }}
     >
       {tokens.map((t, i) =>
         "punctuation" in t && grid ? (
@@ -662,24 +665,40 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
     ),
     gates: (
       <div className="space-y-3">
-        <Row label="Weight" hint="The strokes, as a share of the pitch between bars">
-          <Slider
-            value={gates_style.weight}
-            min={0.15}
-            max={0.9}
-            step={0.05}
-            on_change={(weight) => set_gates_style({ ...gates_style, weight })}
-            format={(v) => `${Math.round(v * 100)}%`}
-          />
-        </Row>
+        <div className="space-y-2">
+          <Row label="Form" hint="Five bars with bridges, or a fret: one stroke through every point of a 7×7 grid but the centre, four blocks round it">
+            <Toggle
+              options={[...GATES_FORMS]}
+              value={GATES_FORMS.indexOf(gates_style.form)}
+              on_change={(i) => set_gates_style({ ...gates_style, form: GATES_FORMS[i]! })}
+            />
+          </Row>
+          <Row label="Weight" hint="The strokes, as a share of the pitch between them">
+            <Slider
+              value={gates_style.weight}
+              min={0.15}
+              max={0.9}
+              step={0.05}
+              on_change={(weight) => set_gates_style({ ...gates_style, weight })}
+              format={(v) => `${Math.round(v * 100)}%`}
+            />
+          </Row>
+        </div>
         <div>
-          <p className="text-gray-500 mb-1.5">A gate per gap between the five bars, left to right</p>
+          {gates_style.form === "fret" ? (
+            <p className="text-gray-500 mb-1.5">
+              A block per mark, clockwise from the top left; read from where the stroke comes in, all along the block or across it with a knot first, in the
+              middle or last
+            </p>
+          ) : (
+            <p className="text-gray-500 mb-1.5">A gate per gap between the five bars, left to right</p>
+          )}
           <LayoutControls
             phonology={phonology}
             layout={gates}
             set_layout={set_gates}
-            positions="gaps"
-            options={GATES.map((g, i) => `${["‖", "⊓", "⊔", "□"][i]} ${g}`)}
+            positions={gates_style.form === "fret" ? "blocks" : "gaps"}
+            options={gates_style.form === "fret" ? [...FRETS] : GATES.map((g, i) => `${["‖", "⊓", "⊔", "□"][i]} ${g}`)}
           />
         </div>
       </div>

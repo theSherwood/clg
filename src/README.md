@@ -19,7 +19,7 @@ the page's thread.
   tokenizer that looks up their words
 - `grammar.tsx`: the grammar and syntax page
 - `scripts.ts`: the scripts' mappings from a syllable's marks to their drawings, and the gates'
-  and the stave meander's bars
+  bars and fret and the stave meander's bars
 - `stem_routes.ts`: how cursive stems join a syllable's rungs into strokes, every route the rules
   allow, and the one drawn
 - `circle_layouts.ts`: the stave script laid out round circles, by `circle_flow.ts` (the default),

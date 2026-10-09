@@ -10,8 +10,10 @@ import {
   default_stave,
   default_stems,
   default_gates,
+  fret_path,
   gate_lines,
   type GridLine,
+  type GridPoint,
   meander_lines,
   default_syllabics,
   layout_values,
@@ -1090,44 +1092,58 @@ export function StemBlocks({
   );
 }
 
-// Gates' style: weight, the strokes as a share of the pitch between bars
-export type GatesStyle = { weight: number };
-export const default_gates_style: GatesStyle = { weight: 0.6 };
+// Gates' style: weight, the strokes as a share of the pitch between bars; form, the gates as bars
+// and bridges, or as a fret in one stroke (see fret_path)
+export const GATES_FORMS = ["bars", "fret"] as const;
+export type GatesStyle = { weight: number; form: (typeof GATES_FORMS)[number] };
+export const default_gates_style: GatesStyle = { weight: 0.6, form: "bars" };
 
-// A word in a script of five bars a syllable (gates, or the stave as a meander): each syllable a
-// square of bars on a grid of pitches, drawn by lines_of; a syllable's square stands a little
-// further from the next than its bars do from each other, so a word's syllables are told apart by
-// their five bars each
+// A word in a script of square syllables on a grid of pitches (gates, as bars or a fret, or the
+// stave as a meander): each syllable span pitches square, drawn by strokes_of as lines through
+// points of the grid; a syllable's square stands a little further from the next than its strokes
+// do from each other, so a word's syllables are told apart
 const BAR_APART = 2; // pitches from one syllable's last bar to the next one's first
-const bar_measures = (size: number, weight: number) => {
-  const pitch = (size * 0.8) / (4 + weight);
+const BARS = 4; // five bars, four pitches across
+const FRET = 6; // a 7×7 grid of points
+const bar_measures = (size: number, weight: number, span: number) => {
+  const pitch = (size * 0.8) / (span + weight);
   return { pitch, w: weight * pitch };
 };
 
-// Bar scripts are set on a grid of units of three pitches: a syllable (four pitches, and two to the
-// next) takes two, a space between words one, and a period or other punctuation one, so the words
-// in every row start on the grid. A word's drawing reaches half a stroke past its outer bars, so
-// the space is a stroke short of its pitches.
-export function bar_grid(size: number, weight: number) {
-  const { pitch, w } = bar_measures(size, weight);
-  return { gap: (BAR_APART + 3) * pitch - w, cell: 3 * pitch, glyph: 4 * pitch + w };
+// These scripts are set on a grid of units of half a syllable and the pitches to the next (three
+// pitches for bars, four for the fret): a syllable takes two units, a space between words one, and
+// a period or other punctuation one, so the words in every row start on the grid. A word's
+// drawing reaches half a stroke past its outer points, so the space is a stroke short of its
+// pitches. Rows are two units apart, as far as a word's syllables, so the syllables sit on a grid
+// of squares down the page as well as across it.
+export function bar_grid(size: number, weight: number, span = BARS) {
+  const { pitch, w } = bar_measures(size, weight, span);
+  const unit = (span + BAR_APART) / 2;
+  return { gap: (BAR_APART + unit) * pitch - w, cell: unit * pitch, glyph: span * pitch + w, row: BAR_APART * pitch - w };
 }
+
+const as_strokes = (lines: GridLine[]): GridPoint[][] => lines.map(([x1, y1, x2, y2]) => [[x1, y1], [x2, y2]]);
+const gates_strokes = (marks: number[]) => as_strokes(gate_lines(marks));
+const meander_strokes = (marks: number[]) => as_strokes(meander_lines(marks));
+const fret_strokes = (marks: number[]) => [fret_path(marks)];
 
 function BarWord({
   rows,
   size,
   weight,
-  lines_of,
+  span = BARS,
+  strokes_of,
 }: {
   rows: number[][];
   size: number;
   weight: number;
-  lines_of: (marks: number[]) => GridLine[];
+  span?: number;
+  strokes_of: (marks: number[]) => GridPoint[][];
 }) {
-  const { pitch, w } = bar_measures(size, weight);
+  const { pitch, w } = bar_measures(size, weight, span);
   const apart = BAR_APART;
-  const width = (rows.length * 4 + (rows.length - 1) * apart) * pitch + w;
-  const height = 4 * pitch + w;
+  const width = (rows.length * span + (rows.length - 1) * apart) * pitch + w;
+  const height = span * pitch + w;
   return (
     <svg
       width={width}
@@ -1137,12 +1153,14 @@ function BarWord({
       stroke="currentColor"
       strokeWidth={w}
       strokeLinecap="square"
+      strokeLinejoin="miter"
       fill="none"
     >
       {rows.flatMap((marks, i) =>
-        lines_of(marks).map(([x1, y1, x2, y2], j) => {
-          const left = i * (4 + apart);
-          return <line key={`${i}-${j}`} x1={(left + x1) * pitch + w / 2} y1={y1 * pitch + w / 2} x2={(left + x2) * pitch + w / 2} y2={y2 * pitch + w / 2} />;
+        strokes_of(marks).map((points, j) => {
+          const left = i * (span + apart);
+          const at = points.map(([x, y]) => `${(left + x) * pitch + w / 2},${y * pitch + w / 2}`).join(" ");
+          return <polyline key={`${i}-${j}`} points={at} />;
         }),
       )}
     </svg>
@@ -1152,14 +1170,17 @@ function BarWord({
 // A word in the stave, along its line or as a meander, as the style asks
 export function StaveWord({ marks, size, style }: { marks: number[][]; size: number; style: StaveStyle }) {
   return style.form === "meander" ? (
-    <BarWord rows={marks} size={size} weight={style.meander_weight} lines_of={meander_lines} />
+    <BarWord rows={marks} size={size} weight={style.meander_weight} strokes_of={meander_strokes} />
   ) : (
     <Stave marks={marks} size={size} style={style} />
   );
 }
 
+export const gates_span = (style: GatesStyle) => (style.form === "fret" ? FRET : BARS);
+
 export function Gates({ rows, size, style }: { rows: number[][]; size: number; style: GatesStyle }) {
-  return <BarWord rows={rows} size={size} weight={style.weight} lines_of={gate_lines} />;
+  const fret = style.form === "fret";
+  return <BarWord rows={rows} size={size} weight={style.weight} span={gates_span(style)} strokes_of={fret ? fret_strokes : gates_strokes} />;
 }
 
 // The period in every script: a small mark on the midline, level with the words' middles, a
@@ -1236,7 +1257,7 @@ export type ScriptRenderer = {
   render: (ids: number[]) => React.ReactNode;
   style?: React.CSSProperties;
   rule?: { color: string; size: number };
-  grid?: { gap: number; cell: number; glyph: number }; // a script set on a grid: the space between words, a punctuation cell, and a one-syllable word's width, in pixels
+  grid?: { gap: number; cell: number; glyph: number; row?: number }; // a script set on a grid: the space between words, a punctuation cell, a one-syllable word's width, and the space between rows, in pixels
   whole_text?: (tokens: ScriptToken[], wrap: (word: Word, node: React.ReactElement) => React.ReactNode) => React.ReactNode;
 };
 
@@ -1274,9 +1295,12 @@ export function script_renderers(
     {
       name: "Gates",
       settings: JSON.stringify([phonology, gates, gates_style, size]),
-      note: "Five bars a syllable, always all there; each gap between them a gate: open, bridged at the top, at the bottom, or closed",
+      note:
+        gates_style.form === "fret"
+          ? "A syllable in one stroke through every point of a 7×7 grid but the centre: four blocks round the centre, a mark each, each block all along or across with a knot at its start, middle or end"
+          : "Five bars a syllable, always all there; each gap between them a gate: open, bridged at the top, at the bottom, or closed",
       render: (ids) => <Gates rows={ids.map((id) => layout_values(id, phonology, gates))} size={size} style={gates_style} />,
-      grid: bar_grid(size, gates_style.weight),
+      grid: bar_grid(size, gates_style.weight, gates_span(gates_style)),
     },
     {
       name: "Stave",
