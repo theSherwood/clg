@@ -120,7 +120,8 @@ export function syllabics_glyphs(id: number, phonology: Phonology, settings: Syl
 
 // A transliteration as root IDs, word by word. Foreign names are respelled in our syllables
 // first; a word with no root is null, and punctuation is kept as text.
-export type ScriptToken = { ids: number[] | null; text: string } | { punctuation: string };
+// word is the dictionary word, for its popup; foreign names have none
+export type ScriptToken = { ids: number[] | null; text: string; word?: Word } | { punctuation: string };
 
 export function script_tokens(transliteration: string, phonology: Phonology): ScriptToken[] {
   const id_of = new Map(Array.from({ length: 256 }, (_, id) => [syllable_of(id, phonology), id]));
@@ -131,6 +132,6 @@ export function script_tokens(transliteration: string, phonology: Phonology): Sc
       const syllables = adapt_foreign(t.text, phonology).map((s) => id_of.get(s));
       return { ids: syllables.every((s) => s !== undefined) ? (syllables as number[]) : null, text: t.text };
     }
-    return { ids: t.word ? ids(t.word) : null, text: t.text };
+    return { ids: t.word ? ids(t.word) : null, text: t.text, word: t.word };
   });
 }

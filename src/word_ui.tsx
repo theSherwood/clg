@@ -15,6 +15,7 @@ import {
   sections,
 } from "./dict";
 import { tokenize } from "./examples";
+import { Writings } from "./script_drawings";
 import { type Phonology, adapt_foreign, default_phonology, pronounce, syllable_of } from "./phonology";
 import Tippy, { type TippyProps } from "@tippyjs/react";
 import "tippy.js/dist/tippy.css"; // Default tippy styling
@@ -579,6 +580,10 @@ export function FormPopoverContent({
           ))}
         </p>
       )}
+
+      <div className="mt-2">
+        <Writings ids={root_ids(word)} phonology={phonology} />
+      </div>
 
       <table className="mt-2 text-xs border-collapse">
         <tbody>
