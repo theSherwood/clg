@@ -146,6 +146,12 @@ export const default_line_style: LineStyle = {
 };
 
 // The midline is ruled like lined paper: thinner than the writing, in its own colour
+// Where a subclause's circle starts, crossing its parent's ring: a small filled dot, unlike the
+// period's open mark
+function crossing_mark(x: number, y: number, size: number, key: string): React.ReactNode {
+  return <circle key={key} cx={x} cy={y} r={Math.max(1.5, size / 16) * 1.8} fill="currentColor" stroke="none" />;
+}
+
 export function midline_width(size: number): number {
   return Math.max(1, size / 24);
 }
@@ -521,6 +527,7 @@ export function constraint_layout(
   const solved = solve({ rings, style, size, period_width, footprint: circle_footprint(rings, size, style), start });
   const step = size * 0.08; // straight lines are cut this fine so they bend with the ring
   const nodes: React.ReactNode[] = [];
+  const crossings: React.ReactNode[] = []; // drawn last, over every ring
   let extent = 0;
   const reach = (x: number, y: number, by = 0) => (extent = Math.max(extent, Math.abs(x) + by, Math.abs(y) + by));
   solved.rings.forEach((ring, k) => {
@@ -544,6 +551,7 @@ export function constraint_layout(
       nodes.push(<circle key={`mid${k}`} cx={ring.cx} cy={ring.cy} r={ring.R} stroke={style.midline_color} strokeWidth={midline_width(size)} />);
       reach(ring.cx, ring.cy, ring.R);
     }
+    if (ring.chain.length > 0) crossings.push(crossing_mark(...place(0, 0), size, `cross${k}`));
     ring.items.forEach(({ item, x: centre, width }, i) => {
       const x = centre - width / 2;
       const key = `${k}-${i}`;
@@ -582,7 +590,7 @@ export function constraint_layout(
       }
     });
   });
-  return { nodes, extent, rounds: solved.rounds, overlaps: solved.overlaps };
+  return { nodes: [...nodes, ...crossings], extent, rounds: solved.rounds, overlaps: solved.overlaps };
 }
 
 // The circles laid out round (0, 0): what to draw, how far it reaches, and how many rounds of
@@ -666,6 +674,7 @@ export function circle_layout(
           })();
 
     const nodes: React.ReactNode[] = [];
+    const crossings: React.ReactNode[] = []; // drawn last, over every ring
     const footprints: Footprint[] = [];
     // Where each ring's items were put: its radius, and each item's centre along it
     const placed: Placement = new Map();
@@ -723,6 +732,7 @@ export function circle_layout(
         nodes.push(<circle key={`mid${key}`} cx={cx} cy={cy} r={R} stroke={style.midline_color} strokeWidth={midline_width(size)} />);
         reach(cx, cy, R);
       }
+      if (!is_sentence) crossings.push(crossing_mark(...place(0, 0), size, `cross${key}`));
       // A subclause starts just clockwise of where it crosses its parent, which is its top
       let x = period_at_top ? half_period + ring_gap : is_sentence ? ring_gap / 2 : gap;
       items.forEach((item, i) => {
@@ -783,7 +793,7 @@ export function circle_layout(
     rings.forEach((items, k) => draw_ring(items, 0, 0, radii[k]!, -Math.PI / 2, k, [], `${k}`));
     // How much room each sentence's ring has to spare
     const spare = rings.map((items, k) => 2 * Math.PI * radii[k]! - length_of(items, radii[k]!));
-    return { nodes, footprints, extent, spare, placed };
+    return { nodes: [...nodes, ...crossings], footprints, extent, spare, placed };
   };
 
   // Two footprints on different rings overlap if any of their discs do, by as much as the deepest
