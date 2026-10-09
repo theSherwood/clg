@@ -26,6 +26,7 @@ import {
 } from "./scripts";
 import {
   Stave,
+  StaveWord,
   type StaveStyle,
   Period,
   type PeriodStyle,
@@ -393,8 +394,8 @@ function SyllabicsControls({
 
 // Drawn again only when something it shows changes: of the stave style, only how a word is drawn,
 // not how a text is laid out
-const word_style = ({ join, curves, loop_mark, midline, midline_color }: StaveStyle) =>
-  JSON.stringify([join, curves, loop_mark, midline, midline_color]);
+const word_style = ({ join, curves, loop_mark, midline, midline_color, form, meander_weight }: StaveStyle) =>
+  JSON.stringify([join, curves, loop_mark, midline, midline_color, form, meander_weight]);
 const AllSyllables = React.memo(
   AllSyllablesGrid,
   (a, b) =>
@@ -451,7 +452,7 @@ function AllSyllablesGrid({
                     {/* Stems and the stave side by side, gates and syllabics under them */}
                     <div className="grid grid-cols-2 items-center justify-items-center gap-x-1">
                       <StemsWord rows={[layout_values(id, phonology, stems)]} size={size * 0.7} style={stems_style} />
-                      <Stave marks={[layout_values(id, phonology, stave)]} size={size * 0.6} style={stave_style} />
+                      <StaveWord marks={[layout_values(id, phonology, stave)]} size={size * 0.6} style={stave_style} />
                       <Gates rows={[layout_values(id, phonology, gates)]} size={size * 0.6} style={gates_style} />
                       <div style={{ fontSize: size * 0.5, fontFamily: SYLLABICS_FONT }} className="leading-tight whitespace-nowrap">
                         {syllabics_glyphs(id, phonology, syllabics)}
@@ -496,7 +497,8 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
 
   const set_style = (change: Partial<StaveStyle>) => set_stave_style({ ...stave_style, ...change });
   const blocks = stems_style.join === "cursive" && stems_style.form === "block";
-  const circles = stave_style.midline_shape === "circle";
+  const meander = stave_style.form === "meander";
+  const circles = !meander && stave_style.midline_shape === "circle";
   const subclause_circles = circles && stave_style.subclauses === "circles";
 
   const settings: ScriptSettings = { stems, stems_style, gates, gates_style, stave, stave_style, syllabics, period };
@@ -678,15 +680,28 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
     stave: (
       <div className="space-y-3">
         <div className="space-y-2">
-          <Row label="Join">
+          <Row label="Form" hint="Along a ruled line, or as a meander: four bridges between five bars, top for above, bottom for below, flush for a dash, set in for a loop">
+            <Toggle options={["line", "meander"]} value={meander ? 1 : 0} on_change={(i) => set_style({ form: i === 1 ? "meander" : "line" })} />
+          </Row>
+          <Row label="Weight" hint="The meander's strokes, as a share of the pitch between bars" off={!meander && OFF_MEANDER}>
+            <Slider
+              value={stave_style.meander_weight}
+              min={0.15}
+              max={0.9}
+              step={0.05}
+              on_change={(meander_weight) => set_style({ meander_weight })}
+              format={(v) => `${Math.round(v * 100)}%`}
+            />
+          </Row>
+          <Row label="Join" off={meander && OFF_LINE}>
             <Toggle options={[...STAVE_JOINS]} value={STAVE_JOINS.indexOf(stave_style.join)} on_change={(i) => set_style({ join: STAVE_JOINS[i]! })} />
           </Row>
           {stave_style.join === "cursive" ? (
-            <Row label="Turns">
+            <Row label="Turns" off={meander && OFF_LINE}>
               <Toggle options={["curves", "angles"]} value={stave_style.curves ? 0 : 1} on_change={(i) => set_style({ curves: i === 0 })} />
             </Row>
           ) : (
-            <Row label="Loop mark">
+            <Row label="Loop mark" off={meander && OFF_LINE}>
               <Toggle
                 options={[...LOOP_MARKS]}
                 value={LOOP_MARKS.indexOf(stave_style.loop_mark)}
@@ -694,7 +709,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
               />
             </Row>
           )}
-          <Row label="Midline">
+          <Row label="Midline" off={meander && OFF_LINE}>
             <Toggle options={["shown", "hidden"]} value={stave_style.midline ? 0 : 1} on_change={(i) => set_style({ midline: i === 0 })} />
             <label className="flex items-center gap-1" title="Midline colour">
               <input
@@ -720,7 +735,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
     ),
     circles: (
       <div className="space-y-2">
-        <Row label="Stave script">
+        <Row label="Stave script" off={meander && OFF_LINE}>
           <Toggle
             options={["along lines", "round circles"]}
             value={circles ? 1 : 0}
@@ -1010,6 +1025,8 @@ function Presets({ settings, apply }: { settings: ScriptSettings; apply: (s: Scr
 }
 const SOLVERS = ["relax", "constraints", "flow"] as const;
 const OFF_CIRCLES = "Only round circles";
+const OFF_LINE = "Only the stave along a line";
+const OFF_MEANDER = "Only the stave as a meander";
 const OFF_BLOCKS = "Only cursive stems in blocks";
 const OFF_SUBCLAUSES = "Only with subclauses on circles";
 

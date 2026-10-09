@@ -7,6 +7,7 @@ import {
   default_stems,
   default_gates,
   gate_lines,
+  meander_lines,
   default_syllabics,
   layout_values,
   script_tokens,
@@ -340,4 +341,19 @@ test("gates: every syllable is five full bars, its own drawing, and the 256 are 
   expect(new Set(keys).size).toBe(256);
   // Eight bridges can each be there or not, and every one of those 2^8 drawings is a syllable
   expect(new Set(drawings.map((lines) => lines.slice(5).length)).size).toBe(9);
+});
+
+test("the stave as a meander: five full bars, one bridge in each gap, and every syllable its own drawing", () => {
+  const drawings = ids.map((id) => meander_lines(layout_values(id, default_phonology, default_stave)));
+  for (const lines of drawings) {
+    for (const x of [0, 1, 2, 3, 4]) expect(lines).toContainEqual([x, 0, x, 4]);
+    // A bridge across each gap: top or bottom, flush or set in a pitch
+    expect(lines.slice(5).map(([x1]) => x1)).toEqual([0, 1, 2, 3]);
+    for (const [x1, y1, x2, y2] of lines.slice(5)) {
+      expect(x2 - x1).toBe(1);
+      expect(y1).toBe(y2);
+      expect([0, 1, 3, 4]).toContain(y1);
+    }
+  }
+  expect(new Set(drawings.map((lines) => JSON.stringify(lines))).size).toBe(256);
 });

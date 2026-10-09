@@ -94,6 +94,20 @@ export function gate_lines(gates: number[]): GridLine[] {
   ];
 }
 
+// The stave as a meander, a calligraphy after the gates: five bars of the same height, and each of
+// the four gaps between them bridged once, for a mark each, left to right: at the top for a mark
+// above the line, at the bottom for one below, flush with the bars' ends for a dash and set in by
+// a pitch for a loop
+export function meander_lines(marks: number[]): GridLine[] {
+  return [
+    ...[0, 1, 2, 3, 4].map((x): GridLine => [x, 0, x, 4]),
+    ...marks.map((mark, i): GridLine => {
+      const y = mark & 1 ? (mark & 2 ? 3 : 4) : mark & 2 ? 1 : 0;
+      return [i, y, i + 1, y];
+    }),
+  ];
+}
+
 // The stave script: a word is a horizontal line written in one stroke, and each syllable four
 // marks along it, left to right, each a flat-topped bump or a small loop, above or below the line
 // (bit 1 below, bit 2 loop). Every position has a mark, so a syllable is always four marks long.

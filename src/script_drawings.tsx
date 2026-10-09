@@ -11,6 +11,8 @@ import {
   default_stems,
   default_gates,
   gate_lines,
+  type GridLine,
+  meander_lines,
   default_syllabics,
   layout_values,
   type ScriptToken,
@@ -174,6 +176,8 @@ export type StaveStyle = {
   clearance: number; // on circles, the room kept clear between words on different rings, as a fraction of the size
   crossing_shape: CrossingShape; // with subclause circles, the mark where each starts, crossing its parent
   crossing_scale: number; // and its size, 1 being the usual
+  form: "line" | "meander"; // the stave along a line, or as a meander of five bars a syllable (see meander_lines)
+  meander_weight: number; // the meander's strokes, as a share of the pitch between bars
 };
 export const CROSSING_SHAPES = ["circle", "square", "diamond"] as const;
 export type CrossingShape = (typeof CROSSING_SHAPES)[number];
@@ -194,6 +198,8 @@ export const default_stave_style: StaveStyle = {
   clearance: 0.6,
   crossing_shape: "circle",
   crossing_scale: 1,
+  form: "line",
+  meander_weight: 0.6,
 };
 
 // Where a subclause's circle starts, crossing its parent's ring: a small open mark, drawn like the
@@ -1088,12 +1094,23 @@ export function StemBlocks({
 export type GatesStyle = { weight: number };
 export const default_gates_style: GatesStyle = { weight: 0.6 };
 
-// A word in gates: each syllable a square of five bars, the gates between them bridged at the top,
-// the bottom, both or neither; a syllable's square stands a little further from the next than its
-// bars do from each other, so a word's syllables are told apart by their five bars each
-export function Gates({ rows, size, style }: { rows: number[][]; size: number; style: GatesStyle }) {
-  const pitch = (size * 0.8) / (4 + style.weight);
-  const w = style.weight * pitch;
+// A word in a script of five bars a syllable (gates, or the stave as a meander): each syllable a
+// square of bars on a grid of pitches, drawn by lines_of; a syllable's square stands a little
+// further from the next than its bars do from each other, so a word's syllables are told apart by
+// their five bars each
+function BarWord({
+  rows,
+  size,
+  weight,
+  lines_of,
+}: {
+  rows: number[][];
+  size: number;
+  weight: number;
+  lines_of: (marks: number[]) => GridLine[];
+}) {
+  const pitch = (size * 0.8) / (4 + weight);
+  const w = weight * pitch;
   const apart = 2; // pitches from one syllable's last bar to the next one's first
   const width = (rows.length * 4 + (rows.length - 1) * apart) * pitch + w;
   const height = 4 * pitch + w;
@@ -1108,14 +1125,27 @@ export function Gates({ rows, size, style }: { rows: number[][]; size: number; s
       strokeLinecap="square"
       fill="none"
     >
-      {rows.flatMap((gates, i) =>
-        gate_lines(gates).map(([x1, y1, x2, y2], j) => {
+      {rows.flatMap((marks, i) =>
+        lines_of(marks).map(([x1, y1, x2, y2], j) => {
           const left = i * (4 + apart);
           return <line key={`${i}-${j}`} x1={(left + x1) * pitch + w / 2} y1={y1 * pitch + w / 2} x2={(left + x2) * pitch + w / 2} y2={y2 * pitch + w / 2} />;
         }),
       )}
     </svg>
   );
+}
+
+// A word in the stave, along its line or as a meander, as the style asks
+export function StaveWord({ marks, size, style }: { marks: number[][]; size: number; style: StaveStyle }) {
+  return style.form === "meander" ? (
+    <BarWord rows={marks} size={size} weight={style.meander_weight} lines_of={meander_lines} />
+  ) : (
+    <Stave marks={marks} size={size} style={style} />
+  );
+}
+
+export function Gates({ rows, size, style }: { rows: number[][]; size: number; style: GatesStyle }) {
+  return <BarWord rows={rows} size={size} weight={style.weight} lines_of={gate_lines} />;
 }
 
 // The period in every script: a small mark on the midline, level with the words' middles, a
@@ -1206,7 +1236,8 @@ export function script_renderers(
   in_text = false,
 ): ScriptRenderer[] {
   const { stems, stems_style, gates, gates_style, stave, stave_style, syllabics, period } = settings;
-  const circles = in_text && stave_style.midline_shape === "circle";
+  const meander = stave_style.form === "meander";
+  const circles = in_text && !meander && stave_style.midline_shape === "circle";
   return [
     {
       name: "Stems",
@@ -1231,15 +1262,17 @@ export function script_renderers(
     {
       name: "Stave",
       settings: JSON.stringify([phonology, stave, stave_style, period, size, in_text]),
-      note: "Four marks per syllable along a ruled line: a dash or a loop, above or below",
+      note: meander
+        ? "Four marks per syllable as bridges between five bars: at the top for above the line, the bottom for below; flush for a dash, set in for a loop"
+        : "Four marks per syllable along a ruled line: a dash or a loop, above or below",
       render: (ids) => (
-        <Stave
+        <StaveWord
           marks={ids.map((id) => layout_values(id, phonology, stave))}
           size={size}
           style={in_text ? { ...stave_style, midline: false } : stave_style}
         />
       ),
-      rule: in_text && !circles && stave_style.midline ? { color: stave_style.midline_color, size } : undefined,
+      rule: in_text && !circles && !meander && stave_style.midline ? { color: stave_style.midline_color, size } : undefined,
       whole_text: circles
         ? (tokens, wrap) => (
             <StaveCircles
