@@ -404,6 +404,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
   const [line, set_line] = useStored<MarkLayout>(SCRIPT_KEYS.line, default_line);
   const [line_style, set_line_style] = useStored<LineStyle>(SCRIPT_KEYS.line_style, default_line_style);
   const [grid_open, set_grid_open] = useState(false);
+  const [tab, set_tab] = useStored<Tab>("script_tab", "line");
   const [period, set_period] = useStored<PeriodStyle>(SCRIPT_KEYS.period, default_period);
   const [syllabics, set_syllabics] = useStored<SyllabicsSettings>(SCRIPT_KEYS.syllabics, default_syllabics);
   const [size, set_size] = useStored("script_size", 32);
@@ -413,46 +414,178 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
 
   const scripts = script_renderers(phonology, { stems, line, line_style, syllabics, period }, size, true);
 
+  const set_style = (change: Partial<LineStyle>) => set_line_style({ ...line_style, ...change });
+  const circles = line_style.midline_shape === "circle";
+  const subclause_circles = circles && line_style.subclauses === "circles";
+
+  const panels: Record<Tab, React.ReactNode> = {
+    general: (
+      <div className="space-y-2">
+        <Row label="Size">
+          <Slider value={size} min={16} max={72} step={1} on_change={set_size} format={(v) => `${v}px`} />
+        </Row>
+        <Row label="Period" hint="The mark that ends a sentence, in every script">
+          <Toggle
+            options={[...LOOP_MARKS]}
+            value={LOOP_MARKS.indexOf(period.shape)}
+            on_change={(i) => set_period({ ...period, shape: LOOP_MARKS[i]! })}
+          />
+          <Slider value={period.scale} min={0.3} max={2} step={0.1} on_change={(scale) => set_period({ ...period, scale })} format={(v) => `${v.toFixed(1)}×`} />
+        </Row>
+      </div>
+    ),
+    stems: (
+      <>
+        <p className="text-gray-500 mb-1.5">A stem per syllable, with a rung for each mark, top to bottom</p>
+        <LayoutControls
+          phonology={phonology}
+          layout={stems}
+          set_layout={set_stems}
+          positions="rows"
+          options={RUNGS.map((r, i) => `${["│", "┤", "├", "┼"][i]} ${r}`)}
+        />
+      </>
+    ),
+    line: (
+      <div className="grid gap-x-6 gap-y-2 lg:grid-cols-[auto_1fr]">
+        <div className="space-y-2">
+          <Row label="Join">
+            <Toggle options={[...LINE_JOINS]} value={LINE_JOINS.indexOf(line_style.join)} on_change={(i) => set_style({ join: LINE_JOINS[i]! })} />
+          </Row>
+          {line_style.join === "cursive" ? (
+            <Row label="Turns">
+              <Toggle options={["curves", "angles"]} value={line_style.curves ? 0 : 1} on_change={(i) => set_style({ curves: i === 0 })} />
+            </Row>
+          ) : (
+            <Row label="Loop mark">
+              <Toggle
+                options={[...LOOP_MARKS]}
+                value={LOOP_MARKS.indexOf(line_style.loop_mark)}
+                on_change={(i) => set_style({ loop_mark: LOOP_MARKS[i]! })}
+              />
+            </Row>
+          )}
+          <Row label="Midline">
+            <Toggle options={["shown", "hidden"]} value={line_style.midline ? 0 : 1} on_change={(i) => set_style({ midline: i === 0 })} />
+            <label className="flex items-center gap-1" title="Midline colour">
+              <input
+                type="color"
+                value={line_style.midline_color}
+                onChange={(e) => set_style({ midline_color: e.target.value })}
+                className="w-6 h-5 p-0 border border-gray-300 rounded bg-white"
+              />
+            </label>
+          </Row>
+        </div>
+        <div>
+          <p className="text-gray-500 mb-1.5">A mark per position, left to right</p>
+          <LayoutControls
+            phonology={phonology}
+            layout={line}
+            set_layout={set_line}
+            positions="order"
+            options={LINE_MARKS.map((m, i) => `${["⁻", "₋", "ᵒ", "ₒ"][i]} ${m}`)}
+          />
+        </div>
+      </div>
+    ),
+    circles: (
+      <div className="space-y-2">
+        <Row label="Line script">
+          <Toggle
+            options={["along lines", "round circles"]}
+            value={circles ? 1 : 0}
+            on_change={(i) => set_style({ midline_shape: i === 1 ? "circle" : "straight" })}
+          />
+        </Row>
+        <div className="grid gap-x-8 gap-y-2 lg:grid-cols-2">
+          <div className="space-y-2">
+            <h4 className="font-semibold text-gray-600">Rings</h4>
+            <Row label="Solver" off={!circles && OFF_CIRCLES}>
+              <Toggle
+                options={["relax", "constraint solver", "flow"]}
+                value={SOLVERS.indexOf(line_style.solver)}
+                on_change={(i) => set_style({ solver: SOLVERS[i]! })}
+              />
+            </Row>
+            <Row label="Inner rings" off={(!circles && OFF_CIRCLES) || (line_style.solver === "relax" && "Not with the relaxation")}>
+              <Toggle options={["full", "tight"]} value={line_style.ring_sizing === "tight" ? 1 : 0} on_change={(i) => set_style({ ring_sizing: i === 1 ? "tight" : "full" })} />
+            </Row>
+            <Row label="Sentences" off={!circles && OFF_CIRCLES}>
+              <Toggle options={["grow in", "grow out"]} value={line_style.grow === "out" ? 1 : 0} on_change={(i) => set_style({ grow: i === 1 ? "out" : "in" })} />
+            </Row>
+            <Row label="Spacing" off={!circles && OFF_CIRCLES}>
+              <Toggle
+                options={["even", "condensed"]}
+                value={line_style.spacing === "condensed" ? 1 : 0}
+                on_change={(i) => set_style({ spacing: i === 1 ? "condensed" : "even" })}
+              />
+            </Row>
+            <Row label="Period" off={(!circles && OFF_CIRCLES) || (line_style.spacing !== "condensed" && "Only with condensed spacing")}>
+              <Toggle
+                options={["at top", "after"]}
+                value={line_style.period_position === "after" ? 1 : 0}
+                on_change={(i) => set_style({ period_position: i === 1 ? "after" : "top" })}
+              />
+            </Row>
+            <Row label="Clearance" hint="Room kept clear between words on different rings" off={!circles && OFF_CIRCLES}>
+              <Slider value={line_style.clearance} min={0} max={1} step={0.05} on_change={(clearance) => set_style({ clearance })} format={(v) => v.toFixed(2)} />
+            </Row>
+          </div>
+          <div className="space-y-2">
+            <h4 className="font-semibold text-gray-600">Subclauses</h4>
+            <Row label="Written" off={!circles && OFF_CIRCLES}>
+              <Toggle
+                options={["inline", "on circles"]}
+                value={line_style.subclauses === "circles" ? 1 : 0}
+                on_change={(i) => set_style({ subclauses: i === 1 ? "circles" : "inline" })}
+              />
+            </Row>
+            <Row label="Clause words" off={!subclause_circles && OFF_SUBCLAUSES}>
+              <Toggle
+                options={["hidden", "shown"]}
+                value={line_style.clause_words === "show" ? 1 : 0}
+                on_change={(i) => set_style({ clause_words: i === 1 ? "show" : "hide" })}
+              />
+            </Row>
+            <Row label="Crossing" hint="The mark where a subclause's circle starts" off={!subclause_circles && OFF_SUBCLAUSES}>
+              <Toggle
+                options={[...CROSSING_SHAPES]}
+                value={CROSSING_SHAPES.indexOf(line_style.crossing_shape)}
+                on_change={(i) => set_style({ crossing_shape: CROSSING_SHAPES[i]! })}
+              />
+              <Slider
+                value={line_style.crossing_scale}
+                min={0.3}
+                max={3}
+                step={0.1}
+                on_change={(crossing_scale) => set_style({ crossing_scale })}
+                format={(v) => `${v.toFixed(1)}×`}
+              />
+            </Row>
+          </div>
+        </div>
+      </div>
+    ),
+    syllabics: <SyllabicsControls phonology={phonology} settings={syllabics} set_settings={set_syllabics} />,
+  };
+
   return (
     <div className="mb-4 p-3 rounded border border-gray-200 bg-gray-50 text-sm">
       <div className="flex flex-wrap justify-between items-center gap-2 mb-2">
         <h2 className="font-semibold">Script playground</h2>
-        <div className="flex items-center gap-3 text-xs">
-          <label className="flex items-center gap-1">
-            Size
-            <input type="range" min={16} max={72} value={size} onChange={(e) => set_size(Number(e.target.value))} />
-          </label>
-          <span className="flex items-center gap-1">
-            Period
-            <Toggle
-              options={[...LOOP_MARKS]}
-              value={LOOP_MARKS.indexOf(period.shape)}
-              on_change={(i) => set_period({ ...period, shape: LOOP_MARKS[i]! })}
-            />
-            <input
-              type="range"
-              min={0.3}
-              max={2}
-              step={0.1}
-              value={period.scale}
-              onChange={(e) => set_period({ ...period, scale: Number(e.target.value) })}
-              title={`Period size: ${period.scale}×`}
-              className="w-20"
-            />
-          </span>
-          <button
-            onClick={() => {
-              set_stems(default_stems);
-              set_line(default_line);
-              set_line_style(default_line_style);
-              set_syllabics(default_syllabics);
-              set_period(default_period);
-            }}
-            className="px-2 py-0.5 rounded border border-gray-300 bg-white hover:bg-gray-100"
-          >
-            Reset mappings
-          </button>
-        </div>
+        <button
+          onClick={() => {
+            set_stems(default_stems);
+            set_line(default_line);
+            set_line_style(default_line_style);
+            set_syllabics(default_syllabics);
+            set_period(default_period);
+          }}
+          className="px-2 py-0.5 text-xs rounded border border-gray-300 bg-white hover:bg-gray-100"
+        >
+          Reset all settings
+        </button>
       </div>
 
       <div className="flex flex-wrap items-center gap-2 mb-1 text-xs">
@@ -477,156 +610,32 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
         rows={2}
         className="w-full p-1.5 mb-2 border border-gray-300 rounded font-mono text-xs bg-white"
       />
+
+      {/* The settings, above the writing so a new layout never moves them, and on wide screens kept
+          in view while the writing scrolls under them */}
+      <div className="mb-3 rounded border border-gray-200 bg-white text-xs lg:sticky lg:top-0 lg:z-10 lg:shadow-sm">
+        <div className="flex flex-wrap border-b border-gray-200 px-2">
+          {TABS.map(([key, label]) => (
+            <button
+              key={key}
+              onClick={() => set_tab(key)}
+              className={`px-2.5 py-1.5 -mb-px border-b-2 ${
+                tab === key ? "border-indigo-600 text-indigo-700 font-semibold" : "border-transparent text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <div className="p-2.5 min-h-[11rem]">{panels[tab] ?? panels.line}</div>
+      </div>
+
       <div className="mb-3 font-mono text-xs text-indigo-800">
         <Written tokens={tokens} render={sounds} />
       </div>
-
       {scripts.map((s) => (
         <ScriptText key={s.name} script={s} tokens={tokens} size={size} period={period} />
       ))}
-
-      <div className="grid gap-4 md:grid-cols-2 mt-2">
-        <div>
-          <h3 className="text-xs font-semibold text-gray-600 mb-1">Stems: a rung per row</h3>
-          <LayoutControls
-            phonology={phonology}
-            layout={stems}
-            set_layout={set_stems}
-            positions="rows"
-            options={RUNGS.map((r, i) => `${["│", "┤", "├", "┼"][i]} ${r}`)}
-          />
-          <h3 className="text-xs font-semibold text-gray-600 mt-3 mb-1">Line: a mark per position</h3>
-          <div className="flex flex-wrap items-center gap-2 mb-1.5 text-xs">
-            <span className="w-14 font-semibold text-gray-500">style</span>
-            <Toggle
-              options={[...LINE_JOINS]}
-              value={LINE_JOINS.indexOf(line_style.join)}
-              on_change={(i) => set_line_style({ ...line_style, join: LINE_JOINS[i]! })}
-            />
-            {line_style.join === "cursive" ? (
-              <Toggle
-                options={["curves", "angles"]}
-                value={line_style.curves ? 0 : 1}
-                on_change={(i) => set_line_style({ ...line_style, curves: i === 0 })}
-              />
-            ) : (
-              <Toggle
-                options={[...LOOP_MARKS]}
-                value={LOOP_MARKS.indexOf(line_style.loop_mark)}
-                on_change={(i) => set_line_style({ ...line_style, loop_mark: LOOP_MARKS[i]! })}
-              />
-            )}
-            <Toggle
-              options={["midline", "no midline"]}
-              value={line_style.midline ? 0 : 1}
-              on_change={(i) => set_line_style({ ...line_style, midline: i === 0 })}
-            />
-            <Toggle
-              options={["straight", "circle"]}
-              value={line_style.midline_shape === "circle" ? 1 : 0}
-              on_change={(i) => set_line_style({ ...line_style, midline_shape: i === 1 ? "circle" : "straight" })}
-            />
-            {line_style.midline_shape === "circle" && (
-              <>
-                <Toggle
-                  options={["grow in", "grow out"]}
-                  value={line_style.grow === "out" ? 1 : 0}
-                  on_change={(i) => set_line_style({ ...line_style, grow: i === 1 ? "out" : "in" })}
-                />
-                <Toggle
-                  options={["even", "condensed"]}
-                  value={line_style.spacing === "condensed" ? 1 : 0}
-                  on_change={(i) => set_line_style({ ...line_style, spacing: i === 1 ? "condensed" : "even" })}
-                />
-                <Toggle
-                  options={["subclauses inline", "subclause circles"]}
-                  value={line_style.subclauses === "circles" ? 1 : 0}
-                  on_change={(i) => set_line_style({ ...line_style, subclauses: i === 1 ? "circles" : "inline" })}
-                />
-                <Toggle
-                  options={["relax", "constraint solver", "flow"]}
-                  value={["relax", "constraints", "flow"].indexOf(line_style.solver)}
-                  on_change={(i) => set_line_style({ ...line_style, solver: (["relax", "constraints", "flow"] as const)[i]! })}
-                />
-                {line_style.solver !== "relax" && (
-                  <Toggle
-                    options={["rings full", "rings tight"]}
-                    value={line_style.ring_sizing === "tight" ? 1 : 0}
-                    on_change={(i) => set_line_style({ ...line_style, ring_sizing: i === 1 ? "tight" : "full" })}
-                  />
-                )}
-                <label className="flex items-center gap-1" title="Room kept clear between words on different rings">
-                  clearance
-                  <input
-                    type="range"
-                    min={0}
-                    max={1}
-                    step={0.05}
-                    value={line_style.clearance}
-                    onChange={(e) => set_line_style({ ...line_style, clearance: Number(e.target.value) })}
-                    className="w-20"
-                  />
-                  <span className="tabular-nums w-8">{line_style.clearance.toFixed(2)}</span>
-                </label>
-                {line_style.subclauses === "circles" && (
-                  <span className="flex items-center gap-1" title="The mark where a subclause's circle starts">
-                    crossing
-                    <Toggle
-                      options={[...CROSSING_SHAPES]}
-                      value={CROSSING_SHAPES.indexOf(line_style.crossing_shape)}
-                      on_change={(i) => set_line_style({ ...line_style, crossing_shape: CROSSING_SHAPES[i]! })}
-                    />
-                    <input
-                      type="range"
-                      min={0.3}
-                      max={3}
-                      step={0.1}
-                      value={line_style.crossing_scale}
-                      onChange={(e) => set_line_style({ ...line_style, crossing_scale: Number(e.target.value) })}
-                      title={`Crossing mark size: ${line_style.crossing_scale}×`}
-                      className="w-20"
-                    />
-                  </span>
-                )}
-                {line_style.subclauses === "circles" && (
-                  <Toggle
-                    options={["hide clause words", "show clause words"]}
-                    value={line_style.clause_words === "show" ? 1 : 0}
-                    on_change={(i) => set_line_style({ ...line_style, clause_words: i === 1 ? "show" : "hide" })}
-                  />
-                )}
-                {line_style.spacing === "condensed" && (
-                  <Toggle
-                    options={["period at top", "period after"]}
-                    value={line_style.period_position === "after" ? 1 : 0}
-                    on_change={(i) => set_line_style({ ...line_style, period_position: i === 1 ? "after" : "top" })}
-                  />
-                )}
-              </>
-            )}
-            <label className="flex items-center gap-1" title="Midline colour">
-              colour
-              <input
-                type="color"
-                value={line_style.midline_color}
-                onChange={(e) => set_line_style({ ...line_style, midline_color: e.target.value })}
-                className="w-6 h-5 p-0 border border-gray-300 rounded bg-white"
-              />
-            </label>
-          </div>
-          <LayoutControls
-            phonology={phonology}
-            layout={line}
-            set_layout={set_line}
-            positions="left to right"
-            options={LINE_MARKS.map((m, i) => `${["⁻", "₋", "ᵒ", "ₒ"][i]} ${m}`)}
-          />
-        </div>
-        <div>
-          <h3 className="text-xs font-semibold text-gray-600 mb-1">Syllabics: shapes and turns</h3>
-          <SyllabicsControls phonology={phonology} settings={syllabics} set_settings={set_syllabics} />
-        </div>
-      </div>
 
       {/* Drawn only while open */}
       <details className="mt-2" onToggle={(e) => set_grid_open(e.currentTarget.open)}>
@@ -643,5 +652,53 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
         )}
       </details>
     </div>
+  );
+}
+
+const TABS = [
+  ["general", "General"],
+  ["stems", "Stems"],
+  ["line", "Line"],
+  ["circles", "Circles"],
+  ["syllabics", "Syllabics"],
+] as const;
+type Tab = (typeof TABS)[number][0];
+const SOLVERS = ["relax", "constraints", "flow"] as const;
+const OFF_CIRCLES = "Only round circles";
+const OFF_SUBCLAUSES = "Only with subclauses on circles";
+
+// A labelled row of settings; one that doesn't apply as things stand is greyed out, saying why,
+// rather than hidden, so the others stay where they are
+function Row({ label, hint, off, children }: { label: string; hint?: string; off?: string | false; children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-2" title={off || hint}>
+      <span className="w-24 shrink-0 text-gray-500">{label}</span>
+      <div className={`flex flex-wrap items-center gap-2 ${off ? "opacity-40 pointer-events-none" : ""}`} aria-disabled={!!off}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function Slider({
+  value,
+  min,
+  max,
+  step,
+  on_change,
+  format,
+}: {
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  on_change: (value: number) => void;
+  format: (value: number) => string;
+}) {
+  return (
+    <span className="flex items-center gap-1.5">
+      <input type="range" min={min} max={max} step={step} value={value} onChange={(e) => on_change(Number(e.target.value))} className="w-24" />
+      <span className="tabular-nums w-10 text-gray-600">{format(value)}</span>
+    </span>
   );
 }
