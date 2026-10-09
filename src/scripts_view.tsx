@@ -154,15 +154,48 @@ function Written({
 // A select for each of a mark's values; choices are labelled by what they look like
 const SELECT = "w-full min-w-0 px-0.5 py-0 border border-gray-300 rounded bg-white";
 
-// A row of a mapping: its name, then its values two to a line, each with its name before it
-function MappingRow({ label, className = "", children }: { label: string; className?: string; children: React.ReactNode }) {
+// A mapping as a table: a group of rows per mark, its name down the left, then each value's name
+// and what it's drawn as, with any warning under them
+function MappingTable({ children }: { children: React.ReactNode }) {
+  return <table className="w-full mb-2 text-xs border-collapse">{children}</table>;
+}
+
+function MappingGroup({ label, rows, warning }: { label: string; rows: [React.ReactNode, React.ReactNode][]; warning?: React.ReactNode }) {
   return (
-    <div className={`flex gap-2 text-xs ${className}`}>
-      <span className="w-14 shrink-0 pt-0.5 font-semibold text-gray-500">{label}</span>
-      <div className="flex-1 grid grid-cols-[auto_minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-1.5 gap-y-1">{children}</div>
-    </div>
+    <tbody className="border-t border-gray-100 first:border-t-0">
+      {rows.map(([name, control], i) => (
+        <tr key={i}>
+          {i === 0 && (
+            <th rowSpan={rows.length} className="w-16 pr-2 py-0.5 text-left align-top font-semibold text-gray-500">
+              {label}
+            </th>
+          )}
+          <td className="pr-2 py-0.5 text-gray-600 whitespace-nowrap">{name}</td>
+          <td className="w-full py-0.5">{control}</td>
+        </tr>
+      ))}
+      {warning && (
+        <tr>
+          <td />
+          <td colSpan={2} className="pb-1 text-red-600">
+            {warning}
+          </td>
+        </tr>
+      )}
+    </tbody>
   );
 }
+
+// A note between a table's groups
+const MappingNote = ({ children }: { children: React.ReactNode }) => (
+  <tbody>
+    <tr>
+      <td colSpan={3} className="pt-2 pb-0.5 text-gray-500">
+        {children}
+      </td>
+    </tr>
+  </tbody>
+);
 
 function AssignmentRow({
   mark,
@@ -180,31 +213,20 @@ function AssignmentRow({
   const labels = value_labels(mark, phonology);
   const clash = clashes(assignment, mark, phonology);
   return (
-    <div className="mb-1.5">
-      <MappingRow label={MARK_NAMES[mark]}>
-        {labels.map((label, v) => (
-          <React.Fragment key={label}>
-            <span className="text-right text-gray-600" title={label}>
-              {label.replace("voiced fricative", "v. fricative")}
-            </span>
-            <select
-              value={assignment[label] ?? v}
-              onChange={(e) => on_change({ ...assignment, [label]: Number(e.target.value) })}
-              className={SELECT}
-            >
-              {options.map((option, i) => (
-                <option key={i} value={i}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </React.Fragment>
-        ))}
-      </MappingRow>
-      {clash.length > 0 && (
-        <div className="ml-16 text-xs text-red-600">Look alike: {clash.join("; ")}</div>
-      )}
-    </div>
+    <MappingGroup
+      label={MARK_NAMES[mark]}
+      rows={labels.map((label, v) => [
+        label,
+        <select value={assignment[label] ?? v} onChange={(e) => on_change({ ...assignment, [label]: Number(e.target.value) })} className={SELECT}>
+          {options.map((option, i) => (
+            <option key={i} value={i}>
+              {option}
+            </option>
+          ))}
+        </select>,
+      ])}
+      warning={clash.length > 0 && `Look alike: ${clash.join("; ")}`}
+    />
   );
 }
 
@@ -241,32 +263,29 @@ function LayoutControls({
 }) {
   const missing = MARKS.filter((m) => !layout.order.includes(m));
   return (
-    <div>
-      <MappingRow label={positions} className="mb-1.5">
-        {layout.order.map((mark, i) => (
-          <React.Fragment key={i}>
-            <span className="text-right text-gray-600">{i + 1}</span>
-            <select
-              value={mark}
-              onChange={(e) => {
-                const order = [...layout.order];
-                order[i] = e.target.value as Mark;
-                set_layout({ ...layout, order });
-              }}
-              className={SELECT}
-            >
-              {MARKS.map((m) => (
-                <option key={m} value={m}>
-                  {MARK_NAMES[m]}
-                </option>
-              ))}
-            </select>
-          </React.Fragment>
-        ))}
-      </MappingRow>
-      {missing.length > 0 && (
-        <div className="ml-16 mb-1.5 text-red-600">Missing: {missing.map((m) => MARK_NAMES[m]).join(", ")}</div>
-      )}
+    <MappingTable>
+      <MappingGroup
+        label={positions}
+        rows={layout.order.map((mark, i) => [
+          i + 1,
+          <select
+            value={mark}
+            onChange={(e) => {
+              const order = [...layout.order];
+              order[i] = e.target.value as Mark;
+              set_layout({ ...layout, order });
+            }}
+            className={SELECT}
+          >
+            {MARKS.map((m) => (
+              <option key={m} value={m}>
+                {MARK_NAMES[m]}
+              </option>
+            ))}
+          </select>,
+        ])}
+        warning={missing.length > 0 && `Missing: ${missing.map((m) => MARK_NAMES[m]).join(", ")}`}
+      />
       {MARKS.map((mark) => (
         <AssignmentRow
           key={mark}
@@ -277,7 +296,7 @@ function LayoutControls({
           on_change={(values) => set_layout({ ...layout, values: { ...layout.values, [mark]: values } })}
         />
       ))}
-    </div>
+    </MappingTable>
   );
 }
 
@@ -293,18 +312,19 @@ function SyllabicsControls({
   const shape_options = settings.shapes.map((s) => `${SHAPES[s].join("")} ${s}`);
   const turn_options = TURNS.map((t, i) => `${SHAPES[settings.shapes[0]!][i]} ${t}`);
   return (
-    <div>
-      <MappingRow label="shapes" className="mb-1.5">
-        {settings.shapes.map((shape, i) => (
+    <MappingTable>
+      <MappingGroup
+        label="shapes"
+        rows={settings.shapes.map((shape, i) => [
+          i + 1,
           <select
-            key={i}
             value={shape}
             onChange={(e) => {
               const shapes = [...settings.shapes];
               shapes[i] = e.target.value as ShapeKey;
               set_settings({ ...settings, shapes });
             }}
-            className={`${SELECT} col-span-2`}
+            className={SELECT}
             style={{ fontFamily: SYLLABICS_FONT }}
           >
             {SHAPE_KEYS.map((k) => (
@@ -312,11 +332,11 @@ function SyllabicsControls({
                 {SHAPES[k].join("")} {k}
               </option>
             ))}
-          </select>
-        ))}
-      </MappingRow>
-      {new Set(settings.shapes).size < 4 && <div className="ml-16 mb-1.5 text-red-600">A shape is used twice</div>}
-      <p className="text-xs text-gray-500 mb-1">Onset glyph: shape is the manner, turn the place</p>
+          </select>,
+        ])}
+        warning={new Set(settings.shapes).size < 4 && "A shape is used twice"}
+      />
+      <MappingNote>Onset glyph: shape is the manner, turn the place</MappingNote>
       <AssignmentRow
         mark="M"
         phonology={phonology}
@@ -331,7 +351,7 @@ function SyllabicsControls({
         options={turn_options}
         on_change={(place_turns) => set_settings({ ...settings, place_turns })}
       />
-      <p className="text-xs text-gray-500 mb-1">Rime glyph: shape is the final, turn the vowel</p>
+      <MappingNote>Rime glyph: shape is the final, turn the vowel</MappingNote>
       <AssignmentRow
         mark="N"
         phonology={phonology}
@@ -346,11 +366,10 @@ function SyllabicsControls({
         options={turn_options}
         on_change={(vowel_turns) => set_settings({ ...settings, vowel_turns })}
       />
-    </div>
+    </MappingTable>
   );
 }
 
-// Every syllable in each script, laid out like the Roots grid: 16 IDs to a row
 // Drawn again only when something it shows changes: of the stave style, only how a word is drawn,
 // not how a text is laid out
 const word_style = ({ join, curves, loop_mark, midline, midline_color }: StaveStyle) =>
