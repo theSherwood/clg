@@ -29,6 +29,7 @@ import {
   Period,
   type PeriodStyle,
   type ScriptRenderer,
+  type ScriptSettings,
   default_stave_style,
   default_period,
   STAVE_JOINS,
@@ -41,6 +42,7 @@ import {
   load,
   script_renderers,
 } from "./script_drawings";
+import { BUILTIN_PRESETS, type Preset, load_saved_presets, same_settings, store_saved_presets } from "./script_presets";
 import { WordHover } from "./word_ui";
 
 // Tries out candidate scripts on real text: stems with a rung per mark, a stave with a mark per
@@ -150,6 +152,18 @@ function Written({
 }
 
 // A select for each of a mark's values; choices are labelled by what they look like
+const SELECT = "w-full min-w-0 px-0.5 py-0 border border-gray-300 rounded bg-white";
+
+// A row of a mapping: its name, then its values two to a line, each with its name before it
+function MappingRow({ label, className = "", children }: { label: string; className?: string; children: React.ReactNode }) {
+  return (
+    <div className={`flex gap-2 text-xs ${className}`}>
+      <span className="w-14 shrink-0 pt-0.5 font-semibold text-gray-500">{label}</span>
+      <div className="flex-1 grid grid-cols-[auto_minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-1.5 gap-y-1">{children}</div>
+    </div>
+  );
+}
+
 function AssignmentRow({
   mark,
   phonology,
@@ -167,15 +181,16 @@ function AssignmentRow({
   const clash = clashes(assignment, mark, phonology);
   return (
     <div className="mb-1.5">
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="w-14 text-xs font-semibold text-gray-500">{MARK_NAMES[mark]}</span>
+      <MappingRow label={MARK_NAMES[mark]}>
         {labels.map((label, v) => (
-          <label key={label} className="flex items-center gap-1 text-xs">
-            {label}
+          <React.Fragment key={label}>
+            <span className="text-right text-gray-600" title={label}>
+              {label.replace("voiced fricative", "v. fricative")}
+            </span>
             <select
               value={assignment[label] ?? v}
               onChange={(e) => on_change({ ...assignment, [label]: Number(e.target.value) })}
-              className="px-0.5 py-0 border border-gray-300 rounded bg-white"
+              className={SELECT}
             >
               {options.map((option, i) => (
                 <option key={i} value={i}>
@@ -183,9 +198,9 @@ function AssignmentRow({
                 </option>
               ))}
             </select>
-          </label>
+          </React.Fragment>
         ))}
-      </div>
+      </MappingRow>
       {clash.length > 0 && (
         <div className="ml-16 text-xs text-red-600">Look alike: {clash.join("; ")}</div>
       )}
@@ -227,11 +242,10 @@ function LayoutControls({
   const missing = MARKS.filter((m) => !layout.order.includes(m));
   return (
     <div>
-      <div className="flex flex-wrap items-center gap-2 mb-1.5 text-xs">
-        <span className="w-14 font-semibold text-gray-500">{positions}</span>
+      <MappingRow label={positions} className="mb-1.5">
         {layout.order.map((mark, i) => (
-          <label key={i} className="flex items-center gap-1">
-            {i + 1}
+          <React.Fragment key={i}>
+            <span className="text-right text-gray-600">{i + 1}</span>
             <select
               value={mark}
               onChange={(e) => {
@@ -239,7 +253,7 @@ function LayoutControls({
                 order[i] = e.target.value as Mark;
                 set_layout({ ...layout, order });
               }}
-              className="px-0.5 border border-gray-300 rounded bg-white"
+              className={SELECT}
             >
               {MARKS.map((m) => (
                 <option key={m} value={m}>
@@ -247,12 +261,12 @@ function LayoutControls({
                 </option>
               ))}
             </select>
-          </label>
+          </React.Fragment>
         ))}
-        {missing.length > 0 && (
-          <span className="text-red-600">Missing: {missing.map((m) => MARK_NAMES[m]).join(", ")}</span>
-        )}
-      </div>
+      </MappingRow>
+      {missing.length > 0 && (
+        <div className="ml-16 mb-1.5 text-red-600">Missing: {missing.map((m) => MARK_NAMES[m]).join(", ")}</div>
+      )}
       {MARKS.map((mark) => (
         <AssignmentRow
           key={mark}
@@ -280,8 +294,7 @@ function SyllabicsControls({
   const turn_options = TURNS.map((t, i) => `${SHAPES[settings.shapes[0]!][i]} ${t}`);
   return (
     <div>
-      <div className="flex flex-wrap items-center gap-2 mb-1.5 text-xs">
-        <span className="w-14 font-semibold text-gray-500">shapes</span>
+      <MappingRow label="shapes" className="mb-1.5">
         {settings.shapes.map((shape, i) => (
           <select
             key={i}
@@ -291,7 +304,7 @@ function SyllabicsControls({
               shapes[i] = e.target.value as ShapeKey;
               set_settings({ ...settings, shapes });
             }}
-            className="px-0.5 border border-gray-300 rounded bg-white"
+            className={`${SELECT} col-span-2`}
             style={{ fontFamily: SYLLABICS_FONT }}
           >
             {SHAPE_KEYS.map((k) => (
@@ -301,8 +314,8 @@ function SyllabicsControls({
             ))}
           </select>
         ))}
-        {new Set(settings.shapes).size < 4 && <span className="text-red-600">A shape is used twice</span>}
-      </div>
+      </MappingRow>
+      {new Set(settings.shapes).size < 4 && <div className="ml-16 mb-1.5 text-red-600">A shape is used twice</div>}
       <p className="text-xs text-gray-500 mb-1">Onset glyph: shape is the manner, turn the place</p>
       <AssignmentRow
         mark="M"
@@ -402,9 +415,8 @@ function AllSyllablesGrid({
 export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
   const [stems, set_stems] = useStored<MarkLayout>(SCRIPT_KEYS.stems, default_stems);
   const [stave, set_stave] = useStored<MarkLayout>(SCRIPT_KEYS.stave, default_stave);
-  const [stave_style, set_line_style] = useStored<StaveStyle>(SCRIPT_KEYS.stave_style, default_stave_style);
+  const [stave_style, set_stave_style] = useStored<StaveStyle>(SCRIPT_KEYS.stave_style, default_stave_style);
   const [grid_open, set_grid_open] = useState(false);
-  const [tab, set_tab] = useStored<Tab>("script_tab", "stave");
   const [period, set_period] = useStored<PeriodStyle>(SCRIPT_KEYS.period, default_period);
   const [syllabics, set_syllabics] = useStored<SyllabicsSettings>(SCRIPT_KEYS.syllabics, default_syllabics);
   const [size, set_size] = useStored("script_size", 32);
@@ -414,11 +426,20 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
 
   const scripts = script_renderers(phonology, { stems, stave, stave_style, syllabics, period }, size, true);
 
-  const set_style = (change: Partial<StaveStyle>) => set_line_style({ ...stave_style, ...change });
+  const set_style = (change: Partial<StaveStyle>) => set_stave_style({ ...stave_style, ...change });
   const circles = stave_style.midline_shape === "circle";
   const subclause_circles = circles && stave_style.subclauses === "circles";
 
-  const panels: Record<Tab, React.ReactNode> = {
+  const settings: ScriptSettings = { stems, stave, stave_style, syllabics, period };
+  const apply = (s: ScriptSettings) => {
+    set_stems(s.stems);
+    set_stave(s.stave);
+    set_stave_style(s.stave_style);
+    set_syllabics(s.syllabics);
+    set_period(s.period);
+  };
+
+  const panels: Record<Section, React.ReactNode> = {
     general: (
       <div className="space-y-2">
         <Row label="Size">
@@ -447,7 +468,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
       </>
     ),
     stave: (
-      <div className="grid gap-x-6 gap-y-2 lg:grid-cols-[auto_1fr]">
+      <div className="space-y-3">
         <div className="space-y-2">
           <Row label="Join">
             <Toggle options={[...STAVE_JOINS]} value={STAVE_JOINS.indexOf(stave_style.join)} on_change={(i) => set_style({ join: STAVE_JOINS[i]! })} />
@@ -498,7 +519,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
             on_change={(i) => set_style({ midline_shape: i === 1 ? "circle" : "straight" })}
           />
         </Row>
-        <div className="grid gap-x-8 gap-y-2 lg:grid-cols-2">
+        <div className="space-y-3">
           <div className="space-y-2">
             <h4 className="font-semibold text-gray-600">Rings</h4>
             <Row label="Solver" off={!circles && OFF_CIRCLES}>
@@ -572,97 +593,197 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
 
   return (
     <div className="mb-4 p-3 rounded border border-gray-200 bg-gray-50 text-sm">
-      <div className="flex flex-wrap justify-between items-center gap-2 mb-2">
-        <h2 className="font-semibold">Script playground</h2>
-        <button
-          onClick={() => {
-            set_stems(default_stems);
-            set_stave(default_stave);
-            set_line_style(default_stave_style);
-            set_syllabics(default_syllabics);
-            set_period(default_period);
-          }}
-          className="px-2 py-0.5 text-xs rounded border border-gray-300 bg-white hover:bg-gray-100"
-        >
-          Reset all settings
-        </button>
-      </div>
-
-      <div className="flex flex-wrap items-center gap-2 mb-1 text-xs">
-        <span className="text-gray-600">Text</span>
-        <select
-          value={PRESETS.find((p) => p.text === text)?.label ?? ""}
-          onChange={(e) => {
-            const preset = PRESETS.find((p) => p.label === e.target.value);
-            if (preset) set_text(preset.text);
-          }}
-          className="px-1 border border-gray-300 rounded bg-white"
-        >
-          <option value="">Your own</option>
-          {PRESETS.map((p) => (
-            <option key={p.label}>{p.label}</option>
+      <h2 className="font-semibold mb-2">Script playground</h2>
+      {/* The settings sit beside the writing on wide screens, kept in view while it scrolls, and
+          above it otherwise, so a new layout never moves them */}
+      <div className="flex flex-col lg:flex-row-reverse gap-3">
+        <aside className="lg:w-[26rem] shrink-0 lg:sticky lg:top-0 lg:self-start lg:max-h-screen lg:overflow-y-auto rounded border border-gray-200 bg-white text-xs">
+          <Presets settings={settings} apply={apply} />
+          {SECTIONS.map(([key, title]) => (
+            <Panel key={key} id={key} title={title}>
+              {panels[key]}
+            </Panel>
           ))}
-        </select>
-      </div>
-      <textarea
-        value={text}
-        onChange={(e) => set_text(e.target.value)}
-        rows={2}
-        className="w-full p-1.5 mb-2 border border-gray-300 rounded font-mono text-xs bg-white"
-      />
+        </aside>
 
-      {/* The settings, above the writing so a new layout never moves them, and on wide screens kept
-          in view while the writing scrolls under them */}
-      <div className="mb-3 rounded border border-gray-200 bg-white text-xs lg:sticky lg:top-0 lg:z-10 lg:shadow-sm">
-        <div className="flex flex-wrap border-b border-gray-200 px-2">
-          {TABS.map(([key, label]) => (
-            <button
-              key={key}
-              onClick={() => set_tab(key)}
-              className={`px-2.5 py-1.5 -mb-px border-b-2 ${
-                tab === key ? "border-indigo-600 text-indigo-700 font-semibold" : "border-transparent text-gray-600 hover:text-gray-900"
-              }`}
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2 mb-1 text-xs">
+            <span className="text-gray-600">Text</span>
+            <select
+              value={PRESETS.find((p) => p.text === text)?.label ?? ""}
+              onChange={(e) => {
+                const preset = PRESETS.find((p) => p.label === e.target.value);
+                if (preset) set_text(preset.text);
+              }}
+              className="px-1 border border-gray-300 rounded bg-white"
             >
-              {label}
-            </button>
-          ))}
-        </div>
-        <div className="p-2.5 min-h-[11rem]">{panels[tab] ?? panels.stave}</div>
-      </div>
-
-      <div className="mb-3 font-mono text-xs text-indigo-800">
-        <Written tokens={tokens} render={sounds} />
-      </div>
-      {scripts.map((s) => (
-        <ScriptText key={s.name} script={s} tokens={tokens} size={size} period={period} />
-      ))}
-
-      {/* Drawn only while open */}
-      <details className="mt-2" onToggle={(e) => set_grid_open(e.currentTarget.open)}>
-        <summary className="cursor-pointer text-xs font-semibold text-gray-600">All 256 syllables</summary>
-        {grid_open && (
-          <AllSyllables
-            phonology={phonology}
-            stems={stems}
-            stave={stave}
-            stave_style={stave_style}
-            syllabics={syllabics}
-            size={size}
+              <option value="">Your own</option>
+              {PRESETS.map((p) => (
+                <option key={p.label}>{p.label}</option>
+              ))}
+            </select>
+          </div>
+          <textarea
+            value={text}
+            onChange={(e) => set_text(e.target.value)}
+            rows={2}
+            className="w-full p-1.5 mb-2 border border-gray-300 rounded font-mono text-xs bg-white"
           />
-        )}
-      </details>
+          <div className="mb-3 font-mono text-xs text-indigo-800">
+            <Written tokens={tokens} render={sounds} />
+          </div>
+          {scripts.map((s) => (
+            <ScriptText key={s.name} script={s} tokens={tokens} size={size} period={period} />
+          ))}
+
+          {/* Drawn only while open */}
+          <details className="mt-2" onToggle={(e) => set_grid_open(e.currentTarget.open)}>
+            <summary className="cursor-pointer text-xs font-semibold text-gray-600">All 256 syllables</summary>
+            {grid_open && (
+              <AllSyllables
+                phonology={phonology}
+                stems={stems}
+                stave={stave}
+                stave_style={stave_style}
+                syllabics={syllabics}
+                size={size}
+              />
+            )}
+          </details>
+        </div>
+      </div>
     </div>
   );
 }
 
-const TABS = [
+const SECTIONS = [
   ["general", "General"],
   ["stems", "Stems"],
   ["stave", "Stave"],
-  ["circles", "Circles"],
+  ["circles", "Stave in rings"],
   ["syllabics", "Syllabics"],
 ] as const;
-type Tab = (typeof TABS)[number][0];
+type Section = (typeof SECTIONS)[number][0];
+
+// A collapsible section of the settings, remembered open or closed
+function Panel({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
+  const [open, set_open] = useStored(`script_panel_${id}`, id === "stave" || id === "circles");
+  return (
+    <details open={open} onToggle={(e) => set_open(e.currentTarget.open)} className="border-t border-gray-200 group">
+      <summary className="cursor-pointer select-none px-2.5 py-1.5 font-semibold text-gray-700 hover:bg-gray-50">{title}</summary>
+      <div className="px-2.5 pb-2.5 pt-1">{children}</div>
+    </details>
+  );
+}
+
+// Choosing a preset applies it; the current settings can be saved as a preset of their own, and
+// a saved one updated with them or deleted
+function Presets({ settings, apply }: { settings: ScriptSettings; apply: (s: ScriptSettings) => void }) {
+  const [saved, set_saved_state] = useState(load_saved_presets);
+  const [chosen, set_chosen] = useStored("script_preset", "Default");
+  const [naming, set_naming] = useState<string | null>(null);
+  const set_saved = (presets: Preset[]) => {
+    set_saved_state(presets);
+    store_saved_presets(presets);
+  };
+  const all = [...BUILTIN_PRESETS, ...saved];
+  const preset = all.find((p) => p.name === chosen);
+  const changed = !preset || !same_settings(preset.settings, settings);
+  const taken = (name: string) => BUILTIN_PRESETS.some((p) => p.name === name);
+  const save = () => {
+    const name = naming?.trim();
+    if (!name || taken(name)) return;
+    set_saved([...saved.filter((p) => p.name !== name), { name, settings }]);
+    set_chosen(name);
+    set_naming(null);
+  };
+  const button = "px-1.5 py-0.5 rounded border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-40 disabled:hover:bg-white";
+  return (
+    <div className="p-2.5 space-y-1.5">
+      <div className="flex items-center gap-2">
+        <span className="font-semibold text-gray-700">Preset</span>
+        <select
+          value={preset ? chosen : ""}
+          onChange={(e) => {
+            const next = all.find((p) => p.name === e.target.value);
+            if (!next) return;
+            set_chosen(next.name);
+            apply(next.settings);
+          }}
+          className="min-w-0 flex-1 px-1 py-0.5 border border-gray-300 rounded bg-white"
+        >
+          {!preset && <option value="">None</option>}
+          <optgroup label="Built in">
+            {BUILTIN_PRESETS.map((p) => (
+              <option key={p.name}>{p.name}</option>
+            ))}
+          </optgroup>
+          {saved.length > 0 && (
+            <optgroup label="Saved">
+              {saved.map((p) => (
+                <option key={p.name}>{p.name}</option>
+              ))}
+            </optgroup>
+          )}
+        </select>
+        {preset && changed && <span className="text-amber-700">changed</span>}
+      </div>
+      {naming === null ? (
+        <div className="flex flex-wrap gap-1.5">
+          <button className={button} onClick={() => set_naming(preset && !preset.builtin ? preset.name : "")}>
+            Save as…
+          </button>
+          <button
+            className={button}
+            disabled={!preset || preset.builtin || !changed}
+            title={preset?.builtin ? "Built-in presets can't be changed; save as a new one" : undefined}
+            onClick={() => preset && set_saved(saved.map((p) => (p.name === preset.name ? { ...p, settings } : p)))}
+          >
+            Update
+          </button>
+          <button className={button} disabled={!preset || !changed} onClick={() => preset && apply(preset.settings)}>
+            Revert
+          </button>
+          <button
+            className={button}
+            disabled={!preset || preset.builtin}
+            onClick={() => {
+              if (!preset || !confirm(`Delete the preset "${preset.name}"?`)) return;
+              set_saved(saved.filter((p) => p.name !== preset.name));
+              set_chosen("Default");
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      ) : (
+        <form
+          className="flex flex-wrap items-center gap-1.5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            save();
+          }}
+        >
+          <input
+            autoFocus
+            value={naming}
+            onChange={(e) => set_naming(e.target.value)}
+            placeholder="Name"
+            className="min-w-0 flex-1 px-1 py-0.5 border border-gray-300 rounded"
+          />
+          <button type="submit" className={button} disabled={!naming.trim() || taken(naming.trim())}>
+            Save
+          </button>
+          <button type="button" className={button} onClick={() => set_naming(null)}>
+            Cancel
+          </button>
+          {taken(naming.trim()) && <span className="w-full text-red-600">That's a built-in preset's name</span>}
+          {saved.some((p) => p.name === naming.trim()) && <span className="w-full text-amber-700">Replaces the saved preset of that name</span>}
+        </form>
+      )}
+    </div>
+  );
+}
 const SOLVERS = ["relax", "constraints", "flow"] as const;
 const OFF_CIRCLES = "Only round circles";
 const OFF_SUBCLAUSES = "Only with subclauses on circles";

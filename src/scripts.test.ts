@@ -177,3 +177,14 @@ test("a layout sent back from the circle worker names the same items it was laid
     return items.some((item) => item === it.item || ("clause" in item && has(item.clause)));
   }))).toBe(true);
 });
+
+test("the built-in script presets all differ, and settings compare whatever their fields' order", async () => {
+  const { BUILTIN_PRESETS, same_settings } = await import("./script_presets");
+  const names = new Set(BUILTIN_PRESETS.map((p) => p.name));
+  expect(names.size).toBe(BUILTIN_PRESETS.length);
+  for (const [i, a] of BUILTIN_PRESETS.entries())
+    for (const b of BUILTIN_PRESETS.slice(i + 1)) expect(same_settings(a.settings, b.settings)).toBe(false);
+  const { settings } = BUILTIN_PRESETS[0]!;
+  const reordered = Object.fromEntries(Object.entries(settings).reverse().map(([k, v]) => [k, Object.fromEntries(Object.entries(v).reverse())]));
+  expect(same_settings(settings, reordered as typeof settings)).toBe(true);
+});
