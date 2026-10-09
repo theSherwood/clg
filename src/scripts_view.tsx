@@ -371,7 +371,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
   const tokens = useMemo(() => script_tokens(text, phonology), [text, phonology]);
   const sounds = (ids: number[]) => ids.map((id) => syllable_of(id, phonology)).join("");
 
-  const scripts = script_renderers(phonology, { stems, line, line_style, syllabics }, size, true);
+  const scripts = script_renderers(phonology, { stems, line, line_style, syllabics, period }, size, true);
 
   return (
     <div className="mb-4 p-3 rounded border border-gray-200 bg-gray-50 text-sm">
@@ -447,7 +447,13 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
             {s.name} <span className="font-normal text-gray-400">{s.note}</span>
           </h3>
           <div style={s.style} className="text-gray-900">
-            <Written tokens={tokens} render={s.render} size={size} rule={s.rule} period={period} />
+            {s.whole_text ? (
+              <div className="overflow-x-auto">
+                {s.whole_text(tokens, (word, node) => <WordHover word={word}>{node}</WordHover>)}
+              </div>
+            ) : (
+              <Written tokens={tokens} render={s.render} size={size} rule={s.rule} period={period} />
+            )}
           </div>
         </div>
       ))}
@@ -488,6 +494,18 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
               value={line_style.midline ? 0 : 1}
               on_change={(i) => set_line_style({ ...line_style, midline: i === 0 })}
             />
+            <Toggle
+              options={["straight", "circle"]}
+              value={line_style.midline_shape === "circle" ? 1 : 0}
+              on_change={(i) => set_line_style({ ...line_style, midline_shape: i === 1 ? "circle" : "straight" })}
+            />
+            {line_style.midline_shape === "circle" && (
+              <Toggle
+                options={["grow in", "grow out"]}
+                value={line_style.grow === "out" ? 1 : 0}
+                on_change={(i) => set_line_style({ ...line_style, grow: i === 1 ? "out" : "in" })}
+              />
+            )}
             <label className="flex items-center gap-1" title="Midline colour">
               colour
               <input

@@ -1,4 +1,5 @@
 import React from "react";
+import { type Word } from "./dict";
 import { type Phonology } from "./phonology";
 import {
   type MarkLayout,
@@ -7,6 +8,7 @@ import {
   default_stems,
   default_syllabics,
   layout_values,
+  type ScriptToken,
   syllabics_glyphs,
 } from "./scripts";
 
@@ -70,15 +72,9 @@ export function Stems({ rows, size }: { rows: number[][]; size: number }) {
   );
 }
 
-// A word in the line script, as one smooth stroke. The pen never returns to the line itself: it
-// travels above or below it, at the level of the mark it's on. A dash is the pen running along
-// that level, so neighbouring dashes on one side join into a longer line, and a loop is a small
-// curl outward from it. Every position is the same width, and syllables follow on without a gap
-// (a gap would read as a longer dash), so a word is counted off four positions at a time.
-//
-// The stroke is a list of points the pen passes through, joined by one smooth spline, so changes
-// of side and the joins into and out of loops have no corners. A loop next to the other side
-// leaves out its level start or end, so the pen sweeps straight between the loop and the crossing.
+// The line script: each syllable is four marks along a midline, left to right, each a dash or a
+// loop, above or below it. Every position is the same width. How the marks join, and whether the
+// midline is straight or a circle, are settings (LineStyle, below).
 const LINE_SLOT = 0.32;
 
 export type Point = [number, number];
@@ -104,46 +100,11 @@ export function spline(points: Point[]): string {
   return path;
 }
 
-function line_path(marks: number[][], size: number, middle: number, start: number, curves: boolean): string {
-  const slot = size * LINE_SLOT;
-  const level = size * 0.2; // how far above or below the line the marks run, as for separate marks
-  const loop_height = size * 0.17;
-  const loop_width = slot * 0.5;
-  const flat = marks.flat();
-  const side = flat.map((mark) => (mark & 1 ? 1 : -1));
-  // A word that starts or ends with a loop starts or ends at it, with no line beyond
-  const points: Point[] = flat[0]! & 2 ? [] : [[start, middle + side[0]! * level]];
-  flat.forEach((mark, k) => {
-    const left = start + k * slot;
-    const right = left + slot;
-    const s = side[k]!;
-    const y = middle + s * level;
-    if (mark & 2) {
-      const a = left + (slot - loop_width) / 2;
-      const w = loop_width;
-      const same_before = k === 0 || side[k - 1] === s;
-      const same_after = k === flat.length - 1 || side[k + 1] === s;
-      if (same_before) points.push([a, y]);
-      points.push(
-        [a + w, y + s * loop_height * 0.5],
-        [a + w * 0.5, y + s * loop_height * 1.15],
-        [a, y + s * loop_height * 0.5],
-      );
-      if (same_after) points.push([a + w, y]);
-    } else {
-      points.push([left + slot * 0.2, y], [right - slot * 0.2, y]);
-    }
-  });
-  if (!(flat.at(-1)! & 2)) points.push([start + flat.length * slot, middle + side.at(-1)! * level]);
-  return curves ? spline(points) : `M ${points.map(([x, y]) => `${x} ${y}`).join(" L ")}`;
-}
-
-// How the line script is drawn: one stroke per word or each mark on its own, curves or straight
-// lines, and whether the midline itself is drawn
 // How marks join: cursive (one stroke, as a hand would write it), angular (one straight line at
 // the marks' level, stepping straight across where the side changes, with each loop's mark threaded
 // on it), dashes (only neighbouring dashes on one side join) or separate. curves applies to
-// cursive; loop_mark is how the other ways draw a loop.
+// cursive; loop_mark is how the other ways draw a loop. The midline is straight, or a circle with a
+// sentence to each ring, nested one inside another (grow "in") or outside (grow "out").
 export const LINE_JOINS = ["cursive", "angular", "dashes", "separate"] as const;
 export type LineJoin = (typeof LINE_JOINS)[number];
 export const LOOP_MARKS = ["circle", "diamond", "square", "tick"] as const;
@@ -155,6 +116,8 @@ export type LineStyle = {
   loop_mark: LoopMark;
   midline: boolean;
   midline_color: string;
+  midline_shape: "straight" | "circle";
+  grow: "in" | "out";
 };
 export const default_line_style: LineStyle = {
   join: "cursive",
@@ -162,6 +125,8 @@ export const default_line_style: LineStyle = {
   loop_mark: "circle",
   midline: false,
   midline_color: "#4b5563",
+  midline_shape: "straight",
+  grow: "in",
 };
 
 // The midline is ruled like lined paper: thinner than the writing, in its own colour
@@ -169,125 +134,323 @@ export function midline_width(size: number): number {
   return Math.max(1, size / 24);
 }
 
-// A loop's mark centred at x, y, and how far it reaches either side along the line, so a line
-// threading it can stop at its edge (a tick is crossed, so the line runs on through it)
-function loop_mark(loop: LoopMark, x: number, y: number, r: number, key: string): [React.ReactNode, number] {
-  if (loop === "circle") return [<circle key={key} cx={x} cy={y} r={r} />, r];
-  if (loop === "square") return [<rect key={key} x={x - r * 0.9} y={y - r * 0.9} width={r * 1.8} height={r * 1.8} />, r * 0.9];
-  if (loop === "tick") return [<line key={key} x1={x} y1={y - r * 1.3} x2={x} y2={y + r * 1.3} />, 0];
-  return [<path key={key} d={`M ${x} ${y - r * 1.2} L ${x + r * 1.2} ${y} L ${x} ${y + r * 1.2} L ${x - r * 1.2} ${y} Z`} />, r * 1.2];
+// A word in the line script as geometry: x is how far along the midline from the word's start,
+// and y how far below the midline (negative is above). The strokes are what the pen draws, smooth
+// (a spline through the points) or straight from point to point, and the marks are loops drawn as
+// a circle, diamond, square or tick. Drawing a word straight or round a circle is then only a
+// matter of where each point goes.
+type Stroke = { points: Point[]; smooth: boolean };
+type Mark = { shape: LoopMark; x: number; y: number; r: number };
+export type LineGeometry = { strokes: Stroke[]; marks: Mark[]; width: number };
+
+const LINE_LEVEL = 0.2; // how far above or below the midline the marks run
+const SYLLABLE_GAP = 0.4; // between syllables, when marks are separate
+
+// How far a mark reaches either side along the line, so a line threading it can stop at its edge
+// (a tick is crossed, so the line runs on through it)
+function mark_reach(shape: LoopMark, r: number): number {
+  return shape === "circle" ? r : shape === "square" ? r * 0.9 : shape === "tick" ? 0 : r * 1.2;
 }
 
-// Marks drawn on their own, above or below the line, with a gap between syllables (a separate
-// mark can't run into the next, so a gap can't be taken for one). With join_dashes, neighbouring
-// dashes on one side within a syllable are one line.
-function line_marks(
-  marks: number[][],
-  size: number,
-  middle: number,
-  start: number,
-  loop: LoopMark,
-  join_dashes: boolean,
-): React.ReactNode[] {
+function draw_mark(shape: LoopMark, x: number, y: number, r: number, key?: string): React.ReactNode {
+  if (shape === "circle") return <circle key={key} cx={x} cy={y} r={r} />;
+  if (shape === "square") return <rect key={key} x={x - r * 0.9} y={y - r * 0.9} width={r * 1.8} height={r * 1.8} />;
+  if (shape === "tick") return <line key={key} x1={x} y1={y - r * 1.3} x2={x} y2={y + r * 1.3} />;
+  return <path key={key} d={`M ${x} ${y - r * 1.2} L ${x + r * 1.2} ${y} L ${x} ${y + r * 1.2} L ${x - r * 1.2} ${y} Z`} />;
+}
+
+// Cursive: one stroke through the word. A loop next to the other side leaves out its level start
+// or end, so the pen sweeps straight between the loop and the crossing, and a word that starts or
+// ends with a loop starts or ends at it.
+function cursive_geometry(marks: number[][], size: number, curves: boolean): LineGeometry {
   const slot = size * LINE_SLOT;
-  const gap = size * 0.4;
-  const offset = size * 0.2;
+  const level = size * LINE_LEVEL;
+  const loop_height = size * 0.17;
+  const loop_width = slot * 0.5;
+  const flat = marks.flat();
+  const side = flat.map((mark) => (mark & 1 ? 1 : -1));
+  const points: Point[] = flat[0]! & 2 ? [] : [[0, side[0]! * level]];
+  flat.forEach((mark, k) => {
+    const left = k * slot;
+    const s = side[k]!;
+    const y = s * level;
+    if (mark & 2) {
+      const a = left + (slot - loop_width) / 2;
+      const w = loop_width;
+      if (k === 0 || side[k - 1] === s) points.push([a, y]);
+      points.push(
+        [a + w, y + s * loop_height * 0.5],
+        [a + w * 0.5, y + s * loop_height * 1.15],
+        [a, y + s * loop_height * 0.5],
+      );
+      if (k === flat.length - 1 || side[k + 1] === s) points.push([a + w, y]);
+    } else {
+      points.push([left + slot * 0.2, y], [left + slot * 0.8, y]);
+    }
+  });
+  if (!(flat.at(-1)! & 2)) points.push([flat.length * slot, side.at(-1)! * level]);
+  return { strokes: [{ points, smooth: curves }], marks: [], width: flat.length * slot };
+}
+
+// Separate marks above or below the line, with a gap between syllables (a separate mark can't run
+// into the next, so a gap can't be taken for one). With join_dashes, neighbouring dashes on one
+// side within a syllable are one line.
+function separate_geometry(marks: number[][], size: number, loop: LoopMark, join_dashes: boolean): LineGeometry {
+  const slot = size * LINE_SLOT;
+  const gap = size * SYLLABLE_GAP;
+  const level = size * LINE_LEVEL;
   const r = slot * 0.2;
   const dash = slot * 0.22; // half a dash's length
-  return marks.flatMap((syllable, i) => {
-    const nodes: React.ReactNode[] = [];
-    let run: { x1: number; x2: number; y: number } | undefined;
+  const strokes: Stroke[] = [];
+  const shapes: Mark[] = [];
+  marks.forEach((syllable, i) => {
+    let run: Point[] | undefined;
     const end_run = () => {
-      if (run) nodes.push(<line key={`${i}-${nodes.length}`} x1={run.x1} y1={run.y} x2={run.x2} y2={run.y} />);
+      if (run) strokes.push({ points: run, smooth: false });
       run = undefined;
     };
     syllable.forEach((mark, j) => {
-      const x = start + i * (4 * slot + gap) + (j + 0.5) * slot;
-      const y = mark & 1 ? middle + offset : middle - offset;
+      const x = i * (4 * slot + gap) + (j + 0.5) * slot;
+      const y = mark & 1 ? level : -level;
       if (mark & 2) {
         end_run();
-        nodes.push(loop_mark(loop, x, y, r, `${i}-${j}`)[0]);
-      } else if (join_dashes && run && run.y === y) {
-        run.x2 = x + dash;
+        shapes.push({ shape: loop, x, y, r });
+      } else if (join_dashes && run && run[0]![1] === y) {
+        run[1] = [x + dash, y];
       } else {
         end_run();
-        run = { x1: x - dash, x2: x + dash, y };
+        run = [
+          [x - dash, y],
+          [x + dash, y],
+        ];
       }
     });
     end_run();
-    return nodes;
   });
+  return { strokes, marks: shapes, width: marks.length * 4 * slot + (marks.length - 1) * gap };
 }
 
-// One straight line along the word at each mark's level, stepping straight up or down at the
-// boundary where the side changes; a dash is the line itself and a loop its mark threaded on it
-function angular_line(marks: number[][], size: number, middle: number, start: number, loop: LoopMark): React.ReactNode[] {
+// Angular: one straight line along the word at each mark's level, stepping straight up or down at
+// the boundary where the side changes. A dash is the line itself and a loop its mark threaded on
+// it; a word that starts or ends with a mark starts or ends there.
+function angular_geometry(marks: number[][], size: number, loop: LoopMark): LineGeometry {
   const slot = size * LINE_SLOT;
-  const offset = size * 0.2;
+  const level = size * LINE_LEVEL;
   const r = slot * 0.24;
   const flat = marks.flat();
-  const y = flat.map((mark) => middle + (mark & 1 ? 1 : -1) * offset);
-  const shapes: React.ReactNode[] = [];
-  let path = "";
+  const y = flat.map((mark) => (mark & 1 ? 1 : -1) * level);
+  const strokes: Stroke[] = [];
+  const shapes: Mark[] = [];
+  let current: Point[] = [];
   flat.forEach((mark, k) => {
-    const left = start + k * slot;
+    const left = k * slot;
     const right = left + slot;
     const x = left + slot / 2;
     const yk = y[k]!;
     if (mark & 2) {
-      const [shape, reach] = loop_mark(loop, x, yk, r, `m${k}`);
-      shapes.push(shape);
-      // The line meets the mark's edge (a tick it crosses); a word's first or last mark is its end
-      if (k === 0) path = `M ${x + reach} ${yk}`;
-      else path += ` L ${x - reach} ${yk}` + (reach > 0 ? ` M ${x + reach} ${yk}` : "");
-      if (k === flat.length - 1) return;
+      shapes.push({ shape: loop, x, y: yk, r });
+      const reach = mark_reach(loop, r);
+      if (k === 0) current = [[x + reach, yk]];
+      else if (reach > 0) {
+        current.push([x - reach, yk]);
+        strokes.push({ points: current, smooth: false });
+        current = [[x + reach, yk]];
+      } else current.push([x, yk]);
+      if (k === flat.length - 1) {
+        if (reach > 0) current = [];
+        return;
+      }
     } else if (k === 0) {
-      path = `M ${left} ${yk}`;
+      current = [[left, yk]];
     }
-    path += ` L ${right} ${yk}`;
-    if (y[k + 1] !== undefined && y[k + 1] !== yk) path += ` L ${right} ${y[k + 1]}`;
+    current.push([right, yk]);
+    if (y[k + 1] !== undefined && y[k + 1] !== yk) current.push([right, y[k + 1]!]);
   });
-  return [<path key="line" d={path} />, ...shapes];
+  if (current.length > 1) strokes.push({ points: current, smooth: false });
+  return { strokes, marks: shapes, width: flat.length * slot };
+}
+
+export function line_geometry(marks: number[][], size: number, style: LineStyle): LineGeometry {
+  if (style.join === "cursive") return cursive_geometry(marks, size, style.curves);
+  if (style.join === "angular") return angular_geometry(marks, size, style.loop_mark);
+  return separate_geometry(marks, size, style.loop_mark, style.join === "dashes");
+}
+
+const polyline = (points: Point[]) => `M ${points.map(([x, y]) => `${x} ${y}`).join(" L ")}`;
+
+function svg_props(size: number, style: LineStyle) {
+  return {
+    stroke: "currentColor",
+    strokeWidth: Math.max(1.5, size / 16),
+    strokeLinecap: "round" as const,
+    strokeLinejoin: style.join === "angular" ? ("miter" as const) : ("round" as const),
+    fill: "none",
+  };
 }
 
 export function Line({ marks, size, style = default_line_style }: { marks: number[][]; size: number; style?: LineStyle }) {
   const stroke = Math.max(1.5, size / 16);
+  const geometry = line_geometry(marks, size, style);
   const height = size * 1.0;
-  const slot = size * LINE_SLOT;
-  const gapped = style.join === "dashes" || style.join === "separate";
-  const syllables = marks.length * 4 * slot + (gapped ? (marks.length - 1) * size * 0.4 : 0);
-  const width = syllables + 2 * stroke;
-  const middle = height / 2;
+  const width = geometry.width + 2 * stroke;
   return (
-    <svg
-      width={width}
-      height={height}
-      viewBox={`0 0 ${width} ${height}`}
-      className="inline-block align-middle"
-      stroke="currentColor"
-      strokeWidth={stroke}
-      strokeLinecap="round"
-      strokeLinejoin={style.join === "angular" ? "miter" : "round"}
-      fill="none"
-    >
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="inline-block align-middle" {...svg_props(size, style)}>
       {style.midline && (
         <line
           x1={0}
-          y1={middle}
+          y1={height / 2}
           x2={width}
-          y2={middle}
+          y2={height / 2}
           stroke={style.midline_color}
           strokeWidth={midline_width(size)}
           strokeLinecap="butt"
         />
       )}
-      {style.join === "cursive" ? (
-        <path d={line_path(marks, size, middle, stroke, style.curves)} />
-      ) : style.join === "angular" ? (
-        angular_line(marks, size, middle, stroke, style.loop_mark)
-      ) : (
-        line_marks(marks, size, middle, stroke, style.loop_mark, style.join === "dashes")
-      )}
+      <g transform={`translate(${stroke} ${height / 2})`}>
+        {geometry.strokes.map((s, i) => (
+          <path key={i} d={s.smooth ? spline(s.points) : polyline(s.points)} />
+        ))}
+        {geometry.marks.map((m, i) => draw_mark(m.shape, m.x, m.y, m.r, `m${i}`))}
+      </g>
+    </svg>
+  );
+}
+
+// The line script round circles: each sentence is a ring, read clockwise from the top, with the
+// marks above the line outside it and those below inside. Rings are a line apart, and all are as
+// big as the longest sentence for its place needs, so the writing stays one size; a sentence
+// shorter than its ring has its gaps widened until it closes the circle. The first sentence is the
+// outer ring when growing in, and the inner one when growing out.
+type CircleItem = { geometry: LineGeometry; word?: Word } | { period: true } | { blank: number };
+
+export function LineCircles({
+  tokens,
+  phonology,
+  layout,
+  style,
+  period,
+  size,
+  wrap,
+}: {
+  tokens: ScriptToken[];
+  phonology: Phonology;
+  layout: MarkLayout;
+  style: LineStyle;
+  period: PeriodStyle;
+  size: number;
+  wrap: (word: Word, node: React.ReactElement) => React.ReactNode;
+}) {
+  const stroke = Math.max(1.5, size / 16);
+  const sentences: CircleItem[][] = [[]];
+  for (const t of tokens) {
+    const sentence = sentences.at(-1)!;
+    if ("punctuation" in t) {
+      if (t.punctuation === ".") {
+        sentence.push({ period: true });
+        sentences.push([]);
+      }
+    } else if (t.ids) {
+      sentence.push({ geometry: line_geometry(t.ids.map((id) => layout_values(id, phonology, layout)), size, style), word: t.word });
+    } else {
+      sentence.push({ blank: size * 0.5 });
+    }
+  }
+  const rings = sentences.filter((s) => s.length > 0);
+  if (rings.length === 0) return null;
+
+  const gap = size * 0.25;
+  const period_width = size * 0.3 * period.scale;
+  const width_of = (item: CircleItem) =>
+    "geometry" in item ? item.geometry.width : "period" in item ? period_width : item.blank;
+  const lengths = rings.map((items) => items.reduce((n, item) => n + width_of(item) + gap, 0));
+  const spacing = size * 1.35; // between rings, so neighbouring rings' marks keep apart
+  const smallest = size * 0.8;
+  const radii =
+    style.grow === "in"
+      ? (() => {
+          const outer = Math.max(
+            smallest + (rings.length - 1) * spacing,
+            ...lengths.map((l, k) => l / (2 * Math.PI) + k * spacing),
+          );
+          return lengths.map((_, k) => outer - k * spacing);
+        })()
+      : (() => {
+          const inner = Math.max(smallest, ...lengths.map((l, k) => l / (2 * Math.PI) - k * spacing));
+          return lengths.map((_, k) => inner + k * spacing);
+        })();
+  const outer = Math.max(...radii);
+  const margin = size * 0.75;
+  const centre = outer + margin;
+  const step = size * 0.08; // straight lines are cut this fine so they bend with the ring
+
+  const nodes: React.ReactNode[] = [];
+  rings.forEach((items, k) => {
+    const R = radii[k]!;
+    const circumference = 2 * Math.PI * R;
+    const ring_gap = gap + (circumference - lengths[k]!) / items.length;
+    // Where a point along the ring goes: x along the circle from the top, y below the line inward
+    const place = (x: number, y: number): Point => {
+      const angle = -Math.PI / 2 + (2 * Math.PI * x) / circumference;
+      const r = R - y;
+      return [centre + r * Math.cos(angle), centre + r * Math.sin(angle)];
+    };
+    const turn = (x: number) => (360 * x) / circumference;
+    const bend = (points: Point[], at: number): Point[] =>
+      points.flatMap(([x, y], i): Point[] => {
+        if (i === 0) return [place(at + x, y)];
+        const [px, py] = points[i - 1]!;
+        const pieces = Math.max(1, Math.ceil(Math.hypot(x - px, y - py) / step));
+        return Array.from({ length: pieces }, (_, n): Point => {
+          const t = (n + 1) / pieces;
+          return place(at + px + (x - px) * t, py + (y - py) * t);
+        });
+      });
+    if (style.midline) {
+      nodes.push(
+        <circle key={`mid${k}`} cx={centre} cy={centre} r={R} stroke={style.midline_color} strokeWidth={midline_width(size)} />,
+      );
+    }
+    let x = ring_gap / 2;
+    items.forEach((item, i) => {
+      const width = width_of(item);
+      if ("geometry" in item) {
+        const g = item.geometry;
+        const word = (
+          <g key={`${k}-${i}`}>
+            {/* An invisible band along the word, so it's easy to hover */}
+            <path d={polyline(bend([[0, 0], [width, 0]], x))} stroke="transparent" strokeWidth={size * 0.9} />
+            {g.strokes.map((s, j) => (
+              <path
+                key={j}
+                d={s.smooth ? spline(s.points.map(([px, py]) => place(x + px, py))) : polyline(bend(s.points, x))}
+              />
+            ))}
+            {g.marks.map((m, j) => {
+              const [mx, my] = place(x + m.x, m.y);
+              return (
+                <g key={`m${j}`} transform={`translate(${mx} ${my}) rotate(${turn(x + m.x)})`}>
+                  {draw_mark(m.shape, 0, 0, m.r)}
+                </g>
+              );
+            })}
+          </g>
+        );
+        nodes.push(item.word ? <React.Fragment key={`${k}-${i}`}>{wrap(item.word, word)}</React.Fragment> : word);
+      } else if ("period" in item) {
+        const [px, py] = place(x + width / 2, 0);
+        nodes.push(
+          <g key={`${k}-${i}`} transform={`translate(${px} ${py}) rotate(${turn(x + width / 2)})`}>
+            {draw_mark(period.shape, 0, 0, Math.max(width / 2 - stroke, stroke))}
+          </g>,
+        );
+      }
+      x += width + ring_gap;
+    });
+  });
+  const side = 2 * centre;
+  return (
+    <svg width={side} height={side} viewBox={`0 0 ${side} ${side}`} className="block" {...svg_props(size, style)}>
+      {nodes}
     </svg>
   );
 }
@@ -409,6 +572,7 @@ export type ScriptSettings = {
   line: MarkLayout;
   line_style: LineStyle;
   syllabics: SyllabicsSettings;
+  period: PeriodStyle;
 };
 
 export const SCRIPT_KEYS = {
@@ -424,17 +588,21 @@ export function stored_script_settings(): ScriptSettings {
     stems: load(SCRIPT_KEYS.stems, default_stems),
     line: load(SCRIPT_KEYS.line, default_line),
     line_style: load(SCRIPT_KEYS.line_style, default_line_style),
+    period: load(SCRIPT_KEYS.period, default_period),
     syllabics: load(SCRIPT_KEYS.syllabics, default_syllabics),
   };
 }
 
-// rule: in running text, a midline ruled across the whole text, under every row of words
+// rule: in running text, a midline ruled across the whole text, under every row of words.
+// whole_text: a script that lays out a whole text itself rather than word by word (the line script
+// round circles); wrap makes a word hoverable.
 export type ScriptRenderer = {
   name: string;
   note: string;
   render: (ids: number[]) => React.ReactNode;
   style?: React.CSSProperties;
   rule?: { color: string; size: number };
+  whole_text?: (tokens: ScriptToken[], wrap: (word: Word, node: React.ReactElement) => React.ReactNode) => React.ReactNode;
 };
 
 // Each script, as a way to write a word's root IDs
@@ -446,7 +614,8 @@ export function script_renderers(
   size: number,
   in_text = false,
 ): ScriptRenderer[] {
-  const { stems, line, line_style, syllabics } = settings;
+  const { stems, line, line_style, syllabics, period } = settings;
+  const circles = in_text && line_style.midline_shape === "circle";
   return [
     {
       name: "Stems",
@@ -468,7 +637,20 @@ export function script_renderers(
           style={in_text ? { ...line_style, midline: false } : line_style}
         />
       ),
-      rule: in_text && line_style.midline ? { color: line_style.midline_color, size } : undefined,
+      rule: in_text && !circles && line_style.midline ? { color: line_style.midline_color, size } : undefined,
+      whole_text: circles
+        ? (tokens, wrap) => (
+            <LineCircles
+              tokens={tokens}
+              phonology={phonology}
+              layout={line}
+              style={line_style}
+              period={period}
+              size={size}
+              wrap={wrap}
+            />
+          )
+        : undefined,
     },
     {
       name: "Syllabics",
