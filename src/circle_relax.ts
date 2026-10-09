@@ -1,7 +1,7 @@
 import type { Placement, Solved, SolvedRing, SolveOptions } from "./circle_solver";
 import type { CircleItem, Point } from "./script_drawings";
 
-// Lays the line script out round circles by relaxation: lay everything out, find the words that
+// Lays the stave script out round circles by relaxation: lay everything out, find the words that
 // overlap, make room where they do, and lay out again, until nothing overlaps. Every sentence's
 // ring is spaced a band from the next, plus whatever spread it's been given; every subclause's
 // circle is the smallest its writing fits round, with whatever room it's been given either side.

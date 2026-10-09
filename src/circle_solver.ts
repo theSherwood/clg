@@ -1,10 +1,10 @@
-import type { CircleItem, LineStyle, Point } from "./script_drawings";
+import type { CircleItem, StaveStyle, Point } from "./script_drawings";
 
 // Where a layout put things, for another to start from: each ring (by its list of items), its
 // radius and each item's centre along it
 export type Placement = Map<CircleItem[], { R: number; centres: Map<CircleItem, number> }>;
 
-// Lays the line script out round circles by constraint projection, as physics engines and
+// Lays the stave script out round circles by constraint projection, as physics engines and
 // force-directed graph layouts do. The layout is a set of variables: each sentence's ring's radius
 // and how far its centre sits above or below the middle (rings move only up and down, so the
 // periods at their tops stay in one column), each subclause's circle's radius, and each item's
@@ -20,7 +20,7 @@ export type Placement = Map<CircleItem[], { R: number; centres: Map<CircleItem, 
 
 export type SolveOptions = {
   rings: CircleItem[][]; // the sentences, as laid out by circle_sentences
-  style: LineStyle;
+  style: StaveStyle;
   size: number;
   period_width: number;
   footprint: number; // the radius of the discs a word's footprint is made of (see circle_footprint)

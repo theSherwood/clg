@@ -1,7 +1,7 @@
 import { covered, type Solved, type SolvedRing } from "./circle_solver";
-import type { CircleItem, LineStyle, Point } from "./script_drawings";
+import type { CircleItem, StaveStyle, Point } from "./script_drawings";
 
-// Lays the line script out round circles by flowing each ring's writing round what's already
+// Lays the stave script out round circles by flowing each ring's writing round what's already
 // there, from the innermost ring out. Each sentence's ring starts a band outside the one inside it,
 // at the least, and its items go round it in order, each taking the first place where it's clear of
 // every word already placed. A ring that runs out of room grows a little and is laid out again.
@@ -22,7 +22,7 @@ import type { CircleItem, LineStyle, Point } from "./script_drawings";
 
 export type FlowOptions = {
   rings: CircleItem[][];
-  style: LineStyle;
+  style: StaveStyle;
   size: number;
   period_width: number;
   footprint: number; // the radius of the discs a word's footprint is made of (see circle_footprint)

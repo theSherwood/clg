@@ -34,7 +34,7 @@ export function clashes(assignment: Assignment, mark: Mark, phonology: Phonology
   return [...by_choice.values()].filter((l) => l.length > 1).map((l) => l.join(" and "));
 }
 
-// Stems and the line script both lay a syllable's four marks out in an order, each value
+// Stems and the stave script both lay a syllable's four marks out in an order, each value
 // drawn one of four ways, so they share their settings.
 export type MarkLayout = { order: Mark[]; values: Record<Mark, Assignment> };
 
@@ -61,14 +61,14 @@ export const default_stems: MarkLayout = {
   },
 };
 
-// The line script: a word is a horizontal line written in one stroke, and each syllable four
+// The stave script: a word is a horizontal line written in one stroke, and each syllable four
 // marks along it, left to right, each a flat-topped bump or a small loop, above or below the line
 // (bit 1 below, bit 2 loop). Every position has a mark, so a syllable is always four marks long.
-export const LINE_MARKS = ["dash above", "dash below", "loop above", "loop below"] as const;
+export const STAVE_MARKS = ["dash above", "dash below", "loop above", "loop below"] as const;
 
 // Place, manner, vowel, final, left to right, and each mark's values in order are a dash above, a
 // dash below, a loop above and a loop below, like the stems' rungs
-export const default_line: MarkLayout = {
+export const default_stave: MarkLayout = {
   order: ["C", "M", "V", "N"],
   values: {
     C: { velar: 0, coronal: 1, labial: 2, sibilant: 3 },

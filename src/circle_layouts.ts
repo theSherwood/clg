@@ -1,17 +1,17 @@
 import { flow_circles } from "./circle_flow";
 import { relax_circles } from "./circle_relax";
 import { type Solved, type SolveOptions, solve_circles } from "./circle_solver";
-import type { CircleItem, LineStyle } from "./script_drawings";
+import type { CircleItem, StaveStyle } from "./script_drawings";
 
-// Laying the line script out round circles with whichever solver the style asks for: pure
+// Laying the stave script out round circles with whichever solver the style asks for: pure
 // geometry, so it can run in a worker (circle_worker.ts) as well as on the page
 
 export type LayoutOptions = Omit<SolveOptions, "start">;
-export type Laid = Solved & { solver: LineStyle["solver"] };
+export type Laid = Solved & { solver: StaveStyle["solver"] };
 
 // How far a layout reaches from the centre, across or down, as it's drawn: the rings, if the
 // midline is drawn, and every word and period with its footprint round it
-export function solved_extent(solved: Solved, style: LineStyle): number {
+export function solved_extent(solved: Solved, style: StaveStyle): number {
   let extent = 0;
   const reach = (x: number, y: number, by: number) => (extent = Math.max(extent, Math.abs(x) + by, Math.abs(y) + by));
   for (const ring of solved.rings) {

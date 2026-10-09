@@ -1,9 +1,9 @@
 import { expect, test } from "bun:test";
 import { default_phonology } from "./phonology";
-import type { LineStyle } from "./script_drawings";
+import type { StaveStyle } from "./script_drawings";
 import {
   clashes,
-  default_line,
+  default_stave,
   default_stems,
   default_syllabics,
   layout_values,
@@ -13,8 +13,8 @@ import {
 
 const ids = Array.from({ length: 256 }, (_, id) => id);
 
-test("the default stems and line marks give every syllable its own drawing", () => {
-  for (const layout of [default_stems, default_line]) {
+test("the default stems and stave marks give every syllable its own drawing", () => {
+  for (const layout of [default_stems, default_stave]) {
     const drawings = ids.map((id) => layout_values(id, default_phonology, layout).join(""));
     expect(new Set(drawings).size).toBe(256);
     for (const mark of layout.order) {
@@ -57,17 +57,17 @@ test("subclauses become circles: brackets, the grammar's unbracketed clauses, an
 });
 
 test("on circles with subclause circles, no two words overlap", async () => {
-  const { circle_layout, default_line_style, default_period } = await import("./script_drawings");
-  const { default_line } = await import("./scripts");
+  const { circle_layout, default_stave_style, default_period } = await import("./script_drawings");
+  const { default_stave } = await import("./scripts");
   const { lords_prayer, babel_verses } = await import("./examples");
   for (const articles of [lords_prayer, babel_verses])
     for (const clause_words of ["hide", "show"] as const) {
       const text = articles.map((a) => a.transliteration).join(" ");
-      const style = { ...default_line_style, midline_shape: "circle" as const, subclauses: "circles" as const, clause_words };
+      const style = { ...default_stave_style, midline_shape: "circle" as const, subclauses: "circles" as const, clause_words };
       const laid_out = circle_layout({
         tokens: script_tokens(text, default_phonology),
         phonology: default_phonology,
-        layout: default_line,
+        layout: default_stave,
         style,
         period: default_period,
         size: 28,
@@ -96,14 +96,14 @@ test("clause words are written on their circle only when asked", async () => {
 });
 
 test("condensed, the constraint solver lays the Lord's Prayer out tighter than the relaxation, with no overlaps", async () => {
-  const { circle_layout, constraint_layout, best_layout, default_line_style, default_period } = await import("./script_drawings");
-  const { default_line } = await import("./scripts");
+  const { circle_layout, constraint_layout, best_layout, default_stave_style, default_period } = await import("./script_drawings");
+  const { default_stave } = await import("./scripts");
   const { lords_prayer, babel_verses } = await import("./examples");
   const args = (text: string, spacing: "even" | "condensed") => ({
     tokens: script_tokens(text, default_phonology),
     phonology: default_phonology,
-    layout: default_line,
-    style: { ...default_line_style, midline_shape: "circle" as const, subclauses: "circles" as const, spacing, solver: "constraints" as const },
+    layout: default_stave,
+    style: { ...default_stave_style, midline_shape: "circle" as const, subclauses: "circles" as const, spacing, solver: "constraints" as const },
     period: default_period,
     size: 28,
     wrap: (_: unknown, node: unknown) => node as never,
@@ -118,14 +118,14 @@ test("condensed, the constraint solver lays the Lord's Prayer out tighter than t
 });
 
 test("flowing the circles lays the texts out with no overlaps, tighter than the relaxation", async () => {
-  const { circle_layout, flow_layout, default_line_style, default_period } = await import("./script_drawings");
-  const { default_line } = await import("./scripts");
+  const { circle_layout, flow_layout, default_stave_style, default_period } = await import("./script_drawings");
+  const { default_stave } = await import("./scripts");
   const { lords_prayer, babel_verses } = await import("./examples");
   const args = (text: string, spacing: "even" | "condensed") => ({
     tokens: script_tokens(text, default_phonology),
     phonology: default_phonology,
-    layout: default_line,
-    style: { ...default_line_style, midline_shape: "circle" as const, subclauses: "circles" as const, spacing, solver: "flow" as const },
+    layout: default_stave,
+    style: { ...default_stave_style, midline_shape: "circle" as const, subclauses: "circles" as const, spacing, solver: "flow" as const },
     period: default_period,
     size: 28,
     wrap: (_: unknown, node: unknown) => node as never,
@@ -139,16 +139,16 @@ test("flowing the circles lays the texts out with no overlaps, tighter than the 
 });
 
 test("flowing the circles keeps the clearance asked for, and full rings are no bigger overall than tight ones", async () => {
-  const { flow_layout, default_line_style, default_period } = await import("./script_drawings");
-  const { default_line } = await import("./scripts");
+  const { flow_layout, default_stave_style, default_period } = await import("./script_drawings");
+  const { default_stave } = await import("./scripts");
   const { lords_prayer } = await import("./examples");
   const text = lords_prayer.map((a) => a.transliteration).join(" ");
-  const layout = (style: Partial<LineStyle>) =>
+  const layout = (style: Partial<StaveStyle>) =>
     flow_layout({
       tokens: script_tokens(text, default_phonology),
       phonology: default_phonology,
-      layout: default_line,
-      style: { ...default_line_style, midline_shape: "circle", subclauses: "circles", solver: "flow", ...style },
+      layout: default_stave,
+      style: { ...default_stave_style, midline_shape: "circle", subclauses: "circles", solver: "flow", ...style },
       period: default_period,
       size: 28,
       wrap: (_: unknown, node: unknown) => node as never,
@@ -160,13 +160,13 @@ test("flowing the circles keeps the clearance asked for, and full rings are no b
 });
 
 test("a layout sent back from the circle worker names the same items it was laid out with", async () => {
-  const { circle_sentences, circle_footprint, line_geometry, default_line_style } = await import("./script_drawings");
+  const { circle_sentences, circle_footprint, stave_geometry, default_stave_style } = await import("./script_drawings");
   const { solve_layout, to_wire, from_wire } = await import("./circle_layouts");
-  const { default_line } = await import("./scripts");
+  const { default_stave } = await import("./scripts");
   const { babel_verses } = await import("./examples");
-  const style = { ...default_line_style, midline_shape: "circle" as const, subclauses: "circles" as const, solver: "flow" as const };
+  const style = { ...default_stave_style, midline_shape: "circle" as const, subclauses: "circles" as const, solver: "flow" as const };
   const tokens = script_tokens(babel_verses.map((a) => a.transliteration).join(" "), default_phonology);
-  const rings = circle_sentences(tokens, (ids) => line_geometry(ids.map((id) => layout_values(id, default_phonology, default_line)), 28, style), 28, true, false);
+  const rings = circle_sentences(tokens, (ids) => stave_geometry(ids.map((id) => layout_values(id, default_phonology, default_stave)), 28, style), 28, true, false);
   const options = { rings, style, size: 28, period_width: 28 * 0.3, footprint: circle_footprint(rings, 28, style) };
   const here = solve_layout(options);
   // As the worker sees it: a copy of the rings, laid out there and sent back

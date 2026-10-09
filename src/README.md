@@ -9,7 +9,7 @@ bun run test
 `bun run dev` runs `dev.ts`, which runs `server.ts` and restarts it when a source file is added
 (Bun's dev bundler serves newly created files stale otherwise). The server also lets the
 phonology playground's **Save as defaults** write `phonology.defaults.json`, and bundles
-`circle_worker.ts` as `/circle_worker.js`, so the line script's circle layouts are worked out off
+`circle_worker.ts` as `/circle_worker.js`, so the stave script's circle layouts are worked out off
 the page's thread.
 
 - `dict.ts`: every word, in sections of root IDs, plus candidates (planned words without a root
@@ -18,7 +18,7 @@ the page's thread.
 - `examples.ts`: worked examples (number examples, the UDHR, the Tower of Babel) and the
   tokenizer that looks up their words
 - `grammar.tsx`: the grammar and syntax page
-- `circle_layouts.ts`: the line script laid out round circles, by `circle_flow.ts` (the default),
+- `circle_layouts.ts`: the stave script laid out round circles, by `circle_flow.ts` (the default),
   `circle_relax.ts` or `circle_solver.ts`; pure geometry, run in `circle_worker.ts` and drawn by
   `script_drawings.tsx`
 

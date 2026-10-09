@@ -6,7 +6,7 @@ import { type Phonology } from "./phonology";
 import {
   type MarkLayout,
   type SyllabicsSettings,
-  default_line,
+  default_stave,
   default_stems,
   default_syllabics,
   layout_values,
@@ -74,10 +74,10 @@ export function Stems({ rows, size }: { rows: number[][]; size: number }) {
   );
 }
 
-// The line script: each syllable is four marks along a midline, left to right, each a dash or a
+// The stave script: each syllable is four marks along a midline, left to right, each a dash or a
 // loop, above or below it. Every position is the same width. How the marks join, and whether the
-// midline is straight or a circle, are settings (LineStyle, below).
-const LINE_SLOT = 0.32;
+// midline is straight or a circle, are settings (StaveStyle, below).
+const STAVE_SLOT = 0.32;
 
 export type Point = [number, number];
 
@@ -107,13 +107,13 @@ export function spline(points: Point[]): string {
 // on it), dashes (only neighbouring dashes on one side join) or separate. curves applies to
 // cursive; loop_mark is how the other ways draw a loop. The midline is straight, or a circle with a
 // sentence to each ring, nested one inside another (grow "in") or outside (grow "out").
-export const LINE_JOINS = ["cursive", "angular", "dashes", "separate"] as const;
-export type LineJoin = (typeof LINE_JOINS)[number];
+export const STAVE_JOINS = ["cursive", "angular", "dashes", "separate"] as const;
+export type StaveJoin = (typeof STAVE_JOINS)[number];
 export const LOOP_MARKS = ["circle", "diamond", "square", "tick"] as const;
 export type LoopMark = (typeof LOOP_MARKS)[number];
 
-export type LineStyle = {
-  join: LineJoin;
+export type StaveStyle = {
+  join: StaveJoin;
   curves: boolean;
   loop_mark: LoopMark;
   midline: boolean;
@@ -132,7 +132,7 @@ export type LineStyle = {
 };
 export const CROSSING_SHAPES = ["circle", "square", "diamond"] as const;
 export type CrossingShape = (typeof CROSSING_SHAPES)[number];
-export const default_line_style: LineStyle = {
+export const default_stave_style: StaveStyle = {
   join: "cursive",
   curves: true,
   loop_mark: "circle",
@@ -153,7 +153,7 @@ export const default_line_style: LineStyle = {
 
 // Where a subclause's circle starts, crossing its parent's ring: a small open mark, drawn like the
 // midline and turned with the rings, so a square's sides run along them both
-function crossing_mark(x: number, y: number, turn: number, size: number, style: LineStyle, key: string): React.ReactNode {
+function crossing_mark(x: number, y: number, turn: number, size: number, style: StaveStyle, key: string): React.ReactNode {
   return (
     <g
       key={key}
@@ -172,16 +172,16 @@ export function midline_width(size: number): number {
   return Math.max(1, size / 24);
 }
 
-// A word in the line script as geometry: x is how far along the midline from the word's start,
+// A word in the stave script as geometry: x is how far along the midline from the word's start,
 // and y how far below the midline (negative is above). The strokes are what the pen draws, smooth
 // (a spline through the points) or straight from point to point, and the marks are loops drawn as
 // a circle, diamond, square or tick. Drawing a word straight or round a circle is then only a
 // matter of where each point goes.
 type Stroke = { points: Point[]; smooth: boolean };
 type Mark = { shape: LoopMark; x: number; y: number; r: number };
-export type LineGeometry = { strokes: Stroke[]; marks: Mark[]; width: number };
+export type StaveGeometry = { strokes: Stroke[]; marks: Mark[]; width: number };
 
-const LINE_LEVEL = 0.2; // how far above or below the midline the marks run
+const STAVE_LEVEL = 0.2; // how far above or below the midline the marks run
 const SYLLABLE_GAP = 0.4; // between syllables, when marks are separate
 
 // How far a mark reaches either side along the line, so a line threading it can stop at its edge
@@ -200,9 +200,9 @@ function draw_mark(shape: LoopMark, x: number, y: number, r: number, key?: strin
 // Cursive: one stroke through the word. A loop next to the other side leaves out its level start
 // or end, so the pen sweeps straight between the loop and the crossing, and a word that starts or
 // ends with a loop starts or ends at it.
-function cursive_geometry(marks: number[][], size: number, curves: boolean): LineGeometry {
-  const slot = size * LINE_SLOT;
-  const level = size * LINE_LEVEL;
+function cursive_geometry(marks: number[][], size: number, curves: boolean): StaveGeometry {
+  const slot = size * STAVE_SLOT;
+  const level = size * STAVE_LEVEL;
   const loop_height = size * 0.17;
   const loop_width = slot * 0.5;
   const flat = marks.flat();
@@ -233,10 +233,10 @@ function cursive_geometry(marks: number[][], size: number, curves: boolean): Lin
 // Separate marks above or below the line, with a gap between syllables (a separate mark can't run
 // into the next, so a gap can't be taken for one). With join_dashes, neighbouring dashes on one
 // side within a syllable are one line.
-function separate_geometry(marks: number[][], size: number, loop: LoopMark, join_dashes: boolean): LineGeometry {
-  const slot = size * LINE_SLOT;
+function separate_geometry(marks: number[][], size: number, loop: LoopMark, join_dashes: boolean): StaveGeometry {
+  const slot = size * STAVE_SLOT;
   const gap = size * SYLLABLE_GAP;
-  const level = size * LINE_LEVEL;
+  const level = size * STAVE_LEVEL;
   const r = slot * 0.2;
   const dash = slot * 0.22; // half a dash's length
   const strokes: Stroke[] = [];
@@ -271,9 +271,9 @@ function separate_geometry(marks: number[][], size: number, loop: LoopMark, join
 // Angular: one straight line along the word at each mark's level, stepping straight up or down at
 // the boundary where the side changes. A dash is the line itself and a loop its mark threaded on
 // it; a word that starts or ends with a mark starts or ends there.
-function angular_geometry(marks: number[][], size: number, loop: LoopMark): LineGeometry {
-  const slot = size * LINE_SLOT;
-  const level = size * LINE_LEVEL;
+function angular_geometry(marks: number[][], size: number, loop: LoopMark): StaveGeometry {
+  const slot = size * STAVE_SLOT;
+  const level = size * STAVE_LEVEL;
   const r = slot * 0.24;
   const flat = marks.flat();
   const y = flat.map((mark) => (mark & 1 ? 1 : -1) * level);
@@ -308,7 +308,7 @@ function angular_geometry(marks: number[][], size: number, loop: LoopMark): Line
   return { strokes, marks: shapes, width: flat.length * slot };
 }
 
-export function line_geometry(marks: number[][], size: number, style: LineStyle): LineGeometry {
+export function stave_geometry(marks: number[][], size: number, style: StaveStyle): StaveGeometry {
   if (style.join === "cursive") return cursive_geometry(marks, size, style.curves);
   if (style.join === "angular") return angular_geometry(marks, size, style.loop_mark);
   return separate_geometry(marks, size, style.loop_mark, style.join === "dashes");
@@ -316,7 +316,7 @@ export function line_geometry(marks: number[][], size: number, style: LineStyle)
 
 const polyline = (points: Point[]) => `M ${points.map(([x, y]) => `${x} ${y}`).join(" L ")}`;
 
-function svg_props(size: number, style: LineStyle) {
+function svg_props(size: number, style: StaveStyle) {
   return {
     stroke: "currentColor",
     strokeWidth: Math.max(1.5, size / 16),
@@ -326,9 +326,9 @@ function svg_props(size: number, style: LineStyle) {
   };
 }
 
-export function Line({ marks, size, style = default_line_style }: { marks: number[][]; size: number; style?: LineStyle }) {
+export function Stave({ marks, size, style = default_stave_style }: { marks: number[][]; size: number; style?: StaveStyle }) {
   const stroke = Math.max(1.5, size / 16);
-  const geometry = line_geometry(marks, size, style);
+  const geometry = stave_geometry(marks, size, style);
   const height = size * 1.0;
   const width = geometry.width + 2 * stroke;
   return (
@@ -354,7 +354,7 @@ export function Line({ marks, size, style = default_line_style }: { marks: numbe
   );
 }
 
-// The line script round circles: each sentence is a ring, read clockwise, with the marks above the
+// The stave script round circles: each sentence is a ring, read clockwise, with the marks above the
 // line outside it and those below inside. A sentence ends at the top, so the periods line up,
 // unless a condensed sentence puts its period right after it instead. Rings are a line apart, and
 // all are as big as the longest sentence for its place needs, so the writing stays one size. With
@@ -363,7 +363,7 @@ export function Line({ marks, size, style = default_line_style }: { marks: numbe
 // room to spare before the period, or starts at the top with its period right after it. The first
 // sentence is the outer ring when growing in, and the inner one when growing out.
 export type CircleItem =
-  | { geometry: LineGeometry; word?: Word }
+  | { geometry: StaveGeometry; word?: Word }
   | { period: true }
   | { blank: number }
   | { clause: CircleItem[] };
@@ -390,7 +390,7 @@ function opens_clause(previous: Word | undefined, word: Word | undefined): boole
 // unbracketed clause; anything still open closes at the end of the sentence.
 export function circle_sentences(
   tokens: ScriptToken[],
-  geometry: (ids: number[]) => LineGeometry,
+  geometry: (ids: number[]) => StaveGeometry,
   size: number,
   subclauses: boolean,
   show_brackets = false,
@@ -447,7 +447,7 @@ export function circle_sentences(
 
 // The radius of the discs a word's footprint on a circle is made of: as far as the tallest word in
 // the text reaches from its line (with its stroke), and half the clearance kept between words
-export function circle_footprint(rings: CircleItem[][], size: number, style: LineStyle): number {
+export function circle_footprint(rings: CircleItem[][], size: number, style: StaveStyle): number {
   let reach = 0;
   const visit = (items: CircleItem[]) =>
     items.forEach((item) => {
@@ -464,7 +464,7 @@ type CircleLayoutArgs = {
   tokens: ScriptToken[];
   phonology: Phonology;
   layout: MarkLayout;
-  style: LineStyle;
+  style: StaveStyle;
   period: PeriodStyle;
   size: number;
   wrap: (word: Word, node: React.ReactElement) => React.ReactNode;
@@ -474,7 +474,7 @@ type CircleLayoutArgs = {
 function circle_options({ tokens, phonology, layout, style, period, size }: CircleLayoutArgs): LayoutOptions {
   const rings = circle_sentences(
     tokens,
-    (ids) => line_geometry(ids.map((id) => layout_values(id, phonology, layout)), size, style),
+    (ids) => stave_geometry(ids.map((id) => layout_values(id, phonology, layout)), size, style),
     size,
     style.subclauses === "circles",
     style.clause_words === "show",
@@ -631,7 +631,7 @@ const without_words = (rings: CircleItem[][]): CircleItem[][] =>
     ),
   );
 
-export function LineCircles(args: CircleLayoutArgs) {
+export function StaveCircles(args: CircleLayoutArgs) {
   const { shown, pending } = useLaidOut(args);
   // Drawn as it was laid out, which may be a setting or two behind while the next is worked out,
   // and only again once there's a new layout
@@ -770,16 +770,16 @@ export function Period({ size, style = default_period }: { size: number; style?:
 // The settings the script playground keeps in this browser, read fresh, so popups follow it
 export type ScriptSettings = {
   stems: MarkLayout;
-  line: MarkLayout;
-  line_style: LineStyle;
+  stave: MarkLayout;
+  stave_style: StaveStyle;
   syllabics: SyllabicsSettings;
   period: PeriodStyle;
 };
 
 export const SCRIPT_KEYS = {
   stems: "script_stems",
-  line: "script_line",
-  line_style: "script_line_style",
+  stave: "script_line",
+  stave_style: "script_line_style",
   period: "script_period",
   syllabics: "script_syllabics",
 } as const;
@@ -787,15 +787,15 @@ export const SCRIPT_KEYS = {
 export function stored_script_settings(): ScriptSettings {
   return {
     stems: load(SCRIPT_KEYS.stems, default_stems),
-    line: load(SCRIPT_KEYS.line, default_line),
-    line_style: load(SCRIPT_KEYS.line_style, default_line_style),
+    stave: load(SCRIPT_KEYS.stave, default_stave),
+    stave_style: load(SCRIPT_KEYS.stave_style, default_stave_style),
     period: load(SCRIPT_KEYS.period, default_period),
     syllabics: load(SCRIPT_KEYS.syllabics, default_syllabics),
   };
 }
 
 // rule: in running text, a midline ruled across the whole text, under every row of words.
-// whole_text: a script that lays out a whole text itself rather than word by word (the line script
+// whole_text: a script that lays out a whole text itself rather than word by word (the stave script
 // round circles); wrap makes a word hoverable. settings: what the script's drawing depends on, so
 // text in it is drawn again only when they change.
 export type ScriptRenderer = {
@@ -809,7 +809,7 @@ export type ScriptRenderer = {
 };
 
 // Each script, as a way to write a word's root IDs
-// In running text (in_text), the line script's midline is ruled across the text rather than drawn
+// In running text (in_text), the stave script's midline is ruled across the text rather than drawn
 // under each word, so it doesn't break between words
 export function script_renderers(
   phonology: Phonology,
@@ -817,8 +817,8 @@ export function script_renderers(
   size: number,
   in_text = false,
 ): ScriptRenderer[] {
-  const { stems, line, line_style, syllabics, period } = settings;
-  const circles = in_text && line_style.midline_shape === "circle";
+  const { stems, stave, stave_style, syllabics, period } = settings;
+  const circles = in_text && stave_style.midline_shape === "circle";
   return [
     {
       name: "Stems",
@@ -833,24 +833,24 @@ export function script_renderers(
       render: (ids) => <CursiveStems rows={ids.map((id) => layout_values(id, phonology, stems))} size={size} />,
     },
     {
-      name: "Line",
-      settings: JSON.stringify([phonology, line, line_style, period, size, in_text]),
-      note: "Four marks per syllable along a line: a dash or a loop, above or below",
+      name: "Stave",
+      settings: JSON.stringify([phonology, stave, stave_style, period, size, in_text]),
+      note: "Four marks per syllable along a ruled line: a dash or a loop, above or below",
       render: (ids) => (
-        <Line
-          marks={ids.map((id) => layout_values(id, phonology, line))}
+        <Stave
+          marks={ids.map((id) => layout_values(id, phonology, stave))}
           size={size}
-          style={in_text ? { ...line_style, midline: false } : line_style}
+          style={in_text ? { ...stave_style, midline: false } : stave_style}
         />
       ),
-      rule: in_text && !circles && line_style.midline ? { color: line_style.midline_color, size } : undefined,
+      rule: in_text && !circles && stave_style.midline ? { color: stave_style.midline_color, size } : undefined,
       whole_text: circles
         ? (tokens, wrap) => (
-            <LineCircles
+            <StaveCircles
               tokens={tokens}
               phonology={phonology}
-              layout={line}
-              style={line_style}
+              layout={stave}
+              style={stave_style}
               period={period}
               size={size}
               wrap={wrap}

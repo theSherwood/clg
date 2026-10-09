@@ -3,7 +3,7 @@ import { babel_verses, lords_prayer, north_wind_sentences, siduri_advice, udhr_a
 import { MARKS, type Mark, type Phonology, syllable_of } from "./phonology";
 import {
   type Assignment,
-  LINE_MARKS,
+  STAVE_MARKS,
   type MarkLayout,
   RUNGS,
   MARK_NAMES,
@@ -14,7 +14,7 @@ import {
   type SyllabicsSettings,
   TURNS,
   clashes,
-  default_line,
+  default_stave,
   default_stems,
   default_syllabics,
   script_tokens,
@@ -24,14 +24,14 @@ import {
 } from "./scripts";
 import {
   CursiveStems,
-  Line,
-  type LineStyle,
+  Stave,
+  type StaveStyle,
   Period,
   type PeriodStyle,
   type ScriptRenderer,
-  default_line_style,
+  default_stave_style,
   default_period,
-  LINE_JOINS,
+  STAVE_JOINS,
   CROSSING_SHAPES,
   LOOP_MARKS,
   midline_width,
@@ -43,7 +43,7 @@ import {
 } from "./script_drawings";
 import { WordHover } from "./word_ui";
 
-// Tries out candidate scripts on real text: stems with a rung per mark, a line with a mark per
+// Tries out candidate scripts on real text: stems with a rung per mark, a stave with a mark per
 // mark, and syllabics shapes turned four ways. Settings are kept in this browser only.
 
 // Only a value that differs from the default is kept, so a changed default reaches everyone who
@@ -338,33 +338,33 @@ function SyllabicsControls({
 }
 
 // Every syllable in each script, laid out like the Roots grid: 16 IDs to a row
-// Drawn again only when something it shows changes: of the line style, only how a word is drawn,
+// Drawn again only when something it shows changes: of the stave style, only how a word is drawn,
 // not how a text is laid out
-const word_style = ({ join, curves, loop_mark, midline, midline_color }: LineStyle) =>
+const word_style = ({ join, curves, loop_mark, midline, midline_color }: StaveStyle) =>
   JSON.stringify([join, curves, loop_mark, midline, midline_color]);
 const AllSyllables = React.memo(
   AllSyllablesGrid,
   (a, b) =>
     a.phonology === b.phonology &&
     a.stems === b.stems &&
-    a.line === b.line &&
+    a.stave === b.stave &&
     a.syllabics === b.syllabics &&
     a.size === b.size &&
-    word_style(a.line_style) === word_style(b.line_style),
+    word_style(a.stave_style) === word_style(b.stave_style),
 );
 
 function AllSyllablesGrid({
   phonology,
   stems,
-  line,
-  line_style,
+  stave,
+  stave_style,
   syllabics,
   size,
 }: {
   phonology: Phonology;
   stems: MarkLayout;
-  line: MarkLayout;
-  line_style: LineStyle;
+  stave: MarkLayout;
+  stave_style: StaveStyle;
   syllabics: SyllabicsSettings;
   size: number;
 }) {
@@ -379,11 +379,11 @@ function AllSyllablesGrid({
                 return (
                   <td key={col} className="border border-gray-200 px-1 text-center align-top">
                     <div className="text-[10px] font-mono text-indigo-700">{syllable_of(id, phonology)}</div>
-                    {/* Two by two: stems and cursive stems, then the line and syllabics */}
+                    {/* Two by two: stems and cursive stems, then the stave and syllabics */}
                     <div className="grid grid-cols-2 items-center justify-items-center gap-x-1">
                       <Stems rows={[layout_values(id, phonology, stems)]} size={size * 0.7} />
                       <CursiveStems rows={[layout_values(id, phonology, stems)]} size={size * 0.7} />
-                      <Line marks={[layout_values(id, phonology, line)]} size={size * 0.6} style={line_style} />
+                      <Stave marks={[layout_values(id, phonology, stave)]} size={size * 0.6} style={stave_style} />
                       <div style={{ fontSize: size * 0.5, fontFamily: SYLLABICS_FONT }} className="leading-tight whitespace-nowrap">
                         {syllabics_glyphs(id, phonology, syllabics)}
                       </div>
@@ -401,10 +401,10 @@ function AllSyllablesGrid({
 
 export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
   const [stems, set_stems] = useStored<MarkLayout>(SCRIPT_KEYS.stems, default_stems);
-  const [line, set_line] = useStored<MarkLayout>(SCRIPT_KEYS.line, default_line);
-  const [line_style, set_line_style] = useStored<LineStyle>(SCRIPT_KEYS.line_style, default_line_style);
+  const [stave, set_stave] = useStored<MarkLayout>(SCRIPT_KEYS.stave, default_stave);
+  const [stave_style, set_line_style] = useStored<StaveStyle>(SCRIPT_KEYS.stave_style, default_stave_style);
   const [grid_open, set_grid_open] = useState(false);
-  const [tab, set_tab] = useStored<Tab>("script_tab", "line");
+  const [tab, set_tab] = useStored<Tab>("script_tab", "stave");
   const [period, set_period] = useStored<PeriodStyle>(SCRIPT_KEYS.period, default_period);
   const [syllabics, set_syllabics] = useStored<SyllabicsSettings>(SCRIPT_KEYS.syllabics, default_syllabics);
   const [size, set_size] = useStored("script_size", 32);
@@ -412,11 +412,11 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
   const tokens = useMemo(() => script_tokens(text, phonology), [text, phonology]);
   const sounds = (ids: number[]) => ids.map((id) => syllable_of(id, phonology)).join("");
 
-  const scripts = script_renderers(phonology, { stems, line, line_style, syllabics, period }, size, true);
+  const scripts = script_renderers(phonology, { stems, stave, stave_style, syllabics, period }, size, true);
 
-  const set_style = (change: Partial<LineStyle>) => set_line_style({ ...line_style, ...change });
-  const circles = line_style.midline_shape === "circle";
-  const subclause_circles = circles && line_style.subclauses === "circles";
+  const set_style = (change: Partial<StaveStyle>) => set_line_style({ ...stave_style, ...change });
+  const circles = stave_style.midline_shape === "circle";
+  const subclause_circles = circles && stave_style.subclauses === "circles";
 
   const panels: Record<Tab, React.ReactNode> = {
     general: (
@@ -446,31 +446,31 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
         />
       </>
     ),
-    line: (
+    stave: (
       <div className="grid gap-x-6 gap-y-2 lg:grid-cols-[auto_1fr]">
         <div className="space-y-2">
           <Row label="Join">
-            <Toggle options={[...LINE_JOINS]} value={LINE_JOINS.indexOf(line_style.join)} on_change={(i) => set_style({ join: LINE_JOINS[i]! })} />
+            <Toggle options={[...STAVE_JOINS]} value={STAVE_JOINS.indexOf(stave_style.join)} on_change={(i) => set_style({ join: STAVE_JOINS[i]! })} />
           </Row>
-          {line_style.join === "cursive" ? (
+          {stave_style.join === "cursive" ? (
             <Row label="Turns">
-              <Toggle options={["curves", "angles"]} value={line_style.curves ? 0 : 1} on_change={(i) => set_style({ curves: i === 0 })} />
+              <Toggle options={["curves", "angles"]} value={stave_style.curves ? 0 : 1} on_change={(i) => set_style({ curves: i === 0 })} />
             </Row>
           ) : (
             <Row label="Loop mark">
               <Toggle
                 options={[...LOOP_MARKS]}
-                value={LOOP_MARKS.indexOf(line_style.loop_mark)}
+                value={LOOP_MARKS.indexOf(stave_style.loop_mark)}
                 on_change={(i) => set_style({ loop_mark: LOOP_MARKS[i]! })}
               />
             </Row>
           )}
           <Row label="Midline">
-            <Toggle options={["shown", "hidden"]} value={line_style.midline ? 0 : 1} on_change={(i) => set_style({ midline: i === 0 })} />
+            <Toggle options={["shown", "hidden"]} value={stave_style.midline ? 0 : 1} on_change={(i) => set_style({ midline: i === 0 })} />
             <label className="flex items-center gap-1" title="Midline colour">
               <input
                 type="color"
-                value={line_style.midline_color}
+                value={stave_style.midline_color}
                 onChange={(e) => set_style({ midline_color: e.target.value })}
                 className="w-6 h-5 p-0 border border-gray-300 rounded bg-white"
               />
@@ -481,17 +481,17 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
           <p className="text-gray-500 mb-1.5">A mark per position, left to right</p>
           <LayoutControls
             phonology={phonology}
-            layout={line}
-            set_layout={set_line}
+            layout={stave}
+            set_layout={set_stave}
             positions="order"
-            options={LINE_MARKS.map((m, i) => `${["⁻", "₋", "ᵒ", "ₒ"][i]} ${m}`)}
+            options={STAVE_MARKS.map((m, i) => `${["⁻", "₋", "ᵒ", "ₒ"][i]} ${m}`)}
           />
         </div>
       </div>
     ),
     circles: (
       <div className="space-y-2">
-        <Row label="Line script">
+        <Row label="Stave script">
           <Toggle
             options={["along lines", "round circles"]}
             value={circles ? 1 : 0}
@@ -504,32 +504,32 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
             <Row label="Solver" off={!circles && OFF_CIRCLES}>
               <Toggle
                 options={["relax", "constraint solver", "flow"]}
-                value={SOLVERS.indexOf(line_style.solver)}
+                value={SOLVERS.indexOf(stave_style.solver)}
                 on_change={(i) => set_style({ solver: SOLVERS[i]! })}
               />
             </Row>
-            <Row label="Inner rings" off={(!circles && OFF_CIRCLES) || (line_style.solver === "relax" && "Not with the relaxation")}>
-              <Toggle options={["full", "tight"]} value={line_style.ring_sizing === "tight" ? 1 : 0} on_change={(i) => set_style({ ring_sizing: i === 1 ? "tight" : "full" })} />
+            <Row label="Inner rings" off={(!circles && OFF_CIRCLES) || (stave_style.solver === "relax" && "Not with the relaxation")}>
+              <Toggle options={["full", "tight"]} value={stave_style.ring_sizing === "tight" ? 1 : 0} on_change={(i) => set_style({ ring_sizing: i === 1 ? "tight" : "full" })} />
             </Row>
             <Row label="Sentences" off={!circles && OFF_CIRCLES}>
-              <Toggle options={["grow in", "grow out"]} value={line_style.grow === "out" ? 1 : 0} on_change={(i) => set_style({ grow: i === 1 ? "out" : "in" })} />
+              <Toggle options={["grow in", "grow out"]} value={stave_style.grow === "out" ? 1 : 0} on_change={(i) => set_style({ grow: i === 1 ? "out" : "in" })} />
             </Row>
             <Row label="Spacing" off={!circles && OFF_CIRCLES}>
               <Toggle
                 options={["even", "condensed"]}
-                value={line_style.spacing === "condensed" ? 1 : 0}
+                value={stave_style.spacing === "condensed" ? 1 : 0}
                 on_change={(i) => set_style({ spacing: i === 1 ? "condensed" : "even" })}
               />
             </Row>
-            <Row label="Period" off={(!circles && OFF_CIRCLES) || (line_style.spacing !== "condensed" && "Only with condensed spacing")}>
+            <Row label="Period" off={(!circles && OFF_CIRCLES) || (stave_style.spacing !== "condensed" && "Only with condensed spacing")}>
               <Toggle
                 options={["at top", "after"]}
-                value={line_style.period_position === "after" ? 1 : 0}
+                value={stave_style.period_position === "after" ? 1 : 0}
                 on_change={(i) => set_style({ period_position: i === 1 ? "after" : "top" })}
               />
             </Row>
             <Row label="Clearance" hint="Room kept clear between words on different rings" off={!circles && OFF_CIRCLES}>
-              <Slider value={line_style.clearance} min={0} max={1} step={0.05} on_change={(clearance) => set_style({ clearance })} format={(v) => v.toFixed(2)} />
+              <Slider value={stave_style.clearance} min={0} max={1} step={0.05} on_change={(clearance) => set_style({ clearance })} format={(v) => v.toFixed(2)} />
             </Row>
           </div>
           <div className="space-y-2">
@@ -537,25 +537,25 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
             <Row label="Written" off={!circles && OFF_CIRCLES}>
               <Toggle
                 options={["inline", "on circles"]}
-                value={line_style.subclauses === "circles" ? 1 : 0}
+                value={stave_style.subclauses === "circles" ? 1 : 0}
                 on_change={(i) => set_style({ subclauses: i === 1 ? "circles" : "inline" })}
               />
             </Row>
             <Row label="Clause words" off={!subclause_circles && OFF_SUBCLAUSES}>
               <Toggle
                 options={["hidden", "shown"]}
-                value={line_style.clause_words === "show" ? 1 : 0}
+                value={stave_style.clause_words === "show" ? 1 : 0}
                 on_change={(i) => set_style({ clause_words: i === 1 ? "show" : "hide" })}
               />
             </Row>
             <Row label="Crossing" hint="The mark where a subclause's circle starts" off={!subclause_circles && OFF_SUBCLAUSES}>
               <Toggle
                 options={[...CROSSING_SHAPES]}
-                value={CROSSING_SHAPES.indexOf(line_style.crossing_shape)}
+                value={CROSSING_SHAPES.indexOf(stave_style.crossing_shape)}
                 on_change={(i) => set_style({ crossing_shape: CROSSING_SHAPES[i]! })}
               />
               <Slider
-                value={line_style.crossing_scale}
+                value={stave_style.crossing_scale}
                 min={0.3}
                 max={3}
                 step={0.1}
@@ -577,8 +577,8 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
         <button
           onClick={() => {
             set_stems(default_stems);
-            set_line(default_line);
-            set_line_style(default_line_style);
+            set_stave(default_stave);
+            set_line_style(default_stave_style);
             set_syllabics(default_syllabics);
             set_period(default_period);
           }}
@@ -627,7 +627,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
             </button>
           ))}
         </div>
-        <div className="p-2.5 min-h-[11rem]">{panels[tab] ?? panels.line}</div>
+        <div className="p-2.5 min-h-[11rem]">{panels[tab] ?? panels.stave}</div>
       </div>
 
       <div className="mb-3 font-mono text-xs text-indigo-800">
@@ -644,8 +644,8 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
           <AllSyllables
             phonology={phonology}
             stems={stems}
-            line={line}
-            line_style={line_style}
+            stave={stave}
+            stave_style={stave_style}
             syllabics={syllabics}
             size={size}
           />
@@ -658,7 +658,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
 const TABS = [
   ["general", "General"],
   ["stems", "Stems"],
-  ["line", "Line"],
+  ["stave", "Stave"],
   ["circles", "Circles"],
   ["syllabics", "Syllabics"],
 ] as const;
