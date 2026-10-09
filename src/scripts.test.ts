@@ -413,7 +413,7 @@ test("bar scripts and the fret on a grid: every word, and every period after one
       }
 });
 
-test("the fret spaced close: a word's syllables a sliver apart, narrower than the white between strokes, and words a stroke apart", async () => {
+test("the fret spaced close: a word's syllables as far apart as the strokes in them, and words a stroke apart", async () => {
   const { bar_spacing, Gates, default_gates_style, gates_span } = await import("./script_drawings");
   const { renderToStaticMarkup } = await import("react-dom/server");
   const { createElement } = await import("react");
@@ -426,9 +426,8 @@ test("the fret spaced close: a word's syllables a sliver apart, narrower than th
     const width = (n: number) =>
       Number(/width="([\d.]+)"/.exec(renderToStaticMarkup(createElement(Gates, { rows: Array.from({ length: n }, () => [0, 1, 2, 3]), size, style })))![1]);
     const glyph = width(1);
-    const sliver = width(2) - 2 * glyph;
-    expect(sliver).toBeGreaterThan(0);
-    expect(sliver).toBeCloseTo((pitch - w) / 2, 9);
+    // The white between syllables, the same as between two strokes
+    expect(width(2) - 2 * glyph).toBeCloseTo(pitch - w, 9);
     const { gap, row } = bar_spacing(size, weight, span, "close");
     // Room for one more stroke, with the usual white either side of it
     expect(gap).toBeCloseTo(2 * (pitch - w) + w, 9);

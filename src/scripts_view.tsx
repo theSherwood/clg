@@ -673,7 +673,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
           </Row>
           <Row
             label="Spacing"
-            hint="Close: a sliver between a word's syllables, and a stroke left out between words and rows. Grid: every word in every row on a grid of half syllables"
+            hint="Close: a word's syllables as far apart as the strokes in them, and a stroke left out between words and rows. Grid: every word in every row on a grid of half syllables"
             off={gates_style.form !== "fret" && "Only the fret: bars, open at the ends, need the room to tell syllables apart"}
           >
             <Toggle

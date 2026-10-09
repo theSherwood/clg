@@ -1118,12 +1118,12 @@ const bar_measures = (size: number, weight: number, span: number) => {
 // bars, four for the fret): a syllable takes two units, a space between words one, and a period or
 // other punctuation one, so the words in every row start on the grid; rows are two units apart, as
 // far as a word's syllables, so the syllables sit on a grid of squares down the page as well as
-// across it. Close, a word's syllables are only a sliver apart, half the white between two
-// strokes, and words and rows are a stroke apart, as if one stroke were left out; a period takes
+// across it. Close, a word's syllables are a pitch apart, as much white between them as between
+// two strokes, and words and rows are a stroke apart, as if one stroke were left out; a period takes
 // its own width and a stroke's room more. A word's drawing reaches half a stroke past its outer
 // points, so the spaces are a stroke short of their pitches.
-export function bar_apart(weight: number, spacing: GatesStyle["spacing"]) {
-  return spacing === "grid" ? BAR_APART : (1 + weight) / 2;
+export function bar_apart(spacing: GatesStyle["spacing"]) {
+  return spacing === "grid" ? BAR_APART : 1;
 }
 export function bar_spacing(size: number, weight: number, span = BARS, spacing: GatesStyle["spacing"] = "grid", period = default_period): Spacing {
   const { pitch, w } = bar_measures(size, weight, span);
@@ -1202,7 +1202,7 @@ export function Gates({ rows, size, style }: { rows: number[][]; size: number; s
       size={size}
       weight={style.weight}
       span={gates_span(style)}
-      apart={bar_apart(style.weight, gates_spacing(style))}
+      apart={bar_apart(gates_spacing(style))}
       strokes_of={fret ? fret_strokes : gates_strokes}
     />
   );
