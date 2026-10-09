@@ -950,13 +950,13 @@ export function CursiveStems({
 // pitches, so rows are a pitch apart, each turn level a pitch further out than the last, and the
 // joins between stems a pitch above or below the rows; with strokes heavy enough (block_weight) that
 // what's left between them is slits of white. Routes, curve and widths work as they do for the pen.
-// Joined syllables are a pitch apart (their outermost lines, that is), syllables apart two, and
-// words two more.
+// A word's syllables are a pitch apart (their outermost lines, that is), joined or not, so only a
+// slit of white parts them; words are two more.
 function block_measures(style: StemsStyle) {
   const p = style.block_pitch;
   const w = style.block_weight * p;
   const joined = style.block_joins === "joined";
-  const syllable_gap = joined ? 1 : 2;
+  const syllable_gap = 1;
   // Rows 0 to 3, with a pitch above and below for the joins, and half a stroke beyond that
   const top = p + w / 2;
   return { p, w, joined, syllable_gap, word_gap: syllable_gap + 2, top, height: 5 * p + w };
