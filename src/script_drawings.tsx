@@ -242,6 +242,17 @@ export function CursiveStems({ rows, size }: { rows: number[][]; size: number })
   );
 }
 
+// The period in every script: a small circle on the midline, so it sits level with the words' middles
+export function Period({ size }: { size: number }) {
+  const d = size * 0.3;
+  const stroke = Math.max(1.5, size / 16);
+  return (
+    <svg width={d} height={d} viewBox={`0 0 ${d} ${d}`} className="inline-block align-middle">
+      <circle cx={d / 2} cy={d / 2} r={d / 2 - stroke} fill="none" stroke="currentColor" strokeWidth={stroke} />
+    </svg>
+  );
+}
+
 // The settings the script playground keeps in this browser, read fresh, so popups follow it
 export type ScriptSettings = { stems: MarkLayout; line: MarkLayout; syllabics: SyllabicsSettings };
 

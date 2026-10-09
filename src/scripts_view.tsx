@@ -25,6 +25,7 @@ import {
 import {
   CursiveStems,
   Line,
+  Period,
   SCRIPT_KEYS,
   SYLLABICS_FONT,
   Stems,
@@ -61,17 +62,25 @@ const PRESETS: { label: string; text: string }[] = [
   text: articles.flatMap((a) => (a.transliteration ? [a.transliteration] : [])).join(" "),
 }));
 
+// A text in one script. With a size, it's written in a script, whose period is a circle on the
+// midline; without, it's the sounds, punctuated as usual
 function Written({
   tokens,
   render,
+  size,
 }: {
   tokens: ScriptToken[];
   render: (ids: number[]) => React.ReactNode;
+  size?: number;
 }) {
   return (
     <div className="flex flex-wrap items-center gap-x-[0.5em] gap-y-1">
       {tokens.map((t, i) =>
-        "punctuation" in t ? (
+        "punctuation" in t && t.punctuation === "." && size ? (
+          <span key={i} className="-ml-[0.25em]">
+            <Period size={size} />
+          </span>
+        ) : "punctuation" in t ? (
           <span key={i} className="-ml-[0.4em] text-gray-500">
             {t.punctuation}
           </span>
@@ -374,7 +383,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
             {s.name} <span className="font-normal text-gray-400">{s.note}</span>
           </h3>
           <div style={s.style} className="text-gray-900">
-            <Written tokens={tokens} render={s.render} />
+            <Written tokens={tokens} render={s.render} size={size} />
           </div>
         </div>
       ))}
