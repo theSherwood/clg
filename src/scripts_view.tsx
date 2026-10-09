@@ -289,13 +289,14 @@ function AllSyllables({
                 return (
                   <td key={col} className="border border-gray-200 px-1 text-center align-top">
                     <div className="text-[10px] font-mono text-indigo-700">{syllable_of(id, phonology)}</div>
-                    <Stems rows={[layout_values(id, phonology, stems)]} size={size * 0.7} />
-                    <CursiveStems rows={[layout_values(id, phonology, stems)]} size={size * 0.7} />
-                    <div>
+                    {/* Two by two: stems and cursive stems, then the line and syllabics */}
+                    <div className="grid grid-cols-2 items-center justify-items-center gap-x-1">
+                      <Stems rows={[layout_values(id, phonology, stems)]} size={size * 0.7} />
+                      <CursiveStems rows={[layout_values(id, phonology, stems)]} size={size * 0.7} />
                       <Line marks={[layout_values(id, phonology, line)]} size={size * 0.6} />
-                    </div>
-                    <div style={{ fontSize: size * 0.55, fontFamily: SYLLABICS_FONT }} className="leading-tight">
-                      {syllabics_glyphs(id, phonology, syllabics)}
+                      <div style={{ fontSize: size * 0.5, fontFamily: SYLLABICS_FONT }} className="leading-tight whitespace-nowrap">
+                        {syllabics_glyphs(id, phonology, syllabics)}
+                      </div>
                     </div>
                   </td>
                 );
