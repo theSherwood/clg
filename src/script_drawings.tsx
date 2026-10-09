@@ -418,7 +418,7 @@ export function circle_sentences(
 // Where a word or period sits once laid out, as a chain of discs along it wide enough to cover
 // its marks above and below the line, and where it belongs: its sentence, and the subclauses down
 // to the ring it's on (the same ring as another footprint when ring is the same array)
-type Footprint = { points: Point[]; sentence: number; chain: CircleItem[]; ring: CircleItem[] };
+type Footprint = { points: Point[]; sentence: number; chain: CircleItem[]; ring: CircleItem[]; item: CircleItem };
 
 type CircleLayoutArgs = {
   tokens: ScriptToken[];
@@ -465,6 +465,9 @@ export function circle_layout({ tokens, phonology, layout, style, period, size, 
   // ring, and more room between two sentences' rings
   const room = new Map<CircleItem, number>();
   const spread = rings.map(() => 0);
+  // More room before an item on a sentence's ring, taken from the ring's room to spare, which
+  // slides it (and what follows) along the ring
+  const slide = new Map<CircleItem, number>();
 
   // A subclause's circle crosses its parent's ring at right angles, which it does exactly when the
   // distance between their centres is the square root of the sum of their radii squared: there,
@@ -484,7 +487,8 @@ export function circle_layout({ tokens, phonology, layout, style, period, size, 
           : "blank" in item
             ? item.blank
             : covered(R, radius_of(item.clause)) + 2 * (clear + (room.get(item) ?? 0));
-    const length_of = (items: CircleItem[], R: number) => items.reduce((n, item) => n + width_of(item, R) + gap, 0);
+    const length_of = (items: CircleItem[], R: number) =>
+      items.reduce((n, item) => n + width_of(item, R) + gap + (slide.get(item) ?? 0), 0);
     // A subclause's circle is the smallest its own writing fits round, including the arcs its own
     // subclauses' circles cover, which depend on its size, so it's found by a few rounds of refining
     const radii_found = new Map<CircleItem[], number>();
@@ -571,6 +575,7 @@ export function circle_layout({ tokens, phonology, layout, style, period, size, 
       let x = period_at_top ? half_period + ring_gap : is_sentence ? ring_gap / 2 : gap;
       items.forEach((item, i) => {
         const width = width_of(item, R);
+        x += slide.get(item) ?? 0;
         if ("geometry" in item) {
           const g = item.geometry;
           const word = (
@@ -595,7 +600,7 @@ export function circle_layout({ tokens, phonology, layout, style, period, size, 
           );
           nodes.push(item.word ? <React.Fragment key={`${key}-${i}`}>{wrap(item.word, word)}</React.Fragment> : word);
           const points = discs(x, width);
-          footprints.push({ points, sentence, chain, ring: items });
+          footprints.push({ points, sentence, chain, ring: items, item });
           for (const [px, py] of points) reach(px, py, footprint);
         } else if ("period" in item) {
           const at = period_at_top ? circumference : x + width / 2;
@@ -605,7 +610,7 @@ export function circle_layout({ tokens, phonology, layout, style, period, size, 
               {draw_mark(period.shape, 0, 0, Math.max(width / 2 - stroke, stroke))}
             </g>,
           );
-          footprints.push({ points: [[px, py]], sentence, chain, ring: items });
+          footprints.push({ points: [[px, py]], sentence, chain, ring: items, item });
           reach(px, py, footprint);
         } else if ("clause" in item) {
           // The subclause's circle crosses this ring at right angles either side of where the clause
@@ -623,13 +628,16 @@ export function circle_layout({ tokens, phonology, layout, style, period, size, 
       });
     };
     rings.forEach((items, k) => draw_ring(items, 0, 0, radii[k]!, -Math.PI / 2, k, [], `${k}`));
-    return { nodes, footprints, extent };
+    // How much room each sentence's ring has to spare
+    const spare = rings.map((items, k) => 2 * Math.PI * radii[k]! - length_of(items, radii[k]!));
+    return { nodes, footprints, extent, spare };
   };
 
   // Two footprints on different rings overlap if any of their discs do, by as much as the deepest
   // pair of discs overlaps. Discs are bucketed by a grid as big as a disc's reach, so each is only
   // checked against its neighbours.
-  const overlaps = (footprints: Footprint[]): { a: Footprint; b: Footprint; depth: number }[] => {
+  type Overlap = { a: Footprint; b: Footprint; depth: number; at_a: Point; at_b: Point };
+  const overlaps = (footprints: Footprint[]): Overlap[] => {
     const cell = 2 * footprint;
     const grid = new Map<string, { f: number; p: Point }[]>();
     footprints.forEach((f, i) =>
@@ -640,7 +648,7 @@ export function circle_layout({ tokens, phonology, layout, style, period, size, 
         else grid.set(k, [{ f: i, p }]);
       }),
     );
-    const found = new Map<string, { a: Footprint; b: Footprint; depth: number }>();
+    const found = new Map<string, Overlap>();
     for (const [k, here] of grid) {
       const [gx, gy] = k.split(",").map(Number) as [number, number];
       for (let dx = -1; dx <= 1; dx++)
@@ -655,28 +663,43 @@ export function circle_layout({ tokens, phonology, layout, style, period, size, 
               if (depth <= 0) continue;
               const key = `${a.f},${b.f}`;
               const seen = found.get(key);
-              if (!seen || depth > seen.depth) found.set(key, { a: fa, b: fb, depth });
+              if (!seen || depth > seen.depth) found.set(key, { a: fa, b: fb, depth, at_a: a.p, at_b: b.p });
             }
     }
     return [...found.values()];
   };
 
-  // Lay out, then for each pair of words that overlap make room by as much as they overlap: between
-  // their sentences' rings if they're in different sentences, or else for the subclause each is in
-  // on the ring where they part, so their circles move apart along it. Repeat until nothing
-  // overlaps (or give up).
+  // Lay out, then for each pair of words that overlap make room by as much as they overlap. In one
+  // sentence, the subclause each is in gets more room on the ring where they part, so their circles
+  // move apart along it. Between sentences, a word on a sentence's own ring slides along it away
+  // from the other, backward if the other is ahead of it and forward if behind, taking room its ring
+  // has to spare; only when that can't work (no room to spare, or neither word on a sentence's own
+  // ring) do the two sentences' rings move apart. Repeat until nothing overlaps (or give up).
   let result = lay_out();
   let found = overlaps(result.footprints);
   let rounds = 0;
-  for (; rounds < 60 && found.length > 0; rounds++) {
+  for (; rounds < 80 && found.length > 0; rounds++) {
     const least = size * 0.05;
     const grow_gaps = new Map<number, number>();
     const grow_room = new Map<CircleItem, number>();
+    const grow_slide = new Map<CircleItem, number>();
+    const spare_used = new Map<number, number>();
     const more = <K,>(map: Map<K, number>, key: K, by: number) => map.set(key, Math.max(map.get(key) ?? 0, by));
-    for (const { a, b, depth } of found) {
+    for (const { a, b, depth, at_a, at_b } of found) {
       const by = depth + least;
       if (a.sentence !== b.sentence) {
-        more(grow_gaps, Math.min(a.sentence, b.sentence), by);
+        // The word on a sentence's own ring, and which way the other lies along that ring
+        const [word, here, there] = a.chain.length === 0 ? [a, at_a, at_b] : [b, at_b, at_a];
+        const next = word.ring[word.ring.indexOf(word.item) + 1];
+        let ahead = Math.atan2(there[1], there[0]) - Math.atan2(here[1], here[0]);
+        ahead = Math.atan2(Math.sin(ahead), Math.cos(ahead));
+        // Moving it back means more room after it, before the next item; forward, more before it
+        const target = ahead > 0 ? next : word.item;
+        const used = spare_used.get(word.sentence) ?? 0;
+        if (word.chain.length === 0 && target && rounds < 40 && used + by <= result.spare[word.sentence]!) {
+          more(grow_slide, target, by);
+          spare_used.set(word.sentence, used + by);
+        } else more(grow_gaps, Math.min(a.sentence, b.sentence), by);
         continue;
       }
       let p = 0;
@@ -687,6 +710,7 @@ export function circle_layout({ tokens, phonology, layout, style, period, size, 
     }
     for (const [k, by] of grow_gaps) spread[k] = spread[k]! + by;
     for (const [c, by] of grow_room) room.set(c, (room.get(c) ?? 0) + by);
+    for (const [item, by] of grow_slide) slide.set(item, (slide.get(item) ?? 0) + by);
     result = lay_out();
     found = overlaps(result.footprints);
   }
