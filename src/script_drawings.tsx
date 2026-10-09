@@ -145,13 +145,15 @@ export const default_line_style: LineStyle = {
   clearance: 0.15,
 };
 
-// The midline is ruled like lined paper: thinner than the writing, in its own colour
-// Where a subclause's circle starts, crossing its parent's ring: a small filled dot, unlike the
-// period's open mark
-function crossing_mark(x: number, y: number, size: number, key: string): React.ReactNode {
-  return <circle key={key} cx={x} cy={y} r={Math.max(1.5, size / 16) * 1.8} fill="currentColor" stroke="none" />;
+// Where a subclause's circle starts, crossing its parent's ring: a small open circle, drawn like
+// the midline
+function crossing_mark(x: number, y: number, size: number, style: LineStyle, key: string): React.ReactNode {
+  return (
+    <circle key={key} cx={x} cy={y} r={size * 0.15} fill="none" stroke={style.midline_color} strokeWidth={midline_width(size)} />
+  );
 }
 
+// The midline is ruled like lined paper: thinner than the writing, in its own colour
 export function midline_width(size: number): number {
   return Math.max(1, size / 24);
 }
@@ -492,7 +494,7 @@ export function draw_circles(laid: Solved, { style, period, size, wrap }: Circle
     if (style.midline) {
       nodes.push(<circle key={`mid${k}`} cx={ring.cx} cy={ring.cy} r={ring.R} stroke={style.midline_color} strokeWidth={midline_width(size)} />);
     }
-    if (ring.chain.length > 0) crossings.push(crossing_mark(...place(0, 0), size, `cross${k}`));
+    if (ring.chain.length > 0) crossings.push(crossing_mark(...place(0, 0), size, style, `cross${k}`));
     ring.items.forEach(({ item, x: centre, width }, i) => {
       const x = centre - width / 2;
       const key = `${k}-${i}`;
