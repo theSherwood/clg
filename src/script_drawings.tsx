@@ -36,6 +36,16 @@ export function load<T>(key: string, fallback: T): T {
   }
 }
 
+// The stem script's modes: each syllable a stem of its own, or a word's stems joined into one stroke
+export const STEM_JOINS = ["separate", "cursive"] as const;
+export type StemsStyle = { join: (typeof STEM_JOINS)[number] };
+export const default_stems_style: StemsStyle = { join: "cursive" };
+
+// A word in the stem script, in whichever mode the style asks for
+export function StemsWord({ rows, size, style }: { rows: number[][]; size: number; style: StemsStyle }) {
+  return style.join === "cursive" ? <CursiveStems rows={rows} size={size} /> : <Stems rows={rows} size={size} />;
+}
+
 // A word in the stem script: one stem per syllable, a rung per row (none, left, right, across)
 export function Stems({ rows, size }: { rows: number[][]; size: number }) {
   const column = size * 0.62;
@@ -780,6 +790,7 @@ export function Period({ size, style = default_period }: { size: number; style?:
 // The settings the script playground keeps in this browser, read fresh, so popups follow it
 export type ScriptSettings = {
   stems: MarkLayout;
+  stems_style: StemsStyle;
   stave: MarkLayout;
   stave_style: StaveStyle;
   syllabics: SyllabicsSettings;
@@ -788,6 +799,7 @@ export type ScriptSettings = {
 
 export const SCRIPT_KEYS = {
   stems: "script_stems",
+  stems_style: "script_stems_style",
   stave: "script_line",
   stave_style: "script_line_style",
   period: "script_period",
@@ -797,6 +809,7 @@ export const SCRIPT_KEYS = {
 export function stored_script_settings(): ScriptSettings {
   return {
     stems: load(SCRIPT_KEYS.stems, default_stems),
+    stems_style: load(SCRIPT_KEYS.stems_style, default_stems_style),
     stave: load(SCRIPT_KEYS.stave, default_stave),
     stave_style: load(SCRIPT_KEYS.stave_style, default_stave_style),
     period: load(SCRIPT_KEYS.period, default_period),
@@ -827,20 +840,17 @@ export function script_renderers(
   size: number,
   in_text = false,
 ): ScriptRenderer[] {
-  const { stems, stave, stave_style, syllabics, period } = settings;
+  const { stems, stems_style, stave, stave_style, syllabics, period } = settings;
   const circles = in_text && stave_style.midline_shape === "circle";
   return [
     {
       name: "Stems",
-      settings: JSON.stringify([phonology, stems, size]),
-      note: "A stem per syllable, with a rung for each mark",
-      render: (ids) => <Stems rows={ids.map((id) => layout_values(id, phonology, stems))} size={size} />,
-    },
-    {
-      name: "Cursive stems",
-      settings: JSON.stringify([phonology, stems, size]),
-      note: "The same stems joined into one stroke per word; rungs joined by U-turns between their outer ends",
-      render: (ids) => <CursiveStems rows={ids.map((id) => layout_values(id, phonology, stems))} size={size} />,
+      settings: JSON.stringify([phonology, stems, stems_style, size]),
+      note:
+        stems_style.join === "cursive"
+          ? "A stem per syllable, with a rung for each mark; a word's stems joined into one stroke, its rungs by U-turns between their outer ends"
+          : "A stem per syllable, with a rung for each mark",
+      render: (ids) => <StemsWord rows={ids.map((id) => layout_values(id, phonology, stems))} size={size} style={stems_style} />,
     },
     {
       name: "Stave",

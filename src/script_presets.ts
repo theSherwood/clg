@@ -1,4 +1,4 @@
-import { type ScriptSettings, default_period, default_stave_style } from "./script_drawings";
+import { type ScriptSettings, default_period, default_stave_style, default_stems_style } from "./script_drawings";
 import { default_stave, default_stems, default_syllabics } from "./scripts";
 
 // Named sets of script settings for the playground: a few built in, and any the reader saves,
@@ -8,6 +8,7 @@ export type Preset = { name: string; settings: ScriptSettings; builtin?: true };
 
 const defaults: ScriptSettings = {
   stems: default_stems,
+  stems_style: default_stems_style,
   stave: default_stave,
   stave_style: default_stave_style,
   syllabics: default_syllabics,
@@ -15,9 +16,14 @@ const defaults: ScriptSettings = {
 };
 
 // A built-in preset: the defaults with some of the stave's style and the period changed
-const builtin = (name: string, stave_style: Partial<ScriptSettings["stave_style"]>, period = default_period): Preset => ({
+const builtin = (
+  name: string,
+  stave_style: Partial<ScriptSettings["stave_style"]>,
+  period = default_period,
+  stems_style = default_stems_style,
+): Preset => ({
   name,
-  settings: { ...defaults, stave_style: { ...default_stave_style, ...stave_style }, period },
+  settings: { ...defaults, stave_style: { ...default_stave_style, ...stave_style }, period, stems_style },
   builtin: true,
 });
 
@@ -26,7 +32,12 @@ const RINGS = { midline: true, midline_shape: "circle", subclauses: "circles", s
 export const BUILTIN_PRESETS: Preset[] = [
   builtin("Default", {}),
   builtin("Cursive on a rule", { midline: true }),
-  builtin("Separate squares on a rule", { join: "separate", loop_mark: "square", midline: true }, { shape: "square", scale: 1 }),
+  builtin(
+    "Separate squares on a rule",
+    { join: "separate", loop_mark: "square", midline: true },
+    { shape: "square", scale: 1 },
+    { join: "separate" },
+  ),
   builtin("Cursive rings", RINGS),
   builtin("Angular ticks in rings", { ...RINGS, join: "angular", loop_mark: "tick" }),
   builtin(
@@ -50,6 +61,7 @@ export function load_saved_presets(): Preset[] {
         name: p.name,
         settings: {
           stems: { ...defaults.stems, ...p.settings.stems },
+          stems_style: { ...defaults.stems_style, ...p.settings.stems_style },
           stave: { ...defaults.stave, ...p.settings.stave },
           stave_style: { ...defaults.stave_style, ...p.settings.stave_style },
           syllabics: { ...defaults.syllabics, ...p.settings.syllabics },
