@@ -1,5 +1,5 @@
 import React from "react";
-import { type Word } from "./dict";
+import { T, type Word } from "./dict";
 import { type Phonology } from "./phonology";
 import {
   type MarkLayout,
@@ -120,6 +120,7 @@ export type LineStyle = {
   grow: "in" | "out";
   spacing: "even" | "condensed";
   period_position: "top" | "after"; // where a condensed sentence's period goes
+  subclauses: "inline" | "circles"; // on circles, whether subclauses get circles of their own
 };
 export const default_line_style: LineStyle = {
   join: "cursive",
@@ -131,6 +132,7 @@ export const default_line_style: LineStyle = {
   grow: "in",
   spacing: "even",
   period_position: "top",
+  subclauses: "inline",
 };
 
 // The midline is ruled like lined paper: thinner than the writing, in its own colour
@@ -328,7 +330,81 @@ export function Line({ marks, size, style = default_line_style }: { marks: numbe
 // condensed, it keeps its gaps, and either starts just after its period at the top, leaving the
 // room to spare before the period, or starts at the top with its period right after it. The first
 // sentence is the outer ring when growing in, and the inner one when growing out.
-type CircleItem = { geometry: LineGeometry; word?: Word } | { period: true } | { blank: number };
+type CircleItem =
+  | { geometry: LineGeometry; word?: Word }
+  | { period: true }
+  | { blank: number }
+  | { clause: CircleItem[] };
+
+const VERB_MARKERS = ["<verb>", "<verb_prescriptive>", "<verb_interrogative>"];
+const PHRASE_MARKERS = ["<subject>", "<object>", "<complement>"];
+
+// Whether a word opens an unbracketed subclause: after if, a preposition, or a role marker that
+// needs a phrase, a clause starting with <subject> or a verb marker can only be a subclause, so the
+// grammar leaves its bracket out
+function opens_clause(previous: Word | undefined, word: Word | undefined): boolean {
+  if (!previous || !word) return false;
+  const starts = word.word === "<subject>" || VERB_MARKERS.includes(word.word);
+  const before =
+    PHRASE_MARKERS.includes(previous.word) || previous.word === "if" || previous.data.t.includes(T.preposition);
+  return starts && before;
+}
+
+// A text as sentences, each a list of items. With subclauses as circles, a clause is an item of
+// its own, holding its words: <clause_start> and <clause_end> become the circle and aren't written,
+// and an unbracketed subclause is found by the grammar's rule. A <clause_end> closes the innermost
+// bracket and any unbracketed clauses inside it, or with no bracket open, the innermost
+// unbracketed clause; anything still open closes at the end of the sentence.
+export function circle_sentences(
+  tokens: ScriptToken[],
+  geometry: (ids: number[]) => LineGeometry,
+  size: number,
+  subclauses: boolean,
+): CircleItem[][] {
+  const sentences: CircleItem[][] = [];
+  let stack: { items: CircleItem[]; bracketed: boolean }[] = [];
+  const top = () => stack.at(-1)!.items;
+  const close = () => {
+    const done = stack.pop()!;
+    if (done.items.length > 0) top().push({ clause: done.items });
+  };
+  const end_sentence = () => {
+    while (stack.length > 1) close();
+    if (stack[0]!.items.length > 0) sentences.push(stack[0]!.items);
+    stack = [{ items: [], bracketed: false }];
+  };
+  stack = [{ items: [], bracketed: false }];
+  let previous: Word | undefined;
+  for (const t of tokens) {
+    if ("punctuation" in t) {
+      if (t.punctuation === ".") {
+        top().push({ period: true });
+        // The period belongs to the sentence, not any clause still open
+        const period = top().pop()!;
+        while (stack.length > 1) close();
+        top().push(period);
+        end_sentence();
+      }
+      previous = undefined;
+      continue;
+    }
+    const name = t.word?.word;
+    if (subclauses && name === "<clause_start>") {
+      stack.push({ items: [], bracketed: true });
+    } else if (subclauses && name === "<clause_end>") {
+      if (stack.some((c, i) => i > 0 && c.bracketed)) {
+        while (!stack.at(-1)!.bracketed) close();
+        close();
+      } else if (stack.length > 1) close();
+    } else {
+      if (subclauses && opens_clause(previous, t.word)) stack.push({ items: [], bracketed: false });
+      top().push(t.ids ? { geometry: geometry(t.ids), word: t.word } : { blank: size * 0.5 });
+    }
+    previous = t.word;
+  }
+  end_sentence();
+  return sentences;
+}
 
 export function LineCircles({
   tokens,
@@ -348,30 +424,31 @@ export function LineCircles({
   wrap: (word: Word, node: React.ReactElement) => React.ReactNode;
 }) {
   const stroke = Math.max(1.5, size / 16);
-  const sentences: CircleItem[][] = [[]];
-  for (const t of tokens) {
-    const sentence = sentences.at(-1)!;
-    if ("punctuation" in t) {
-      if (t.punctuation === ".") {
-        sentence.push({ period: true });
-        sentences.push([]);
-      }
-    } else if (t.ids) {
-      sentence.push({ geometry: line_geometry(t.ids.map((id) => layout_values(id, phonology, layout)), size, style), word: t.word });
-    } else {
-      sentence.push({ blank: size * 0.5 });
-    }
-  }
-  const rings = sentences.filter((s) => s.length > 0);
+  const rings = circle_sentences(
+    tokens,
+    (ids) => line_geometry(ids.map((id) => layout_values(id, phonology, layout)), size, style),
+    size,
+    style.subclauses === "circles",
+  );
   if (rings.length === 0) return null;
 
   const gap = size * 0.25;
   const period_width = size * 0.3 * period.scale;
-  const width_of = (item: CircleItem) =>
-    "geometry" in item ? item.geometry.width : "period" in item ? period_width : item.blank;
-  const lengths = rings.map((items) => items.reduce((n, item) => n + width_of(item) + gap, 0));
-  const spacing = size * 1.35; // between rings, so neighbouring rings' marks keep apart
-  const smallest = size * 0.8;
+  const attach = size * 0.5; // the room a subclause's circle takes on its parent's ring
+  const width_of = (item: CircleItem): number =>
+    "geometry" in item ? item.geometry.width : "period" in item ? period_width : "blank" in item ? item.blank : attach;
+  const length_of = (items: CircleItem[]) => items.reduce((n, item) => n + width_of(item) + gap, 0);
+  // A subclause's circle is sized by its own length, and reaches out as far as its own
+  // subclauses' circles do
+  const radius_of = (items: CircleItem[]) => Math.max(length_of(items) / (2 * Math.PI), size * 0.5);
+  const reach_of = (items: CircleItem[]): number =>
+    Math.max(0, ...items.map((item) => ("clause" in item ? radius_of(item.clause) + reach_of(item.clause) : 0)));
+
+  const lengths = rings.map(length_of);
+  // Rings are a line apart, plus room for the biggest subclause circles either side
+  const reach = Math.max(...rings.map(reach_of));
+  const spacing = size * 1.35 + 2 * reach;
+  const smallest = size * 0.8 + reach;
   const radii =
     style.grow === "in"
       ? (() => {
@@ -386,28 +463,31 @@ export function LineCircles({
           return lengths.map((_, k) => inner + k * spacing);
         })();
   const outer = Math.max(...radii);
-  const margin = size * 0.75;
+  const margin = size * 0.75 + reach;
   const centre = outer + margin;
   const step = size * 0.08; // straight lines are cut this fine so they bend with the ring
 
   const nodes: React.ReactNode[] = [];
-  rings.forEach((items, k) => {
-    const R = radii[k]!;
+  // One ring of items round (cx, cy), starting at an angle and read clockwise. A sentence's ring
+  // starts at the top and places its period; a subclause's starts where it crosses its parent.
+  const draw_ring = (items: CircleItem[], cx: number, cy: number, R: number, start: number, sentence: boolean, key: string) => {
     const circumference = 2 * Math.PI * R;
-    const ring_gap = style.spacing === "even" ? gap + (circumference - lengths[k]!) / items.length : gap;
+    const length = length_of(items);
+    const ring_gap = style.spacing === "even" ? gap + (circumference - length) / items.length : gap;
     // With the period at the top, the sentence starts just clockwise of it and any room to spare is
     // left between its last word and the period; otherwise it starts at the top and the period
     // follows its last word
-    const period_at_top = style.spacing === "even" || style.period_position === "top";
+    const period_at_top = sentence && (style.spacing === "even" || style.period_position === "top");
     const last = items.at(-1)!;
     const half_period = "period" in last ? width_of(last) / 2 : 0;
-    // Where a point along the ring goes: x along the circle from the top, y below the line inward
+    // Where a point along the ring goes: x along it from the start, y below the line inward
+    const angle_at = (x: number) => start + (2 * Math.PI * x) / circumference;
     const place = (x: number, y: number): Point => {
-      const angle = -Math.PI / 2 + (2 * Math.PI * x) / circumference;
+      const angle = angle_at(x);
       const r = R - y;
-      return [centre + r * Math.cos(angle), centre + r * Math.sin(angle)];
+      return [cx + r * Math.cos(angle), cy + r * Math.sin(angle)];
     };
-    const turn = (x: number) => (360 * x) / circumference;
+    const turn = (x: number) => (angle_at(x) * 180) / Math.PI + 90;
     const bend = (points: Point[], at: number): Point[] =>
       points.flatMap(([x, y], i): Point[] => {
         if (i === 0) return [place(at + x, y)];
@@ -419,9 +499,7 @@ export function LineCircles({
         });
       });
     if (style.midline) {
-      nodes.push(
-        <circle key={`mid${k}`} cx={centre} cy={centre} r={R} stroke={style.midline_color} strokeWidth={midline_width(size)} />,
-      );
+      nodes.push(<circle key={`mid${key}`} cx={cx} cy={cy} r={R} stroke={style.midline_color} strokeWidth={midline_width(size)} />);
     }
     let x = period_at_top ? half_period + ring_gap : ring_gap / 2;
     items.forEach((item, i) => {
@@ -429,7 +507,7 @@ export function LineCircles({
       if ("geometry" in item) {
         const g = item.geometry;
         const word = (
-          <g key={`${k}-${i}`}>
+          <g key={`${key}-${i}`}>
             {/* An invisible band along the word, so it's easy to hover */}
             <path d={polyline(bend([[0, 0], [width, 0]], x))} stroke="transparent" strokeWidth={size * 0.9} />
             {g.strokes.map((s, j) => (
@@ -448,19 +526,34 @@ export function LineCircles({
             })}
           </g>
         );
-        nodes.push(item.word ? <React.Fragment key={`${k}-${i}`}>{wrap(item.word, word)}</React.Fragment> : word);
+        nodes.push(item.word ? <React.Fragment key={`${key}-${i}`}>{wrap(item.word, word)}</React.Fragment> : word);
       } else if ("period" in item) {
         const at = period_at_top ? circumference : x + width / 2;
         const [px, py] = place(at, 0);
         nodes.push(
-          <g key={`${k}-${i}`} transform={`translate(${px} ${py}) rotate(${turn(at)})`}>
+          <g key={`${key}-${i}`} transform={`translate(${px} ${py}) rotate(${turn(at)})`}>
             {draw_mark(period.shape, 0, 0, Math.max(width / 2 - stroke, stroke))}
           </g>,
         );
+      } else if ("clause" in item) {
+        // The subclause's circle is centred on this ring where the clause comes, so it crosses the
+        // ring twice; its text starts at the first crossing and goes once round
+        const [px, py] = place(x + width / 2, 0);
+        const r = radius_of(item.clause);
+        const a = R - (r * r) / (2 * R); // the crossings' distance from this ring's centre along the line to the subclause's
+        const h = Math.sqrt(Math.max(0, R * R - a * a));
+        const ux = (px - cx) / R;
+        const uy = (py - cy) / R;
+        // the crossing just before the clause, going clockwise round this ring
+        const ix = cx + a * ux + h * uy;
+        const iy = cy + a * uy - h * ux;
+        const sub_start = r < 2 * R ? Math.atan2(iy - py, ix - px) : angle_at(x + width / 2) + Math.PI;
+        draw_ring(item.clause, px, py, r, sub_start, false, `${key}-${i}`);
       }
       x += width + ring_gap;
     });
-  });
+  };
+  rings.forEach((items, k) => draw_ring(items, centre, centre, radii[k]!, -Math.PI / 2, true, `${k}`));
   const side = 2 * centre;
   return (
     <svg width={side} height={side} viewBox={`0 0 ${side} ${side}`} className="block" {...svg_props(size, style)}>

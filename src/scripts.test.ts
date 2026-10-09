@@ -34,3 +34,23 @@ test("a transliteration becomes root IDs word by word, foreign names included", 
   const tokens = script_tokens("<subject> person <foreign> adam.", default_phonology);
   expect(tokens.map((t) => ("punctuation" in t ? t.punctuation : t.ids?.length))).toEqual([1, 1, 1, 2, "."]);
 });
+
+test("subclauses become circles: brackets, the grammar's unbracketed clauses, and nesting", async () => {
+  const { circle_sentences } = await import("./script_drawings");
+  const shape = (items: any[]): string =>
+    items.map((i) => ("clause" in i ? `[${shape(i.clause)}]` : "period" in i ? "." : (i.word?.word ?? "?"))).join(" ");
+  const read = (t: string) =>
+    circle_sentences(script_tokens(t, default_phonology), () => ({ strokes: [], marks: [], width: 1 }), 30, true).map(shape);
+  // After a role marker, a clause starting with a verb marker is a subclause without brackets
+  expect(read("<subject> I <verb> desire(vt) <object> <verb> sleep(vi).")).toEqual([
+    "<subject> <pronoun_first_person> <verb> desire(vt) <object> [<verb> sleep(vi)] .",
+  ]);
+  // After a preposition, one starting with <subject>
+  expect(read("<subject> I <verb> sleep(vi) from <subject> I <verb> be(vt) <complement> weak.")[0]).toBe(
+    "<subject> <pronoun_first_person> <verb> sleep(vi) from [<subject> <pronoun_first_person> <verb> be(vt) <complement> weak] .",
+  );
+  // Brackets aren't written; a bracket's <clause_end> closes the unbracketed clauses inside it
+  expect(read("<subject> person <clause_start> <subject> <blank> <verb> say(vt) <object> <verb> sleep(vi) <clause_end> <verb> come(vi).")[0]).toBe(
+    "<subject> person [<subject> <blank> <verb> say(vt) <object> [<verb> sleep(vi)]] <verb> come(vi) .",
+  );
+});

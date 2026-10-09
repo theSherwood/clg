@@ -511,6 +511,11 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
                   value={line_style.spacing === "condensed" ? 1 : 0}
                   on_change={(i) => set_line_style({ ...line_style, spacing: i === 1 ? "condensed" : "even" })}
                 />
+                <Toggle
+                  options={["subclauses inline", "subclause circles"]}
+                  value={line_style.subclauses === "circles" ? 1 : 0}
+                  on_change={(i) => set_line_style({ ...line_style, subclauses: i === 1 ? "circles" : "inline" })}
+                />
                 {line_style.spacing === "condensed" && (
                   <Toggle
                     options={["period at top", "period after"]}
