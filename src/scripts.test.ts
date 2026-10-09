@@ -190,15 +190,13 @@ test("the built-in script presets all differ, and settings compare whatever thei
 });
 
 test("cursive stem routes: every rung once, only turns the rules allow, and the fewest strokes", async () => {
-  const { all_routes, best_route, possible_turns, rungs_of } = await import("./stem_routes");
+  const { all_routes, best_route, possible_turns, ranked_routes, rungs_of } = await import("./stem_routes");
+  type Ranked = import("./stem_routes").Ranked;
   const { default_stems } = await import("./scripts");
   const { syllable_of } = await import("./phonology");
-  const rules = [
-    { turns: "next", direction: "down" },
-    { turns: "next", direction: "any" },
-    { turns: "clear", direction: "down" },
-    { turns: "clear", direction: "any" },
-  ] as const;
+  const rules = (["next", "clear"] as const).flatMap((turns) =>
+    (["down", "any"] as const).flatMap((direction) => (["short", "skips"] as const).map((prefer) => ({ turns, direction, prefer }))),
+  );
   for (let id = 0; id < 256; id++) {
     const states = layout_values(id, default_phonology, default_stems);
     const rungs = rungs_of(states);
@@ -219,11 +217,15 @@ test("cursive stem routes: every rung once, only turns the rules allow, and the 
       const most = Math.max(...all_routes(rungs, rule).map((r) => r.length));
       expect(strokes.length).toBe(rungs.length - most);
     }
+    // Preferring skips never costs a stroke, and skips at least as many rungs
+    const [short, skips] = (["short", "skips"] as const).map((prefer) => ranked_routes(states, { turns: "clear", direction: "any", prefer }).routes[0]!) as [Ranked, Ranked];
+    expect(skips.strokes.length).toBe(short.strokes.length);
+    expect(skips.skips).toBeGreaterThanOrEqual(short.skips);
   }
   const of = (sound: string) => layout_values(Array.from({ length: 256 }, (_, i) => i).find((i) => syllable_of(i, default_phonology) === sound)!, default_phonology, default_stems);
   // dhei takes one stroke when turns may skip clear rows and go up, two otherwise
-  expect(best_route(of("dhei"), { turns: "clear", direction: "any" }).strokes.length).toBe(1);
-  expect(best_route(of("dhei"), { turns: "next", direction: "down" }).strokes.length).toBe(2);
+  expect(best_route(of("dhei"), { turns: "clear", direction: "any", prefer: "short" }).strokes.length).toBe(1);
+  expect(best_route(of("dhei"), { turns: "next", direction: "down", prefer: "short" }).strokes.length).toBe(2);
   // Four rungs across: five ways to turn on each side, less the eight that close a loop
-  expect(all_routes(rungs_of([3, 3, 3, 3]), { turns: "clear", direction: "any" }).length).toBe(17);
+  expect(all_routes(rungs_of([3, 3, 3, 3]), { turns: "clear", direction: "any", prefer: "short" }).length).toBe(17);
 });

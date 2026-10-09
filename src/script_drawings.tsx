@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { type Laid, type LayoutOptions, type Wire, from_wire, solve_layout, solved_extent } from "./circle_layouts";
 import { type Solved, solve_circles } from "./circle_solver";
-import { type StemRouting, best_route, default_stem_routing } from "./stem_routes";
+import { type Rung, type Step, type StemRouting, best_route, default_stem_routing } from "./stem_routes";
 import { T, type Word } from "./dict";
 import { type Phonology } from "./phonology";
 import {
@@ -686,8 +686,13 @@ export function StaveCircles(args: CircleLayoutArgs) {
 // that starts a stroke is written out from the stem, ready to join on; one that's joined into is
 // written in to the stem, where the stroke ends; a rung across carries the stroke to its other side.
 function rung_strokes(states: number[], x: number, top: number, row_height: number, reach: number, routing: StemRouting): Point[][] {
-  const bulge = reach * 0.26; // how far a U-turn reaches past the rungs' ends
   const { rungs, strokes } = best_route(states, routing);
+  return route_points(rungs, strokes, x, top, row_height, reach);
+}
+
+// A route's strokes as lines of horizontal and vertical runs, for rounding
+function route_points(rungs: Rung[], strokes: Step[][], x: number, top: number, row_height: number, reach: number): Point[][] {
+  const bulge = reach * 0.26; // how far a U-turn reaches past the rungs' ends
   const y = (r: number) => top + (rungs[r]!.row + 0.5) * row_height;
   const end = (side: number) => x + side * reach; // a rung's end on a side, or at the stem for 0
   return strokes.map((steps) =>
@@ -703,6 +708,59 @@ function rung_strokes(states: number[], x: number, top: number, row_height: numb
             ];
       return [...lead, [end(to), y(rung)]];
     }),
+  );
+}
+
+// The sizes cursive stems are drawn at
+function stem_measures(size: number) {
+  const column = size * 0.72;
+  const height = size * 1.2;
+  const pad = size * 0.14; // room for the joins between stems
+  return { column, height, pad, row_height: (height - 2 * pad) / 4, reach: column * 0.32, stroke: Math.max(1.5, size / 16) };
+}
+
+const ROUTE_COLOURS = ["#2563eb", "#dc2626", "#16a34a", "#9333ea"];
+
+// One syllable in cursive stems drawn by a given route, for exploring routes: each stroke in a
+// colour of its own, numbered in the order it's written at the point it starts, with an arrowhead
+// where it ends. The stem, part of the word's own stroke, is grey.
+export function StemRoute({ rungs, strokes, size, curve }: { rungs: Rung[]; strokes: Step[][]; size: number; curve: number }) {
+  const { column, height, pad, row_height, reach, stroke } = stem_measures(size);
+  const width = column * 1.5; // room for the turns, and a start mark at either end
+  const x = width / 2;
+  const lines = route_points(rungs, strokes, x, pad, row_height, reach);
+  const dot = size * 0.075;
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="block" fill="none" strokeWidth={stroke}>
+      <line x1={x} y1={pad} x2={x} y2={height - pad} stroke="#d1d5db" strokeLinecap="round" />
+      {lines.map((points, i) => {
+        const colour = ROUTE_COLOURS[i % ROUTE_COLOURS.length];
+        const [ex, ey] = points.at(-1)!;
+        const [px, py] = points.at(-2)!;
+        const angle = Math.atan2(ey - py, ex - px);
+        const head = size * 0.07;
+        const barb = (turn: number): Point => [ex - head * Math.cos(angle + turn), ey - head * Math.sin(angle + turn)];
+        return (
+          <g key={i} stroke={colour}>
+            <path d={rounded_path(points, curve, { horizontal: reach * 0.26, vertical: Infinity })} strokeLinecap="round" strokeLinejoin="round" />
+            <path d={polyline([barb(0.6), [ex, ey], barb(-0.6)])} strokeLinecap="round" strokeLinejoin="round" />
+            <circle cx={points[0]![0]} cy={points[0]![1]} r={dot} fill={colour} stroke="none" />
+            <text
+              x={points[0]![0]}
+              y={points[0]![1]}
+              fill="white"
+              stroke="none"
+              fontSize={dot * 1.5}
+              fontWeight="bold"
+              textAnchor="middle"
+              dominantBaseline="central"
+            >
+              {i + 1}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
   );
 }
 
@@ -747,12 +805,7 @@ export function CursiveStems({
   curve?: number;
   routing?: StemRouting;
 }) {
-  const column = size * 0.72;
-  const height = size * 1.2;
-  const pad = size * 0.14; // room for the joins between stems
-  const row_height = (height - 2 * pad) / 4;
-  const reach = column * 0.32;
-  const stroke = Math.max(1.5, size / 16);
+  const { column, height, pad, row_height, reach, stroke } = stem_measures(size);
   // Down the first stem, then under or over to the next and along it, and so on; each join runs
   // a little past the stems' ends
   const dip = pad * 0.65;

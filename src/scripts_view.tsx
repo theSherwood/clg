@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { babel_verses, lords_prayer, north_wind_sentences, siduri_advice, udhr_articles } from "./examples";
 import { MARKS, type Mark, type Phonology, syllable_of } from "./phonology";
 import {
@@ -38,6 +38,7 @@ import {
   SCRIPT_KEYS,
   SYLLABICS_FONT,
   StemsWord,
+  StemRoute,
   STEM_JOINS,
   type StemsStyle,
   default_stems_style,
@@ -45,6 +46,7 @@ import {
   script_renderers,
 } from "./script_drawings";
 import { BUILTIN_PRESETS, type Preset, load_saved_presets, same_settings, store_saved_presets } from "./script_presets";
+import { type StemRouting, ranked_routes } from "./stem_routes";
 import { WordHover } from "./word_ui";
 
 // Tries out candidate scripts on real text: stems with a rung per mark, a stave with a mark per
@@ -396,6 +398,7 @@ function AllSyllablesGrid({
   stave_style,
   syllabics,
   size,
+  on_pick,
 }: {
   phonology: Phonology;
   stems: MarkLayout;
@@ -404,6 +407,7 @@ function AllSyllablesGrid({
   stave_style: StaveStyle;
   syllabics: SyllabicsSettings;
   size: number;
+  on_pick: (id: number) => void;
 }) {
   return (
     <div className="overflow-x-auto">
@@ -414,7 +418,12 @@ function AllSyllablesGrid({
               {Array.from({ length: 16 }, (_, col) => {
                 const id = row * 16 + col;
                 return (
-                  <td key={col} className="border border-gray-200 px-1 text-center align-top">
+                  <td
+                    key={col}
+                    onClick={() => on_pick(id)}
+                    title="Explore its stem routes"
+                    className="border border-gray-200 px-1 text-center align-top cursor-pointer hover:bg-indigo-50"
+                  >
                     <div className="text-[10px] font-mono text-indigo-700">{syllable_of(id, phonology)}</div>
                     {/* Stems and the stave side by side, syllabics under them */}
                     <div className="grid grid-cols-2 items-center justify-items-center gap-x-1">
@@ -441,6 +450,15 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
   const [stave, set_stave] = useStored<MarkLayout>(SCRIPT_KEYS.stave, default_stave);
   const [stave_style, set_stave_style] = useStored<StaveStyle>(SCRIPT_KEYS.stave_style, default_stave_style);
   const [grid_open, set_grid_open] = useState(false);
+  const [routes_open, set_routes_open] = useState(false);
+  const [route_id, set_route_id] = useStored("script_route_syllable", 0);
+  const routes_ref = useRef<HTMLDetailsElement>(null);
+  // A syllable picked in the grid opens it in the route explorer
+  const explore = useCallback((id: number) => {
+    set_route_id(id);
+    set_routes_open(true);
+    requestAnimationFrame(() => routes_ref.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }, []);
   const [period, set_period] = useStored<PeriodStyle>(SCRIPT_KEYS.period, default_period);
   const [syllabics, set_syllabics] = useStored<SyllabicsSettings>(SCRIPT_KEYS.syllabics, default_syllabics);
   const [size, set_size] = useStored("script_size", 32);
@@ -509,6 +527,17 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
             options={["downward", "any"]}
             value={stems_style.direction === "any" ? 1 : 0}
             on_change={(i) => set_stems_style({ ...stems_style, direction: i === 1 ? "any" : "down" })}
+          />
+        </Row>
+        <Row
+          label="Prefer"
+          hint="Between routes with equally few strokes: the shortest turns, or turns that skip past rungs"
+          off={stems_style.join !== "cursive" && "Only cursive stems"}
+        >
+          <Toggle
+            options={["shortest turns", "skipping rungs"]}
+            value={stems_style.prefer === "skips" ? 1 : 0}
+            on_change={(i) => set_stems_style({ ...stems_style, prefer: i === 1 ? "skips" : "short" })}
           />
         </Row>
         <Row
@@ -707,6 +736,17 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
           ))}
 
           {/* Drawn only while open */}
+          <details
+            ref={routes_ref}
+            open={routes_open}
+            className="mt-2"
+            onToggle={(e) => set_routes_open(e.currentTarget.open)}
+          >
+            <summary className="cursor-pointer text-xs font-semibold text-gray-600">Stem routes</summary>
+            {routes_open && (
+              <RouteExplorer phonology={phonology} stems={stems} stems_style={stems_style} id={route_id} set_id={set_route_id} />
+            )}
+          </details>
           <details className="mt-2" onToggle={(e) => set_grid_open(e.currentTarget.open)}>
             <summary className="cursor-pointer text-xs font-semibold text-gray-600">All 256 syllables</summary>
             {grid_open && (
@@ -718,6 +758,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
                 stave_style={stave_style}
                 syllabics={syllabics}
                 size={size}
+                on_pick={explore}
               />
             )}
           </details>
@@ -892,5 +933,71 @@ function Slider({
       <input type="range" min={min} max={max} step={step} value={value} onChange={(e) => on_change(Number(e.target.value))} className="w-24" />
       <span className="tabular-nums w-10 text-gray-600">{format(value)}</span>
     </span>
+  );
+}
+
+// Every route a syllable's rungs can take in cursive stems, under the stem settings' rules or with
+// none, best first; the first under the rules is the one drawn
+function RouteExplorer({
+  phonology,
+  stems,
+  stems_style,
+  id,
+  set_id,
+}: {
+  phonology: Phonology;
+  stems: MarkLayout;
+  stems_style: StemsStyle;
+  id: number;
+  set_id: (id: number) => void;
+}) {
+  const [every, set_every] = useStored("script_routes_every", false);
+  const rules: StemRouting = every ? { turns: "clear", direction: "any", prefer: stems_style.prefer } : stems_style;
+  const states = layout_values(id, phonology, stems);
+  const { rungs, routes } = ranked_routes(states, rules);
+  const drawn = ranked_routes(states, stems_style).routes[0];
+  const fewest = routes[0]?.strokes.length ?? 0;
+  return (
+    <div className="mt-1.5 text-xs">
+      <div className="flex flex-wrap items-center gap-2 mb-2">
+        <select value={id} onChange={(e) => set_id(Number(e.target.value))} className="px-1 py-0.5 border border-gray-300 rounded bg-white font-mono">
+          {Array.from({ length: 256 }, (_, i) => (
+            <option key={i} value={i}>
+              {syllable_of(i, phonology)}
+            </option>
+          ))}
+        </select>
+        <Toggle options={["under these rules", "every route"]} value={every ? 1 : 0} on_change={(i) => set_every(i === 1)} />
+        <span className="text-gray-600">
+          {routes.length} {routes.length === 1 ? "route" : "routes"}; {rungs.length} {rungs.length === 1 ? "rung" : "rungs"}, so the
+          fewest strokes is {fewest} ({rungs.length} rungs less {rungs.length - fewest} turns)
+        </span>
+      </div>
+      {stems_style.join !== "cursive" && <p className="mb-2 text-amber-700">Routes are for cursive stems; the stems are separate just now.</p>}
+      {rungs.length === 0 ? (
+        <p className="text-gray-500">No rungs: just the stem.</p>
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          {routes.map((route, i) => {
+            const is_drawn = drawn && JSON.stringify(route.turns) === JSON.stringify(drawn.turns);
+            return (
+              <div
+                key={i}
+                className={`flex flex-col items-center px-2 pt-1 pb-1.5 rounded border bg-white ${is_drawn ? "border-indigo-500 ring-1 ring-indigo-500" : "border-gray-200"}`}
+              >
+                <StemRoute rungs={rungs} strokes={route.strokes} size={96} curve={stems_style.curve} />
+                <div className="text-gray-700">
+                  {route.strokes.length} {route.strokes.length === 1 ? "stroke" : "strokes"}
+                </div>
+                <div className="text-gray-500">
+                  {[route.upward > 0 && `${route.upward} up`, route.skips > 0 && `skips ${route.skips}`].filter(Boolean).join(", ") || "\u00a0"}
+                </div>
+                {is_drawn && <div className="text-indigo-700 font-semibold">drawn</div>}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }
