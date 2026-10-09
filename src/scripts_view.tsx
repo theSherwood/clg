@@ -28,6 +28,7 @@ import {
   type LineStyle,
   Period,
   default_line_style,
+  LOOP_MARKS,
   midline_width,
   SCRIPT_KEYS,
   SYLLABICS_FONT,
@@ -444,11 +445,19 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
               value={line_style.joined ? 0 : 1}
               on_change={(i) => set_line_style({ ...line_style, joined: i === 0 })}
             />
-            <Toggle
-              options={["curves", "angles"]}
-              value={line_style.curves ? 0 : 1}
-              on_change={(i) => set_line_style({ ...line_style, curves: i === 0 })}
-            />
+            {line_style.joined ? (
+              <Toggle
+                options={["curves", "angles"]}
+                value={line_style.curves ? 0 : 1}
+                on_change={(i) => set_line_style({ ...line_style, curves: i === 0 })}
+              />
+            ) : (
+              <Toggle
+                options={[...LOOP_MARKS]}
+                value={LOOP_MARKS.indexOf(line_style.loop_mark)}
+                on_change={(i) => set_line_style({ ...line_style, loop_mark: LOOP_MARKS[i]! })}
+              />
+            )}
             <Toggle
               options={["midline", "no midline"]}
               value={line_style.midline ? 0 : 1}

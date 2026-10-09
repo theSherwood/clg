@@ -139,17 +139,33 @@ function line_path(marks: number[][], size: number, middle: number, start: numbe
 
 // How the line script is drawn: one stroke per word or each mark on its own, curves or straight
 // lines, and whether the midline itself is drawn
-export type LineStyle = { joined: boolean; curves: boolean; midline: boolean; midline_color: string };
-export const default_line_style: LineStyle = { joined: true, curves: true, midline: false, midline_color: "#93c5fd" };
+// curves applies to joined writing; loop_mark is how a loop is drawn when marks are separate
+export const LOOP_MARKS = ["circle", "diamond", "square", "tick"] as const;
+export type LoopMark = (typeof LOOP_MARKS)[number];
+
+export type LineStyle = {
+  joined: boolean;
+  curves: boolean;
+  loop_mark: LoopMark;
+  midline: boolean;
+  midline_color: string;
+};
+export const default_line_style: LineStyle = {
+  joined: true,
+  curves: true,
+  loop_mark: "circle",
+  midline: false,
+  midline_color: "#4b5563",
+};
 
 // The midline is ruled like lined paper: thinner than the writing, in its own colour
 export function midline_width(size: number): number {
   return Math.max(1, size / 24);
 }
 
-// Each mark on its own: a dash, or a loop drawn as a circle (with curves) or a diamond (without),
+// Each mark on its own: a dash, or a loop drawn as a circle, diamond, square or vertical tick,
 // above or below the line. A separate mark can't run into the next, so syllables can have a gap.
-function line_marks(marks: number[][], size: number, middle: number, start: number, curves: boolean): React.ReactNode[] {
+function line_marks(marks: number[][], size: number, middle: number, start: number, loop: LoopMark): React.ReactNode[] {
   const slot = size * LINE_SLOT;
   const gap = size * 0.4;
   const offset = size * 0.2;
@@ -160,11 +176,10 @@ function line_marks(marks: number[][], size: number, middle: number, start: numb
       const y = mark & 1 ? middle + offset : middle - offset;
       const key = `${i}-${j}`;
       if (!(mark & 2)) return <line key={key} x1={x - slot * 0.22} y1={y} x2={x + slot * 0.22} y2={y} />;
-      return curves ? (
-        <circle key={key} cx={x} cy={y} r={r} />
-      ) : (
-        <path key={key} d={`M ${x} ${y - r * 1.2} L ${x + r * 1.2} ${y} L ${x} ${y + r * 1.2} L ${x - r * 1.2} ${y} Z`} />
-      );
+      if (loop === "circle") return <circle key={key} cx={x} cy={y} r={r} />;
+      if (loop === "square") return <rect key={key} x={x - r * 0.9} y={y - r * 0.9} width={r * 1.8} height={r * 1.8} />;
+      if (loop === "tick") return <line key={key} x1={x} y1={y - r * 1.3} x2={x} y2={y + r * 1.3} />;
+      return <path key={key} d={`M ${x} ${y - r * 1.2} L ${x + r * 1.2} ${y} L ${x} ${y + r * 1.2} L ${x - r * 1.2} ${y} Z`} />;
     }),
   );
 }
@@ -202,7 +217,7 @@ export function Line({ marks, size, style = default_line_style }: { marks: numbe
       {style.joined ? (
         <path d={line_path(marks, size, middle, stroke, style.curves)} />
       ) : (
-        line_marks(marks, size, middle, stroke, style.curves)
+        line_marks(marks, size, middle, stroke, style.loop_mark)
       )}
     </svg>
   );
