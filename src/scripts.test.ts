@@ -7,6 +7,7 @@ import {
   default_stems,
   default_gates,
   fret_path,
+  FRET_HALF,
   FRET_TALL,
   FRET_WIDE,
   gate_lines,
@@ -400,6 +401,53 @@ test("the fret's blocks: exactly four paths through every point between their co
   }
 });
 
+test("the 6×6 frets: one stroke from the top left corner to the top right, never along an edge twice, and every syllable its own drawing", () => {
+  for (const kind of ["halves", "quarters"] as const) {
+    const paths = ids.map((id) => fret_path(layout_values(id, default_phonology, default_gates), kind));
+    for (const path of paths) {
+      expect(path[0]).toEqual([0, 0]);
+      expect(path.at(-1)).toEqual([5, 0]);
+      for (const [x, y] of path) expect(x >= 0 && x <= 5 && y >= 0 && y <= 5).toBe(true);
+      path.slice(1).forEach(([x, y], i) => expect(Math.abs(x - path[i]![0]) + Math.abs(y - path[i]![1])).toBe(1));
+      const edges = path.slice(1).map((q, i) => [path[i]!.join(), q.join()].sort().join("|"));
+      expect(new Set(edges).size).toBe(edges.length);
+      const visits = new Map<string, number[]>();
+      path.forEach((p, i) => visits.set(p.join(), [...(visits.get(p.join()) ?? []), i]));
+      if (kind === "halves") expect(visits.size).toBe(36);
+      else {
+        // Each quarter skips at most one point, and the stroke crosses itself only straight across
+        for (const [qx, qy] of [[0, 0], [0, 3], [3, 3], [3, 0]])
+          expect([...visits.keys()].filter((k) => { const [x, y] = k.split(",").map(Number); return x! >= qx! && x! < qx! + 3 && y! >= qy! && y! < qy! + 3; }).length).toBeGreaterThanOrEqual(8);
+        for (const at of visits.values()) {
+          expect(at.length).toBeLessThanOrEqual(2);
+          if (at.length === 2) {
+            const [a, b] = at.map((i) => [path[i - 1]!, path[i + 1]!]);
+            for (const [before, after] of [a!, b!]) expect(before![0] === after![0] || before![1] === after![1]).toBe(true);
+            expect(a![0]![0] === a![1]![0]).not.toBe(b![0]![0] === b![1]![0]);
+          }
+        }
+      }
+    }
+    expect(new Set(paths.map((p) => JSON.stringify(p))).size).toBe(256);
+  }
+  // A 3×6 block has exactly sixteen paths through every point from its top left corner to its
+  // bottom right, and the halves draw all sixteen
+  const count = (from: number[], seen = new Set([from.join()])): number => {
+    if (seen.size === 18) return from.join() === "2,5" ? 1 : 0;
+    let n = 0;
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const [x, y] = [from[0]! + dx!, from[1]! + dy!];
+      if (x < 0 || x > 2 || y < 0 || y > 5 || seen.has(`${x},${y}`)) continue;
+      seen.add(`${x},${y}`);
+      n += count([x, y], seen);
+      seen.delete(`${x},${y}`);
+    }
+    return n;
+  };
+  expect(count([0, 0])).toBe(16);
+  expect(new Set(FRET_HALF.map((p) => JSON.stringify(p))).size).toBe(16);
+});
+
 test("the fret joined: a word is one stroke, each syllable running on from the last along their tops", async () => {
   const { Gates, default_gates_style } = await import("./script_drawings");
   const { renderToStaticMarkup } = await import("react-dom/server");
@@ -422,10 +470,10 @@ test("bar scripts and the fret on a grid: every word, and every period after one
   const { bar_spacing, Gates, default_gates_style, gates_span } = await import("./script_drawings");
   const { renderToStaticMarkup } = await import("react-dom/server");
   const { createElement } = await import("react");
-  for (const form of ["bars", "fret"] as const)
+  for (const [form, fret] of [["bars", "blocks"], ["fret", "blocks"], ["fret", "halves"], ["fret", "quarters"]] as const)
     for (const size of [16, 32, 57])
       for (const weight of [0.2, 0.6, 0.9]) {
-        const style = { ...default_gates_style, weight, form, spacing: "grid" as const };
+        const style = { ...default_gates_style, weight, form, fret, spacing: "grid" as const };
         const { gap, cell, glyph } = bar_spacing(size, weight, gates_span(style), "grid");
         for (const n of [1, 2, 3, 5]) {
           const svg = renderToStaticMarkup(createElement(Gates, { rows: Array.from({ length: n }, () => [0, 1, 2, 3]), size, style }));

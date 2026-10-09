@@ -20,6 +20,11 @@ import {
   FRET_TALL,
   FRET_WIDE,
   FRETS,
+  FRET_HALF,
+  FRET_KINDS,
+  FRET_QUARTER_DIAGONAL,
+  FRET_QUARTER_SIDE,
+  type FretKind,
   type GridPoint,
   GATES,
   default_syllabics,
@@ -190,9 +195,10 @@ function Written({
   );
 }
 
-// The fret's four paths through a tall block (down the left) and a wide one (along the bottom), by
-// value, each from where the stroke comes in, marked with a dot
-function FretLegend() {
+// The paths a fret's values pick, each drawn from where the stroke comes in, marked with a dot. For
+// blocks and quarters, a block's four paths by value; for halves, the sixteen by the first mark's
+// value (down) and the second's (across).
+function FretLegend({ kind }: { kind: FretKind }) {
   const draw = (path: GridPoint[], w: number, h: number) => {
     const p = 7;
     const at = ([x, y]: GridPoint) => [x * p + 3, y * p + 3] as const;
@@ -203,23 +209,33 @@ function FretLegend() {
       </svg>
     );
   };
+  const header = (
+    <tr>
+      <td />
+      {FRETS.map((f) => (
+        <td key={f} className="px-2 text-center text-gray-500">
+          {f}
+        </td>
+      ))}
+    </tr>
+  );
+  const rows: [string, GridPoint[][], number, number][] =
+    kind === "halves"
+      ? FRETS.map((f, i) => [f, FRET_HALF.slice(4 * i, 4 * i + 4), 3, 6])
+      : kind === "quarters"
+        ? [
+            ["corner", FRET_QUARTER_DIAGONAL, 3, 3],
+            ["side", FRET_QUARTER_SIDE, 3, 3],
+          ]
+        : [
+            ["tall", FRET_TALL, 3, 4],
+            ["wide", FRET_WIDE, 4, 3],
+          ];
   return (
     <table className="mb-2">
       <tbody>
-        <tr>
-          <td />
-          {FRETS.map((f) => (
-            <td key={f} className="px-2 text-center text-gray-500">
-              {f}
-            </td>
-          ))}
-        </tr>
-        {(
-          [
-            ["tall", FRET_TALL, 3, 4],
-            ["wide", FRET_WIDE, 4, 3],
-          ] as const
-        ).map(([name, paths, w, h]) => (
+        {header}
+        {rows.map(([name, paths, w, h]) => (
           <tr key={name}>
             <td className="pr-2 text-gray-500">{name}</td>
             {paths.map((path, i) => (
@@ -725,6 +741,17 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
             />
           </Row>
           <Row
+            label="Fret"
+            hint="Four blocks on a 7×7 grid, a mark each; two halves on a 6×6 grid, two marks each; or four quarters on a 6×6 grid, a mark each, that may skip a corner and cross once"
+            off={gates_style.form !== "fret" && "Only the fret"}
+          >
+            <Toggle
+              options={["7×7 blocks", "6×6 halves", "6×6 quarters"]}
+              value={FRET_KINDS.indexOf(gates_style.fret)}
+              on_change={(i) => set_gates_style({ ...gates_style, fret: FRET_KINDS[i]! })}
+            />
+          </Row>
+          <Row
             label="Spacing"
             hint="Close: a word's syllables as far apart as the strokes in them, and a stroke left out between words and rows; with joins, everything as far apart as the strokes, and a period a square of its own. Grid: every word in every row on a grid of half syllables"
             off={gates_style.form !== "fret" && "Only the fret: bars, open at the ends, need the room to tell syllables apart"}
@@ -761,10 +788,18 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
           {gates_style.form === "fret" ? (
             <>
               <p className="text-gray-500 mb-1.5">
-                A block per mark, in the stroke's order: down the left, along the bottom, up the right, and, past the centre, along the top. Each value is
-                one of a block's four paths; the right and top blocks' are the left and bottom ones' upside down.
+                {
+                  {
+                    blocks:
+                      "A block per mark, in the stroke's order: down the left, along the bottom, up the right, and, past the centre, along the top. Each value is one of a block's four paths; the right and top blocks' are the left and bottom ones' upside down.",
+                    halves:
+                      "Two marks a half: the first two pick the left half's path, the first's value down and the second's across, and the last two the right half's, mirrored.",
+                    quarters:
+                      "A quarter per mark, in the stroke's order: top left, bottom left, bottom right, top right. Each value is one of a quarter's four paths, the last two skipping a corner and crossing once; the right quarters' are the left ones' mirrored.",
+                  }[gates_style.fret]
+                }
               </p>
-              <FretLegend />
+              <FretLegend kind={gates_style.fret} />
             </>
           ) : (
             <p className="text-gray-500 mb-1.5">A gate per gap between the five bars, left to right</p>
@@ -773,7 +808,7 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
             phonology={phonology}
             layout={gates}
             set_layout={set_gates}
-            positions={gates_style.form === "fret" ? "blocks" : "gaps"}
+            positions={gates_style.form !== "fret" ? "gaps" : gates_style.fret === "halves" ? "marks" : gates_style.fret}
             options={gates_style.form === "fret" ? [...FRETS] : GATES.map((g, i) => `${["‖", "⊓", "⊔", "□"][i]} ${g}`)}
           />
         </div>

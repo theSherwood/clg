@@ -130,7 +130,7 @@ export const FRET_WIDE: GridPoint[][] = [
   [[0, 0], [0, 1], [0, 2], [1, 2], [2, 2], [2, 1], [1, 1], [1, 0], [2, 0], [3, 0], [3, 1], [3, 2]],
   [[0, 0], [0, 1], [0, 2], [1, 2], [1, 1], [1, 0], [2, 0], [3, 0], [3, 1], [2, 1], [2, 2], [3, 2]],
 ];
-export function fret_path(marks: number[]): GridPoint[] {
+function blocks_path(marks: number[]): GridPoint[] {
   const [down, along, up, over] = marks;
   return [
     ...FRET_TALL[down!]!,
@@ -139,6 +139,74 @@ export function fret_path(marks: number[]): GridPoint[] {
     [3, 3],
     ...FRET_WIDE[over!]!.map(([x, y]): GridPoint => [3 + x, 2 - y]),
   ];
+}
+
+// Two smaller frets, on a 6×6 grid of points, still from the top left corner to the top right, the
+// right half of each the left's mirror image, run backwards.
+//
+// Halves: a 3×6 block has exactly sixteen paths through every point from its top left corner to
+// its bottom right, so the left half of the square is one of them, for the first two marks (the
+// first mark's value four times over, and the second's), a step along the bottom, and the right
+// half another, for the last two. Every point is drawn, and nothing crosses.
+export const FRET_HALF: GridPoint[][] = [
+  [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [1, 5], [1, 4], [1, 3], [1, 2], [1, 1], [1, 0], [2, 0], [2, 1], [2, 2], [2, 3], [2, 4], [2, 5]],
+  [[0, 0], [1, 0], [2, 0], [2, 1], [2, 2], [2, 3], [2, 4], [1, 4], [1, 3], [1, 2], [1, 1], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [1, 5], [2, 5]],
+  [[0, 0], [1, 0], [2, 0], [2, 1], [1, 1], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [1, 5], [1, 4], [1, 3], [1, 2], [2, 2], [2, 3], [2, 4], [2, 5]],
+  [[0, 0], [0, 1], [0, 2], [0, 3], [1, 3], [1, 2], [1, 1], [1, 0], [2, 0], [2, 1], [2, 2], [2, 3], [2, 4], [1, 4], [0, 4], [0, 5], [1, 5], [2, 5]],
+  [[0, 0], [1, 0], [2, 0], [2, 1], [2, 2], [1, 2], [1, 1], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [1, 5], [1, 4], [1, 3], [2, 3], [2, 4], [2, 5]],
+  [[0, 0], [1, 0], [2, 0], [2, 1], [2, 2], [2, 3], [1, 3], [1, 2], [1, 1], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [1, 5], [1, 4], [2, 4], [2, 5]],
+  [[0, 0], [0, 1], [1, 1], [1, 0], [2, 0], [2, 1], [2, 2], [2, 3], [2, 4], [1, 4], [1, 3], [1, 2], [0, 2], [0, 3], [0, 4], [0, 5], [1, 5], [2, 5]],
+  [[0, 0], [0, 1], [0, 2], [1, 2], [1, 1], [1, 0], [2, 0], [2, 1], [2, 2], [2, 3], [2, 4], [1, 4], [1, 3], [0, 3], [0, 4], [0, 5], [1, 5], [2, 5]],
+  [[0, 0], [1, 0], [2, 0], [2, 1], [1, 1], [0, 1], [0, 2], [1, 2], [2, 2], [2, 3], [2, 4], [1, 4], [1, 3], [0, 3], [0, 4], [0, 5], [1, 5], [2, 5]],
+  [[0, 0], [1, 0], [2, 0], [2, 1], [1, 1], [0, 1], [0, 2], [0, 3], [1, 3], [1, 2], [2, 2], [2, 3], [2, 4], [1, 4], [0, 4], [0, 5], [1, 5], [2, 5]],
+  [[0, 0], [1, 0], [2, 0], [2, 1], [2, 2], [1, 2], [1, 1], [0, 1], [0, 2], [0, 3], [1, 3], [2, 3], [2, 4], [1, 4], [0, 4], [0, 5], [1, 5], [2, 5]],
+  [[0, 0], [0, 1], [1, 1], [1, 0], [2, 0], [2, 1], [2, 2], [1, 2], [0, 2], [0, 3], [0, 4], [0, 5], [1, 5], [1, 4], [1, 3], [2, 3], [2, 4], [2, 5]],
+  [[0, 0], [0, 1], [0, 2], [1, 2], [1, 1], [1, 0], [2, 0], [2, 1], [2, 2], [2, 3], [1, 3], [0, 3], [0, 4], [0, 5], [1, 5], [1, 4], [2, 4], [2, 5]],
+  [[0, 0], [1, 0], [2, 0], [2, 1], [1, 1], [0, 1], [0, 2], [1, 2], [2, 2], [2, 3], [1, 3], [0, 3], [0, 4], [0, 5], [1, 5], [1, 4], [2, 4], [2, 5]],
+  [[0, 0], [0, 1], [1, 1], [1, 0], [2, 0], [2, 1], [2, 2], [1, 2], [0, 2], [0, 3], [1, 3], [2, 3], [2, 4], [1, 4], [0, 4], [0, 5], [1, 5], [2, 5]],
+  [[0, 0], [0, 1], [1, 1], [1, 0], [2, 0], [2, 1], [2, 2], [2, 3], [1, 3], [1, 2], [0, 2], [0, 3], [0, 4], [0, 5], [1, 5], [1, 4], [2, 4], [2, 5]],
+];
+
+// Quarters: four 3×3 blocks, a mark each, down the left (top left block from its top left corner to
+// its bottom right, bottom left from its top right to its bottom right), a step along the bottom,
+// and back up the right. A 3×3 block has exactly four ways between those corners if the stroke
+// may skip one point, and may cross itself where it does, so long as it goes straight across:
+// two paths through every point, and two that skip a corner and cross once in the middle. So a
+// syllable skips up to four points, one a block, and crosses itself as often.
+export const FRET_QUARTER_DIAGONAL: GridPoint[][] = [
+  [[0, 0], [0, 1], [0, 2], [1, 2], [1, 1], [1, 0], [2, 0], [2, 1], [2, 2]],
+  [[0, 0], [1, 0], [2, 0], [2, 1], [1, 1], [0, 1], [0, 2], [1, 2], [2, 2]],
+  [[0, 0], [0, 1], [1, 1], [2, 1], [2, 0], [1, 0], [1, 1], [1, 2], [2, 2]],
+  [[0, 0], [1, 0], [1, 1], [1, 2], [0, 2], [0, 1], [1, 1], [2, 1], [2, 2]],
+];
+export const FRET_QUARTER_SIDE: GridPoint[][] = [
+  [[2, 0], [2, 1], [1, 1], [1, 0], [0, 0], [0, 1], [0, 2], [1, 2], [2, 2]],
+  [[2, 0], [1, 0], [0, 0], [0, 1], [0, 2], [1, 2], [1, 1], [2, 1], [2, 2]],
+  [[2, 0], [2, 1], [1, 1], [0, 1], [0, 0], [1, 0], [1, 1], [1, 2], [2, 2]],
+  [[2, 0], [1, 0], [1, 1], [1, 2], [0, 2], [0, 1], [1, 1], [2, 1], [2, 2]],
+];
+
+export const FRET_KINDS = ["blocks", "halves", "quarters"] as const;
+export type FretKind = (typeof FRET_KINDS)[number];
+// Pitches across a fret's square
+export const fret_span = (kind: FretKind) => (kind === "blocks" ? 6 : 5);
+
+// The right half of a 6×6 fret: the left's mirror image, run backwards
+const mirrored = (path: GridPoint[]): GridPoint[] => path.map(([x, y]): GridPoint => [5 - x, y]).reverse();
+
+export function fret_path(marks: number[], kind: FretKind = "blocks"): GridPoint[] {
+  const [a, b, c, d] = marks as [number, number, number, number];
+  if (kind === "halves") return [...FRET_HALF[4 * a + b]!, ...mirrored(FRET_HALF[4 * c + d]!)];
+  if (kind === "quarters") {
+    const side = (path: GridPoint[]) => path.map(([x, y]): GridPoint => [x, 3 + y]);
+    return [
+      ...FRET_QUARTER_DIAGONAL[a]!,
+      ...side(FRET_QUARTER_SIDE[b]!),
+      ...mirrored(side(FRET_QUARTER_SIDE[c]!)),
+      ...mirrored(FRET_QUARTER_DIAGONAL[d]!),
+    ];
+  }
+  return blocks_path(marks);
 }
 
 // The stave as a meander, a calligraphy after the gates: five bars of the same height, and each of

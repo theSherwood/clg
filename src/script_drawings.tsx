@@ -11,6 +11,8 @@ import {
   default_stems,
   default_gates,
   fret_path,
+  fret_span,
+  type FretKind,
   gate_lines,
   type GridLine,
   type GridPoint,
@@ -1096,7 +1098,8 @@ export function StemBlocks({
 // and bridges, or as a fret in one stroke (see fret_path); spacing, for the fret, close or on a
 // grid (see bar_spacing). Bars are always on the grid: open gates leave a syllable's ends open, so
 // only the room between squares tells syllables apart. joins: the fret's syllables joined along
-// their tops, so a word is one stroke, or apart.
+// their tops, so a word is one stroke, or apart. fret: which fret (see fret_path): four blocks on a
+// 7×7 grid, or two halves or four quarters on a 6×6 one.
 export const GATES_FORMS = ["bars", "fret"] as const;
 export const GATES_SPACINGS = ["close", "grid"] as const;
 export const GATES_JOINS = ["joined", "apart"] as const;
@@ -1105,8 +1108,9 @@ export type GatesStyle = {
   form: (typeof GATES_FORMS)[number];
   spacing: (typeof GATES_SPACINGS)[number];
   joins: (typeof GATES_JOINS)[number];
+  fret: FretKind;
 };
-export const default_gates_style: GatesStyle = { weight: 0.6, form: "bars", spacing: "close", joins: "joined" };
+export const default_gates_style: GatesStyle = { weight: 0.6, form: "bars", spacing: "close", joins: "joined", fret: "blocks" };
 
 // A word in a script of square syllables on a grid of pitches (gates, as bars or a fret, or the
 // stave as a meander): each syllable span pitches square, drawn by strokes_of as lines through
@@ -1114,7 +1118,6 @@ export const default_gates_style: GatesStyle = { weight: 0.6, form: "bars", spac
 // do from each other, so a word's syllables are told apart
 const BAR_APART = 2; // pitches from one syllable's last bar to the next one's first
 const BARS = 4; // five bars, four pitches across
-const FRET = 6; // a 7×7 grid of points
 const bar_measures = (size: number, weight: number, span: number) => {
   const pitch = (size * 0.8) / (span + weight);
   return { pitch, w: weight * pitch };
@@ -1156,7 +1159,6 @@ export function bar_spacing(
 const as_strokes = (lines: GridLine[]): GridPoint[][] => lines.map(([x1, y1, x2, y2]) => [[x1, y1], [x2, y2]]);
 const gates_strokes = (marks: number[]) => as_strokes(gate_lines(marks));
 const meander_strokes = (marks: number[]) => as_strokes(meander_lines(marks));
-const fret_strokes = (marks: number[]) => [fret_path(marks)];
 
 function BarWord({
   rows,
@@ -1208,19 +1210,20 @@ export function StaveWord({ marks, size, style }: { marks: number[][]; size: num
   );
 }
 
-export const gates_span = (style: GatesStyle) => (style.form === "fret" ? FRET : BARS);
+export const gates_span = (style: GatesStyle) => (style.form === "fret" ? fret_span(style.fret) : BARS);
 const gates_spacing = (style: GatesStyle) => (style.form === "fret" ? style.spacing : "grid");
 const gates_joined = (style: GatesStyle) => style.form === "fret" && style.joins === "joined";
 
-// The fret's period: a small square ring of strokes in the middle of a syllable's square, on the
-// same grid of points, so it reads as a stop, mostly white, among the full squares
-export function FretPeriod({ size, weight }: { size: number; weight: number }) {
-  const { pitch, w } = bar_measures(size, weight, FRET);
-  const side = FRET * pitch + w;
+// The fret's period: a small square ring of strokes two pitches across in the middle of a
+// syllable's square, so it reads as a stop, mostly white, among the full squares; on the grid of
+// points in a 7×7 fret, and between them in a 6×6 one, which has no middle point
+export function FretPeriod({ size, weight, span }: { size: number; weight: number; span: number }) {
+  const { pitch, w } = bar_measures(size, weight, span);
+  const side = span * pitch + w;
   const at = (v: number) => v * pitch + w / 2;
   return (
     <svg width={side} height={side} viewBox={`0 0 ${side} ${side}`} className="block" fill="none" stroke="currentColor" strokeWidth={w} strokeLinejoin="miter">
-      <rect x={at(2)} y={at(2)} width={2 * pitch} height={2 * pitch} />
+      <rect x={at(span / 2 - 1)} y={at(span / 2 - 1)} width={2 * pitch} height={2 * pitch} />
     </svg>
   );
 }
@@ -1234,7 +1237,7 @@ export function Gates({ rows, size, style }: { rows: number[][]; size: number; s
       weight={style.weight}
       span={gates_span(style)}
       apart={bar_apart(gates_spacing(style))}
-      strokes_of={fret ? fret_strokes : gates_strokes}
+      strokes_of={fret ? (marks) => [fret_path(marks, style.fret)] : gates_strokes}
       joined={gates_joined(style)}
     />
   );
@@ -1362,12 +1365,17 @@ export function script_renderers(
       settings: JSON.stringify([phonology, gates, gates_style, period, size]),
       note:
         gates_style.form === "fret"
-          ? "A syllable in one stroke through every point of a 7×7 grid, top left to top right: four blocks round the centre, a mark each, each one of the four paths through every point of it"
+          ? {
+              blocks: "A syllable in one stroke through every point of a 7×7 grid, top left to top right: four blocks round the centre, a mark each, each one of the four paths through every point of it",
+              halves: "A syllable in one stroke through every point of a 6×6 grid, top left to top right: two halves, two marks each, each one of the sixteen paths through every point of it",
+              quarters:
+                "A syllable in one stroke on a 6×6 grid, top left to top right: four quarters, a mark each, each one of two paths through every point of it or two that skip a corner and cross once, straight across",
+            }[gates_style.fret]
           : "Five bars a syllable, always all there; each gap between them a gate: open, bridged at the top, at the bottom, or closed",
       render: (ids) => <Gates rows={ids.map((id) => layout_values(id, phonology, gates))} size={size} style={gates_style} />,
       spacing: {
         ...bar_spacing(size, gates_style.weight, gates_span(gates_style), gates_spacing(gates_style), period, gates_joined(gates_style)),
-        period: gates_style.form === "fret" ? <FretPeriod size={size} weight={gates_style.weight} /> : undefined,
+        period: gates_style.form === "fret" ? <FretPeriod size={size} weight={gates_style.weight} span={gates_span(gates_style)} /> : undefined,
       },
     },
     {
