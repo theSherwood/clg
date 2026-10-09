@@ -288,11 +288,13 @@ export function solve_circles({ rings: sentences, style, size, period_width }: S
       const widths = ring.items.map((it) => width_of(ring, it));
       const spare = Math.max(0, total - widths.reduce((s, w) => s + w, 0) - n * gap);
       const spacing = even ? gap + spare / n : gap;
+      // Where each item would be, evenly spaced (or packed) counting from the ring's first item, so
+      // the pull reaches all the way round at once rather than a neighbour at a time
+      let wanted = q[ring.items[0]!.x]!;
       ring.items.forEach((it, i) => {
+        if (i > 0) wanted += (widths[i - 1]! + widths[i]!) / 2 + spacing;
         if (i === 0 || free[it.x] === 0) return;
-        const before = ring.items[i - 1]!;
-        const wanted = q[before.x]! + (widths[i - 1]! + widths[i]!) / 2 + spacing;
-        q[it.x] = q[it.x]! + (wanted - q[it.x]!) * 0.2 * strength;
+        q[it.x] = q[it.x]! + (wanted - q[it.x]!) * 0.5 * strength;
       });
       if (ring.cy !== undefined) q[ring.cy] = q[ring.cy]! * (1 - 0.05 * strength);
     }

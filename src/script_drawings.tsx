@@ -808,6 +808,25 @@ export function circle_layout({ tokens, phonology, layout, style, period, size, 
     result = lay_out();
     found = overlaps(result.footprints);
   }
+  // Making room overshoots (a ring that grows re-spaces its words, which can move a circle into a
+  // fresh collision), so each gap that was widened is narrowed again as far as it can go with
+  // nothing overlapping, found by halving
+  if (found.length === 0) {
+    for (let k = 0; k < spread.length; k++) {
+      if (spread[k]! <= 0) continue;
+      let enough = spread[k]!;
+      let too_little = 0;
+      for (let step = 0; step < 6; step++) {
+        const middle = (enough + too_little) / 2;
+        spread[k] = middle;
+        if (overlaps(lay_out().footprints).length === 0) enough = middle;
+        else too_little = middle;
+      }
+      spread[k] = enough;
+    }
+    result = lay_out();
+    found = overlaps(result.footprints);
+  }
   const left = found.length;
   return { nodes: result.nodes, extent: result.extent, rounds, overlaps: left };
 }
