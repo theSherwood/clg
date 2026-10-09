@@ -111,7 +111,8 @@ function line_path(marks: number[][], size: number, middle: number, start: numbe
   const loop_width = slot * 0.5;
   const flat = marks.flat();
   const side = flat.map((mark) => (mark & 1 ? 1 : -1));
-  const points: Point[] = [[start, middle + side[0]! * level]];
+  // A word that starts or ends with a loop starts or ends at it, with no line beyond
+  const points: Point[] = flat[0]! & 2 ? [] : [[start, middle + side[0]! * level]];
   flat.forEach((mark, k) => {
     const left = start + k * slot;
     const right = left + slot;
@@ -133,7 +134,7 @@ function line_path(marks: number[][], size: number, middle: number, start: numbe
       points.push([left + slot * 0.2, y], [right - slot * 0.2, y]);
     }
   });
-  points.push([start + flat.length * slot, middle + side.at(-1)! * level]);
+  if (!(flat.at(-1)! & 2)) points.push([start + flat.length * slot, middle + side.at(-1)! * level]);
   return curves ? spline(points) : `M ${points.map(([x, y]) => `${x} ${y}`).join(" L ")}`;
 }
 
@@ -227,17 +228,24 @@ function angular_line(marks: number[][], size: number, middle: number, start: nu
   const flat = marks.flat();
   const y = flat.map((mark) => middle + (mark & 1 ? 1 : -1) * offset);
   const shapes: React.ReactNode[] = [];
-  let path = `M ${start} ${y[0]}`;
+  let path = "";
   flat.forEach((mark, k) => {
     const left = start + k * slot;
     const right = left + slot;
+    const x = left + slot / 2;
+    const yk = y[k]!;
     if (mark & 2) {
-      const [shape, reach] = loop_mark(loop, left + slot / 2, y[k]!, r, `m${k}`);
+      const [shape, reach] = loop_mark(loop, x, yk, r, `m${k}`);
       shapes.push(shape);
-      if (reach > 0) path += ` L ${left + slot / 2 - reach} ${y[k]} M ${left + slot / 2 + reach} ${y[k]}`;
+      // The line meets the mark's edge (a tick it crosses); a word's first or last mark is its end
+      if (k === 0) path = `M ${x + reach} ${yk}`;
+      else path += ` L ${x - reach} ${yk}` + (reach > 0 ? ` M ${x + reach} ${yk}` : "");
+      if (k === flat.length - 1) return;
+    } else if (k === 0) {
+      path = `M ${left} ${yk}`;
     }
-    path += ` L ${right} ${y[k]}`;
-    if (y[k + 1] !== undefined && y[k + 1] !== y[k]) path += ` L ${right} ${y[k + 1]}`;
+    path += ` L ${right} ${yk}`;
+    if (y[k + 1] !== undefined && y[k + 1] !== yk) path += ` L ${right} ${y[k + 1]}`;
   });
   return [<path key="line" d={path} />, ...shapes];
 }
