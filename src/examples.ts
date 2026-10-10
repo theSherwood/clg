@@ -1539,6 +1539,53 @@ export const siduri_advice: Article[] = [
   },
 ];
 
+// The Bene Gesserit litany against fear, from Frank Herbert's Dune
+export const litany_against_fear: Article[] = [
+  {
+    title: "I must not fear",
+    english: ["I must not fear."],
+    transliteration: "<subject> I <verb_prescriptive> not be_afraid(vi).",
+  },
+  {
+    title: "The mind-killer",
+    english: ["Fear is the mind-killer."],
+    transliteration: "<subject> fear <verb> be(vt) <complement> <er> kill(vt) mind.",
+  },
+  {
+    title: "The little-death",
+    english: ["Fear is the little-death that brings total obliteration."],
+    transliteration:
+      "<subject> fear <verb> be(vt) <complement> death small <clause_start> <subject> <blank> <verb> cause(vt) <object> destruction entire <clause_end>.",
+  },
+  {
+    title: "Facing it",
+    english: ["I will face my fear."],
+    transliteration: "<subject> I <verb> face(vt) henceforth <object> fear of self.",
+  },
+  {
+    title: "Letting it pass",
+    english: ["I will permit it to pass over me and through me."],
+    transliteration: "<subject> I <verb> allow(vt) <object> <subject> it <verb> go(vi) at topside of I and at inside of I.",
+  },
+  {
+    title: "The inner eye",
+    english: ["And when it has gone past, I will turn the inner eye to see its path."],
+    transliteration:
+      "at time <clause_start> <subject> it <verb> go(vi) <perfect_tense_aspect> <clause_end> <subject> I <verb> aim(vt) <object> eye inner for <verb> see(vt) <object> path of it.",
+  },
+  {
+    title: "Nothing",
+    english: ["Where the fear has gone there will be nothing."],
+    transliteration:
+      "<subject> nothing <verb> be(vi) at place <clause_start> <subject> fear <verb> go(vi) <perfect_tense_aspect> to <blank> <clause_end>.",
+  },
+  {
+    title: "Only I",
+    english: ["Only I will remain."],
+    transliteration: "<subject> only I <verb> stay(vi).",
+  },
+];
+
 export type Token =
   | { kind: "punctuation"; text: string }
   | { kind: "foreign"; text: string } // the word after <foreign>: a name or borrowing, said as written

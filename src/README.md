@@ -88,6 +88,7 @@ Texts other conlangs are compared on, translated to test the grammar and vocabul
 - [ ] Schleicher's fable, The Sheep and the Horses
 - [x] The Lord's Prayer
 - [x] Siduri's advice to Gilgamesh (Old Babylonian Epic of Gilgamesh)
+- [x] The litany against fear (Frank Herbert's Dune)
 - [ ] Syntax test cases (graded sentences from the CONLANG list; source to find)
 
 Open from Babel: understand is know(vt) for now. A quote's own bracket and an inner bracket

@@ -34,6 +34,7 @@ import {
   north_wind_sentences,
   lords_prayer,
   siduri_advice,
+  litany_against_fear,
 } from "./examples";
 import { swadesh, toki_pona_words } from "./comparison";
 import { ComparisonTable, TallyLine } from "./comparison_view";
@@ -187,7 +188,7 @@ const all_transliterations = [
   ...arithmetic_examples.map((e) => e.transliteration),
   ...more_grammar_examples.map((e) => e.transliteration),
   ...conversation_examples.map((e) => e.transliteration),
-  ...[...udhr_preamble, ...udhr_articles, ...babel_verses, ...north_wind_sentences, ...lords_prayer, ...siduri_advice].flatMap(
+  ...[...udhr_preamble, ...udhr_articles, ...babel_verses, ...north_wind_sentences, ...lords_prayer, ...siduri_advice, ...litany_against_fear].flatMap(
     (a) => (a.transliteration ? [a.transliteration] : []),
   ),
 ];
@@ -299,6 +300,13 @@ export function ExamplesView() {
               the oldest surviving “eat, drink and be merry”.
             </p>
             <ArticleList articles={siduri_advice} />
+          </Section>
+
+          <Section title="The litany against fear" level={3}>
+            <p className="text-sm text-gray-600 mb-3">
+              The Bene Gesserit litany from Frank Herbert's <i>Dune</i>, said to master fear.
+            </p>
+            <ArticleList articles={litany_against_fear} />
           </Section>
 
           <Section title="Universal Declaration of Human Rights" level={3}>

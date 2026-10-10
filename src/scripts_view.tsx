@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { babel_verses, lords_prayer, north_wind_sentences, siduri_advice, udhr_articles } from "./examples";
+import { babel_verses, litany_against_fear, lords_prayer, north_wind_sentences, siduri_advice, udhr_articles } from "./examples";
 import { MARKS, type Mark, type Phonology, syllable_of } from "./phonology";
 import {
   type Assignment,
@@ -91,6 +91,7 @@ function useStored<T>(key: string, fallback: T): [T, (value: T) => void] {
 const PRESETS: { label: string; text: string }[] = [
   { label: "The Lord's Prayer", articles: lords_prayer },
   { label: "Siduri's advice", articles: siduri_advice },
+  { label: "The litany against fear", articles: litany_against_fear },
   { label: "The Tower of Babel, 11:1–4", articles: babel_verses.slice(0, 4) },
   { label: "The North Wind and the Sun", articles: north_wind_sentences },
   { label: "UDHR, Article 1", articles: udhr_articles.slice(0, 1) },
