@@ -1575,7 +1575,7 @@ export const litany_against_fear: Article[] = [
   {
     title: "Facing it",
     english: ["I will face my fear."],
-    transliteration: "<subject> I <verb> face(vt) henceforth <object> fear of self.",
+    transliteration: "<subject> I <verb> face(vt) henceforth <object> fear of I.",
   },
   {
     title: "Letting it pass",
