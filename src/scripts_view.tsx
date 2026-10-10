@@ -468,8 +468,8 @@ function SyllabicsControls({
 
 // Drawn again only when something it shows changes: of the stave style, only how a word is drawn,
 // not how a text is laid out
-const word_style = ({ join, curves, loop_mark, midline, midline_color, form, meander_weight, pen_space, pen_hairline, pen_gap }: StaveStyle) =>
-  JSON.stringify([join, curves, loop_mark, midline, midline_color, form, meander_weight, pen_space, pen_hairline, pen_gap]);
+const word_style = ({ join, curves, loop_mark, midline, midline_color, form, meander_weight, pen_space, pen_hairline, pen_gap, pen_across }: StaveStyle) =>
+  JSON.stringify([join, curves, loop_mark, midline, midline_color, form, meander_weight, pen_space, pen_hairline, pen_gap, pen_across]);
 const AllSyllables = React.memo(
   AllSyllablesGrid,
   (a, b) =>
@@ -834,6 +834,17 @@ export function ScriptPlayground({ phonology }: { phonology: Phonology }) {
               step={0.05}
               on_change={(meander_weight) => set_style({ meander_weight })}
               format={(v) => `${Math.round(v * 100)}%`}
+            />
+          </Row>
+          <Row
+            label="Across"
+            hint="With the pen, whether a mark joins the next across the midline, the nib sweeping from the one's inner edge to the other's, so a word is one stroke"
+            off={!pen && OFF_PEN}
+          >
+            <Toggle
+              options={["joined", "apart"]}
+              value={stave_style.pen_across === "joined" ? 0 : 1}
+              on_change={(i) => set_style({ pen_across: i === 0 ? "joined" : "apart" })}
             />
           </Row>
           <Row label="Space" hint="With the pen, the room between marks, as a share of a mark's width; neighbours on the same side close it" off={!pen && OFF_PEN}>

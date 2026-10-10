@@ -448,7 +448,7 @@ test("the 6×6 frets: one stroke from the top left corner to the top right, neve
   expect(new Set(FRET_HALF.map((p) => JSON.stringify(p))).size).toBe(16);
 });
 
-test("the stave with a pen: every mark one width, dashes along the blocks' inner edges, and neighbours on a side run together", async () => {
+test("the stave with a pen: every mark one width, dashes along the blocks' inner edges, neighbours on a side run together, and joined across the midline", async () => {
   const { pen_shapes, pen_measures, default_stave_style } = await import("./script_drawings");
   const style = default_stave_style;
   const size = 40;
@@ -471,6 +471,18 @@ test("the stave with a pen: every mark one width, dashes along the blocks' inner
       const bridge = shapes.find((r) => Math.abs(r.x - (i * (unit + space) + unit)) < 1e-9 && Math.abs(r.w - space) < 1e-9);
       expect(Boolean(bridge)).toBe(next !== undefined && (next & 1) === (mark & 1));
     });
+    // Joined across: a sweep wherever the next mark is on the other side, from the one's inner
+    // edge to the other's, each edge a mark's width
+    const { across } = pen_shapes([marks], size, style);
+    const switches = marks.slice(1).map((mark, i) => i).filter((i) => (marks[i]! & 1) !== (marks[i + 1]! & 1));
+    expect(across.length).toBe(switches.length);
+    across.forEach(([a, b, c, d], k) => {
+      const x = switches[k]! * (unit + space);
+      const [from, to] = (marks[switches[k]!]! & 1) > 0 ? [gap / 2, -gap / 2] : [-gap / 2, gap / 2];
+      const sweep: [number, number][] = [[x, from], [x + unit, from], [x + 2 * unit + space, to], [x + unit + space, to]];
+      expect([a, b, c, d]).toEqual(from > 0 ? sweep.reverse() : sweep);
+    });
+    expect(pen_shapes([marks], size, { ...style, pen_across: "apart" }).across).toEqual([]);
   }
   expect(drawings.size).toBe(256);
 });

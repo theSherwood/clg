@@ -185,6 +185,7 @@ export type StaveStyle = {
   pen_space: number; // with the pen, the room between marks, as a share of a mark's width
   pen_hairline: number; // and its thin strokes, the dashes, as a share of a mark's width
   pen_gap: number; // and the room between the marks above the midline and those below, likewise
+  pen_across: "joined" | "apart"; // and whether a mark joins the next across the midline
 };
 export const STAVE_FORMS = ["line", "meander", "pen"] as const;
 export const CROSSING_SHAPES = ["circle", "square", "diamond"] as const;
@@ -211,6 +212,7 @@ export const default_stave_style: StaveStyle = {
   pen_space: 0.15,
   pen_hairline: 0.12,
   pen_gap: 0.35,
+  pen_across: "joined",
 };
 
 // Where a subclause's circle starts, crossing its parent's ring: a small open mark, drawn like the
@@ -1214,14 +1216,17 @@ function BarWord({
 // midline. So every mark is one width, and the marks above the midline hang their blocks up from a
 // line a little above it, and those below down from a line a little below. Marks stand a little
 // apart, but neighbours on the same side of the midline run on into each other, as if written in
-// one stroke across: two blocks into one long block, a block and a dash along the hairline. The
-// shapes are rectangles in a word's own space: x from its left, y down from the midline.
+// one stroke across: two blocks into one long block, a block and a dash along the hairline. Joined
+// across, a mark runs on into the next across the midline too, the nib sweeping from the one's
+// inner edge to the other's: a parallelogram, the one edge's width wide all the way. Then a word is
+// one stroke. The shapes are rectangles in a word's own space, x from its left and y down from the
+// midline, and the sweeps across, polygons.
 export type PenShape = { x: number; y: number; w: number; h: number };
 export function pen_measures(size: number, style: StaveStyle) {
   const unit = (size * 0.8) / (2 + style.pen_gap);
   return { unit, space: style.pen_space * unit, hairline: style.pen_hairline * unit, gap: style.pen_gap * unit };
 }
-export function pen_shapes(marks: number[][], size: number, style: StaveStyle): { shapes: PenShape[]; width: number } {
+export function pen_shapes(marks: number[][], size: number, style: StaveStyle): { shapes: PenShape[]; across: Point[][]; width: number } {
   const { unit, space, hairline, gap } = pen_measures(size, style);
   const flat = marks.flat();
   const below = (mark: number) => (mark & 1) > 0;
@@ -1236,19 +1241,38 @@ export function pen_shapes(marks: number[][], size: number, style: StaveStyle): 
     if (next === undefined || below(next) !== below(mark)) return [own];
     return [own, shape(mark, x + unit, space, Math.min(height(mark), height(next)))];
   });
-  return { shapes, width: flat.length * unit + (flat.length - 1) * space };
+  // From the inner edge of a mark on one side to the inner edge of the next, on the other
+  const edge = (mark: number) => (below(mark) ? gap / 2 : -gap / 2);
+  const across =
+    style.pen_across === "joined"
+      ? flat.flatMap((mark, i): Point[][] => {
+          const next = flat[i + 1];
+          if (next === undefined || below(next) === below(mark)) return [];
+          const x = i * (unit + space);
+          const step = unit + space;
+          const sweep: Point[] = [[x, edge(mark)], [x + unit, edge(mark)], [x + step + unit, edge(next)], [x + step, edge(next)]];
+          // All one way round, clockwise on the page, like the blocks, so where two sweeps cross
+          // (down and straight back up) they fill together rather than cancel
+          return [below(mark) ? sweep.reverse() : sweep];
+        })
+      : [];
+  return { shapes, across, width: flat.length * unit + (flat.length - 1) * space };
 }
 
 export function PenStave({ marks, size, style }: { marks: number[][]; size: number; style: StaveStyle }) {
-  const { shapes, width } = pen_shapes(marks, size, style);
+  const { shapes, across, width } = pen_shapes(marks, size, style);
   const height = size;
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="inline-block align-middle" fill="currentColor">
       {style.midline && <line x1={0} y1={height / 2} x2={width} y2={height / 2} stroke={style.midline_color} strokeWidth={midline_width(size)} />}
       <g transform={`translate(0 ${height / 2})`}>
-        {shapes.map((r, i) => (
-          <rect key={i} x={r.x} y={r.y} width={r.w} height={r.h} />
-        ))}
+        {/* One path, so where shapes meet, no seam shows */}
+        <path
+          d={[
+            ...shapes.map((r) => `M${r.x} ${r.y}h${r.w}v${r.h}h${-r.w}z`),
+            ...across.map((points) => `M${points.map((p) => p.join(" ")).join("L")}z`),
+          ].join("")}
+        />
       </g>
     </svg>
   );
@@ -1439,7 +1463,7 @@ export function script_renderers(
       note: meander
         ? "Four marks per syllable as bridges between five bars: at the top for above the line, the bottom for below; flush for a dash, set in for a loop"
         : stave_style.form === "pen"
-          ? "Four marks per syllable, as with a broad pen: a loop a thick block, a dash a hairline along its edge, above or below the midline; neighbours on the same side run on into each other"
+          ? `Four marks per syllable, as with a broad pen: a loop a thick block, a dash a hairline along its edge, above or below the midline; neighbours on the same side run on into each other${stave_style.pen_across === "joined" ? ", and across it the nib sweeps from one to the next, so a word is one stroke" : ""}`
           : "Four marks per syllable along a ruled line: a dash or a loop, above or below",
       render: (ids) => (
         <StaveWord
