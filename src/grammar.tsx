@@ -1065,26 +1065,43 @@ export function GrammarView() {
             know who came”, and without <W w="<blank>" />, whether.
           </li>
           <li>
-            <b>After a noun</b>, describing it: <W w="<blank>" /> marks the noun's place in the
-            clause, in any role or after any preposition. A plain verb marker tells it from a
-            question, which has <W w="<verb_interrogative>" />, as English uses who and where for
-            both. The clause describes the noun just before it, so it goes right after its noun,
-            before that noun's phrases: <T>child &lt;clause_start&gt; … &lt;clause_end&gt; of friend</T> is
-            the friend's child who…, and <T>child of friend &lt;clause_start&gt; … &lt;clause_end&gt;</T> the
-            child of the friend who…. A count or ordinal is part of its noun, so the clause follows
-            it and describes the whole: <T>thing &lt;ordinal&gt; number 1 &lt;clause_start&gt; …</T> is
-            the first one who….
+            <b>After a noun</b>, describing it. The noun's place in the clause is left empty, or held
+            by <T>it</T> at the clause's start; <W w="<blank>" /> is only ever the unknown in a
+            question. As subject, the noun is simply missing: the clause opens with its verb marker.
+            As object, the clause ends with an empty <W w="<object>" />, or opens with one when the doer
+            goes unsaid. After a preposition, the preposition and <T>it</T> open the clause, as
+            English fronts to whom and from where: <T>to it</T>, <T>from it</T>. As owner, the phrase
+            that opens the clause has <T>of it</T>: whose top is <T>&lt;subject&gt; top of it</T>. A
+            clause with its subject and no place left for the noun happens at it, so a time or a
+            place needs nothing: <T>at time &lt;clause_start&gt; …</T> is when, and{" "}
+            <T>at place &lt;clause_start&gt; …</T> where. The clause describes the noun just before it,
+            so it goes right after its noun, before that noun's phrases:{" "}
+            <T>child &lt;clause_start&gt; … &lt;clause_end&gt; of friend</T> is the friend's child who…, and{" "}
+            <T>child of friend &lt;clause_start&gt; … &lt;clause_end&gt;</T> the child of the friend who…. A
+            count or ordinal is part of its noun, so the clause follows it and describes the whole:{" "}
+            <T>thing &lt;ordinal&gt; number 1 &lt;clause_start&gt; …</T> is the first one who….
           </li>
         </ul>
         <Example meaning="the person who defended me">
-          person &lt;clause_start&gt; &lt;subject&gt; &lt;blank&gt; &lt;verb&gt; defend(vt) &lt;object&gt; me &lt;clause_end&gt;
+          person &lt;clause_start&gt; &lt;verb&gt; defend(vt) &lt;object&gt; me &lt;clause_end&gt;
+        </Example>
+        <Example meaning="the rock that I burned">
+          rock &lt;clause_start&gt; &lt;subject&gt; I &lt;verb&gt; burn(vt) formerly &lt;object&gt; &lt;clause_end&gt;
+        </Example>
+        <Example meaning="the person who was judged">
+          person &lt;clause_start&gt; &lt;object&gt; &lt;verb&gt; judge(vt) formerly &lt;clause_end&gt;
+        </Example>
+        <Example meaning="the person I gave money to">
+          person &lt;clause_start&gt; to it &lt;subject&gt; I &lt;verb&gt; give(vt) formerly &lt;object&gt; money
+          &lt;clause_end&gt;
         </Example>
         <Example meaning="the place where I sleep">
-          place &lt;clause_start&gt; &lt;subject&gt; I &lt;verb&gt; sleep(vi) at &lt;blank&gt; &lt;clause_end&gt;
+          place &lt;clause_start&gt; &lt;subject&gt; I &lt;verb&gt; sleep(vi) &lt;clause_end&gt;
         </Example>
         <p className="mt-2">
           <b>Missing subjects.</b> A clause that opens with its verb marker borrows the subject of
-          the clause it's attached to: a subclause the main clause's, and a clause joined by{" "}
+          what it's attached to: a clause after a noun takes the noun, any other subclause the main
+          clause's subject, and a clause joined by{" "}
           <W w="and" />, <W w="or" /> or <W w="but" /> the previous clause's. Only a sentence that
           opens with a verb marker has nothing to borrow from, so its subject is unspecified,
           “someone”. With <W w="<verb_prescriptive>" />, who should do it comes from context: often the

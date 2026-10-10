@@ -3043,7 +3043,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     t: [T.pronoun],
     gloss: "what a question asks about",
     notes:
-      "Was interrogative_blank. With <verb_interrogative>: <subject> soldier <verb_interrogative> kill(vt) <object> <blank> = who does the soldier kill?",
+      "Was interrogative_blank. With <verb_interrogative>: <subject> soldier <verb_interrogative> kill(vt) <object> <blank> = who does the soldier kill? Only ever the unknown: a clause after a noun leaves the noun's place empty, or holds it with it at the start: person <clause_start> to it <subject> I <verb> give(vt) <object> money",
   });
   cr("this", { t: [T.pronoun], notes: 'Could this be "it-near"?' });
   cr("that", { t: [T.pronoun], notes: 'Could this be "it-far"?' });

@@ -77,6 +77,10 @@ fit as its scale steps.
   after and is a list item
 - [x] each other: each_other, other mutual, with mutual on the trade step
 - [x] born free: <complement> follows any verb, saying what the subject is meanwhile
+- [x] Relative clauses without <blank>, which is only the unknown in a question: a missing
+  subject is the noun, an empty <object> at the end (or the start, with no doer) is the noun, a
+  preposition with it at the start places it (to it, from it, of it), and a clause with nothing
+  left for the noun happens at it (at time, at place)
 
 ## Standard texts
 
@@ -97,3 +101,8 @@ each need a <clause_end>, so verse 4 ends with two; no better system yet.
 Open from the North Wind: "the more …, the more …" is increase(vi) with, as in the closure of
 the cloak increased with the blowing. A dedicated construction (Esperanto ju pli … des pli,
 Mandarin 越…越) can wait until it comes up again.
+
+Open from the litany against fear: an object clause with its own subject puts two role markers
+side by side, <object> <subject>, as in cause(vt) <object> <subject> traveler <verb> …. The
+litany sidesteps it with a gerund, allow(vt) <object> <gerund> go(vi) of it. Over and through
+are at topside of and at inside of for now; there's no preposition for a path.

@@ -680,7 +680,7 @@ export const pointing_examples: Example[] = [
 ];
 
 // Subclauses: one bracket, <clause_start> ... <clause_end>, as an object, after a preposition, or
-// after a noun with <blank> marking the noun's place
+// after a noun. After a noun, the noun's place is left empty, or held by it at the clause's start
 export const clause_examples: Example[] = [
   {
     title: "A question inside",
@@ -755,29 +755,44 @@ export const clause_examples: Example[] = [
   {
     title: "Who",
     english: "the person who defended me",
-    transliteration: "person <clause_start> <subject> <blank> <verb> defend(vt) <object> me <clause_end>",
+    transliteration: "person <clause_start> <verb> defend(vt) <object> me <clause_end>",
   },
   {
     title: "That (object)",
     english: "the rock that I burned",
-    transliteration: "rock <clause_start> <subject> I <verb> burn(vt) formerly <object> <blank> <clause_end>",
+    transliteration: "rock <clause_start> <subject> I <verb> burn(vt) formerly <object> <clause_end>",
+  },
+  {
+    title: "Done to",
+    english: "the person who was judged",
+    transliteration: "person <clause_start> <object> <verb> judge(vt) formerly <clause_end>",
   },
   {
     title: "Where",
     english: "the place where I sleep",
-    transliteration: "place <clause_start> <subject> I <verb> sleep(vi) at <blank> <clause_end>",
+    transliteration: "place <clause_start> <subject> I <verb> sleep(vi) <clause_end>",
+  },
+  {
+    title: "Where from",
+    english: "the place I came from",
+    transliteration: "place <clause_start> from it <subject> I <verb> come(vi) formerly <clause_end>",
   },
   {
     title: "To whom",
     english: "the person I gave money to",
     transliteration:
-      "person <clause_start> <subject> I <verb> give(vt) formerly <object> money to <blank> <clause_end>",
+      "person <clause_start> to it <subject> I <verb> give(vt) formerly <object> money <clause_end>",
+  },
+  {
+    title: "Whose",
+    english: "the tower whose top touches the sky",
+    transliteration: "tower <clause_start> <subject> top of it <verb> touch(vt) <object> sky <clause_end>",
   },
   {
     title: "In a sentence",
     english: "The person who defended me is strong",
     transliteration:
-      "<subject> person <clause_start> <subject> <blank> <verb> defend(vt) <object> me <clause_end> <verb> be(vt) <complement> strong",
+      "<subject> person <clause_start> <verb> defend(vt) <object> me <clause_end> <verb> be(vt) <complement> strong",
   },
 ];
 
@@ -1076,7 +1091,7 @@ export const udhr_preamble: Article[] = [
     "Proclaims this Universal Declaration of Human Rights as a common standard of achievement for all peoples and all nations, to the end that every individual and every organ of society, keeping this Declaration constantly in mind, shall strive by teaching and education to promote respect for these rights and freedoms and by progressive measures, national and international, to secure their universal and effective recognition and observance, both among the peoples of Member States themselves and among the peoples of territories under their jurisdiction.",
     ],
     transliteration:
-      "<subject> everyone <verb> possess(vt) <object> dignity and right same <clause_start> <subject> no_one <verb> take(vt) ably <object> <blank> <clause_end>. <subject> <gerund> acknowledge(vt) this <verb> be(vt) <complement> source of freedom and impartiality and peace at earth. <subject> <gerund> ignore(vt) and hate(vt) right of person <verb> cause(vt) <perfect_tense_aspect> <object> deed <max_negative> good <clause_start> <subject> conscience of everyone <verb> condemn(vt) <object> <blank> <clause_end>. <subject> everyone <verb> desire(vt) <max_positive> eagerly <object> earth <clause_start> <subject> everyone <verb> speak(vi) and believe(vi) freely and <verb> be(vt) <complement> free from fear and lack in <blank> <clause_end>. <object> right of person <verb_prescriptive> defend(vt) necessarily by law for <subject> person <verb> not oppose(vt) by coercion <object> <gerund> rule_over(vt) cruelly if <subject> nothing other <verb> help_out(vi). <subject> <gerund> increase(vt) liking between country plural <verb> be(vt) <complement> necessary. <subject> society plural of group of country all <verb> again say(vt) <perfect_tense_aspect> in constitution of it <object> <subject> they <verb> believe(vt) <object> right of person and dignity and value of person and right same of person. <subject> they <verb> choose(vt) <perfect_tense_aspect> <object> <verb> improve(vt) <object> society and life in freedom many. <subject> country member <verb> promise(vt) <perfect_tense_aspect> by <gerund> cooperate(vi) with group of country all <object> <verb> increase(vt) at everywhere <object> acknowledgment and <gerund> obey(vt) of right and freedom of person. <subject> knowledge mutual of right and freedom this <verb> be(vt) <complement> <max_positive> important for <gerund> do(vt) promise this fully. <subject> group of country all <verb> say(vt) consequently <object> this as purpose of society all and country all. <subject> everyone and group all of society <verb_prescriptive> think(vt) always <object> this and <verb_prescriptive> attempt(vt) <object> <verb> increase(vt) by education <object> acknowledgment of right and freedom this. <subject> they <verb_prescriptive> secure(vt) at everywhere by deed in country and between country plural <object> acknowledgment and <gerund> obey(vt) of it in society of country member and of land <clause_start> <subject> country member <verb> govern(vt) <object> <blank> <clause_end>.",
+      "<subject> everyone <verb> possess(vt) <object> dignity and right same <clause_start> <subject> no_one <verb> take(vt) ably <object> <clause_end>. <subject> <gerund> acknowledge(vt) this <verb> be(vt) <complement> source of freedom and impartiality and peace at earth. <subject> <gerund> ignore(vt) and hate(vt) right of person <verb> cause(vt) <perfect_tense_aspect> <object> deed <max_negative> good <clause_start> <subject> conscience of everyone <verb> condemn(vt) <object> <clause_end>. <subject> everyone <verb> desire(vt) <max_positive> eagerly <object> earth <clause_start> <subject> everyone <verb> speak(vi) and believe(vi) freely and <verb> be(vt) <complement> free from fear and lack <clause_end>. <object> right of person <verb_prescriptive> defend(vt) necessarily by law for <subject> person <verb> not oppose(vt) by coercion <object> <gerund> rule_over(vt) cruelly if <subject> nothing other <verb> help_out(vi). <subject> <gerund> increase(vt) liking between country plural <verb> be(vt) <complement> necessary. <subject> society plural of group of country all <verb> again say(vt) <perfect_tense_aspect> in constitution of it <object> <subject> they <verb> believe(vt) <object> right of person and dignity and value of person and right same of person. <subject> they <verb> choose(vt) <perfect_tense_aspect> <object> <verb> improve(vt) <object> society and life in freedom many. <subject> country member <verb> promise(vt) <perfect_tense_aspect> by <gerund> cooperate(vi) with group of country all <object> <verb> increase(vt) at everywhere <object> acknowledgment and <gerund> obey(vt) of right and freedom of person. <subject> knowledge mutual of right and freedom this <verb> be(vt) <complement> <max_positive> important for <gerund> do(vt) promise this fully. <subject> group of country all <verb> say(vt) consequently <object> this as purpose of society all and country all. <subject> everyone and group all of society <verb_prescriptive> think(vt) always <object> this and <verb_prescriptive> attempt(vt) <object> <verb> increase(vt) by education <object> acknowledgment of right and freedom this. <subject> they <verb_prescriptive> secure(vt) at everywhere by deed in country and between country plural <object> acknowledgment and <gerund> obey(vt) of it in society of country member and of land <clause_start> <subject> country member <verb> govern(vt) <object> <clause_end>.",
   },
 ];
 
@@ -1139,7 +1154,7 @@ export const udhr_articles: Article[] = [
       "Everyone has the right to an effective remedy by the competent national tribunals for acts violating the fundamental rights granted him by the constitution or by law.",
     ],
     transliteration:
-      "<subject> everyone <verb> be_entitled_to(vt) <object> <subject> court of country of it <verb> mend(vt) well <object> deed <clause_start> <subject> <blank> <verb> break(vt) <object> right of it from constitution or law <clause_end>.",
+      "<subject> everyone <verb> be_entitled_to(vt) <object> <subject> court of country of it <verb> mend(vt) well <object> deed <clause_start> <verb> break(vt) <object> right of it from constitution or law <clause_end>.",
   },
   {
     title: "Article 9",
@@ -1162,7 +1177,7 @@ export const udhr_articles: Article[] = [
       "No one shall be held guilty of any penal offence on account of any act or omission which did not constitute a penal offence, under national or international law, at the time when it was committed. Nor shall a heavier penalty be imposed than the one that was applicable at the time the penal offence was committed.",
     ],
     transliteration:
-      "<subject> law <verb_prescriptive> assume(vt) <object> <ee> blame(vt) as not culpable. <subject> only trial visible <verb_prescriptive> prove(vt) <object> it as culpable by law. <subject> it <verb_prescriptive> defend(vt) <object> self ably in trial. <object> no_one <verb_prescriptive> judge(vt) as culpable about deed <clause_start> <subject> law <verb> not forbid(vt) <object> <blank> at time of it <clause_end>. <subject> <gerund> punish(vt) <verb_prescriptive> not exceed(vt) <object> <gerund> punish(vt) of law at time of crime.",
+      "<subject> law <verb_prescriptive> assume(vt) <object> <ee> blame(vt) as not culpable. <subject> only trial visible <verb_prescriptive> prove(vt) <object> it as culpable by law. <subject> it <verb_prescriptive> defend(vt) <object> self ably in trial. <object> no_one <verb_prescriptive> judge(vt) as culpable about deed <clause_start> <subject> law <verb> not forbid(vt) at time of it <object> <clause_end>. <subject> <gerund> punish(vt) <verb_prescriptive> not exceed(vt) <object> <gerund> punish(vt) of law at time of crime.",
   },
   {
     title: "Article 12",
@@ -1188,7 +1203,7 @@ export const udhr_articles: Article[] = [
       "This right may not be invoked in the case of prosecutions genuinely arising from non-political crimes or from acts contrary to the purposes and principles of the United Nations.",
     ],
     transliteration:
-      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> seek(vt) <object> safety in country other from <gerund> hurt(vt). <subject> right this <verb> not include(vt) <object> person <clause_start> <object> <blank> <verb> judge(vt) about crime not politics or about deed <clause_start> <subject> <blank> <verb> oppose(vt) <object> purpose of group of country all <clause_end> <clause_end>.",
+      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> seek(vt) <object> safety in country other from <gerund> hurt(vt). <subject> right this <verb> not include(vt) <object> person <clause_start> <object> <verb> judge(vt) about crime not politics or about deed <clause_start> <verb> oppose(vt) <object> purpose of group of country all <clause_end> <clause_end>.",
   },
   {
     title: "Article 15",
@@ -1251,7 +1266,7 @@ export const udhr_articles: Article[] = [
       "The will of the people shall be the basis of the authority of government; this will shall be expressed in periodic and genuine elections which shall be by universal and equal suffrage and shall be held by secret vote or by equivalent free voting procedures.",
     ],
     transliteration:
-      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> act(vi) in government of country of self by self or by representative <clause_start> <object> <blank> <verb> vote_for(vt) freely <clause_end>. <subject> everyone <verb> be_entitled_to(vt) <object> <verb> serve(vt) <object> country of self as everyone. <subject> desire of society <verb_prescriptive> be(vt) <complement> source of government. <subject> society <verb_prescriptive> show(vt) <object> it by vote cyclical true. <subject> everyone <verb_prescriptive> vote(vi) secretly and <subject> vote of everyone <verb_prescriptive> be(vt) <complement> same.",
+      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> act(vi) in government of country of self by self or by representative <clause_start> <object> <verb> vote_for(vt) freely <clause_end>. <subject> everyone <verb> be_entitled_to(vt) <object> <verb> serve(vt) <object> country of self as everyone. <subject> desire of society <verb_prescriptive> be(vt) <complement> source of government. <subject> society <verb_prescriptive> show(vt) <object> it by vote cyclical true. <subject> everyone <verb_prescriptive> vote(vi) secretly and <subject> vote of everyone <verb_prescriptive> be(vt) <complement> same.",
   },
   {
     title: "Article 22",
@@ -1259,7 +1274,7 @@ export const udhr_articles: Article[] = [
       "Everyone, as a member of society, has the right to social security and is entitled to realization, through national effort and international co-operation and in accordance with the organization and resources of each State, of the economic, social and cultural rights indispensable for his dignity and the free development of his personality.",
     ],
     transliteration:
-      "<subject> everyone <verb> be(vt) <complement> member of society and <verb> be_entitled_to(vt) <object> safety by society. <subject> everyone <verb> be_entitled_to(vt) <object> right about money and society and culture <clause_start> <subject> <blank> <verb> be(vt) <complement> necessary for dignity of it and <gerund> grow(vi) freely of it <clause_end> by effort of country and <gerund> cooperate(vi) between country plural if <subject> possession of country <verb> allow(vt) <object> it.",
+      "<subject> everyone <verb> be(vt) <complement> member of society and <verb> be_entitled_to(vt) <object> safety by society. <subject> everyone <verb> be_entitled_to(vt) <object> right about money and society and culture <clause_start> <verb> be(vt) <complement> necessary for dignity of it and <gerund> grow(vi) freely of it <clause_end> by effort of country and <gerund> cooperate(vi) between country plural if <subject> possession of country <verb> allow(vt) <object> it.",
   },
   {
     title: "Article 23",
@@ -1306,7 +1321,7 @@ export const udhr_articles: Article[] = [
       "Everyone has the right to the protection of the moral and material interests resulting from any scientific, literary or artistic production of which he is the author.",
     ],
     transliteration:
-      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> act(vi) freely in culture of society and <verb> enjoy_oneself(vi) by art and <verb> possess(vt) <object> part of <gerund> improve(vi) of science and of good of it. <subject> everyone <verb> be_entitled_to(vt) <object> defense of thanks and money from science and <ee> write(vt) and art <clause_start> <subject> it <verb> be(vt) <complement> source of <blank> <clause_end>.",
+      "<subject> everyone <verb> be_entitled_to(vt) <object> <verb> act(vi) freely in culture of society and <verb> enjoy_oneself(vi) by art and <verb> possess(vt) <object> part of <gerund> improve(vi) of science and of good of it. <subject> everyone <verb> be_entitled_to(vt) <object> defense of thanks and money from science and <ee> write(vt) and art <clause_start> <subject> it <verb> create(vt) formerly <object> <clause_end>.",
   },
   {
     title: "Article 28",
@@ -1314,7 +1329,7 @@ export const udhr_articles: Article[] = [
       "Everyone is entitled to a social and international order in which the rights and freedoms set forth in this Declaration can be fully realized.",
     ],
     transliteration:
-      "<subject> everyone <verb> be_entitled_to(vt) <object> order <clause_start> <subject> right and freedom of this <verb> come_true(vi) fully ably in <blank> <clause_end> in society and between country plural.",
+      "<subject> everyone <verb> be_entitled_to(vt) <object> order <clause_start> in it <subject> right and freedom of this <verb> come_true(vi) fully ably <clause_end> in society and between country plural.",
   },
   {
     title: "Article 29",
@@ -1324,7 +1339,7 @@ export const udhr_articles: Article[] = [
       "These rights and freedoms may in no case be exercised contrary to the purposes and principles of the United Nations.",
     ],
     transliteration:
-      "<subject> everyone <verb> possess(vt) <object> duty to society <clause_start> <subject> it <verb> mature(vi) freely fully ably only in <blank> <clause_end>. <object> right and freedom of everyone <verb_prescriptive> limit(vt) only by law and only for acknowledgment of right and freedom of other and for merit and order of society and goodness of everyone in society democracy. <object> right and freedom this <verb_prescriptive> use(vt) never for <gerund> oppose(vt) purpose and axiom of group of country all.",
+      "<subject> everyone <verb> possess(vt) <object> duty to society <clause_start> only in it <subject> everyone <verb> mature(vi) freely fully ably <clause_end>. <object> right and freedom of everyone <verb_prescriptive> limit(vt) only by law and only for acknowledgment of right and freedom of other and for merit and order of society and goodness of everyone in society democracy. <object> right and freedom this <verb_prescriptive> use(vt) never for <gerund> oppose(vt) purpose and axiom of group of country all.",
   },
   {
     title: "Article 30",
@@ -1367,13 +1382,13 @@ export const babel_verses: Article[] = [
       "And they said, Go to, let us build us a city and a tower, whose top may reach unto heaven; and let us make us a name, lest we be scattered abroad upon the face of the whole earth.",
     ],
     transliteration:
-      "<subject> they <verb> say_verbatim(vt) formerly <object> <clause_start> <subject> we <verb_prescriptive> create(vt) <object> city and tower <clause_start> <subject> top of <blank> <verb> touch(vt) <object> sky <clause_end> and <verb_prescriptive> create(vt) <object> reputation of self for <clause_start> <object> we <verb> not disperse(vt) to everywhere at earth <clause_end> <clause_end>.",
+      "<subject> they <verb> say_verbatim(vt) formerly <object> <clause_start> <subject> we <verb_prescriptive> create(vt) <object> city and tower <clause_start> <subject> top of it <verb> touch(vt) <object> sky <clause_end> and <verb_prescriptive> create(vt) <object> reputation of self for <clause_start> <object> we <verb> not disperse(vt) to everywhere at earth <clause_end> <clause_end>.",
   },
   {
     title: "Genesis 11:5",
     english: ["And the LORD came down to see the city and the tower, which the children of men builded."],
     transliteration:
-      "<subject> god <verb> descend(vi) formerly for <verb> see(vt) <object> city and tower <clause_start> <subject> person plural <verb> create(vt) formerly <object> <blank> <clause_end>.",
+      "<subject> god <verb> descend(vi) formerly for <verb> see(vt) <object> city and tower <clause_start> <subject> person plural <verb> create(vt) formerly <object> <clause_end>.",
   },
   {
     title: "Genesis 11:6–7",
@@ -1382,7 +1397,7 @@ export const babel_verses: Article[] = [
       "Go to, let us go down, and there confound their language, that they may not understand one another's speech.",
     ],
     transliteration:
-      "<subject> god <verb> say_verbatim(vt) formerly <object> <clause_start> <verb_prescriptive> see(vi). if <subject> they <verb> be(vt) <complement> society united and <verb> possess(vt) <object> language number 1 and <verb> start(vt) <perfect_tense_aspect> <object> <gerund> do(vt) this <clause_end> <subject> they <verb> do(vt) ably henceforth <object> everything <clause_start> <subject> they <verb> aim(vt) <object> <blank> <clause_end>. <subject> we <verb_prescriptive> descend(vi) and <verb_prescriptive> disorganize(vt) at that <object> language of they for <subject> they <verb> not know(vt) <object> language of each_other <clause_end>.",
+      "<subject> god <verb> say_verbatim(vt) formerly <object> <clause_start> <verb_prescriptive> see(vi). if <subject> they <verb> be(vt) <complement> society united and <verb> possess(vt) <object> language number 1 and <verb> start(vt) <perfect_tense_aspect> <object> <gerund> do(vt) this <clause_end> <subject> they <verb> do(vt) ably henceforth <object> everything <clause_start> <subject> they <verb> aim(vt) <object> <clause_end>. <subject> we <verb_prescriptive> descend(vi) and <verb_prescriptive> disorganize(vt) at that <object> language of they for <subject> they <verb> not know(vt) <object> language of each_other <clause_end>.",
   },
   {
     title: "Genesis 11:8",
@@ -1418,7 +1433,7 @@ export const north_wind_sentences: Article[] = [
       "They agreed that the one who first succeeded in making the traveler take his cloak off should be considered stronger than the other.",
     ],
     transliteration:
-      "<subject> they <verb> agree_on(vt) formerly <object> <subject> they <verb_prescriptive> believe(vt) <object> <subject> thing <ordinal> number 1 <clause_start> <subject> <blank> <verb> cause(vt) <object> <subject> traveler <verb> take_away(vt) <object> cloak of self <clause_end> <verb> exceed(vt) <object> other in strong.",
+      "<subject> they <verb> agree_on(vt) formerly <object> <subject> they <verb_prescriptive> believe(vt) <object> <subject> thing <ordinal> number 1 <clause_start> <verb> cause(vt) <object> <subject> traveler <verb> take_away(vt) <object> cloak of self <clause_end> <verb> exceed(vt) <object> other in strong.",
   },
   {
     title: "Sentence 3",
@@ -1469,7 +1484,7 @@ export const lords_prayer: Article[] = [
     title: "Forgiveness",
     english: ["And forgive us our trespasses, as we forgive them that trespass against us."],
     transliteration:
-      "<verb_prescriptive> forgive(vt) for wrong of we <object> we as <subject> we <verb> forgive(vt) <object> person plural <clause_start> <subject> <blank> <verb> hurt(vt) <object> we <clause_end>.",
+      "<verb_prescriptive> forgive(vt) for wrong of we <object> we as <subject> we <verb> forgive(vt) <object> person plural <clause_start> <verb> hurt(vt) <object> we <clause_end>.",
   },
   {
     title: "Temptation",
@@ -1501,7 +1516,7 @@ export const siduri_advice: Article[] = [
     title: "The life you seek",
     english: ["You will never find the life that you seek."],
     transliteration:
-      "<subject> you <verb> find(vt) never henceforth <object> life <clause_start> <subject> you <verb> seek(vt) <object> <blank> <clause_end>.",
+      "<subject> you <verb> find(vt) never henceforth <object> life <clause_start> <subject> you <verb> seek(vt) <object> <clause_end>.",
   },
   {
     title: "Life and death",
@@ -1535,7 +1550,7 @@ export const siduri_advice: Article[] = [
       "Cherish the little child who holds your hand, and let your wife delight in your embrace — for this too is the lot of man.",
     ],
     transliteration:
-      "<verb_prescriptive> love(vt) <object> child small <clause_start> <subject> <blank> <verb> hold(vt) <object> hand of you <clause_end> and <subject> spouse of you <verb_prescriptive> enjoy_oneself(vi) in arm plural of you, from <subject> this also <verb> be(vt) <complement> <ee> give(vt) to everyone.",
+      "<verb_prescriptive> love(vt) <object> child small <clause_start> <verb> hold(vt) <object> hand of you <clause_end> and <subject> spouse of you <verb_prescriptive> enjoy_oneself(vi) in arm plural of you, from <subject> this also <verb> be(vt) <complement> <ee> give(vt) to everyone.",
   },
 ];
 
@@ -1555,7 +1570,7 @@ export const litany_against_fear: Article[] = [
     title: "The little-death",
     english: ["Fear is the little-death that brings total obliteration."],
     transliteration:
-      "<subject> fear <verb> be(vt) <complement> death small <clause_start> <subject> <blank> <verb> cause(vt) <object> destruction entire <clause_end>.",
+      "<subject> fear <verb> be(vt) <complement> death small <clause_start> <verb> cause(vt) <object> destruction entire <clause_end>.",
   },
   {
     title: "Facing it",
@@ -1565,7 +1580,7 @@ export const litany_against_fear: Article[] = [
   {
     title: "Letting it pass",
     english: ["I will permit it to pass over me and through me."],
-    transliteration: "<subject> I <verb> allow(vt) <object> <subject> it <verb> go(vi) at topside of I and at inside of I.",
+    transliteration: "<subject> I <verb> allow(vt) <object> <gerund> go(vi) of it at topside of I and at inside of I.",
   },
   {
     title: "The inner eye",
@@ -1577,7 +1592,7 @@ export const litany_against_fear: Article[] = [
     title: "Nothing",
     english: ["Where the fear has gone there will be nothing."],
     transliteration:
-      "<subject> nothing <verb> be(vi) at place <clause_start> <subject> fear <verb> go(vi) <perfect_tense_aspect> to <blank> <clause_end>.",
+      "at place <clause_start> <subject> fear <verb> go(vi) <perfect_tense_aspect> <clause_end> <subject> nothing <verb> be(vi).",
   },
   {
     title: "Only I",
