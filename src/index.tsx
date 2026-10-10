@@ -43,6 +43,9 @@ import {
 // Spread around the color wheel, with lightness varied between neighbors, so no two sections look
 // alike. Axis words and digits share the domain receivers' 128 IDs, so they get the most distinct,
 // calmest pair.
+// The dev server can write the defaults and the section order; the static build (build.ts) can't
+const ON_DEV_SERVER = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+
 const SECTION_SWATCHES: Record<SectionKey, string> = {
   marker: "bg-red-500",
   number_helper: "bg-cyan-600",
@@ -302,14 +305,16 @@ function PhonologyPanel(props: { phonology: Phonology; set_phonology: (p: Phonol
           <button onClick={export_json} className={panel_button_class}>
             Export
           </button>
-          <button
-            onClick={save_as_defaults}
-            disabled={is_default}
-            title="Write these settings to phonology.defaults.json"
-            className={panel_button_class}
-          >
-            Save as defaults
-          </button>
+          {ON_DEV_SERVER && (
+            <button
+              onClick={save_as_defaults}
+              disabled={is_default}
+              title="Write these settings to phonology.defaults.json"
+              className={panel_button_class}
+            >
+              Save as defaults
+            </button>
+          )}
           <button
             onClick={() => set_phonology(default_phonology)}
             disabled={is_default}
@@ -572,14 +577,16 @@ function RootsView(props: { phonology: Phonology; set_phonology: (p: Phonology) 
               })}
           </ol>
           <div className="mt-2 flex items-center gap-2">
-            <button
-              onClick={save_order}
-              disabled={draft_order.join() === section_order.join()}
-              className="px-2 py-1 text-sm rounded border border-indigo-400 text-indigo-700 hover:bg-indigo-50 disabled:opacity-40"
-              title="Write this order to section_order.json. Every root in a moved section gets a new ID and sound"
-            >
-              Save order
-            </button>
+            {ON_DEV_SERVER && (
+              <button
+                onClick={save_order}
+                disabled={draft_order.join() === section_order.join()}
+                className="px-2 py-1 text-sm rounded border border-indigo-400 text-indigo-700 hover:bg-indigo-50 disabled:opacity-40"
+                title="Write this order to section_order.json. Every root in a moved section gets a new ID and sound"
+              >
+                Save order
+              </button>
+            )}
             <button
               onClick={() => (set_draft_order(null), set_order_status(""))}
               className="px-2 py-1 text-sm rounded border border-gray-300 hover:bg-gray-100"

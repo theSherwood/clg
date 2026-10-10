@@ -679,7 +679,7 @@ function useLaidOut(args: CircleLayoutArgs) {
       worker.current.worker.terminate();
       worker.current = null;
     }
-    if (!worker.current) worker.current = { worker: new Worker("/circle_worker.js", { type: "module" }), busy: false };
+    if (!worker.current) worker.current = { worker: new Worker("circle_worker.js", { type: "module" }), busy: false };
     const current = worker.current;
     current.busy = true;
     current.worker.onmessage = (event: MessageEvent<{ laid: Wire }>) => {

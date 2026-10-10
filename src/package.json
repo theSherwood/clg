@@ -21,6 +21,7 @@
   "private": true,
   "scripts": {
     "dev": "bun dev.ts",
+    "build": "bun build.ts",
     "test": "bun test"
   },
   "type": "module"
