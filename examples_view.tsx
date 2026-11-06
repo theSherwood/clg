@@ -229,7 +229,7 @@ const topics: { title: string; examples: Example[] }[] = [
   { title: "Self and other", examples: self_other_examples },
   { title: "Posture", examples: posture_examples },
   { title: "Moving", examples: moving_examples },
-  { title: "Above, over, below and under", examples: place_examples },
+  { title: "Above, over, below, under, top and bottom", examples: place_examples },
   { title: "Parts of things", examples: part_examples },
   { title: "Seeing and showing", examples: sight_examples },
   { title: "Water and fire", examples: water_fire_examples },

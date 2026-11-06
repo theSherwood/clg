@@ -827,7 +827,7 @@ export const direction_examples: Example[] = [
 
 // Place and path: a place noun, with of for what it's relative to. at is a place and across a path
 // through it, so at topside of is above and across topside of over; to and from are a path's ends.
-// Whether it touches goes unsaid, and touching says so
+// Whether it touches goes unsaid, and touching says so. Top and bottom are a thing's fullest ends
 export const place_examples: Example[] = [
   { title: "Above", english: "A bird is above the house", transliteration: "<subject> bird <verb> be(vi) at topside of house" },
   { title: "Over", english: "A bird flies over the house", transliteration: "<subject> bird <verb> fly(vi) across topside of house" },
@@ -842,6 +842,12 @@ export const place_examples: Example[] = [
     english: "The rock is on the table",
     transliteration: "<subject> rock <verb> be(vi) at topside touching of table",
   },
+  { title: "Top", english: "The bird is at the top of the tree", transliteration: "<subject> bird <verb> be(vi) at top of tree" },
+  {
+    title: "Bottom",
+    english: "The rock is at the bottom of the water",
+    transliteration: "<subject> rock <verb> be(vi) at bottom of water",
+  },
   {
     title: "Through",
     english: "We walked through the house",
@@ -852,7 +858,7 @@ export const place_examples: Example[] = [
   {
     title: "Onto",
     english: "Lift the rock onto the table",
-    transliteration: "<verb_prescriptive> lift(vt) to topside of table <object> rock",
+    transliteration: "<verb_prescriptive> raise(vt) to topside of table <object> rock",
   },
   {
     title: "From under",

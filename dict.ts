@@ -224,6 +224,10 @@ export type MinorStep = (typeof MINOR_STEPS)[number];
 // negative + the positive form. Each axis's ID is in its verb type's subsection (see
 // AXIS_SUBSECTIONS), in the order listed here. Adding an axis inside a group shifts the IDs, and
 // so the sounds, of the axes after it in that subsection; adding one at a group's end shifts none.
+// IDs left empty when an axis was removed, so the axes after it kept their sounds. To use one, add
+// an axis where the removed one was and take its ID out: 217 was upper/lower, now elevation's sides
+const FREED_AXIS_IDS = new Set([217]);
+
 const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   [
     {
@@ -942,35 +946,47 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   [
     {
       noun: "elevation",
+      synonyms: { noun: ["height", "altitude"] },
       notes:
-        "The top is the highest point and the bottom the lowest: <max_positive> high and <max_negative> high. Relative position (above, below) is the upper/lower axis",
+        "How high, and where up or down. The adjectives say how high, high and low; the nouns are a thing's sides, which give places with at and of: at topside of X is above X, and across topside of X over it. The top and bottom are the fullest steps: at top of tree is in the treetop, at topside of tree above it",
       steps: {
         max_positive: {
-          noun: "summit",
-          adj: "top",
+          noun: "top",
+          adj: "topmost",
           verb: "peak(vi)",
           verb_i: "peak",
           verb_t: "top off",
-          adverb: "atop",
+          adverb: "at_the_top",
+          synonyms: { noun: ["summit", "peak"], adj: ["uppermost", "highest"] },
         },
         max_negative: {
-          noun: "base",
-          adj: "bottom",
+          noun: "bottom",
+          adj: "bottommost",
           verb: "bottom_out(vi)",
           verb_i: "bottom out",
           verb_t: "bring down",
-          adverb: "beneath",
+          adverb: "at_the_bottom",
+          synonyms: { noun: ["base"], adj: ["lowermost", "lowest"] },
         },
       },
     },
-    { noun: "depth", adj: "low", verb: "lower(vt)", verb_i: "descend", verb_t: "lower" },
     {
-      noun: "height",
+      noun: "underside",
+      adj: "low",
+      verb: "sink(vi)",
+      verb_i: "sink",
+      verb_t: "lower",
+      adverb: "below",
+      synonyms: { adj: ["lower"], verb: ["descend"], adverb: ["beneath", "down"] },
+    },
+    {
+      noun: "topside",
       adj: "high",
-      verb: "lift(vt)",
+      verb: "raise(vt)",
       verb_i: "rise",
-      verb_t: "lift",
-      adverb: "aloft",
+      verb_t: "raise",
+      adverb: "above",
+      synonyms: { adj: ["upper"], verb: ["lift"], adverb: ["aloft", "up"] },
     },
   ],
   [
@@ -1193,28 +1209,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "enter",
       verb_t: "eat",
       adverb: "within",
-    },
-  ],
-  [
-    {
-      notes:
-        "Relative position. The upper side is the root, since on, over and above come up far more than under and below. at topside of X is above X, and across topside of X over it",
-    },
-    {
-      noun: "underside",
-      adj: "lower",
-      verb: "sink(vi)",
-      verb_i: "sink",
-      verb_t: "submerge",
-      adverb: "below",
-    },
-    {
-      noun: "topside",
-      adj: "upper",
-      verb: "raise(vt)",
-      verb_i: "rise above",
-      verb_t: "raise",
-      adverb: "above",
     },
   ],
   [
@@ -3257,8 +3251,8 @@ export const verb_types: Record<VerbType, string[]> = {
     "abstract(vt)", "absolutize(vt)", "melt(vi)", "make_explicit(vt)", "externalize(vt)",
     "end(vi)", "become_essential(vi)", "idealize(vt)", "flatten(vi)",
     "enumerate(vt)", "curl(vt)", "emerge(vi)", "distance(vt)", "quiet(vt)", "sharpen(vt)", "wet(vt)", "clean(vt)",
-    "thicken(vi)", "lift(vt)", "stand(vi)", "bear(vt)", "heat(vt)", "brighten(vi)", "harden(vi)", "get_heavier(vi)", "prove(vt)",
-    "pass(vi)", "come_to_life(vi)", "eat(vt)", "raise(vt)", "veer_right(vi)",
+    "thicken(vi)", "raise(vt)", "stand(vi)", "bear(vt)", "heat(vt)", "brighten(vi)", "harden(vi)", "get_heavier(vi)", "prove(vt)",
+    "pass(vi)", "come_to_life(vi)", "eat(vt)", "veer_right(vi)",
     "withdraw(vt)", "spread(vi)", "stir(vi)", "persist(vi)", "make_artificial(vt)",
     "spread_out(vi)", "straighten(vi)", "improve(vi)", "entertain(vt)",
     "materialize(vi)", "enable(vt)", "round(vt)", "rejuvenate(vt)", "sleep(vi)", "create(vt)",
@@ -3407,7 +3401,8 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   for (const [axis, negative, positive] of axis_words_config) {
     const verb_type = positive.verb ? verb_type_of.get(positive.verb) : undefined;
     const type = verb_type ?? "relation";
-    const id = next_id[type]++;
+    let id = next_id[type]++;
+    while (FREED_AXIS_IDS.has(id)) id = next_id[type]++;
     const subsection = axis_subsections().find((s) => s.type === type)!;
     if (id >= subsection.end) {
       throw new Error(`No room for ${axis.noun} in ${subsection.label}, which holds ${subsection.size} axes`);

@@ -1014,7 +1014,10 @@ export function GrammarView() {
           with Mandarin's 上, and <W w="touching" /> says so when it matters: <T>at topside touching of
           table</T> is on the table. <W w="to" /> and <W w="from" /> take the same nouns:{" "}
           <T>to topside of table</T> is onto the table and <T>from underside of bed</T> from under the
-          bed.
+          bed. <W w="topside" /> and <W w="underside" /> are the nouns of the elevation axis, whose
+          adjectives are <W w="high" /> and <W w="low" />, and its fullest steps are the{" "}
+          <W w="top" /> and <W w="bottom" />: <T>at top of tree</T> is in the treetop, and{" "}
+          <T>at topside of tree</T> above it.
         </p>
         <p className="mt-2">
           <W w="across" /> is a path, where <W w="at" /> is a place, so the same nouns give over, under
