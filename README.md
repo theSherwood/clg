@@ -65,7 +65,7 @@ fit as its scale steps.
   Tentative; a friction axis of its own may fit better
 - [ ] furniture: chair, table, bed and desk are <place> + verb for now, so a table is also a
   restaurant and a desk a workplace (as Arabic maktab is desk and office). The alternative is
-  topside as a head, Toki Pona's supa, at 1-2 more syllables each. Punted
+  top as a head, Toki Pona's supa, at 1-2 more syllables each. Punted
 
 ## Open from the UDHR
 

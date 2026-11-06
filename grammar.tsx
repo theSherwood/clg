@@ -991,10 +991,13 @@ export function GrammarView() {
         <p>
           The prepositions are <W w="with" />, <W w="to" />, <W w="from" />, <W w="by" />,{" "}
           <W w="for" />, <W w="in" />, <W w="of" />, <W w="about" />, <W w="at" />, <W w="as" /> (“as”
-          or “like”, like Toki Pona's <i>sama</i>) and <W w="between" />, whose two ends are joined
-          with <W w="and" />. A preposition
+          or “like”, like Toki Pona's <i>sama</i>), <W w="between" />, whose two ends are joined
+          with <W w="and" />, and <W w="across" /> and <W w="beyond" /> for place, below. A preposition
           opens a phrase, and there's no word to close it: the phrase ends at the next grammar
-          marker, preposition, clause-level conjunction or <W w="<clause_end>" />. Within a phrase,
+          marker, preposition, clause-level conjunction or <W w="<clause_end>" />. A preposition
+          straight after another is its object instead, since a preposition with nothing after it
+          says nothing: <T>from beyond bottom of bed</T> is from under the bed, as English says from
+          under and from behind. Within a phrase,
           modifiers come before prepositional phrases, so <T>person big with rod</T> is a big
           person with a rod. Phrases that modify the verb go right after it, before{" "}
           <W w="<object>" />, and a phrase after a noun modifies that noun: in{" "}
@@ -1008,25 +1011,35 @@ export function GrammarView() {
           <W w="with" /> is company and <W w="by" /> the means: <T>open(vt) with mother</T> is opening
           it with your mother, and <T>open(vt) by &lt;tool&gt; open(vt)</T> opening it with a key. <W w="for" /> is who
           something is for with a noun, <T>for mother</T>, and the purpose with a clause,{" "}
-          <T>for &lt;subject&gt; you …</T>, so that you…. Other relations of place are a noun with{" "}
-          <W w="at" /> and <W w="of" />, as in Mandarin and Toki Pona: <T>at topside of rock</T> is
-          above the rock, and <T>at underside of rock</T> below it. Whether it touches goes unsaid, as
-          with Mandarin's 上, and <W w="touching" /> says so when it matters: <T>at topside touching of
-          table</T> is on the table. <W w="to" /> and <W w="from" /> take the same nouns:{" "}
-          <T>to topside of table</T> is onto the table and <T>from underside of bed</T> from under the
-          bed. <W w="topside" /> and <W w="underside" /> are the nouns of the elevation axis, whose
-          adjectives are <W w="high" /> and <W w="low" />, and its fullest steps are the{" "}
-          <W w="top" /> and <W w="bottom" />: <T>at top of tree</T> is in the treetop, and{" "}
-          <T>at topside of tree</T> above it.
+          <T>for &lt;subject&gt; you …</T>, so that you…. Other relations of place are a part of the
+          thing, named with <W w="of" /> as Mandarin and Toki Pona name it with a noun, and a
+          preposition for how you stand to that part: <W w="at" /> is at it, <W w="beyond" /> past it
+          and away, and <W w="across" /> a path over it. The parts include the elevation axis's
+          nouns, <W w="top" /> and <W w="bottom" />, and <W w="inside" />.
         </p>
+        <ul className="mt-2 list-disc pl-6 space-y-1">
+          <li>
+            <T>at top of table</T> is on the table, and <T>at top of tree</T> in the treetop.
+          </li>
+          <li>
+            <T>beyond top of house</T> is above the house, and <T>beyond bottom of table</T> below
+            it, or under it staying put.
+          </li>
+          <li>
+            <T>across top of wall</T> is over the wall, <T>across bottom of table</T> under it, and{" "}
+            <T>across inside of house</T> through it. A path leaves touching unsaid: over the wall is
+            climbing over it or flying over it.
+          </li>
+        </ul>
         <p className="mt-2">
-          <W w="across" /> is a path, where <W w="at" /> is a place, so the same nouns give over, under
-          and through: <T>across topside of wall</T> is over the wall, <T>across underside of table</T>{" "}
-          under it and <T>across inside of house</T> through it. Bare, it goes any way through, side
-          to side or along: <T>across water</T>.
+          Bare, <W w="beyond" /> is past something, on its far side, <T>beyond wall</T>, and{" "}
+          <W w="across" /> goes any way through, side to side or along, <T>across water</T>.{" "}
+          <W w="to" /> and <W w="from" /> take the same parts: <T>to top of table</T> is onto the
+          table, and <T>from beyond bottom of bed</T> from under the bed. The extremes of elevation
+          are the very top and bottom, <W w="summit" /> and <W w="base" />.
         </p>
         <Example meaning="The bird flies over the house.">
-          &lt;subject&gt; bird &lt;verb&gt; fly(vi) across topside of house
+          &lt;subject&gt; bird &lt;verb&gt; fly(vi) across top of house
         </Example>
         <Example meaning="The child sleeps between the mother and the father.">
           &lt;subject&gt; child &lt;verb&gt; sleep(vi) between mother and father

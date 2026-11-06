@@ -27,10 +27,10 @@ const core_sections = [
   { key: "number_helper", label: "Number helpers", size: 2 },
   { key: "grammar", label: "Grammar helpers", size: 16 },
   { key: "dimension", label: "Dimension helpers", size: 4 },
-  { key: "preposition", label: "Prepositions", size: 12 },
+  { key: "preposition", label: "Prepositions", size: 16 },
   { key: "pronoun", label: "Pronouns", size: 6 },
   { key: "axis_helper", label: "Axis helpers", size: 8 },
-  { key: "content", label: "Content roots", size: 64 },
+  { key: "content", label: "Content roots", size: 60 },
 ] as const;
 // The domain receivers: both of these sections cover all of its IDs
 const receiver_sections = [
@@ -948,45 +948,45 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       noun: "elevation",
       synonyms: { noun: ["height", "altitude"] },
       notes:
-        "How high, and where up or down. The adjectives say how high, high and low; the nouns are a thing's sides, which give places with at and of: at topside of X is above X, and across topside of X over it. The top and bottom are the fullest steps: at top of tree is in the treetop, at topside of tree above it",
+        "How high, and where up or down. The adjectives say how high, high and low; the nouns are a thing's top and bottom, which give places with of and a preposition: at top of table is on the table, beyond top of house above the house, across top of wall over the wall. The fullest steps are the very top and bottom, summit and base",
       steps: {
         max_positive: {
-          noun: "top",
+          noun: "summit",
           adj: "topmost",
           verb: "peak(vi)",
           verb_i: "peak",
           verb_t: "top off",
-          adverb: "at_the_top",
-          synonyms: { noun: ["summit", "peak"], adj: ["uppermost", "highest"] },
+          adverb: "at_the_summit",
+          synonyms: { noun: ["peak", "very top"], adj: ["uppermost", "highest"] },
         },
         max_negative: {
-          noun: "bottom",
+          noun: "base",
           adj: "bottommost",
           verb: "bottom_out(vi)",
           verb_i: "bottom out",
           verb_t: "bring down",
-          adverb: "at_the_bottom",
-          synonyms: { noun: ["base"], adj: ["lowermost", "lowest"] },
+          adverb: "at_the_base",
+          synonyms: { noun: ["very bottom"], adj: ["lowermost", "lowest"] },
         },
       },
     },
     {
-      noun: "underside",
+      noun: "bottom",
       adj: "low",
       verb: "sink(vi)",
       verb_i: "sink",
       verb_t: "lower",
       adverb: "below",
-      synonyms: { adj: ["lower"], verb: ["descend"], adverb: ["beneath", "down"] },
+      synonyms: { noun: ["underside"], adj: ["lower"], verb: ["descend"], adverb: ["beneath", "down"] },
     },
     {
-      noun: "topside",
+      noun: "top",
       adj: "high",
       verb: "raise(vt)",
       verb_i: "rise",
       verb_t: "raise",
       adverb: "above",
-      synonyms: { adj: ["upper"], verb: ["lift"], adverb: ["aloft", "up"] },
+      synonyms: { noun: ["topside"], adj: ["upper"], verb: ["lift"], adverb: ["aloft", "up"] },
     },
   ],
   [
@@ -3022,7 +3022,13 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     t: [T.preposition],
     gloss: "across / through / by way of",
     notes:
-      "A path, where at is a place: across topside of wall is over the wall, across underside of table under it, across inside of house through it. Any way through, side to side or along: across water",
+      "A path, where at is a place: across top of wall is over the wall, across bottom of table under it, across inside of house through it. Touching goes unsaid, so it's climbing over the wall or flying over it. Bare, any way through, side to side or along: across water",
+  });
+  cr("beyond", {
+    t: [T.preposition],
+    gloss: "beyond / past / away from",
+    notes:
+      "Past a part of a thing and away from it, where at is at the part: beyond top of house is above the house, beyond bottom of table below it. Bare, past it, on its far side: beyond wall. After to or from, it's their object: from beyond bottom of bed, from under the bed",
   });
 }
 

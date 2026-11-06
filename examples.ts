@@ -825,22 +825,22 @@ export const direction_examples: Example[] = [
   },
 ];
 
-// Place and path: a place noun, with of for what it's relative to. at is a place and across a path
-// through it, so at topside of is above and across topside of over; to and from are a path's ends.
-// Whether it touches goes unsaid, and touching says so. Top and bottom are a thing's fullest ends
+// Place and path: a part of the thing, with of, and a preposition for how you stand to it. at is
+// at the part, beyond past it and away, and across a path over it, touching or not. A preposition
+// right after to or from is their object: from beyond bottom of bed is from under the bed
 export const place_examples: Example[] = [
-  { title: "Above", english: "A bird is above the house", transliteration: "<subject> bird <verb> be(vi) at topside of house" },
-  { title: "Over", english: "A bird flies over the house", transliteration: "<subject> bird <verb> fly(vi) across topside of house" },
-  { title: "Below", english: "There's water below the land", transliteration: "<subject> water <verb> be(vi) at underside of land" },
+  { title: "On", english: "The rock is on the table", transliteration: "<subject> rock <verb> be(vi) at top of table" },
+  { title: "Above", english: "A bird is above the house", transliteration: "<subject> bird <verb> be(vi) beyond top of house" },
+  { title: "Over", english: "A bird flies over the house", transliteration: "<subject> bird <verb> fly(vi) across top of house" },
+  {
+    title: "Below",
+    english: "The child sleeps under the table",
+    transliteration: "<subject> child <verb> sleep(vi) beyond bottom of table",
+  },
   {
     title: "Under",
     english: "The child crawls under the table",
-    transliteration: "<subject> child <verb> crawl(vi) across underside of table",
-  },
-  {
-    title: "On",
-    english: "The rock is on the table",
-    transliteration: "<subject> rock <verb> be(vi) at topside touching of table",
+    transliteration: "<subject> child <verb> crawl(vi) across bottom of table",
   },
   { title: "Top", english: "The bird is at the top of the tree", transliteration: "<subject> bird <verb> be(vi) at top of tree" },
   {
@@ -855,15 +855,16 @@ export const place_examples: Example[] = [
   },
   { title: "Across", english: "Swim across the water", transliteration: "<verb_prescriptive> swim(vi) across water" },
   { title: "Along", english: "We walked along the path", transliteration: "<subject> we <verb> walk(vi) formerly across path" },
+  { title: "Beyond", english: "There are animals beyond the wall", transliteration: "<subject> animal <verb> be(vi) beyond wall" },
   {
     title: "Onto",
     english: "Lift the rock onto the table",
-    transliteration: "<verb_prescriptive> raise(vt) to topside of table <object> rock",
+    transliteration: "<verb_prescriptive> raise(vt) to top of table <object> rock",
   },
   {
     title: "From under",
     english: "The animal came from under the bed",
-    transliteration: "<subject> animal <verb> come(vi) formerly from underside of bed",
+    transliteration: "<subject> animal <verb> come(vi) formerly from beyond bottom of bed",
   },
 ];
 
@@ -1626,7 +1627,7 @@ export const litany_against_fear: Article[] = [
   {
     title: "Letting it pass",
     english: ["I will permit it to pass over me and through me."],
-    transliteration: "<subject> I <verb> allow(vt) <object> <gerund> go(vi) of it across topside of I and across inside of I.",
+    transliteration: "<subject> I <verb> allow(vt) <object> <gerund> go(vi) of it across top of I and across inside of I.",
   },
   {
     title: "The inner eye",
