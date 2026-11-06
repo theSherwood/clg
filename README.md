@@ -65,7 +65,7 @@ fit as its scale steps.
   Tentative; a friction axis of its own may fit better
 - [ ] furniture: chair, table, bed and desk are <place> + verb for now, so a table is also a
   restaurant and a desk a workplace (as Arabic maktab is desk and office). The alternative is
-  topside as a head, Toki Pona's supa, at 2-3 more syllables each. Punted
+  topside as a head, Toki Pona's supa, at 1-2 more syllables each. Punted
 
 ## Open from the UDHR
 
@@ -104,5 +104,4 @@ Mandarin 越…越) can wait until it comes up again.
 
 Open from the litany against fear: an object clause with its own subject puts two role markers
 side by side, <object> <subject>, as in cause(vt) <object> <subject> traveler <verb> …. The
-litany sidesteps it with a gerund, allow(vt) <object> <gerund> go(vi) of it. Over and through
-are at topside of and at inside of for now; there's no preposition for a path.
+litany sidesteps it with a gerund, allow(vt) <object> <gerund> go(vi) of it.

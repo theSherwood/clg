@@ -1009,9 +1009,22 @@ export function GrammarView() {
           it with your mother, and <T>open(vt) by &lt;tool&gt; open(vt)</T> opening it with a key. <W w="for" /> is who
           something is for with a noun, <T>for mother</T>, and the purpose with a clause,{" "}
           <T>for &lt;subject&gt; you …</T>, so that you…. Other relations of place are a noun with{" "}
-          <W w="at" /> and <W w="of" />, as in Mandarin and Toki Pona: <T>at topside of rock</T> is on
-          the rock, and <T>at underside of rock</T> under it.
+          <W w="at" /> and <W w="of" />, as in Mandarin and Toki Pona: <T>at topside of rock</T> is
+          above the rock, and <T>at underside of rock</T> below it. Whether it touches goes unsaid, as
+          with Mandarin's 上, and <W w="touching" /> says so when it matters: <T>at topside touching of
+          table</T> is on the table. <W w="to" /> and <W w="from" /> take the same nouns:{" "}
+          <T>to topside of table</T> is onto the table and <T>from underside of bed</T> from under the
+          bed.
         </p>
+        <p className="mt-2">
+          <W w="across" /> is a path, where <W w="at" /> is a place, so the same nouns give over, under
+          and through: <T>across topside of wall</T> is over the wall, <T>across underside of table</T>{" "}
+          under it and <T>across inside of house</T> through it. Bare, it goes any way through, side
+          to side or along: <T>across water</T>.
+        </p>
+        <Example meaning="The bird flies over the house.">
+          &lt;subject&gt; bird &lt;verb&gt; fly(vi) across topside of house
+        </Example>
         <Example meaning="The child sleeps between the mother and the father.">
           &lt;subject&gt; child &lt;verb&gt; sleep(vi) between mother and father
         </Example>

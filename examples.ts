@@ -1584,7 +1584,7 @@ export const litany_against_fear: Article[] = [
   {
     title: "Letting it pass",
     english: ["I will permit it to pass over me and through me."],
-    transliteration: "<subject> I <verb> allow(vt) <object> <gerund> go(vi) of it at topside of I and at inside of I.",
+    transliteration: "<subject> I <verb> allow(vt) <object> <gerund> go(vi) of it across topside of I and across inside of I.",
   },
   {
     title: "The inner eye",

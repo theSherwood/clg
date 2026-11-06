@@ -1196,14 +1196,9 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     },
   ],
   [
-    {},
     {
-      noun: "topside",
-      adj: "upper",
-      verb: "raise(vt)",
-      verb_i: "rise above",
-      verb_t: "raise",
-      adverb: "above",
+      notes:
+        "Relative position. The upper side is the root, since on, over and above come up far more than under and below. at topside of X is above X, and across topside of X over it",
     },
     {
       noun: "underside",
@@ -1212,6 +1207,14 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
       verb_i: "sink",
       verb_t: "submerge",
       adverb: "below",
+    },
+    {
+      noun: "topside",
+      adj: "upper",
+      verb: "raise(vt)",
+      verb_i: "rise above",
+      verb_t: "raise",
+      adverb: "above",
     },
   ],
   [
@@ -3021,6 +3024,12 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     notes: "In the role of, or in the manner of: <as> person is as a person, and like a person",
   });
   cr("between", { t: [T.preposition], notes: "between X and Y: the and joins the two" });
+  cr("across", {
+    t: [T.preposition],
+    gloss: "across / through / by way of",
+    notes:
+      "A path, where at is a place: across topside of wall is over the wall, across underside of table under it, across inside of house through it. Any way through, side to side or along: across water",
+  });
 }
 
 {
@@ -3249,7 +3258,7 @@ export const verb_types: Record<VerbType, string[]> = {
     "end(vi)", "become_essential(vi)", "idealize(vt)", "flatten(vi)",
     "enumerate(vt)", "curl(vt)", "emerge(vi)", "distance(vt)", "quiet(vt)", "sharpen(vt)", "wet(vt)", "clean(vt)",
     "thicken(vi)", "lift(vt)", "stand(vi)", "bear(vt)", "heat(vt)", "brighten(vi)", "harden(vi)", "get_heavier(vi)", "prove(vt)",
-    "pass(vi)", "come_to_life(vi)", "eat(vt)", "sink(vi)", "veer_right(vi)",
+    "pass(vi)", "come_to_life(vi)", "eat(vt)", "raise(vt)", "veer_right(vi)",
     "withdraw(vt)", "spread(vi)", "stir(vi)", "persist(vi)", "make_artificial(vt)",
     "spread_out(vi)", "straighten(vi)", "improve(vi)", "entertain(vt)",
     "materialize(vi)", "enable(vt)", "round(vt)", "rejuvenate(vt)", "sleep(vi)", "create(vt)",
