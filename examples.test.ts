@@ -33,10 +33,11 @@ test("a verb goes by either meaning's name, and only by those", () => {
 });
 
 test("digits, two-word names and unknown words", () => {
-  expect(resolved("number 2 <rank_4> 15 <clause_start> blorp")).toEqual([
+  expect(resolved("number 2 rank 4 15 <clause_start> blorp")).toEqual([
     "number",
     "digit_2",
-    "<rank_4>",
+    "rank",
+    "digit_4",
     "digit_15",
     "<clause_start>",
     "?blorp",

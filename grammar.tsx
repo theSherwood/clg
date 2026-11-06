@@ -107,6 +107,12 @@ export function GrammarView() {
           comes from context.
         </p>
         <p className="mt-2">
+          Most domain words, the grammar markers among them, set the domain of just the next word:{" "}
+          <W w="element" /> and <W w="rank" /> each read the one word after them as a digit.{" "}
+          <W w="number" /> is the one that sticks, reading digits until something ends it (see
+          Numbers).
+        </p>
+        <p className="mt-2">
           <W w="<er>" /> and <W w="<ee>" /> turn a verb into a noun for its subject or object, after
           English employer and employee: <T>&lt;er&gt; eat(vt)</T> is “eater”, <T>&lt;ee&gt; eat(vt)</T> is “what is eaten”,
           so food. <W w="<er>" /> is whoever or whatever does it, not only a person, like English
@@ -195,7 +201,7 @@ export function GrammarView() {
           <W w="be(vt)" /> is different: what follows it isn't an object but a subject complement,
           marked <W w="<complement>" />. It says what the subject is, so it reads as a modifier: the
           adjective where there is one (<T>hot</T>, not <T>heat</T>), and otherwise the noun (
-          <T>matter &lt;rank_1&gt;</T>, a liquid). Mood stays on the verb marker, so “be strong!” is{" "}
+          <T>matter rank 1</T>, a liquid). Mood stays on the verb marker, so “be strong!” is{" "}
           <T>&lt;verb_prescriptive&gt; be(vt) &lt;complement&gt; strong</T>.
         </p>
         <Example meaning="The sky is blue.">
@@ -317,18 +323,18 @@ export function GrammarView() {
         <H2>Units of time and order</H2>
         <p>
           <W w="time" /> takes rank for its units, a step up a ladder rather than a power of ten:{" "}
-          <T>&lt;rank_0&gt;</T> second, <T>&lt;rank_1&gt;</T> minute, <T>&lt;rank_2&gt;</T> hour, <T>&lt;rank_3&gt;</T> day,{" "}
-          <T>&lt;rank_4&gt;</T> week, <T>&lt;rank_5&gt;</T> month, <T>&lt;rank_6&gt;</T> year, then decade, century and
-          millennium. A count follows like any other: <T>time &lt;rank_3&gt; number 3</T> is three days. The
-          24-hour day is <W w="day" />, <T>time &lt;rank_3&gt;</T>; <W w="daytime" /> is <T>time bright</T> and{" "}
+          <T>rank 0</T> second, <T>rank 1</T> minute, <T>rank 2</T> hour, <T>rank 3</T> day,{" "}
+          <T>rank 4</T> week, <T>rank 5</T> month, <T>rank 6</T> year, then decade, century and
+          millennium. A count follows like any other: <T>time rank 3 number 3</T> is three days. The
+          24-hour day is <W w="day" />, <T>time rank 3</T>; <W w="daytime" /> is <T>time bright</T> and{" "}
           <W w="night" /> <T>time dark</T>.
         </p>
         <p className="mt-2">
           <W w="next" /> and <W w="previous" /> count steps in any sequence from a reference point.
-          In a main clause that's now, so <T>time &lt;rank_3&gt; next</T> is tomorrow and{" "}
-          <T>time &lt;rank_3&gt; previous</T> yesterday; in a subclause it's the main clause's time, so the
+          In a main clause that's now, so <T>time rank 3 next</T> is tomorrow and{" "}
+          <T>time rank 3 previous</T> yesterday; in a subclause it's the main clause's time, so the
           same words mean the next day and the day before. Rank counts steps, as for generations:{" "}
-          <T>next &lt;rank_2&gt;</T> is the one after next. As verbs, <W w="precede(vt)" /> and{" "}
+          <T>next rank 2</T> is the one after next. As verbs, <W w="precede(vt)" /> and{" "}
           <W w="follow(vt)" /> relate two things in order.
         </p>
         <Example meaning="I slept yesterday.">
@@ -458,11 +464,11 @@ export function GrammarView() {
           <T>&lt;max_negative&gt; child</T> / <T>&lt;max_positive&gt; child</T> all ancestors or descendants.
         </p>
         <p className="mt-2">
-          Rank counts generations, as in other families of words: <T>child &lt;rank_2&gt;</T> is a
-          grandchild and <T>parent &lt;rank_2&gt;</T> a grandparent. For siblings it counts the generations
-          up to the shared ancestor, so <T>&lt;neutral&gt; child &lt;rank_2&gt;</T> is a first cousin (a shared
-          grandparent) and <T>&lt;neutral&gt; child &lt;rank_3&gt;</T> a second cousin. Bare words are &lt;rank_1&gt;, and
-          &lt;rank_0&gt; is oneself. Marriage isn't a generation step: a <W w="spouse" /> is <T>family united</T>, family by
+          Rank counts generations, as in other families of words: <T>child rank 2</T> is a
+          grandchild and <T>parent rank 2</T> a grandparent. For siblings it counts the generations
+          up to the shared ancestor, so <T>&lt;neutral&gt; child rank 2</T> is a first cousin (a shared
+          grandparent) and <T>&lt;neutral&gt; child rank 3</T> a second cousin. Bare words are <T>rank 1</T>, and{" "}
+          <T>rank 0</T> is oneself. Marriage isn't a generation step: a <W w="spouse" /> is <T>family united</T>, family by
           union rather than descent, and in-laws are phrases: <T>parent of spouse</T>. Gendered words are
           modifiers: <W w="mother" /> is <T>parent female</T>, <W w="brother" /> <T>sibling male</T>.
         </p>
@@ -743,9 +749,9 @@ export function GrammarView() {
         <H2>Parts of things</H2>
         <p>
           Limbs count their segments out from the body with rank, as Toki Pona's <i>luka</i> is
-          arm and hand: <W w="hand" /> is <T>arm &lt;rank_2&gt;</T> and <W w="finger" />{" "}
-          <T>arm &lt;rank_3&gt;</T>, <W w="foot" /> <T>leg &lt;rank_2&gt;</T> and <W w="toe" />{" "}
-          <T>leg &lt;rank_3&gt;</T>. Joints are nodes: <W w="elbow" /> is <T>node arm</T>,{" "}
+          arm and hand: <W w="hand" /> is <T>arm rank 2</T> and <W w="finger" />{" "}
+          <T>arm rank 3</T>, <W w="foot" /> <T>leg rank 2</T> and <W w="toe" />{" "}
+          <T>leg rank 3</T>. Joints are nodes: <W w="elbow" /> is <T>node arm</T>,{" "}
           <W w="wrist" /> <T>node hand</T> and <W w="ankle" /> <T>node foot</T>.
         </p>
         <p className="mt-2">
@@ -794,9 +800,9 @@ export function GrammarView() {
         <H2>Geometry</H2>
         <p>
           <W w="geometry" /> is one root for geometric figures. Rank gives a bounded figure with that
-          many dimensions: <W w="point" /> (<T>geometry &lt;rank_0&gt;</T>), <W w="line_segment" />{" "}
-          (<T>&lt;rank_1&gt;</T>), <W w="shape" /> (<T>&lt;rank_2&gt;</T>) and <W w="form" />, a 3D structure (
-          <T>&lt;rank_3&gt;</T>). A dimension helper gives the unbounded space up through that dimension:{" "}
+          many dimensions: <W w="point" /> (<T>geometry rank 0</T>), <W w="line_segment" />{" "}
+          (<T>rank 1</T>), <W w="shape" /> (<T>rank 2</T>) and <W w="form" />, a 3D structure (
+          <T>rank 3</T>). A dimension helper gives the unbounded space up through that dimension:{" "}
           <W w="infinite_line" /> (<T>geometry &lt;dimension_x&gt;</T>), <W w="plane" /> (<T>&lt;dimension_y&gt;</T>)
           and <W w="space" /> (<T>&lt;dimension_z&gt;</T>); higher spaces go through the number domain, as{" "}
           <T>geometry dimension &lt;ordinal&gt; number 4</T>.
@@ -808,9 +814,9 @@ export function GrammarView() {
         </p>
         <p className="mt-2">
           <W w="node" /> takes rank for networks, each more general than the last:{" "}
-          <W w="sequence" /> (<T>node &lt;rank_1&gt;</T>), <W w="tree_graph" /> (<T>&lt;rank_2&gt;</T>),{" "}
-          <W w="dag" /> (<T>&lt;rank_3&gt;</T>), <W w="graph" /> (<T>&lt;rank_4&gt;</T>), <W w="hypergraph" />{" "}
-          (<T>&lt;rank_5&gt;</T>) and <W w="higher_order_network" /> (<T>&lt;rank_6&gt;</T>). Whether a graph's
+          <W w="sequence" /> (<T>node rank 1</T>), <W w="tree_graph" /> (<T>rank 2</T>),{" "}
+          <W w="dag" /> (<T>rank 3</T>), <W w="graph" /> (<T>rank 4</T>), <W w="hypergraph" />{" "}
+          (<T>rank 5</T>) and <W w="higher_order_network" /> (<T>rank 6</T>). Whether a graph's
           links have a direction is a modifier.
         </p>
         <p className="mt-2">
@@ -823,12 +829,12 @@ export function GrammarView() {
 
         <H2>Matter</H2>
         <p>
-          <W w="matter" /> takes rank for its phase, rising in energy: <T>matter &lt;rank_0&gt;</T> is a
-          solid, <T>&lt;rank_1&gt;</T> a liquid, <T>&lt;rank_2&gt;</T> a gas and <T>&lt;rank_3&gt;</T> a plasma. As a
-          modifier it gives a substance's phase, so <W w="ice" /> is <T>water matter &lt;rank_0&gt;</T>,{" "}
-          <W w="steam" /> is <T>water matter &lt;rank_2&gt;</T> and <W w="lava" /> is{" "}
-          <T>rock matter &lt;rank_1&gt;</T>. Bare <W w="water" /> is the liquid. <W w="gas" /> usually does
-          for air; <W w="air" />, <T>gas this</T> (our gas), says it outright, as <T>celestial &lt;rank_2&gt;
+          <W w="matter" /> takes rank for its phase, rising in energy: <T>matter rank 0</T> is a
+          solid, <T>rank 1</T> a liquid, <T>rank 2</T> a gas and <T>rank 3</T> a plasma. As a
+          modifier it gives a substance's phase, so <W w="ice" /> is <T>water matter rank 0</T>,{" "}
+          <W w="steam" /> is <T>water matter rank 2</T> and <W w="lava" /> is{" "}
+          <T>rock matter rank 1</T>. Bare <W w="water" /> is the liquid. <W w="gas" /> usually does
+          for air; <W w="air" />, <T>gas this</T> (our gas), says it outright, as <T>celestial rank 2
           this</T> is Earth. <W w="wind" /> is <T>air travel</T>, air in motion, and the north wind{" "}
           <T>wind north</T>, as in English. Sending out a medium makes verbs of emitting:{" "}
           <W w="blow(vi)" /> is <T>send(vt) air</T> and <W w="shine(vi)" /> <T>send(vt) light</T>,
@@ -848,9 +854,9 @@ export function GrammarView() {
         <p className="mt-2">
           The phase axis changes phase. <W w="melt(vi)" /> goes up a phase and{" "}
           <W w="freeze(vi)" /> down one, so one verb is melting for ice and evaporating for water.
-          Rank names the target phase, as it does for <W w="matter" />: <T>melt(vi) &lt;rank_2&gt;</T> is to
-          evaporate (<W w="evaporate(vi)" />), <T>melt(vi) &lt;rank_3&gt;</T> to ionize, <T>freeze(vi) &lt;rank_1&gt;</T> to
-          condense and <T>freeze(vi) &lt;rank_0&gt;</T> to solidify.
+          Rank names the target phase, as it does for <W w="matter" />: <T>melt(vi) rank 2</T> is to
+          evaporate (<W w="evaporate(vi)" />), <T>melt(vi) rank 3</T> to ionize, <T>freeze(vi) rank 1</T> to
+          condense and <T>freeze(vi) rank 0</T> to solidify.
         </p>
         <Example meaning="The sun melts the ice.">
           &lt;subject&gt; sun &lt;verb&gt; melt(vt) &lt;object&gt; ice
@@ -861,7 +867,7 @@ export function GrammarView() {
           settled into one word, written without the space: <W w="carbon" /> is <T>element 6</T>, from{" "}
           <W w="hydrogen" /> (1) to <W w="oganesson" /> (118). That's how any phrase with a canonical
           meaning becomes a word; its parts are still there to see. Bare, <W w="element" /> is any
-          element, and an element with matter's rank gives its phase: <T>gold matter &lt;rank_0&gt;</T> is
+          element, and an element with matter's rank gives its phase: <T>gold matter rank 0</T> is
           solid gold.
         </p>
         <Example meaning="This rock is iron.">
@@ -871,17 +877,17 @@ export function GrammarView() {
         <H2>Sky</H2>
         <p>
           <W w="celestial" /> is one root for every body in the sky, and rank picks its level in the
-          orbital hierarchy, each level orbiting the next: <W w="moon" /> (<T>celestial &lt;rank_1&gt;</T>),{" "}
-          <W w="planet" /> (<T>&lt;rank_2&gt;</T>), <W w="star" /> (<T>&lt;rank_3&gt;</T>), <W w="galaxy" />{" "}
-          (<T>&lt;rank_4&gt;</T>), <W w="galaxy_cluster" /> (<T>&lt;rank_5&gt;</T>) and <W w="supercluster" />{" "}
-          (<T>&lt;rank_6&gt;</T>). <T>&lt;rank_0&gt;</T> is a <W w="small_body" />, too small to be round, and
-          modifiers tell those apart: <W w="asteroid" /> is <T>celestial &lt;rank_0&gt; rock</T> and{" "}
-          <W w="comet" /> <T>celestial &lt;rank_0&gt; ice</T>.
+          orbital hierarchy, each level orbiting the next: <W w="moon" /> (<T>celestial rank 1</T>),{" "}
+          <W w="planet" /> (<T>rank 2</T>), <W w="star" /> (<T>rank 3</T>), <W w="galaxy" />{" "}
+          (<T>rank 4</T>), <W w="galaxy_cluster" /> (<T>rank 5</T>) and <W w="supercluster" />{" "}
+          (<T>rank 6</T>). <T>rank 0</T> is a <W w="small_body" />, too small to be round, and
+          modifiers tell those apart: <W w="asteroid" /> is <T>celestial rank 0 rock</T> and{" "}
+          <W w="comet" /> <T>celestial rank 0 ice</T>.
         </p>
         <p className="mt-2">
-          <W w="this" /> makes it ours: <W w="sun" /> is <T>celestial &lt;rank_3&gt; this</T>,{" "}
-          <W w="earth" /> <T>&lt;rank_2&gt; this</T>, <W w="the_moon" /> <T>&lt;rank_1&gt; this</T> and{" "}
-          <W w="milky_way" /> <T>&lt;rank_4&gt; this</T>. The universe isn't a body in the sky:{" "}
+          <W w="this" /> makes it ours: <W w="sun" /> is <T>celestial rank 3 this</T>,{" "}
+          <W w="earth" /> <T>rank 2 this</T>, <W w="the_moon" /> <T>rank 1 this</T> and{" "}
+          <W w="milky_way" /> <T>rank 4 this</T>. The universe isn't a body in the sky:{" "}
           <W w="universe" /> is just <W w="everything" />.
         </p>
         <p className="mt-2">
@@ -897,12 +903,12 @@ export function GrammarView() {
         <H2>Directions</H2>
         <p>
           <W w="cardinal" /> is one root for the compass, and rank counts quarter turns clockwise
-          from north: <W w="north" /> is <T>cardinal &lt;rank_0&gt;</T>, <W w="east" /> <T>&lt;rank_1&gt;</T>,{" "}
-          <W w="south" /> <T>&lt;rank_2&gt;</T> and <W w="west" /> <T>&lt;rank_3&gt;</T>. Two ranks name the
+          from north: <W w="north" /> is <T>cardinal rank 0</T>, <W w="east" /> <T>rank 1</T>,{" "}
+          <W w="south" /> <T>rank 2</T> and <W w="west" /> <T>rank 3</T>. Two ranks name the
           direction between them, north or south first as in English: <W w="northeast" /> is{" "}
-          <T>cardinal &lt;rank_0&gt; &lt;rank_1&gt;</T> and <W w="southwest" />{" "}
-          <T>cardinal &lt;rank_2&gt; &lt;rank_3&gt;</T>. The prepositions do the rest:{" "}
-          <T>to cardinal &lt;rank_0&gt;</T> is northward and <T>at cardinal &lt;rank_1&gt;</T> in the east.
+          <T>cardinal rank 0 rank 1</T> and <W w="southwest" />{" "}
+          <T>cardinal rank 2 rank 3</T>. The prepositions do the rest:{" "}
+          <T>to cardinal rank 0</T> is northward and <T>at cardinal rank 1</T> in the east.
         </p>
         <p className="mt-2">
           Rank is a little out of place here. Elsewhere it's a level (a phase, an orbit, a
@@ -956,7 +962,7 @@ export function GrammarView() {
           <T>not &lt;max_positive&gt; true</T> is “not certain”. <W w="not" /> is always a prefix, on content
           words too, so <T>person not big</T> can only be a person who isn't big. And the sign comes
           first, so a listener never has to revise what they've heard: in{" "}
-          <T>number 2 3 &lt;negative&gt; &lt;rank_2&gt;</T>, the negative comes before the rank.
+          <T>number 2 3 &lt;negative&gt; rank 2</T>, the negative comes before the rank.
         </p>
 
         <p className="mt-2">
@@ -1237,11 +1243,12 @@ export function GrammarView() {
         <H2>Numbers</H2>
         <p>
           A number is <W w="number" /> followed by digits, most significant first. There's one word
-          for every base: the base comes from context. A rank after a digit
-          gives that digit's place: <W w="<rank_3>" /> puts it at base³, and the digits after it carry on
-          down from there. Places a rank jumps over are zeros, so <T>number 1 &lt;rank_3&gt; 3</T> is
-          1003 and <T>number 1 &lt;rank_6&gt;</T> is 1,000,000. Negative ranks give fractions and
-          percents: <T>number 2 3 &lt;negative&gt; &lt;rank_2&gt;</T> is 23%.
+          for every base: the base comes from context. <W w="rank" /> after a digit gives that digit's
+          place, so <T>rank 3</T> puts it at base³. A group of digits lines up with the rank after it,
+          and places a rank jumps over are zeros, so <T>number 1 rank 3 3</T> is 1003 and{" "}
+          <T>number 1 rank 6</T> is 1,000,000. Digits with no rank after them are the ones.{" "}
+          <W w="<negative>" /> before <W w="rank" /> gives a negative rank, for fractions and percents:{" "}
+          <T>number 2 3 &lt;negative&gt; rank 2</T> is 23%.
         </p>
         <p className="mt-2">
           <W w="<ordinal>" /> before <W w="number" /> makes it an ordinal: <T>person number 3</T> is
@@ -1250,9 +1257,9 @@ export function GrammarView() {
         <p className="mt-2">
           <W w="<per>" /> marks a denominator. A fraction a/b is “a per b”, so one word gives
           fractions, rates and ratios: <T>&lt;per&gt; number 3</T> is a third,{" "}
-          <T>number 2 &lt;per&gt; number 3</T> two thirds and <T>&lt;per&gt; number 1 &lt;rank_3&gt;</T> a thousandth.
+          <T>number 2 &lt;per&gt; number 3</T> two thirds and <T>&lt;per&gt; number 1 rank 3</T> a thousandth.
           After a noun it's a share or a rate: <T>money &lt;per&gt; number 2</T> is half the money,{" "}
-          <T>money &lt;per&gt; person</T> money per person and <T>&lt;per&gt; time &lt;rank_2&gt;</T> per hour. Between
+          <T>money &lt;per&gt; person</T> money per person and <T>&lt;per&gt; time rank 2</T> per hour. Between
           two numbers it's a ratio, so <T>number 3 &lt;per&gt; number 1</T> is three to one. Denominators are
           whole numbers, so these are exact in any base, unlike digit fractions: a third has no exact
           digits in base 10.
@@ -1261,37 +1268,41 @@ export function GrammarView() {
           &lt;subject&gt; I &lt;verb&gt; work(vi) day number 5 &lt;per&gt; week
         </Example>
         <p className="mt-2">
-          Ranks don't depend on the base: <W w="<rank_3>" /> is “thousands” in base 10, but “eights” in
-          base 2. By convention ranks work like commas: a base 10 number past <W w="<rank_3>" /> says{" "}
-          <W w="<rank_3>" /> somewhere, one past <W w="<rank_6>" /> says <W w="<rank_6>" />, and so on up
-          to <W w="<rank_15>" />, skipping any group that's all zeros. 34,103,487 is{" "}
-          <T>number 3 4 &lt;rank_6&gt; 1 0 3 &lt;rank_3&gt; 4 8 7 &lt;rank_0&gt;</T>. Bases 2 and 16 group every four
-          places instead (<W w="<rank_4>" />, <W w="<rank_8>" />, <W w="<rank_12>" />), so the groups are
-          4 bits and 16 bits. Past{" "}
-          <W w="<rank_15>" />, <W w="rank" /> takes a subclause holding the place. See the Examples
-          page.
+          Ranks don't depend on the base: <T>rank 3</T> is “thousands” in base 10, but “eights” in
+          base 2. By convention ranks work like commas: a base 10 number past <T>rank 3</T> says{" "}
+          <T>rank 3</T> somewhere, one past <T>rank 6</T> says <T>rank 6</T>, and so on, skipping any
+          group that's all zeros. 34,103,487 is <T>number 3 4 rank 6 1 0 3 rank 3 4 8 7</T>. Bases 2
+          and 16 group every four places instead (<T>rank 4</T>, <T>rank 8</T>, <T>rank 12</T>), so
+          the groups are 4 bits and 16 bits.
         </p>
         <p className="mt-2">
-          A number ends at its first rank of zero or below, <W w="<rank_0>" /> or a negative rank. Digits
-          share their sounds with the axis words, so the ending tells a listener the next word isn't a
-          digit. The final <W w="<rank_0>" /> can be dropped unless an axis word or an axis helper comes
-          next. Only axis words can be mistaken for digits, and a helper like <W w="<negative>" /> could
-          be starting a negative rank: <T>person number 3</T>, but{" "}
-          <T>person number 3 &lt;rank_0&gt; big</T> and <T>person number 3 &lt;rank_0&gt; small</T>.
-          Long numbers usually keep it anyway, to make the end easy to hear.
+          <W w="rank" /> reads just the one word after it, as <W w="element" /> and the role markers
+          do, so a digit takes it up to rank 127. Past that, its word is a number:{" "}
+          <T>number 3 rank number 1 3 9</T> is 3 × 10¹³⁹. It's a number like any other, and runs on
+          until something ends it. See the Examples page.
         </p>
-        <Open>
-          Long fractions. Since the first rank of zero or below ends the number, every digit from the
-          ones place down falls in one group: 3.14159 has to be{" "}
-          <T>number 3 1 4 1 5 9 &lt;negative&gt; &lt;rank_5&gt;</T>, with no comma-like ranks inside.
-        </Open>
+        <p className="mt-2">
+          A number runs on through digits and ranks, with <W w="<negative>" /> before a rank, and ends
+          at any other word: <T>person number 3</T>. Digits share their sounds with the axis words,
+          though, so before an axis word a number has to be ended outright, with{" "}
+          <W w="number_end" />: <T>number &lt;clause_end&gt;</T> said as one word, naming what it
+          closes. <T>person number 3 number_end big</T> is three big people. Three small people needs
+          nothing, <T>person number 3 small</T>, since small is <T>&lt;negative&gt; big</T> and a{" "}
+          <W w="<negative>" /> before anything but a rank isn't part of the number. A plain{" "}
+          <W w="<clause_end>" /> ends a number as any other word does, and closes its clause too, so a
+          subclause that ends in a number needs only the one.
+        </p>
+        <p className="mt-2">
+          Since no rank ends a number, the digits after the point group like the rest: 3.141 59 is{" "}
+          <T>number 3 rank 0 1 4 1 &lt;negative&gt; rank 3 5 9 &lt;negative&gt; rank 5</T>.
+        </p>
 
         <H2>Arithmetic</H2>
         <p>
           <W w="count(vi)" /> takes rank for the operation, each level repeating the one below, as in
           the mathematical hyperoperations: bare <T>count(vi)</T> is counting, <W w="add(vi)" /> is{" "}
-          <T>count(vi) &lt;rank_1&gt;</T>, <W w="multiply(vi)" /> <T>&lt;rank_2&gt;</T> and <W w="exponentiate(vt)" />{" "}
-          <T>&lt;rank_3&gt;</T>. Its negative end, <W w="count_down(vi)" />, is the inverse: counting down,{" "}
+          <T>count(vi) rank 1</T>, <W w="multiply(vi)" /> <T>rank 2</T> and <W w="exponentiate(vt)" />{" "}
+          <T>rank 3</T>. Its negative end, <W w="count_down(vi)" />, is the inverse: counting down,{" "}
           <W w="subtract(vi)" />, <W w="divide(vi)" /> and <W w="root(vt)" />. Splitting a thing
           into parts is <W w="split(vi)" />, on the part axis.
         </p>

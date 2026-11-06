@@ -8,11 +8,11 @@ export type Example = { title: string; english: string; transliteration: string 
 
 export type Article = { title: string; english: string[]; transliteration?: string };
 
-// Numbers in each base. The base comes from context; here, the heading. A rank after a digit
-// gives that digit's place. By convention the ranks
-// work like commas, every three places in base 10 and every four in bases 2 and 16: a base 10
-// number past <rank_3> says <rank_3>, one past <rank_6> says <rank_6>, and so on, skipping groups that are
-// all zeros. Long numbers end with <rank_0> even where it could be dropped.
+// Numbers in each base. The base comes from context; here, the heading. rank after a digit gives
+// that digit's place, and a group of digits lines up with the rank after it; digits with no rank
+// after them are the ones. By convention the ranks work like commas, every three places in base 10
+// and every four in bases 2 and 16: a base 10 number past rank 3 says rank 3, one past rank 6 says
+// rank 6, and so on, skipping groups that are all zeros.
 export type NumberBase = { title: string; examples: Example[] };
 
 export const number_examples: NumberBase[] = [
@@ -21,55 +21,60 @@ export const number_examples: NumberBase[] = [
     examples: [
       {
         title: "7",
-        english: "A lone number drops its final <rank_0>",
+        english: "Digits with no rank after them are the ones",
         transliteration: "number 7",
       },
       {
         title: "1003",
         english: "Places a rank jumps over are zeros",
-        transliteration: "number 1 <rank_3> 3",
+        transliteration: "number 1 rank 3 3",
       },
-      { title: "10,000", english: "Like “ten thousand”", transliteration: "number 1 0 <rank_3>" },
+      { title: "10,000", english: "Like “ten thousand”", transliteration: "number 1 0 rank 3" },
       {
         title: "120,034",
         english: "120 thousand 34",
-        transliteration: "number 1 2 0 <rank_3> 3 4",
+        transliteration: "number 1 2 0 rank 3 3 4",
       },
       {
         title: "34,103,487",
         english: "34 million 103 thousand 487",
-        transliteration: "number 3 4 <rank_6> 1 0 3 <rank_3> 4 8 7 <rank_0>",
+        transliteration: "number 3 4 rank 6 1 0 3 rank 3 4 8 7",
       },
       {
         title: "1,000,000",
         english: "The empty thousands group is skipped",
-        transliteration: "number 1 <rank_6>",
+        transliteration: "number 1 rank 6",
       },
       {
         title: "2,004,000",
         english: "2 million 4 thousand",
-        transliteration: "number 2 <rank_6> 4 <rank_3>",
+        transliteration: "number 2 rank 6 4 rank 3",
       },
       {
         title: "three big people",
-        english: "<rank_0> is needed here: big shares its sound with a digit",
-        transliteration: "person number 3 <rank_0> big",
+        english: "number_end is needed here: big shares its sound with a digit",
+        transliteration: "person number 3 number_end big",
       },
       {
         title: "three small people",
-        english: "<rank_0> is needed here too: negative could start a negative rank",
-        transliteration: "person number 3 <rank_0> small",
+        english: "Small is <negative> big, and <negative> stays in a number only before rank",
+        transliteration: "person number 3 small",
       },
       {
         title: "0.3",
-        english: "A negative rank ends the number too",
-        transliteration: "number 3 <negative> <rank_1>",
+        english: "<negative> before rank gives a negative rank",
+        transliteration: "number 3 <negative> rank 1",
       },
-      { title: "23%", english: "0.23", transliteration: "number 2 3 <negative> <rank_2>" },
+      { title: "23%", english: "0.23", transliteration: "number 2 3 <negative> rank 2" },
+      {
+        title: "3.14159",
+        english: "3.141 59: a rank doesn't end a number, so the digits after the point group too",
+        transliteration: "number 3 rank 0 1 4 1 <negative> rank 3 5 9 <negative> rank 5",
+      },
       {
         title: "3e139",
-        english: "Past <rank_15>, rank takes a subclause holding the place",
-        transliteration: "number 3 rank <clause_start> number 1 3 9 <clause_end>",
+        english: "Past rank 127, the word after rank is a number",
+        transliteration: "number 3 rank number 1 3 9",
       },
     ],
   },
@@ -80,16 +85,16 @@ export const number_examples: NumberBase[] = [
       {
         title: "34,103,487",
         english: "208,60BF",
-        transliteration: "number 2 0 8 <rank_4> 6 0 11 15 <rank_0>",
+        transliteration: "number 2 0 8 rank 4 6 0 11 15",
       },
       { title: "65,535", english: "FFFF", transliteration: "number 15 15 15 15" },
-      { title: "65,536", english: "1,0000", transliteration: "number 1 <rank_4>" },
+      { title: "65,536", english: "1,0000", transliteration: "number 1 rank 4" },
       {
         title: "4,294,967,295",
         english: "FFFF,FFFF: the largest 32-bit number",
-        transliteration: "number 15 15 15 15 <rank_4> 15 15 15 15 <rank_0>",
+        transliteration: "number 15 15 15 15 rank 4 15 15 15 15",
       },
-      { title: "1/16", english: "0.1", transliteration: "number 1 <negative> <rank_1>" },
+      { title: "1/16", english: "0.1", transliteration: "number 1 <negative> rank 1" },
     ],
   },
   {
@@ -99,16 +104,15 @@ export const number_examples: NumberBase[] = [
       {
         title: "1003",
         english: "11,1110,1011",
-        transliteration: "number 1 1 <rank_8> 1 1 1 0 <rank_4> 1 0 1 1 <rank_0>",
+        transliteration: "number 1 1 rank 8 1 1 1 0 rank 4 1 0 1 1",
       },
-      { title: "1024", english: "100,0000,0000", transliteration: "number 1 0 0 <rank_8>" },
+      { title: "1024", english: "100,0000,0000", transliteration: "number 1 0 0 rank 8" },
       {
         title: "65,535",
-        english: "1111,1111,1111,1111: the largest number the rank roots reach in base 2",
-        transliteration:
-          "number 1 1 1 1 <rank_12> 1 1 1 1 <rank_8> 1 1 1 1 <rank_4> 1 1 1 1 <rank_0>",
+        english: "1111,1111,1111,1111: the largest 16-bit number",
+        transliteration: "number 1 1 1 1 rank 12 1 1 1 1 rank 8 1 1 1 1 rank 4 1 1 1 1",
       },
-      { title: "1/2", english: "0.1", transliteration: "number 1 <negative> <rank_1>" },
+      { title: "1/2", english: "0.1", transliteration: "number 1 <negative> rank 1" },
     ],
   },
 ];
@@ -193,14 +197,14 @@ export const tense_examples: Example[] = [
 // how many cases something holds in.
 // Units of time are rungs of a ladder on time's rank; next and previous count steps from now
 export const time_examples: Example[] = [
-  { title: "Second", english: "A second", transliteration: "time <rank_0>" },
-  { title: "Hour", english: "An hour", transliteration: "time <rank_2>" },
-  { title: "Day", english: "A day (24 hours)", transliteration: "time <rank_3>" },
+  { title: "Second", english: "A second", transliteration: "time rank 0" },
+  { title: "Hour", english: "An hour", transliteration: "time rank 2" },
+  { title: "Day", english: "A day (24 hours)", transliteration: "time rank 3" },
   { title: "Daytime", english: "Daytime, as against night", transliteration: "time bright" },
   { title: "Night", english: "Night", transliteration: "time dark" },
-  { title: "Year", english: "A year", transliteration: "time <rank_6>" },
-  { title: "Counted", english: "Three days", transliteration: "time <rank_3> number 3" },
-  { title: "Today", english: "Today", transliteration: "time <rank_3> this" },
+  { title: "Year", english: "A year", transliteration: "time rank 6" },
+  { title: "Counted", english: "Three days", transliteration: "time rank 3 number 3" },
+  { title: "Today", english: "Today", transliteration: "time rank 3 this" },
   {
     title: "Yesterday",
     english: "I slept yesterday",
@@ -214,10 +218,10 @@ export const time_examples: Example[] = [
   {
     title: "Two steps",
     english: "The day after tomorrow",
-    transliteration: "time <rank_3> next <rank_2>",
+    transliteration: "time rank 3 next rank 2",
   },
-  { title: "Next year", english: "Next year", transliteration: "time <rank_6> next" },
-  { title: "Every day", english: "Every day", transliteration: "time <rank_3> all" },
+  { title: "Next year", english: "Next year", transliteration: "time rank 6 next" },
+  { title: "Every day", english: "Every day", transliteration: "time rank 3 all" },
   {
     title: "Relative",
     english: "She said she would come the next day",
@@ -308,26 +312,26 @@ export const family_examples: Example[] = [
   { title: "Niece or nephew", english: "a lesser child", transliteration: "<min_positive> child" },
   { title: "Descendants", english: "the whole line down", transliteration: "<max_positive> child" },
   { title: "Ancestors", english: "the whole line up", transliteration: "<max_negative> child" },
-  { title: "Grandchild", english: "two generations down", transliteration: "child <rank_2>" },
+  { title: "Grandchild", english: "two generations down", transliteration: "child rank 2" },
   { title: "Born", english: "I was born", transliteration: "<subject> I <verb> be_born(vi) formerly" },
   { title: "Reproduce", english: "Animals reproduce", transliteration: "<subject> animal <verb> reproduce(vi)" },
   { title: "Spouse", english: "family by union", transliteration: "family united" },
   { title: "Mother-in-law", english: "a spouse's mother", transliteration: "parent female of spouse" },
-  { title: "Grandparent", english: "two generations up", transliteration: "parent <rank_2>" },
+  { title: "Grandparent", english: "two generations up", transliteration: "parent rank 2" },
   {
     title: "First cousin",
     english: "a shared grandparent, two generations up",
-    transliteration: "<neutral> child <rank_2>",
+    transliteration: "<neutral> child rank 2",
   },
   {
     title: "Second cousin",
     english: "a shared great-grandparent",
-    transliteration: "<neutral> child <rank_3>",
+    transliteration: "<neutral> child rank 3",
   },
   {
     title: "First cousin once removed",
     english: "a parent's first cousin",
-    transliteration: "<neutral> child <rank_2> of parent",
+    transliteration: "<neutral> child rank 2 of parent",
   },
   {
     title: "A family sentence",
@@ -493,21 +497,21 @@ export const water_fire_examples: Example[] = [
 // One celestial root; rank picks the level of the orbital hierarchy, and this makes it ours
 export const sky_examples: Example[] = [
   { title: "Celestial body", english: "any body in the sky", transliteration: "celestial" },
-  { title: "Small body", english: "rank 0: too small to be round", transliteration: "celestial <rank_0>" },
-  { title: "Asteroid", english: "a rocky small body", transliteration: "celestial <rank_0> rock" },
-  { title: "Comet", english: "an icy small body", transliteration: "celestial <rank_0> ice" },
-  { title: "Moon", english: "rank 1: orbits a planet", transliteration: "celestial <rank_1>" },
-  { title: "Planet", english: "rank 2: orbits a star", transliteration: "celestial <rank_2>" },
-  { title: "Star", english: "rank 3", transliteration: "celestial <rank_3>" },
-  { title: "Galaxy", english: "rank 4", transliteration: "celestial <rank_4>" },
-  { title: "The Moon", english: "our moon", transliteration: "celestial <rank_1> this" },
-  { title: "Earth", english: "our planet", transliteration: "celestial <rank_2> this" },
-  { title: "The Sun", english: "our star", transliteration: "celestial <rank_3> this" },
-  { title: "The Milky Way", english: "our galaxy", transliteration: "celestial <rank_4> this" },
+  { title: "Small body", english: "rank 0: too small to be round", transliteration: "celestial rank 0" },
+  { title: "Asteroid", english: "a rocky small body", transliteration: "celestial rank 0 rock" },
+  { title: "Comet", english: "an icy small body", transliteration: "celestial rank 0 ice" },
+  { title: "Moon", english: "rank 1: orbits a planet", transliteration: "celestial rank 1" },
+  { title: "Planet", english: "rank 2: orbits a star", transliteration: "celestial rank 2" },
+  { title: "Star", english: "rank 3", transliteration: "celestial rank 3" },
+  { title: "Galaxy", english: "rank 4", transliteration: "celestial rank 4" },
+  { title: "The Moon", english: "our moon", transliteration: "celestial rank 1 this" },
+  { title: "Earth", english: "our planet", transliteration: "celestial rank 2 this" },
+  { title: "The Sun", english: "our star", transliteration: "celestial rank 3 this" },
+  { title: "The Milky Way", english: "our galaxy", transliteration: "celestial rank 4 this" },
   { title: "Sky", english: "the high place", transliteration: "place high" },
   { title: "Rain", english: "It's raining", transliteration: "<subject> rain <verb> sink(vi) <continuous_tense_aspect>" },
   { title: "Cloud", english: "the sky's covering", transliteration: "covering sky" },
-  { title: "Many stars", english: "many stars", transliteration: "celestial <rank_3> many" },
+  { title: "Many stars", english: "many stars", transliteration: "celestial rank 3 many" },
   {
     title: "A sentence",
     english: "The Sun is bright",
@@ -579,24 +583,24 @@ export const comparison_examples: Example[] = [
 
 // One geometry root; rank counts dimensions
 export const geometry_examples: Example[] = [
-  { title: "Point", english: "no dimensions", transliteration: "geometry <rank_0>" },
-  { title: "Line segment", english: "one dimension, bounded", transliteration: "geometry <rank_1>" },
-  { title: "Shape", english: "two dimensions", transliteration: "geometry <rank_2>" },
-  { title: "Form", english: "three dimensions: a 3D structure", transliteration: "geometry <rank_3>" },
-  { title: "Straight segment", english: "a plumb line segment", transliteration: "geometry <rank_1> plumb" },
-  { title: "Curve", english: "a round line", transliteration: "geometry <rank_1> round" },
-  { title: "Circle", english: "a round shape", transliteration: "geometry <rank_2> round" },
-  { title: "Polygon", english: "an angular shape", transliteration: "geometry <rank_2> angular" },
+  { title: "Point", english: "no dimensions", transliteration: "geometry rank 0" },
+  { title: "Line segment", english: "one dimension, bounded", transliteration: "geometry rank 1" },
+  { title: "Shape", english: "two dimensions", transliteration: "geometry rank 2" },
+  { title: "Form", english: "three dimensions: a 3D structure", transliteration: "geometry rank 3" },
+  { title: "Straight segment", english: "a plumb line segment", transliteration: "geometry rank 1 plumb" },
+  { title: "Curve", english: "a round line", transliteration: "geometry rank 1 round" },
+  { title: "Circle", english: "a round shape", transliteration: "geometry rank 2 round" },
+  { title: "Polygon", english: "an angular shape", transliteration: "geometry rank 2 angular" },
   { title: "Infinite line", english: "a line through the first dimension", transliteration: "geometry <dimension_x>" },
   { title: "Plane", english: "space up through the second dimension", transliteration: "geometry <dimension_y>" },
   { title: "Space", english: "3D Euclidean space", transliteration: "geometry <dimension_z>" },
-  { title: "Sphere", english: "a round form", transliteration: "geometry <rank_3> round" },
-  { title: "Sequence", english: "nodes in a line", transliteration: "node <rank_1>" },
+  { title: "Sphere", english: "a round form", transliteration: "geometry rank 3 round" },
+  { title: "Sequence", english: "nodes in a line", transliteration: "node rank 1" },
   { title: "Array", english: "an unbroken sequence", transliteration: "sequence continuous" },
   { title: "Linked list", english: "a sequence of separate, linked pieces", transliteration: "sequence discrete" },
   { title: "Grid", english: "a data table: a sequence in two dimensions", transliteration: "sequence <dimension_y>" },
-  { title: "Tree", english: "a tree, as a graph", transliteration: "node <rank_2>" },
-  { title: "Network", english: "a graph", transliteration: "node <rank_4>" },
+  { title: "Tree", english: "a tree, as a graph", transliteration: "node rank 2" },
+  { title: "Network", english: "a graph", transliteration: "node rank 4" },
   {
     title: "A sentence",
     english: "Earth is a sphere",
@@ -621,14 +625,14 @@ export const thing_examples: Example[] = [
     english: "The animal eats food",
     transliteration: "<subject> animal <verb> eat(vt) <object> food",
   },
-  { title: "Solid", english: "rank 0", transliteration: "matter <rank_0>" },
-  { title: "Liquid", english: "rank 1", transliteration: "matter <rank_1>" },
-  { title: "Gas", english: "rank 2", transliteration: "matter <rank_2>" },
-  { title: "Plasma", english: "rank 3", transliteration: "matter <rank_3>" },
-  { title: "Ice", english: "solid water", transliteration: "water matter <rank_0>" },
-  { title: "Steam", english: "water as a gas", transliteration: "water matter <rank_2>" },
-  { title: "Lava", english: "molten rock", transliteration: "rock matter <rank_1>" },
-  { title: "Air", english: "our gas", transliteration: "matter <rank_2> this" },
+  { title: "Solid", english: "rank 0", transliteration: "matter rank 0" },
+  { title: "Liquid", english: "rank 1", transliteration: "matter rank 1" },
+  { title: "Gas", english: "rank 2", transliteration: "matter rank 2" },
+  { title: "Plasma", english: "rank 3", transliteration: "matter rank 3" },
+  { title: "Ice", english: "solid water", transliteration: "water matter rank 0" },
+  { title: "Steam", english: "water as a gas", transliteration: "water matter rank 2" },
+  { title: "Lava", english: "molten rock", transliteration: "rock matter rank 1" },
+  { title: "Air", english: "our gas", transliteration: "matter rank 2 this" },
   {
     title: "A sentence",
     english: "Water is a liquid",
@@ -647,7 +651,7 @@ export const thing_examples: Example[] = [
   },
   { title: "Element", english: "element 6, as a phrase", transliteration: "element 6" },
   { title: "Carbon", english: "the same, settled into one word", transliteration: "carbon" },
-  { title: "Gold metal", english: "solid gold", transliteration: "gold matter <rank_0>" },
+  { title: "Gold metal", english: "solid gold", transliteration: "gold matter rank 0" },
   {
     title: "Made of",
     english: "Water is from hydrogen and oxygen",
@@ -798,12 +802,12 @@ export const clause_examples: Example[] = [
 
 // One cardinal root; rank counts quarter turns clockwise from north
 export const direction_examples: Example[] = [
-  { title: "North", english: "rank 0", transliteration: "cardinal <rank_0>" },
-  { title: "East", english: "rank 1: a quarter turn", transliteration: "cardinal <rank_1>" },
-  { title: "South", english: "rank 2: a half turn", transliteration: "cardinal <rank_2>" },
-  { title: "West", english: "rank 3", transliteration: "cardinal <rank_3>" },
-  { title: "Northeast", english: "between north and east", transliteration: "cardinal <rank_0> <rank_1>" },
-  { title: "Southwest", english: "between south and west", transliteration: "cardinal <rank_2> <rank_3>" },
+  { title: "North", english: "rank 0", transliteration: "cardinal rank 0" },
+  { title: "East", english: "rank 1: a quarter turn", transliteration: "cardinal rank 1" },
+  { title: "South", english: "rank 2: a half turn", transliteration: "cardinal rank 2" },
+  { title: "West", english: "rank 3", transliteration: "cardinal rank 3" },
+  { title: "Northeast", english: "between north and east", transliteration: "cardinal rank 0 rank 1" },
+  { title: "Southwest", english: "between south and west", transliteration: "cardinal rank 2 rank 3" },
   {
     title: "Northward",
     english: "Go north",
@@ -848,7 +852,7 @@ export const arithmetic_examples: Example[] = [
   {
     title: "Logarithm",
     english: "The rank of 1000 is 3",
-    transliteration: "<subject> rank of number 1 <rank_3> <verb> equal(vt) <object> number 3",
+    transliteration: "<subject> rank of number 1 rank 3 <verb> equal(vt) <object> number 3",
   },
   {
     title: "A sentence",
@@ -890,8 +894,8 @@ export const moving_examples: Example[] = [
 
 // Parts of things: the kind of part, then the whole
 export const part_examples: Example[] = [
-  { title: "Hand", english: "the arm's second segment", transliteration: "arm <rank_2>" },
-  { title: "Toe", english: "the leg's third segment", transliteration: "leg <rank_3>" },
+  { title: "Hand", english: "the arm's second segment", transliteration: "arm rank 2" },
+  { title: "Toe", english: "the leg's third segment", transliteration: "leg rank 3" },
   { title: "Wrist", english: "the hand's joint", transliteration: "node hand" },
   { title: "Skin", english: "the body's covering", transliteration: "covering body" },
   { title: "Bark", english: "the plant's covering", transliteration: "covering plant" },
@@ -949,7 +953,7 @@ export const more_grammar_examples: Example[] = [
   { title: "Cardinal", english: "three people", transliteration: "person number 3" },
   { title: "A third", english: "1/3", transliteration: "<per> number 3" },
   { title: "Two thirds", english: "2/3", transliteration: "number 2 <per> number 3" },
-  { title: "A thousandth", english: "1/1000", transliteration: "<per> number 1 <rank_3>" },
+  { title: "A thousandth", english: "1/1000", transliteration: "<per> number 1 rank 3" },
   { title: "Half the money", english: "a share", transliteration: "money <per> number 2" },
   { title: "Per person", english: "money per person", transliteration: "money <per> person" },
   {

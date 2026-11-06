@@ -30,8 +30,7 @@ const core_sections = [
   { key: "preposition", label: "Prepositions", size: 12 },
   { key: "pronoun", label: "Pronouns", size: 6 },
   { key: "axis_helper", label: "Axis helpers", size: 8 },
-  { key: "content", label: "Content roots", size: 48 },
-  { key: "rank", label: "Rank helpers", size: 16 },
+  { key: "content", label: "Content roots", size: 64 },
 ] as const;
 // The domain receivers: both of these sections cover all of its IDs
 const receiver_sections = [
@@ -641,7 +640,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "phase",
       notes:
-        "Phase changes: melt(vi) goes up a phase and freeze(vi) down one, so the same verb is melting for ice and evaporating for water. Rank names the target phase, as matter's ranks do (<rank_0> solid, <rank_1> liquid, <rank_2> gas, <rank_3> plasma): melt(vi) <rank_2> is evaporate, freeze(vi) <rank_1> condense",
+        "Phase changes: melt(vi) goes up a phase and freeze(vi) down one, so the same verb is melting for ice and evaporating for water. Rank names the target phase, as matter's ranks do (rank 0 solid, rank 1 liquid, rank 2 gas, rank 3 plasma): melt(vi) rank 2 is evaporate, freeze(vi) rank 1 condense",
     },
     {
       noun: "rigidity(state)",
@@ -1134,7 +1133,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "time",
       notes:
-        "Rank gives the unit, a step up a ladder rather than a power of ten: <rank_0> second, <rank_1> minute, <rank_2> hour, <rank_3> day, <rank_4> week, <rank_5> month, <rank_6> year, <rank_7> decade, <rank_8> century, <rank_9> millennium. time <rank_3> number 3 is three days and time <rank_3> this today. A day of 24 hours is time <rank_3>; daytime is time bright and night time dark",
+        "Rank gives the unit, a step up a ladder rather than a power of ten: rank 0 second, rank 1 minute, rank 2 hour, rank 3 day, rank 4 week, rank 5 month, rank 6 year, rank 7 decade, rank 8 century, rank 9 millennium. time rank 3 number 3 is three days and time rank 3 this today. A day of 24 hours is time rank 3; daytime is time bright and night time dark",
       steps: {
         max_positive: { adj: "ancient", adverb: "long_ago" },
         min_positive: { adj: "recent", adverb: "recently" },
@@ -2448,7 +2447,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "arithmetic",
       notes:
-        "Rank gives the operation, each repeating the one below (the hyperoperations): bare count is counting, <rank_1> add, <rank_2> multiply, <rank_3> raise to a power. The negative end is the inverse: count down, subtract, divide, take a root. The object is the number acted on and <by> gives the amount. A logarithm is rank: the rank of 1000 is 3",
+        "Rank gives the operation, each repeating the one below (the hyperoperations): bare count is counting, rank 1 add, rank 2 multiply, rank 3 raise to a power. The negative end is the inverse: count down, subtract, divide, take a root. The object is the number acted on and <by> gives the amount. A logarithm is rank: the rank of 1000 is 3",
     },
     { noun: "countdown", verb: "count_down(vi)", verb_i: "count down", verb_t: "count down" },
     { noun: "counting", adj: "counted", verb: "count(vi)", verb_i: "count", verb_t: "count" },
@@ -2758,7 +2757,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "seriality",
       notes:
-        "Order in a sequence, counted from a reference point: now in a main clause, the main clause's time in a subclause. time <rank_3> next is tomorrow and time <rank_3> previous yesterday. Rank counts steps, as for generations: next <rank_2> is the one after next. Bare words are one step",
+        "Order in a sequence, counted from a reference point: now in a main clause, the main clause's time in a subclause. time rank 3 next is tomorrow and time rank 3 previous yesterday. Rank counts steps, as for generations: next rank 2 is the one after next. Bare words are one step",
     },
     {
       noun: "precedence",
@@ -2784,7 +2783,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "lineage",
       notes:
-        "Rank counts generations: child <rank_2> is a grandchild, negative child <rank_2> a grandparent, and neutral child <rank_2> a first cousin (a shared grandparent). Bare words are <rank_1>, and <rank_0> is oneself",
+        "Rank counts generations: child rank 2 is a grandchild, negative child rank 2 a grandparent, and neutral child rank 2 a first cousin (a shared grandparent). Bare words are rank 1, and rank 0 is oneself",
       steps: {
         max_negative: { noun: "ancestor" },
         min_negative: { noun: "aunt_or_uncle" },
@@ -2911,7 +2910,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     t: [T.grammar_helper, T.part_of_speech_specifier],
     gloss: "a subject complement: what the subject is, after is, or while any other verb happens",
     notes:
-      "What follows describes the subject, so it reads as a modifier: the adjective where there is one (is <complement> hot), otherwise the noun (is <complement> matter <rank_1>)",
+      "What follows describes the subject, so it reads as a modifier: the adjective where there is one (is <complement> hot), otherwise the noun (is <complement> matter rank 1)",
   });
   cr("<foreign>", { t: marker });
   cr("<vocative>", {
@@ -2934,7 +2933,7 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     t: [T.grammar_helper],
     gloss: "per / divided by: what follows is the denominator",
     notes:
-      "a/b is a per b, so one word gives fractions, rates and ratios. <per> number 3 is a third, number 2 <per> number 3 two thirds, money <per> person money per person, <per> time <rank_2> per hour, number 3 <per> number 1 three to one. Denominators are whole numbers, so fractions are exact in any base",
+      "a/b is a per b, so one word gives fractions, rates and ratios. <per> number 3 is a third, number 2 <per> number 3 two thirds, money <per> person money per person, <per> time rank 2 per hour, number 3 <per> number 1 three to one. Denominators are whole numbers, so fractions are exact in any base",
   });
 }
 
@@ -3072,14 +3071,6 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
 }
 
 {
-  // After a digit, rank_N puts that digit at place N (worth base^N)
-  section("rank");
-  for (let i = 0; i < 16; i++) {
-    cr(`<rank_${i}>`);
-  }
-}
-
-{
   section("content");
   // General nouns
   cr("thing", {
@@ -3110,10 +3101,10 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("mouth");
   cr("arm", {
     gloss: "arm / limb",
-    notes: "Rank counts segments out from the body, as Toki Pona's luka is arm and hand: <rank_2> hand, <rank_3> finger. Bare, it's <rank_1>",
+    notes: "Rank counts segments out from the body, as Toki Pona's luka is arm and hand: rank 2 hand, rank 3 finger. Bare, it's rank 1",
   });
   cr("leg", {
-    notes: "Rank counts segments out from the body, as Toki Pona's noka is leg and foot: <rank_2> foot, <rank_3> toe. Bare, it's <rank_1>",
+    notes: "Rank counts segments out from the body, as Toki Pona's noka is leg and foot: rank 2 foot, rank 3 toe. Bare, it's rank 1",
   });
   cr("torso");
 
@@ -3124,18 +3115,18 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("matter", {
     gloss: "matter / substance",
     notes:
-      "Rank gives the phase, rising in energy: <rank_0> solid, <rank_1> liquid, <rank_2> gas, <rank_3> plasma. As a modifier it gives a substance's phase: water matter <rank_0> is ice, water matter <rank_2> steam",
+      "Rank gives the phase, rising in energy: rank 0 solid, rank 1 liquid, rank 2 gas, rank 3 plasma. As a modifier it gives a substance's phase: water matter rank 0 is ice, water matter rank 2 steam",
   });
   cr("celestial", {
     gloss: "celestial body",
     notes:
-      "Rank gives the level in the orbital hierarchy, each orbiting the next: <rank_1> moon, <rank_2> planet, <rank_3> star, <rank_4> galaxy, <rank_5> galaxy cluster, <rank_6> supercluster. <rank_0> is a small body, too small to be round, told apart by modifiers: <rank_0> rock is an asteroid, <rank_0> ice a comet. Bare, it's any celestial body. With this, it's ours: celestial <rank_3> this is the Sun, celestial <rank_2> this Earth, celestial <rank_1> this the Moon",
+      "Rank gives the level in the orbital hierarchy, each orbiting the next: rank 1 moon, rank 2 planet, rank 3 star, rank 4 galaxy, rank 5 galaxy cluster, rank 6 supercluster. rank 0 is a small body, too small to be round, told apart by modifiers: rank 0 rock is an asteroid, rank 0 ice a comet. Bare, it's any celestial body. With this, it's ours: celestial rank 3 this is the Sun, celestial rank 2 this Earth, celestial rank 1 this the Moon",
   });
   cr("element", {
     gloss: "chemical element",
     t: [T.domain_specifier],
     notes:
-      "Marks the element domain: the digit after it is an atomic number, so element 6 is carbon. The elements are written as one word, carbon for element 6, as phrases with a settled meaning are. Bare, it's any element. With matter it gives the phase: gold matter <rank_0> is solid gold",
+      "Marks the element domain: the digit after it is an atomic number, so element 6 is carbon. The elements are written as one word, carbon for element 6, as phrases with a settled meaning are. Bare, it's any element. With matter it gives the phase: gold matter rank 0 is solid gold",
   });
 
   // Senses and color
@@ -3167,8 +3158,9 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   });
   cr("rank", {
     t: [T.domain_specifier],
+    gloss: "rank / place / level",
     notes:
-      "For places past <rank_15>: takes a subclause holding the place, as in number 3 rank <clause_start> number 1 3 9 <clause_end> (3e139)",
+      "Reads the one word after it, as element does: a digit, so ranks up to 127. After a digit in a number it gives that digit's place (worth base^N), and on a noun its level. Past 127 the word is a number: number 3 rank number 1 3 9 is 3e139",
   });
   cr("dimension", {
     t: [T.domain_specifier],
@@ -3176,17 +3168,17 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
   cr("geometry", {
     gloss: "geometric figure",
     notes:
-      "Rank gives a bounded figure of that many dimensions: <rank_0> point, <rank_1> line segment, <rank_2> shape, <rank_3> form (a 3D structure). A dimension helper gives the unbounded space up through that dimension: <dimension_x> a line, <dimension_y> a plane, <dimension_z> space. Modifiers say which figure: <rank_2> round is a circle, <rank_2> angular a polygon",
+      "Rank gives a bounded figure of that many dimensions: rank 0 point, rank 1 line segment, rank 2 shape, rank 3 form (a 3D structure). A dimension helper gives the unbounded space up through that dimension: <dimension_x> a line, <dimension_y> a plane, <dimension_z> space. Modifiers say which figure: rank 2 round is a circle, rank 2 angular a polygon",
   });
   cr("node", {
     notes:
-      "Rank lifts it to more general networks: <rank_1> sequence, <rank_2> tree, <rank_3> DAG, <rank_4> graph, <rank_5> hypergraph, <rank_6> higher-order network. Each takes 3 syllables",
+      "Rank lifts it to more general networks: rank 1 sequence, rank 2 tree, rank 3 DAG, rank 4 graph, rank 5 hypergraph, rank 6 higher-order network. Each takes 3 syllables",
   });
   cr("edge");
   cr("cardinal", {
     gloss: "cardinal direction",
     notes:
-      "Rank counts quarter turns clockwise from north: <rank_0> north, <rank_1> east, <rank_2> south, <rank_3> west. Two ranks name the direction between them, north or south first as in English: cardinal <rank_0> <rank_1> is northeast, <rank_2> <rank_3> southwest. to cardinal <rank_0> is northward. Rank here numbers points on a circle rather than levels, unlike its other uses; kept for now",
+      "Rank counts quarter turns clockwise from north: rank 0 north, rank 1 east, rank 2 south, rank 3 west. Two ranks name the direction between them, north or south first as in English: cardinal rank 0 rank 1 is northeast, rank 2 rank 3 southwest. to cardinal rank 0 is northward. Rank here numbers points on a circle rather than levels, unlike its other uses; kept for now",
   });
   cr("meta", {
     gloss: "meta / about itself",
@@ -3504,10 +3496,10 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
     cw(name, { parts: words_of(name, parts), ...data });
   }
   // Phase changes, by target phase
-  phrase("evaporate(vi)", ["melt(vi)", "<rank_2>"], "evaporate", "vaporize");
-  phrase("ionize(vi)", ["melt(vi)", "<rank_3>"], "ionize", "ionize");
-  phrase("condense(vi)", ["freeze(vi)", "<rank_1>"], "condense", "condense");
-  phrase("solidify(vi)", ["freeze(vi)", "<rank_0>"], "solidify", "solidify");
+  phrase("evaporate(vi)", ["melt(vi)", "rank", "digit_2"], "evaporate", "vaporize");
+  phrase("ionize(vi)", ["melt(vi)", "rank", "digit_3"], "ionize", "ionize");
+  phrase("condense(vi)", ["freeze(vi)", "rank", "digit_1"], "condense", "condense");
+  phrase("solidify(vi)", ["freeze(vi)", "rank", "digit_0"], "solidify", "solidify");
 
   // Saying or showing what isn't so
   phrase("tell_a_lie(vi)", ["say(vt)", "falsely"], "tell a lie", "lie about");
@@ -3567,81 +3559,90 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   phrase("quote_in_writing(vi)", ["write(vi)", "identically", "meta"], "quote in writing", "quote in writing");
 
   // Arithmetic, by rank; count_down is the inverse
-  phrase("add(vi)", ["count(vi)", "<rank_1>"], "add", "add");
-  phrase("multiply(vi)", ["count(vi)", "<rank_2>"], "multiply", "multiply");
-  phrase("exponentiate(vt)", ["count(vi)", "<rank_3>"], "raise to a power", "exponentiate");
-  phrase("subtract(vi)", ["count_down(vi)", "<rank_1>"], "subtract", "subtract");
-  phrase("divide(vi)", ["count_down(vi)", "<rank_2>"], "divide", "divide");
-  phrase("root(vt)", ["count_down(vi)", "<rank_3>"], "take a root", "root");
+  phrase("add(vi)", ["count(vi)", "rank", "digit_1"], "add", "add");
+  phrase("multiply(vi)", ["count(vi)", "rank", "digit_2"], "multiply", "multiply");
+  phrase("exponentiate(vt)", ["count(vi)", "rank", "digit_3"], "raise to a power", "exponentiate");
+  phrase("subtract(vi)", ["count_down(vi)", "rank", "digit_1"], "subtract", "subtract");
+  phrase("divide(vi)", ["count_down(vi)", "rank", "digit_2"], "divide", "divide");
+  phrase("root(vt)", ["count_down(vi)", "rank", "digit_3"], "take a root", "root");
+
+  // number reads digits until something ends it; before an axis word, which a digit sounds like,
+  // this ends it outright, naming what it closes so a plain <clause_end> only ever closes a clause
+  cw("number_end", {
+    parts: words_of("number_end", ["number", "<clause_end>"]),
+    gloss: "end of a number",
+    notes:
+      "Said as one word. Needed only before an axis word, which would otherwise be heard as a digit: person number 3 number_end big. Any other word ends a number by itself, <clause_end> included",
+  });
 
   // Networks, by how general the links are. Direction is a modifier, so a directed graph is a
   // graph with a word for directed (none yet)
   // Bounded figures by rank, unbounded spaces by dimension
-  noun("point", ["geometry", "<rank_0>"]);
-  noun("line_segment", ["geometry", "<rank_1>"], { gloss: "line segment" });
-  noun("shape", ["geometry", "<rank_2>"]);
-  noun("form", ["geometry", "<rank_3>"], { gloss: "form (3D structure)" });
-  noun("curve", ["geometry", "<rank_1>", "round"]);
-  noun("polyline", ["geometry", "<rank_1>", "angular"]);
-  noun("circle", ["geometry", "<rank_2>", "round"]);
-  noun("polygon", ["geometry", "<rank_2>", "angular"]);
-  noun("sphere", ["geometry", "<rank_3>", "round"]);
-  noun("polyhedron", ["geometry", "<rank_3>", "angular"]);
+  noun("point", ["geometry", "rank", "digit_0"]);
+  noun("line_segment", ["geometry", "rank", "digit_1"], { gloss: "line segment" });
+  noun("shape", ["geometry", "rank", "digit_2"]);
+  noun("form", ["geometry", "rank", "digit_3"], { gloss: "form (3D structure)" });
+  noun("curve", ["geometry", "rank", "digit_1", "round"]);
+  noun("polyline", ["geometry", "rank", "digit_1", "angular"]);
+  noun("circle", ["geometry", "rank", "digit_2", "round"]);
+  noun("polygon", ["geometry", "rank", "digit_2", "angular"]);
+  noun("sphere", ["geometry", "rank", "digit_3", "round"]);
+  noun("polyhedron", ["geometry", "rank", "digit_3", "angular"]);
   noun("infinite_line", ["geometry", "<dimension_x>"], { gloss: "line (infinite)" });
   noun("plane", ["geometry", "<dimension_y>"]);
   noun("space", ["geometry", "<dimension_z>"], { gloss: "space (3D Euclidean)" });
 
   // Phases by rank, and substances in a phase. The phase axis (rigid, fluid) is how something
   // behaves, not its phase: glass is rigid, and sand pours
-  noun("solid", ["matter", "<rank_0>"]);
-  noun("liquid", ["matter", "<rank_1>"]);
-  noun("gas", ["matter", "<rank_2>"], { notes: "Usually enough for air; gas this when it needs saying" });
-  noun("plasma", ["matter", "<rank_3>"]);
-  noun("air", ["matter", "<rank_2>", "this"], { gloss: "air (our gas)" });
-  noun("ice", ["water", "matter", "<rank_0>"]);
-  noun("steam", ["water", "matter", "<rank_2>"]);
-  noun("lava", ["rock", "matter", "<rank_1>"], { gloss: "lava / magma" });
+  noun("solid", ["matter", "rank", "digit_0"]);
+  noun("liquid", ["matter", "rank", "digit_1"]);
+  noun("gas", ["matter", "rank", "digit_2"], { notes: "Usually enough for air; gas this when it needs saying" });
+  noun("plasma", ["matter", "rank", "digit_3"]);
+  noun("air", ["matter", "rank", "digit_2", "this"], { gloss: "air (our gas)" });
+  noun("ice", ["water", "matter", "rank", "digit_0"]);
+  noun("steam", ["water", "matter", "rank", "digit_2"]);
+  noun("lava", ["rock", "matter", "rank", "digit_1"], { gloss: "lava / magma" });
 
   // Celestial bodies by orbital level; this makes one ours
-  noun("small_body", ["celestial", "<rank_0>"], { gloss: "small body (too small to be round)" });
-  noun("asteroid", ["celestial", "<rank_0>", "rock"]);
-  noun("comet", ["celestial", "<rank_0>", "ice"]);
-  noun("moon", ["celestial", "<rank_1>"]);
-  noun("planet", ["celestial", "<rank_2>"]);
-  noun("star", ["celestial", "<rank_3>"]);
-  noun("galaxy", ["celestial", "<rank_4>"]);
-  noun("galaxy_cluster", ["celestial", "<rank_5>"], { gloss: "galaxy cluster" });
-  noun("supercluster", ["celestial", "<rank_6>"]);
-  noun("the_moon", ["celestial", "<rank_1>", "this"], { gloss: "the Moon" });
-  noun("earth", ["celestial", "<rank_2>", "this"], { gloss: "Earth / the world" });
-  noun("sun", ["celestial", "<rank_3>", "this"], { gloss: "the Sun" });
-  noun("milky_way", ["celestial", "<rank_4>", "this"], { gloss: "the Milky Way" });
+  noun("small_body", ["celestial", "rank", "digit_0"], { gloss: "small body (too small to be round)" });
+  noun("asteroid", ["celestial", "rank", "digit_0", "rock"]);
+  noun("comet", ["celestial", "rank", "digit_0", "ice"]);
+  noun("moon", ["celestial", "rank", "digit_1"]);
+  noun("planet", ["celestial", "rank", "digit_2"]);
+  noun("star", ["celestial", "rank", "digit_3"]);
+  noun("galaxy", ["celestial", "rank", "digit_4"]);
+  noun("galaxy_cluster", ["celestial", "rank", "digit_5"], { gloss: "galaxy cluster" });
+  noun("supercluster", ["celestial", "rank", "digit_6"]);
+  noun("the_moon", ["celestial", "rank", "digit_1", "this"], { gloss: "the Moon" });
+  noun("earth", ["celestial", "rank", "digit_2", "this"], { gloss: "Earth / the world" });
+  noun("sun", ["celestial", "rank", "digit_3", "this"], { gloss: "the Sun" });
+  noun("milky_way", ["celestial", "rank", "digit_4", "this"], { gloss: "the Milky Way" });
   noun("universe", ["everything"]);
 
   // The compass, by quarter turns clockwise from north; two ranks are the direction between
-  noun("north", ["cardinal", "<rank_0>"]);
-  noun("east", ["cardinal", "<rank_1>"]);
-  noun("south", ["cardinal", "<rank_2>"]);
-  noun("west", ["cardinal", "<rank_3>"]);
-  noun("northeast", ["cardinal", "<rank_0>", "<rank_1>"]);
-  noun("southeast", ["cardinal", "<rank_2>", "<rank_1>"]);
-  noun("southwest", ["cardinal", "<rank_2>", "<rank_3>"]);
-  noun("northwest", ["cardinal", "<rank_0>", "<rank_3>"]);
+  noun("north", ["cardinal", "rank", "digit_0"]);
+  noun("east", ["cardinal", "rank", "digit_1"]);
+  noun("south", ["cardinal", "rank", "digit_2"]);
+  noun("west", ["cardinal", "rank", "digit_3"]);
+  noun("northeast", ["cardinal", "rank", "digit_0", "rank", "digit_1"]);
+  noun("southeast", ["cardinal", "rank", "digit_2", "rank", "digit_1"]);
+  noun("southwest", ["cardinal", "rank", "digit_2", "rank", "digit_3"]);
+  noun("northwest", ["cardinal", "rank", "digit_0", "rank", "digit_3"]);
 
   // Units of time, a step up a ladder per rank; this, next and previous count from now
-  noun("second", ["time", "<rank_0>"]);
-  noun("minute", ["time", "<rank_1>"]);
-  noun("hour", ["time", "<rank_2>"]);
-  noun("day", ["time", "<rank_3>"]);
-  noun("week", ["time", "<rank_4>"]);
-  noun("month", ["time", "<rank_5>"]);
-  noun("year", ["time", "<rank_6>"]);
-  noun("decade", ["time", "<rank_7>"]);
-  noun("century", ["time", "<rank_8>"]);
-  noun("millennium", ["time", "<rank_9>"]);
-  noun("today", ["time", "<rank_3>", "this"]);
-  noun("tomorrow", ["time", "<rank_3>", "next"]);
-  noun("yesterday", ["time", "<rank_3>", "previous"]);
+  noun("second", ["time", "rank", "digit_0"]);
+  noun("minute", ["time", "rank", "digit_1"]);
+  noun("hour", ["time", "rank", "digit_2"]);
+  noun("day", ["time", "rank", "digit_3"]);
+  noun("week", ["time", "rank", "digit_4"]);
+  noun("month", ["time", "rank", "digit_5"]);
+  noun("year", ["time", "rank", "digit_6"]);
+  noun("decade", ["time", "rank", "digit_7"]);
+  noun("century", ["time", "rank", "digit_8"]);
+  noun("millennium", ["time", "rank", "digit_9"]);
+  noun("today", ["time", "rank", "digit_3", "this"]);
+  noun("tomorrow", ["time", "rank", "digit_3", "next"]);
+  noun("yesterday", ["time", "rank", "digit_3", "previous"]);
   noun("daytime", ["time", "bright"]);
   noun("night", ["time", "dark"]);
 
@@ -3654,10 +3655,10 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("brother", ["sibling", "male"]);
   noun("aunt", ["aunt_or_uncle", "female"]);
   noun("uncle", ["aunt_or_uncle", "male"]);
-  noun("grandparent", ["parent", "<rank_2>"]);
-  noun("grandchild", ["child", "<rank_2>"]);
-  noun("cousin", ["sibling", "<rank_2>"], { gloss: "first cousin" });
-  noun("second_cousin", ["sibling", "<rank_3>"], { gloss: "second cousin" });
+  noun("grandparent", ["parent", "rank", "digit_2"]);
+  noun("grandchild", ["child", "rank", "digit_2"]);
+  noun("cousin", ["sibling", "rank", "digit_2"], { gloss: "first cousin" });
+  noun("second_cousin", ["sibling", "rank", "digit_3"], { gloss: "second cousin" });
   noun("spouse", ["family", "united"], {
     gloss: "spouse / partner",
     notes: "Family by union rather than descent. In-laws are family of spouse",
@@ -3814,10 +3815,10 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   });
 
   // Limbs by segment, counting out from the body, and their joints
-  noun("hand", ["arm", "<rank_2>"]);
-  noun("finger", ["arm", "<rank_3>"]);
-  noun("foot", ["leg", "<rank_2>"]);
-  noun("toe", ["leg", "<rank_3>"]);
+  noun("hand", ["arm", "rank", "digit_2"]);
+  noun("finger", ["arm", "rank", "digit_3"]);
+  noun("foot", ["leg", "rank", "digit_2"]);
+  noun("toe", ["leg", "rank", "digit_3"]);
   noun("elbow", ["node", "arm"]);
   noun("wrist", ["node", "hand"]);
   noun("ankle", ["node", "foot"]);
@@ -3901,7 +3902,7 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   // The elements: element and the digit of the atomic number, a phrase settled into a word
   elements.forEach((name, i) => noun(name, ["element", `digit_${i + 1}`], { gloss: `${name} (element ${i + 1})` }));
 
-  noun("sequence", ["node", "<rank_1>"], { gloss: "sequence / chain / list" });
+  noun("sequence", ["node", "rank", "digit_1"], { gloss: "sequence / chain / list" });
   // Sequences by how they're laid out, and through more dimensions
   noun("array", ["sequence", "continuous"], { notes: "An unbroken sequence, stored contiguously" });
   noun("linked_list", ["sequence", "discrete"], { gloss: "linked list", notes: "A sequence of separate pieces, each linked to the next" });
@@ -3914,11 +3915,11 @@ function name_verb(word: Word, intransitive?: string, transitive?: string) {
   noun("chair", ["<place>", "sit(vi)"], { gloss: "chair / seat" });
   noun("table", ["<place>", "eat(vt)"], { gloss: "table (furniture)", notes: "A data table is a grid" });
   noun("desk", ["<place>", "work(vi)"], { gloss: "desk / workbench" });
-  noun("tree_graph", ["node", "<rank_2>"], { gloss: "tree (graph)" });
-  noun("dag", ["node", "<rank_3>"], { gloss: "directed acyclic graph" });
-  noun("graph", ["node", "<rank_4>"], { gloss: "graph / network" });
-  noun("hypergraph", ["node", "<rank_5>"]);
-  noun("higher_order_network", ["node", "<rank_6>"], { gloss: "higher-order network" });
+  noun("tree_graph", ["node", "rank", "digit_2"], { gloss: "tree (graph)" });
+  noun("dag", ["node", "rank", "digit_3"], { gloss: "directed acyclic graph" });
+  noun("graph", ["node", "rank", "digit_4"], { gloss: "graph / network" });
+  noun("hypergraph", ["node", "rank", "digit_5"]);
+  noun("higher_order_network", ["node", "rank", "digit_6"], { gloss: "higher-order network" });
 }
 
 // Toki Pona words and their meanings, for comparison

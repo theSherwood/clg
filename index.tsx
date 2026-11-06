@@ -55,7 +55,6 @@ const SECTION_SWATCHES: Record<SectionKey, string> = {
   axis_helper: "bg-purple-500",
   content: "bg-emerald-600",
   dimension: "bg-pink-400",
-  rank: "bg-amber-800",
   axis: "bg-blue-500",
   digit: "bg-slate-400",
 };
