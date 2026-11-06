@@ -825,6 +825,42 @@ export const direction_examples: Example[] = [
   },
 ];
 
+// Place and path: a place noun, with of for what it's relative to. at is a place and across a path
+// through it, so at topside of is above and across topside of over; to and from are a path's ends.
+// Whether it touches goes unsaid, and touching says so
+export const place_examples: Example[] = [
+  { title: "Above", english: "A bird is above the house", transliteration: "<subject> bird <verb> be(vi) at topside of house" },
+  { title: "Over", english: "A bird flies over the house", transliteration: "<subject> bird <verb> fly(vi) across topside of house" },
+  { title: "Below", english: "There's water below the land", transliteration: "<subject> water <verb> be(vi) at underside of land" },
+  {
+    title: "Under",
+    english: "The child crawls under the table",
+    transliteration: "<subject> child <verb> crawl(vi) across underside of table",
+  },
+  {
+    title: "On",
+    english: "The rock is on the table",
+    transliteration: "<subject> rock <verb> be(vi) at topside touching of table",
+  },
+  {
+    title: "Through",
+    english: "We walked through the house",
+    transliteration: "<subject> we <verb> walk(vi) formerly across inside of house",
+  },
+  { title: "Across", english: "Swim across the water", transliteration: "<verb_prescriptive> swim(vi) across water" },
+  { title: "Along", english: "We walked along the path", transliteration: "<subject> we <verb> walk(vi) formerly across path" },
+  {
+    title: "Onto",
+    english: "Lift the rock onto the table",
+    transliteration: "<verb_prescriptive> lift(vt) to topside of table <object> rock",
+  },
+  {
+    title: "From under",
+    english: "The animal came from under the bed",
+    transliteration: "<subject> animal <verb> come(vi) formerly from underside of bed",
+  },
+];
+
 // Arithmetic: count takes rank for the operation and negative for its inverse; by gives the amount
 export const arithmetic_examples: Example[] = [
   { title: "Count", english: "Count to ten", transliteration: "<verb_prescriptive> count(vi) to number 1 0" },
