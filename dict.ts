@@ -973,11 +973,11 @@ const axis_words_config: [AxisWordForms, AxisWordForms, AxisWordForms][] = [
     {
       noun: "bottom",
       adj: "low",
-      verb: "sink(vi)",
-      verb_i: "sink",
+      verb: "descend(vi)",
+      verb_i: "descend",
       verb_t: "lower",
       adverb: "below",
-      synonyms: { noun: ["underside"], adj: ["lower"], verb: ["descend"], adverb: ["beneath", "down"] },
+      synonyms: { noun: ["underside"], adj: ["lower"], verb: ["sink"], adverb: ["beneath", "down"] },
     },
     {
       noun: "top",

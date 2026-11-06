@@ -509,7 +509,7 @@ export const sky_examples: Example[] = [
   { title: "The Sun", english: "our star", transliteration: "celestial rank 3 this" },
   { title: "The Milky Way", english: "our galaxy", transliteration: "celestial rank 4 this" },
   { title: "Sky", english: "the high place", transliteration: "place high" },
-  { title: "Rain", english: "It's raining", transliteration: "<subject> rain <verb> sink(vi) <continuous_tense_aspect>" },
+  { title: "Rain", english: "It's raining", transliteration: "<subject> rain <verb> descend(vi) <continuous_tense_aspect>" },
   { title: "Cloud", english: "the sky's covering", transliteration: "covering sky" },
   { title: "Many stars", english: "many stars", transliteration: "celestial rank 3 many" },
   {

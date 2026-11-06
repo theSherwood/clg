@@ -106,6 +106,21 @@ test("every word in the Grammar page's phrases and examples exists", async () =>
   expect(unknown).toEqual([]);
 });
 
+// Renaming a word would otherwise leave examples using the old name, shown in red
+test("every word in the examples exists", async () => {
+  const examples = await import("./examples");
+  const transliterations = (Object.values(examples) as unknown[])
+    .filter(Array.isArray)
+    .flat()
+    .flatMap((e: any) => [e?.transliteration, ...(e?.examples ?? []).map((x: any) => x.transliteration)])
+    .filter((t): t is string => typeof t === "string");
+  expect(transliterations.length).toBeGreaterThan(0);
+  const unknown = transliterations.flatMap((t) =>
+    tokenize(t).flatMap((k) => (k.kind === "word" && !k.word && !k.candidate ? [`${k.text}: ${t.slice(0, 60)}…`] : [])),
+  );
+  expect(unknown).toEqual([]);
+});
+
 // A noun that shares a verb's name (sleep, desire) would otherwise slip in where the verb belongs
 test("every verb marker is followed by a verb", async () => {
   const examples = await import("./examples");
